@@ -57,7 +57,11 @@ const AppState = {
       goodsTab: "goods",
       isAll: "否",
       giftBuyTab: "goods",
+      giftBuyRange: "participate",
+      giftBuyExcludeTab: "excludeGoods",
       giftPurchaseTab: "goods",
+      giftPurchaseRange: "participate",
+      giftPurchaseExcludeTab: "excludeGoods",
       giftIsAll: "否"
     },
     campaignDetail: {
@@ -103,6 +107,8 @@ const AppState = {
       pay: { q: "", enabled: "全部" },
       onlineCat: { q: "", status: "全部" },
       offlineCat: { q: "", status: "全部" },
+      deptOnlineCat: { q: "", status: "全部" },
+      deptOfflineCat: { q: "", status: "全部" },
       brands: { q: "", status: "全部" },
       suppliers: { q: "", status: "全部" },
       stores: { q: "", region: "全部", status: "全部" },
@@ -149,6 +155,8 @@ const AppState = {
     "/gm-pay": { title: "支付方式", sub: "只读：查询 + 查看详情（不提供新增/编辑/删除）" },
     "/gm-online-cat": { title: "线上类别", sub: "只读：查询 + 查看详情（不提供新增/编辑/删除）" },
     "/gm-offline-cat": { title: "线下类别", sub: "只读：查询 + 查看详情（不提供新增/编辑/删除）" },
+    "/gm-dept-online-cat": { title: "百货线上类别", sub: "只读：查询 + 查看详情（不提供新增/编辑/删除）" },
+    "/gm-dept-offline-cat": { title: "百货线下类别", sub: "只读：查询 + 查看详情（不提供新增/编辑/删除）" },
     "/gm-brands": { title: "商品品牌", sub: "只读：查询 + 查看详情（不提供新增/编辑/删除）" },
     "/gm-suppliers": { title: "供应商信息", sub: "只读：查询 + 查看详情（不提供新增/编辑/删除）" },
     "/gm-stores": { title: "门店信息", sub: "只读：查询 + 查看详情（不提供新增/编辑/删除）" },
@@ -232,25 +240,79 @@ const AppState = {
     ],
     actualSchedules: [
       {
-        actualId: "AC-2026-0001",
-        planId: "PL-2026-0001-01",
+        actualId: "100000001601",
+        planId: "PL-2026-1601",
         seq: 1,
         year: 2026,
         property: "计划生成",
-        category: "常规档期",
+        category: "3-会员日",
         importance: "10-非常重要",
-        auditStatus: "未提交",
-        effectiveAt: "—",
-        theme: "年货节预热",
-        planType: "2-满减促销",
-        regionCode: "R-001",
-        regionDesc: "华东大区",
-        startDate: "2026-01-05",
-        endDate: "2026-01-12",
-        startWeek: 2,
-        endWeek: 3,
-        channel: "2-线上",
-        publicity: ["海报", "微信"],
+        auditStatus: "生效",
+        effectiveAt: "2026-05-01 00:00:00",
+        theme: "2026年会员日",
+        planType: "1-打折促销",
+        regionCode: "10002",
+        regionDesc: "—",
+        startDate: "2026-05-01",
+        endDate: "2026-07-31",
+        startWeek: 0,
+        endWeek: 0,
+        channel: "1-全渠道",
+        publicity: ["海报"],
+        dmLayout: "A3",
+        dmConfirmedQty: 0,
+        pickDoneFlag: "是",
+        pickDoneUser: "manle - manle",
+        pickDoneAt: "2026-05-11 18:37:52",
+        remark: ""
+      },
+      {
+        actualId: "100000001301",
+        planId: "PL-2027-1301",
+        seq: 2,
+        year: 2027,
+        property: "计划生成",
+        category: "3-会员日",
+        importance: "20-一般重要",
+        auditStatus: "生效",
+        effectiveAt: "2027-01-01 00:00:00",
+        theme: "会员日",
+        planType: "1-打折促销",
+        regionCode: "10002",
+        regionDesc: "—",
+        startDate: "2027-01-01",
+        endDate: "2027-01-07",
+        startWeek: 0,
+        endWeek: 0,
+        channel: "1-全渠道",
+        publicity: ["微信"],
+        dmLayout: "A3",
+        dmConfirmedQty: 0,
+        pickDoneFlag: "是",
+        pickDoneUser: "manle - manle",
+        pickDoneAt: "2026-05-11 18:37:52",
+        remark: ""
+      },
+      {
+        actualId: "100000000802",
+        planId: "PL-2026-0802",
+        seq: 3,
+        year: 2026,
+        property: "计划生成",
+        category: "10-天天低价",
+        importance: "20-一般重要",
+        auditStatus: "生效",
+        effectiveAt: "2026-07-01 00:00:00",
+        theme: "正常天天平价",
+        planType: "1-打折促销",
+        regionCode: "10002",
+        regionDesc: "—",
+        startDate: "2026-07-01",
+        endDate: "2026-12-31",
+        startWeek: 0,
+        endWeek: 0,
+        channel: "1-全渠道",
+        publicity: ["新媒体"],
         dmLayout: "A3",
         dmConfirmedQty: 0,
         pickDoneFlag: "否",
@@ -259,25 +321,31 @@ const AppState = {
         remark: ""
       }
     ],
-    assortmentDocs: [
-      {
-        docNo: "AS-2026-0001",
-        actualId: "AC-2026-0001",
-        majorCategory: "家清",
-        remark: "第一波选品",
-        status: "草稿",
-        createdAt: "2026-05-20 11:22:10",
-        lines: []
-      }
-    ],
+    assortmentDocs: [],
     assortmentSummary: [
       {
-        actualId: "AC-2026-0001",
-        pickStatus: "进行中",
+        actualId: "100000001601",
+        pickStatus: "2-已完成",
+        pickDoneUser: "manle - manle",
+        pickDoneAt: "2026-05-11 18:37:52",
+        lastModifier: "manle",
+        lastModifyAt: "2026-05-11 18:37:34"
+      },
+      {
+        actualId: "100000001301",
+        pickStatus: "2-已完成",
+        pickDoneUser: "manle - manle",
+        pickDoneAt: "2026-05-11 18:37:52",
+        lastModifier: "manle",
+        lastModifyAt: "2026-05-11 18:37:34"
+      },
+      {
+        actualId: "100000000802",
+        pickStatus: "1-进行中",
         pickDoneUser: "—",
         pickDoneAt: "—",
-        lastModifier: "manle - m...",
-        lastModifyAt: "2026-05-20 11:22:10"
+        lastModifier: "manle",
+        lastModifyAt: "2026-07-01 09:00:00"
       }
     ],
     masterData: {
@@ -1359,7 +1427,7 @@ const AppState = {
         templateNo: "1027",
         templateName: "满金额赠",
         activityType: "满减满赠",
-        desc: "案例：单组买赠（按商品），阶梯满赠，展示赠品信息列表",
+        desc: "案例：单组买赠（按商品），阶梯满赠，展示赠品信息",
         status: "输入",
         startAt: "2026-06-06 00:00",
         endAt: "2026-06-18 23:59",
@@ -2671,6 +2739,7 @@ const els = {
   drawerPrimary: document.getElementById("drawerPrimary"),
   drawerSecondary: document.getElementById("drawerSecondary"),
   modalBackdrop: document.getElementById("modalBackdrop"),
+  modal: document.querySelector(".modal"),
   modalTitle: document.getElementById("modalTitle"),
   modalSubtitle: document.getElementById("modalSubtitle"),
   modalBody: document.getElementById("modalBody"),
@@ -2704,12 +2773,15 @@ function pickCheckedValues(name) {
   return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map((x) => x.value);
 }
 
-function openCampSelectModal({ title, subtitle, items, columns, searchKeys, checkboxName, uniqueKey, onPicked }) {
-  const renderList = (q) => {
+function openCampSelectModal({ title, subtitle, items, columns, searchKeys, checkboxName, uniqueKey, onPicked, modeOptions, modalSize }) {
+  const renderList = (q, modeId) => {
     const kw = String(q || "").trim().toLowerCase();
+    const modes = Array.isArray(modeOptions) ? modeOptions : null;
+    const activeMode = modes ? (modes.find((m) => String(m.id) === String(modeId)) || modes[0]) : null;
+    const keys = activeMode ? (activeMode.searchKeys || []) : (searchKeys || []);
     const filtered = items.filter((g) => {
       if (!kw) return true;
-      return searchKeys.some((sk) => String(g[sk] || "").toLowerCase().includes(kw));
+      return keys.some((sk) => String(g[sk] || "").toLowerCase().includes(kw));
     });
     const rows = filtered.map((g) => {
       const cells = columns.map((c) => `<td class="mono">${escapeHtml(String(g[c.key] ?? ""))}</td>`).join("");
@@ -2719,9 +2791,24 @@ function openCampSelectModal({ title, subtitle, items, columns, searchKeys, chec
     const body = `
       <div class="form">
         <div class="form__row">
+          ${modes ? `
+          <div class="field" style="min-width:200px;">
+            <div class="field__label">查询维度</div>
+            <select class="select" id="campSelMode">
+              ${modes.map((m) => `<option value="${escapeHtml(String(m.id))}" ${String(m.id) === String(activeMode ? activeMode.id : modes[0].id) ? "selected" : ""}>${escapeHtml(String(m.label || m.id))}</option>`).join("")}
+            </select>
+          </div>
+          ` : ""}
           <div class="field" style="flex:1;">
             <div class="field__label">搜索</div>
             <input class="input" id="campSelQ" placeholder="输入关键词搜索" value="${escapeHtml(q || "")}" />
+          </div>
+          <div class="field" style="min-width:220px;">
+            <div class="field__label">操作</div>
+            <div class="toolbar__actions">
+              <button class="btn btn--primary" type="button" id="campSelQuery">查询</button>
+              <button class="btn" type="button" id="campSelReset">重置</button>
+            </div>
           </div>
           <div class="field" style="min-width:160px;">
             <div class="field__label">快捷</div>
@@ -2736,7 +2823,33 @@ function openCampSelectModal({ title, subtitle, items, columns, searchKeys, chec
     if (wrap) wrap.innerHTML = body;
     const qEl = document.getElementById("campSelQ");
     if (qEl) {
-      qEl.addEventListener("input", () => { renderList(qEl.value); });
+      qEl.addEventListener("input", () => {
+        const modeEl = document.getElementById("campSelMode");
+        const mid = modeEl ? modeEl.value : modeId;
+        renderList(qEl.value, mid);
+      });
+    }
+    const modeEl = document.getElementById("campSelMode");
+    if (modeEl) {
+      modeEl.addEventListener("change", () => {
+        const qv = qEl ? qEl.value : "";
+        renderList(qv, modeEl.value);
+      });
+    }
+    const queryBtn = document.getElementById("campSelQuery");
+    if (queryBtn) {
+      queryBtn.addEventListener("click", () => {
+        const qv = qEl ? qEl.value : "";
+        const mid = modeEl ? modeEl.value : modeId;
+        renderList(qv, mid);
+      });
+    }
+    const resetBtn = document.getElementById("campSelReset");
+    if (resetBtn) {
+      resetBtn.addEventListener("click", () => {
+        const mid = modeEl ? modeEl.value : modeId;
+        renderList("", mid);
+      });
     }
     const allEl = document.getElementById("campSelAll");
     if (allEl) {
@@ -2752,7 +2865,12 @@ function openCampSelectModal({ title, subtitle, items, columns, searchKeys, chec
     primaryText: "批量添加",
     secondaryText: "取消",
     bodyHtml: '<div id="campSelectWrap"></div>',
-    onOpen: () => renderList(""),
+    size: modalSize,
+    onOpen: () => {
+      const modes = Array.isArray(modeOptions) ? modeOptions : null;
+      const mid = modes && modes[0] ? modes[0].id : "";
+      renderList("", mid);
+    },
     onPrimary: () => {
       const picked = pickCheckedValues(checkboxName);
       if (!picked.length) return toast("请先勾选数据");
@@ -2760,6 +2878,61 @@ function openCampSelectModal({ title, subtitle, items, columns, searchKeys, chec
       if (onPicked) onPicked(selectedItems);
       closeModal();
     }
+  });
+}
+
+function campaignGiftSelectableItems() {
+  const src = (AppState.data.masterData && AppState.data.masterData.goods) || [];
+  const brands = AppState.data.gmBrands || [];
+  const counters = AppState.data.gmCounters || [];
+  const pickIdx = (seed, len) => {
+    const s = String(seed || "");
+    let h = 0;
+    for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+    return len ? h % len : 0;
+  };
+  return src.map((g) => {
+    const bi = pickIdx(String(g.major || g.sku || ""), brands.length);
+    const ci = pickIdx(String(g.supplier || g.sku || ""), counters.length);
+    return {
+      ...g,
+      category: g.major || "",
+      brand: brands[bi] ? (brands[bi].brandName || "") : "",
+      counter: counters[ci] ? (counters[ci].ruleName || "") : "",
+      supplierName: g.supplier || ""
+    };
+  });
+}
+
+function openCampaignGiftSelectModal({ checkboxName, onPicked }) {
+  openCampSelectModal({
+    title: "选择商品",
+    subtitle: "支持按商品、类别、品牌、柜组、供应商查询",
+    items: campaignGiftSelectableItems(),
+    columns: [
+      { key: "sku", label: "商品编码" },
+      { key: "barcode", label: "商品条码" },
+      { key: "name", label: "商品名称" },
+      { key: "spec", label: "商品规格" },
+      { key: "unit", label: "单位" },
+      { key: "category", label: "类别" },
+      { key: "brand", label: "品牌" },
+      { key: "counter", label: "柜组" },
+      { key: "supplierName", label: "供应商" },
+      { key: "originPrice", label: "商品售价" }
+    ],
+    modeOptions: [
+      { id: "goods", label: "商品", searchKeys: ["sku", "barcode", "name", "spec"] },
+      { id: "category", label: "类别", searchKeys: ["category"] },
+      { id: "brand", label: "品牌", searchKeys: ["brand"] },
+      { id: "counter", label: "柜组", searchKeys: ["counter"] },
+      { id: "supplier", label: "供应商", searchKeys: ["supplierName"] }
+    ],
+    searchKeys: ["sku", "name", "barcode"],
+    checkboxName,
+    uniqueKey: "sku",
+    modalSize: "xl",
+    onPicked
   });
 }
 
@@ -2936,6 +3109,11 @@ function templateWizardRefreshVisibility() {
   const excludeEnable = document.getElementById("twExcludeEnable") ? document.getElementById("twExcludeEnable").checked : false;
   setShow("twExcludeScopeBox", excludeEnable);
 
+  const goodsScopeOptions = pickCheckedValues("twGoodsScope");
+  const goodsAllSelected = goodsScopeOptions.includes("全场");
+  const goodsScopedSelected = goodsScopeOptions.some((x) => ["单品", "类别", "品牌", "厂商", "柜组"].includes(String(x)));
+  setShow("twGoodsJoinRow", !goodsAllSelected && goodsScopedSelected);
+
   const storeRadio = document.querySelector('input[name="twStoreRadio"]:checked') ? document.querySelector('input[name="twStoreRadio"]:checked').value : "门店";
   const storeExcludeEl = document.getElementById("twStoreExclude");
   if (storeExcludeEl) {
@@ -2947,8 +3125,8 @@ function templateWizardRefreshVisibility() {
   const costShare = document.getElementById("twCostSharing") ? document.getElementById("twCostSharing").checked : false;
   setShow("twCostSharingBox", costShare);
 
-  const ladderRadio = document.querySelector('input[name="tcLadderRadio"]:checked') ? document.querySelector('input[name="tcLadderRadio"]:checked').value : "否";
-  setShow("tcLadderBox", ladderRadio === "是");
+  const ladderEnabled = document.getElementById("tcLadderEnable") ? document.getElementById("tcLadderEnable").checked : false;
+  setShow("tcLadderBox", ladderEnabled);
 
   const fullReduceGift = document.getElementById("rwFullReduceGift") ? document.getElementById("rwFullReduceGift").checked : false;
   setShow("rwFullReduceGiftBox", fullReduceGift);
@@ -2992,7 +3170,8 @@ function templateWizardCollectPayload() {
     storeRadio: document.querySelector('input[name="twStoreRadio"]:checked') ? document.querySelector('input[name="twStoreRadio"]:checked').value : "门店",
     storeExcludeEnabled: document.getElementById("twStoreExclude") ? document.getElementById("twStoreExclude").checked : false,
     userRequired: true,
-    userOptions: pickCheckedValues("twUserOpt"),
+    userRange: document.querySelector('input[name="twUserOptRadio"]:checked') ? document.querySelector('input[name="twUserOptRadio"]:checked').value : "全部",
+    userOptions: [document.querySelector('input[name="twUserOptRadio"]:checked') ? document.querySelector('input[name="twUserOptRadio"]:checked').value : "全部"],
     goodsScopeOptions: pickCheckedValues("twGoodsScope"),
     goodsScopeJoin: document.querySelector('input[name="twGoodsJoin"]:checked') ? document.querySelector('input[name="twGoodsJoin"]:checked').value : "AND",
     excludeEnabled: document.getElementById("twExcludeEnable") ? document.getElementById("twExcludeEnable").checked : false,
@@ -3013,7 +3192,7 @@ function templateWizardCollectPayload() {
       fullQty: { enabled: document.getElementById("tcFullQty") ? document.getElementById("tcFullQty").checked : false, value: document.getElementById("tcFullQtyVal") ? document.getElementById("tcFullQtyVal").value : "" },
       fullAmt: { enabled: document.getElementById("tcFullAmt") ? document.getElementById("tcFullAmt").checked : false, value: document.getElementById("tcFullAmtVal") ? document.getElementById("tcFullAmtVal").value : "" }
     },
-    ladderRadio: document.querySelector('input[name="tcLadderRadio"]:checked') ? document.querySelector('input[name="tcLadderRadio"]:checked').value : "否",
+    ladderEnabled: document.getElementById("tcLadderEnable") ? document.getElementById("tcLadderEnable").checked : false,
     ladderTiers: document.getElementById("tcLadderTiers") ? document.getElementById("tcLadderTiers").value : "",
     multipleEnabled: document.getElementById("tcMultiple") ? document.getElementById("tcMultiple").checked : false,
     multipleValue: document.getElementById("tcMultipleVal") ? document.getElementById("tcMultipleVal").value : ""
@@ -3073,8 +3252,8 @@ function templateWizardRenderPreview() {
     `渠道范围：${obj.channelRadio || "全部"}`,
     `门店范围：${obj.storeRadio || "门店"}`,
     obj.storeExcludeEnabled ? "门店排除：启用" : "",
-    `用户范围：${(obj.userOptions || []).join("/") || "—"}`,
-    `商品范围：${(obj.goodsScopeOptions || []).join("/") || "—"}（${obj.goodsScopeJoin || "AND"}）`
+    `用户范围：${obj.userRange || (obj.userOptions || []).join("/") || "—"}`,
+    `商品范围：${(obj.goodsScopeOptions || []).join("/") || "—"}${(obj.goodsScopeOptions || []).includes("全场") || !(obj.goodsScopeOptions || []).some((x) => ["单品", "类别", "品牌", "厂商", "柜组"].includes(String(x))) ? "" : `（${obj.goodsScopeJoin || "AND"}）`}`
   ].filter(Boolean);
   if (obj.excludeEnabled) objBits.push(`排除范围：${(obj.excludeScopeOptions || []).join("/") || "—"}`);
   const otherBits = [
@@ -3086,7 +3265,7 @@ function templateWizardRenderPreview() {
     ct.itemCount && ct.itemCount.enabled ? `商品数量(${ct.itemCount.value || "—"})` : "商品数量：不启用",
     ct.fullQty && ct.fullQty.enabled ? `满数量(${ct.fullQty.value || "—"})` : "满数量：不启用",
     ct.fullAmt && ct.fullAmt.enabled ? `满金额(${ct.fullAmt.value || "—"})` : "满金额：不启用",
-    `阶梯：${cond.ladderRadio === "是" ? "是(" + (cond.ladderTiers || "—") + ")" : "否"}`,
+    cond.ladderEnabled ? `阶梯(启用：${cond.ladderTiers || "—"})` : "阶梯：不启用",
     cond.multipleEnabled ? `倍数(${cond.multipleValue || "—"})` : "倍数：不启用"
   ];
 
@@ -3212,9 +3391,9 @@ function templateWizardLoadExisting(existing) {
   if (document.getElementById("twStoreExclude")) document.getElementById("twStoreExclude").checked = Boolean(obj.storeExcludeEnabled);
 
   /* 促销对象 - 用户 */
-  Array.from(document.querySelectorAll('input[name="twUserOpt"]')).forEach((x) => {
-    x.checked = (obj.userOptions || []).includes(x.value);
-  });
+  const userRangeVal = obj.userRange || (obj.userOptions && obj.userOptions[0]) || "全部";
+  const userRangeRadio = document.querySelector(`input[name="twUserOptRadio"][value="${userRangeVal}"]`);
+  if (userRangeRadio) userRangeRadio.checked = true;
 
   /* 商品范围 */
   Array.from(document.querySelectorAll('input[name="twGoodsScope"]')).forEach((x) => {
@@ -3243,9 +3422,7 @@ function templateWizardLoadExisting(existing) {
   if (document.getElementById("tcFullAmt")) document.getElementById("tcFullAmt").checked = Boolean(ct.fullAmt && ct.fullAmt.enabled);
   if (document.getElementById("tcFullAmtVal")) document.getElementById("tcFullAmtVal").value = ct.fullAmt ? ct.fullAmt.value || "" : "";
 
-  const ladderRadioVal = cond.ladderRadio || "否";
-  const ladderRadio = document.querySelector(`input[name="tcLadderRadio"][value="${ladderRadioVal}"]`);
-  if (ladderRadio) ladderRadio.checked = true;
+  if (document.getElementById("tcLadderEnable")) document.getElementById("tcLadderEnable").checked = Boolean(cond.ladderEnabled || cond.ladderRadio === "是");
   if (document.getElementById("tcLadderTiers")) document.getElementById("tcLadderTiers").value = cond.ladderTiers || "";
 
   if (document.getElementById("tcMultiple")) document.getElementById("tcMultiple").checked = Boolean(cond.multipleEnabled);
@@ -3327,7 +3504,8 @@ function closeDrawer() {
   els.drawerPrimary.onclick = null;
 }
 
-function openModal({ title, subtitle, bodyHtml, primaryText = "保存", secondaryText = "取消", onPrimary, onOpen }) {
+function openModal({ title, subtitle, bodyHtml, primaryText = "保存", secondaryText = "取消", onPrimary, onOpen, size }) {
+  if (els.modal) els.modal.classList.toggle("modal--xl", String(size || "") === "xl");
   els.modalTitle.textContent = title || "新建";
   els.modalSubtitle.textContent = subtitle || "";
   els.modalBody.innerHTML = bodyHtml || "";
@@ -3343,6 +3521,7 @@ function openModal({ title, subtitle, bodyHtml, primaryText = "保存", secondar
 }
 
 function closeModal() {
+  if (els.modal) els.modal.classList.remove("modal--xl");
   els.modalBackdrop.classList.remove("is-open");
   els.modalBackdrop.setAttribute("aria-hidden", "true");
   els.modalPrimary.onclick = null;
@@ -3605,6 +3784,7 @@ function campaignGoodsFlagsFromTemplate(tpl) {
     includeQtyThreshold: isQtyAboveSpecial,
     includeLimitQty: !(isReduce || isGift || isAddOn || isVoucherGift || isMinFree || isOnePrice || isAmount),
     scopeDiscount: isMultiple || isGoodsDiscount || isTime,
+    scopeQtyThreshold: isMultiple,
     scopeLimitQty: (isDiscount || isTime || isMultiple || isGoodsDiscount) && !isAmount
   };
 }
@@ -3656,7 +3836,6 @@ function campaignWizardMaxStep() {
     || campaignIsAmountDiscountTemplate(tpl)
     || campaignIsAmountReduceTemplate(tpl)
     || campaignIsQtyReduceTemplate(tpl)
-    || campaignIsAddOnTemplate(tpl)
     || campaignIsVoucherGiftTemplate(tpl);
   return isSix ? 6 : 5;
 }
@@ -3676,7 +3855,7 @@ function campaignNavTree() {
     {
       key: "reduceGift",
       label: "满减满赠",
-      items: ["满金额减", "满数量减", "满金额赠", "满数量赠", "换购"]
+      items: ["满金额减", "满数量减", "满金额赠", "满数量赠", "满金额换购", "满数量换购"]
     },
     {
       key: "voucherGift",
@@ -3927,7 +4106,6 @@ function renderSchedulePlanCreatePage() {
       <div class="toolbar">
         <div class="filters"></div>
         <div class="toolbar__actions">
-          <button class="btn" type="button" data-act="planDownloadTpl">下载导入模版</button>
           <button class="btn" type="button" data-act="planImport">导入</button>
           <button class="btn btn--primary" type="button" data-act="planSaveAnnual">保存</button>
         </div>
@@ -4234,7 +4412,6 @@ function renderSchedulePlanEditPage() {
       <div class="toolbar" style="padding:0 0 10px;">
         <div class="filters"></div>
         <div class="toolbar__actions">
-          <button class="btn" type="button" data-act="planPromoDownloadTpl" data-target="${escapeHtml(target)}">导入模版</button>
           <button class="btn" type="button" data-act="planPromoImport" data-target="${escapeHtml(target)}">导入</button>
           ${target === "dm" ? `<button class="btn" type="button" data-act="planAddDmRow">新增一行</button>` : target === "cost" ? `<button class="btn" type="button" data-act="planAddCostRow">新增一行</button>` : `<button class="btn" type="button" data-act="planAddEditionRow">新增一行</button>`}
         </div>
@@ -4663,8 +4840,8 @@ function renderAssortmentPage() {
       <div class="field__label">选品状态</div>
       <select class="select" id="asStatusFilter">
         <option value="">全部</option>
-        <option>进行中</option>
-        <option>已完成</option>
+        <option>1-进行中</option>
+        <option>2-已完成</option>
       </select>
     </div>
   `;
@@ -4681,18 +4858,19 @@ function renderAssortmentPage() {
       return `
         <tr>
           <td>${idx + 1}</td>
-          <td class="mono">${escapeHtml(d.actualId)}<div class="cell-muted">${escapeHtml(actual ? actual.theme : "—")}</div></td>
+          <td class="mono">${escapeHtml(d.actualId)}</td>
+          <td>${escapeHtml(d.pickStatus || "—")}</td>
           <td>${escapeHtml(actual ? actual.category : "—")}</td>
-          <td>${badge(d.pickStatus || "进行中")}</td>
-          <td>${escapeHtml(d.lastModifier || "—")}</td>
-          <td class="mono">${escapeHtml(d.lastModifyAt || "—")}</td>
-          <td>${escapeHtml(d.pickDoneUser || "—")}</td>
-          <td class="mono">${escapeHtml(d.pickDoneAt || "—")}</td>
+          <td>${escapeHtml(actual ? actual.importance : "—")}</td>
+          <td class="mono">${escapeHtml(actual ? actual.startDate : "—")}</td>
+          <td class="mono">${escapeHtml(actual ? actual.endDate : "—")}</td>
+          <td>${escapeHtml(actual ? actual.theme : "—")}</td>
+          <td><button class="linkbtn" type="button" data-act="asView" data-id="${escapeHtml(d.actualId)}">详情</button></td>
         </tr>
       `;
     })
     .join("");
-  const headers = ["序号", "实际档期ID", "档期分类", "选品状态", "最后修改人", "最后修改时间", "选品完成人", "选品完成时间"];
+  const headers = ["序号", "实际档期ID", "选品状态", "档期分类", "档期重要性", "档期起始日期", "档期结束日期", "档期主题", "操作"];
   return listPageLayout({
     filtersHtml,
     listTitle: "选品汇总列表",
@@ -4805,7 +4983,6 @@ function renderAssortmentCreatePage() {
         <div class="toolbar" style="padding:0 0 10px;">
           <div class="filters"></div>
           <div class="toolbar__actions">
-            <button class="btn" type="button" data-act="asDownloadLinesTpl">导入模版</button>
             <button class="btn" type="button" data-act="asImportLines">导入</button>
             <button class="btn btn--primary" type="button" data-act="asPickGoods">选择商品</button>
           </div>
@@ -5681,13 +5858,14 @@ function renderTemplateWizardPage(mode) {
     const active = n === step ? " is-active" : "";
     const done = n < step ? " is-done" : "";
     const dot = n <= step ? "✓" : "⏳";
-    return `<div class="step${active}${done}" data-act="tplStep" data-step="${n}"><div class="step__dot">${dot}</div><div class="step__label">${escapeHtml(label)}</div></div>`;
+    return `<div class="step${active}${done}" data-act="tplStep" data-step="${n}"><div class="step__dot">${dot}</div><div class="step__label"><span>${escapeHtml(label)}</span></div></div>`;
   };
   const sw = ({ id, checked = false, disabled = false, on = "启用", off = "禁用" }) => {
     const chk = checked ? " checked" : "";
     const dis = disabled ? " disabled" : "";
     return `<label class="switch"><input type="checkbox" id="${escapeHtml(id)}"${chk}${dis} /><span class="switch__track"><span class="switch__text switch__text--on">${escapeHtml(on)}</span><span class="switch__text switch__text--off">${escapeHtml(off)}</span><span class="switch__thumb"></span></span></label>`;
   };
+  const swLabel = (text, cfg) => `<div class="field__label field__label--switch">${sw(cfg)}<span>${escapeHtml(text)}</span></div>`;
 
   const md = AppState.data.masterData || {};
   const typeOps = md.templateTypes || ["直降", "折扣", "满减满赠", "满赠券"];
@@ -5736,7 +5914,7 @@ function renderTemplateWizardPage(mode) {
                   </div>
                   <div class="field">
                     <div class="field__label">模板状态</div>
-                    <input class="input" value="${escapeHtml(statusText)}" disabled />
+                    <input class="input input--disabled" value="${escapeHtml(statusText)}" disabled />
                   </div>
                 </div>
                 <div class="form__row">
@@ -5761,26 +5939,23 @@ function renderTemplateWizardPage(mode) {
                 <div class="section__title">周期时间</div>
                 <div class="form__row">
                   <div class="field">
-                    <div class="field__label">活动时间范围（创建活动时展示时间日期选择器）</div>
-                    ${sw({ id: "twReqTimeRange", checked: true, disabled: true })}
+                    ${swLabel("活动时间范围（创建活动时展示时间日期选择器）", { id: "twReqTimeRange", checked: true, disabled: true })}
                   </div>
                 </div>
                 <div class="form__row">
                   <div class="field">
-                    <div class="field__label">生效周期（启用后活动可选择活动周期）</div>
-                    ${sw({ id: "twEnableCycle" })}
+                    ${swLabel("生效周期（启用后活动可选择活动周期）", { id: "twEnableCycle" })}
                   </div>
                   <div class="field">
-                    <div class="field__label">按时间段促销（启用后活动可配置时间段）</div>
-                    ${sw({ id: "twEnableTimeRange" })}
+                    ${swLabel("按时间段促销（启用后活动可配置时间段）", { id: "twEnableTimeRange" })}
                   </div>
                 </div>
 
                 <div class="divider"></div>
                 <div class="section__title">促销对象</div>
+                <div id="tplObjectSection">
                 <div class="field">
-                  <div class="field__label">渠道范围（创建活动可设定促销生效渠道）</div>
-                  ${sw({ id: "twReqChannel", checked: true, disabled: true })}
+                  ${swLabel("渠道范围（创建活动可设定促销生效渠道）", { id: "twReqChannel", checked: true, disabled: true })}
                   <div class="checks" style="padding-top:6px;">
                     <label class="radio"><input type="radio" name="twChannelRadio" value="全部" checked />全部</label>
                     <label class="radio"><input type="radio" name="twChannelRadio" value="线上" />线上</label>
@@ -5788,8 +5963,7 @@ function renderTemplateWizardPage(mode) {
                   </div>
                 </div>
                 <div class="field">
-                  <div class="field__label">门店范围（创建活动可设定促销生效门店范围）</div>
-                  ${sw({ id: "twReqStore", checked: true, disabled: true })}
+                  ${swLabel("门店范围（创建活动可设定促销生效门店范围）", { id: "twReqStore", checked: true, disabled: true })}
                   <div class="checks" style="padding-top:6px;">
                     <label class="radio"><input type="radio" name="twStoreRadio" value="门店" checked />门店</label>
                     <label class="radio"><input type="radio" name="twStoreRadio" value="区域" />区域</label>
@@ -5797,24 +5971,20 @@ function renderTemplateWizardPage(mode) {
                   </div>
                 </div>
                 <div class="field">
-                  <div class="field__label">门店排除（仅当门店范围为区域/价格组时可启用）</div>
-                  <div class="checks">
-                    ${sw({ id: "twStoreExclude", disabled: true })}
+                  ${swLabel("门店排除（仅当门店范围为区域/价格组时可启用）", { id: "twStoreExclude", disabled: true })}
+                </div>
+                <div class="field">
+                  ${swLabel("用户范围", { id: "twReqUser", checked: true, disabled: true })}
+                  <div class="checks" style="padding-top:6px;">
+                    <label class="radio"><input type="radio" name="twUserOptRadio" value="全部" checked />全部</label>
+                    <label class="radio"><input type="radio" name="twUserOptRadio" value="会员" />会员</label>
+                    <label class="radio"><input type="radio" name="twUserOptRadio" value="非会员" />非会员</label>
                   </div>
                 </div>
                 <div class="field">
-                  <div class="field__label">用户范围</div>
-                  ${sw({ id: "twReqUser", checked: true, disabled: true })}
+                  ${swLabel("商品范围", { id: "twReqGoods", checked: true, disabled: true })}
                   <div class="checks" style="padding-top:6px;">
-                    <label class="check"><input type="checkbox" name="twUserOpt" value="全部" />全部</label>
-                    <label class="check"><input type="checkbox" name="twUserOpt" value="会员" />会员</label>
-                    <label class="check"><input type="checkbox" name="twUserOpt" value="非会员" checked />非会员</label>
-                  </div>
-                </div>
-                <div class="field">
-                  <div class="field__label">商品范围</div>
-                  ${sw({ id: "twReqGoods", checked: true, disabled: true })}
-                  <div class="checks" style="padding-top:6px;">
+                    <label class="check"><input type="checkbox" name="twGoodsScope" value="全场" />全场</label>
                     <label class="check"><input type="checkbox" name="twGoodsScope" value="单品" checked />单品</label>
                     <label class="check"><input type="checkbox" name="twGoodsScope" value="类别" checked />类别</label>
                     <label class="check"><input type="checkbox" name="twGoodsScope" value="品牌" />品牌</label>
@@ -5822,7 +5992,7 @@ function renderTemplateWizardPage(mode) {
                     <label class="check"><input type="checkbox" name="twGoodsScope" value="柜组" />柜组</label>
                   </div>
                 </div>
-                <div class="form__row">
+                <div class="form__row" id="twGoodsJoinRow">
                   <div class="field">
                     <div class="field__label">商品范围组合关系（and/or）</div>
                     <div class="checks">
@@ -5832,10 +6002,7 @@ function renderTemplateWizardPage(mode) {
                   </div>
                 </div>
                 <div class="field">
-                  <div class="field__label">排除范围</div>
-                  <div class="checks">
-                    ${sw({ id: "twExcludeEnable" })}
-                  </div>
+                  ${swLabel("排除范围", { id: "twExcludeEnable" })}
                   <div id="twExcludeScopeBox" style="display:none;padding-top:6px;">
                     <div class="checks">
                       <label class="check"><input type="checkbox" name="twExcludeScope" value="单品" />单品</label>
@@ -5846,12 +6013,12 @@ function renderTemplateWizardPage(mode) {
                     </div>
                   </div>
                 </div>
+                </div>
 
                 <div class="divider"></div>
                 <div class="section__title">其它选项</div>
                 <div class="field">
-                  <div class="field__label">费用承担（启用后创建活动可设定费用分摊规则）</div>
-                  ${sw({ id: "twCostSharing" })}
+                  ${swLabel("费用承担（启用后创建活动可设定费用分摊规则）", { id: "twCostSharing" })}
                 </div>
                 <div id="twCostSharingBox" style="display:none;">
                   <div class="field">
@@ -5868,24 +6035,15 @@ function renderTemplateWizardPage(mode) {
                 <div class="section__title">限量设置</div>
                 <div class="form__row">
                   <div class="field">
-                    <div class="field__label">商品数量（启用后可按商品件数设置门槛）</div>
-                    <div class="inline">
-                      ${sw({ id: "tcItemCount" })}
-                    </div>
+                    ${swLabel("商品数量（启用后可按商品件数设置门槛）", { id: "tcItemCount" })}
                   </div>
                 </div>
                 <div class="form__row" style="margin-top:10px;">
                   <div class="field">
-                    <div class="field__label">满数量（启用后可按商品件数设置门槛）</div>
-                    <div class="inline">
-                      ${sw({ id: "tcFullQty" })}
-                    </div>
+                    ${swLabel("满数量（启用后可按商品件数设置门槛）", { id: "tcFullQty" })}
                   </div>
                   <div class="field">
-                    <div class="field__label">满金额（启用后可按商品金额设置门槛）</div>
-                    <div class="inline">
-                      ${sw({ id: "tcFullAmt" })}
-                    </div>
+                    ${swLabel("满金额（启用后可按商品金额设置门槛）", { id: "tcFullAmt" })}
                   </div>
                 </div>
 
@@ -5893,23 +6051,17 @@ function renderTemplateWizardPage(mode) {
                 <div class="section__title">规则设置</div>
                 <div class="hint">以下规则只允许选择一项。</div>
                 <div class="field">
-                  <div class="field__label">阶梯（如：满100减10，满500减40 / 满3件9折，满5件8折）</div>
-                  <div class="checks">
-                    <label class="radio"><input type="radio" name="tcLadderRadio" value="否" checked />否</label>
-                    <label class="radio"><input type="radio" name="tcLadderRadio" value="是" />是</label>
-                  </div>
+                  ${swLabel("阶梯（如：满100减10，满500减40 / 满3件9折，满5件8折）", { id: "tcLadderEnable" })}
                 </div>
                 <div id="tcLadderBox" style="display:none;">
                   <div class="field" style="margin-top:10px;">
                     <div class="field__label">阶梯参数（示例：满100减10，满500减40）</div>
+                    <input class="input" id="tcLadderTiers" value="" placeholder="活动创建时可继续补充" />
                     <div class="hint">阶梯参数在活动创建时配置</div>
                   </div>
                 </div>
                 <div class="field" style="margin-top:12px;">
-                  <div class="field__label">倍数（启用后填写数值，活动侧按几倍配置，如：第二件5折）</div>
-                  <div class="inline">
-                    ${sw({ id: "tcMultiple" })}
-                  </div>
+                  ${swLabel("倍数（启用后填写数值，活动侧按几倍配置，如：第二件5折）", { id: "tcMultiple" })}
                 </div>
               </div>
             </div>
@@ -5921,8 +6073,7 @@ function renderTemplateWizardPage(mode) {
 
                 <!-- 直降/折扣 -->
                 <div class="field">
-                  <div class="field__label">直降/折扣</div>
-                  ${sw({ id: "rwDiscountEnable" })}
+                  ${swLabel("直降/折扣", { id: "rwDiscountEnable" })}
                   <div id="rwDiscountBox" style="display:none;padding-top:6px;">
                     <div class="checks">
                       <label class="radio"><input type="radio" name="rwDiscountType" value="整单优惠" checked />整单优惠</label>
@@ -5936,8 +6087,7 @@ function renderTemplateWizardPage(mode) {
 
                 <!-- 满减/赠优惠 -->
                 <div class="field">
-                  <div class="field__label">满减/赠优惠</div>
-                  ${sw({ id: "rwFullReduceGift" })}
+                  ${swLabel("满减/赠优惠", { id: "rwFullReduceGift" })}
                   <div id="rwFullReduceGiftBox" style="display:none;margin-top:8px;">
                     <div class="checks">
                       <label class="check"><input type="checkbox" name="twFullReduceGiftOpts" value="金额" />金额</label>
@@ -5951,19 +6101,17 @@ function renderTemplateWizardPage(mode) {
 
                 <!-- 赠券 -->
                 <div class="field">
-                  <div class="field__label">赠券（启用后允许在活动内设置赠券包）</div>
-                  ${sw({ id: "rwVoucherGift" })}
+                  ${swLabel("赠券（启用后允许在活动内设置赠券包）", { id: "rwVoucherGift" })}
                 </div>
               </div>
             </div>
 
             <!-- ========== Step 4: 设置优惠 ========== -->
             <div class="wizard-step" data-step="4">
-              <div class="form">
+              <div class="form" id="tplDisplaySection">
                 <div class="section__title">优惠信息打印</div>
                 <div class="field">
-                  <div class="field__label">优惠标签（启用后小票/订单详情对促销商品增加标注）</div>
-                  ${sw({ id: "dsLabelEnable" })}
+                  ${swLabel("优惠标签（启用后小票/订单详情对促销商品增加标注）", { id: "dsLabelEnable" })}
                 </div>
                 <div id="dsLabelBox" style="display:none;">
                   <div class="field">
@@ -5972,8 +6120,7 @@ function renderTemplateWizardPage(mode) {
                   </div>
                 </div>
                 <div class="field">
-                  <div class="field__label">字体字号（启用后可设置促销展示样式）</div>
-                  ${sw({ id: "dsFontEnable" })}
+                  ${swLabel("字体字号（启用后可设置促销展示样式）", { id: "dsFontEnable" })}
                 </div>
                 <div id="dsFontBox" style="display:none;">
                   <div class="field">
@@ -6046,7 +6193,8 @@ function campaignListCellHtml(...lines) {
 }
 
 function campaignOpsGridHtml(items) {
-  const rows = [items.slice(0, 3), items.slice(3, 6), items.slice(6, 9)];
+  const rows = [];
+  for (let i = 0; i < items.length; i += 3) rows.push(items.slice(i, i + 3));
   return `
     <div class="op-grid">
       ${rows.map((row) => `<div class="op-grid__row">${row.join("")}</div>`).join("")}
@@ -6065,6 +6213,118 @@ function nextCampaignNo() {
     maxSeq = Math.max(maxSeq, Number(m[2] || 0));
   });
   return `ACT-${year}-${String(maxSeq + 1).padStart(4, "0")}`;
+}
+
+function campaignImportPresetMeta(presetPromoType = "", presetTemplateId = "") {
+  const template = presetTemplateId ? campaignTemplateById(presetTemplateId) : null;
+  const promoType = template ? (campaignPromoTypeFromTemplate(template) || presetPromoType || "") : (presetPromoType || "");
+  const fallbackTemplate = !template && promoType
+    ? getEffectiveTemplates().find((t) => String(campaignPromoTypeFromTemplate(t) || "") === String(promoType))
+    : null;
+  const finalTemplate = template || fallbackTemplate || null;
+  return {
+    promoType: promoType || (finalTemplate ? campaignPromoTypeFromTemplate(finalTemplate) || "" : ""),
+    template: finalTemplate
+  };
+}
+
+function campaignImportTemplateCsv(presetPromoType = "", presetTemplateId = "") {
+  const meta = campaignImportPresetMeta(presetPromoType, presetTemplateId);
+  const actual = (AppState.data.actualSchedules || [])[0] || {};
+  const now = new Date();
+  const start = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(Math.max(1, now.getDate())).padStart(2, "0")} 09:00`;
+  const end = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(Math.max(1, now.getDate() + 7)).padStart(2, "0")} 22:00`;
+  const headers = ["活动主题", "促销类型", "模板编码", "档期ID", "开始时间", "结束时间", "活动周期", "渠道范围", "用户范围", "活动说明"];
+  const row = [
+    "批量导入活动示例",
+    meta.promoType || "商品折扣",
+    meta.template ? (meta.template.templateNo || "") : "",
+    actual.actualId || "",
+    start,
+    end,
+    "周一、周二、周三",
+    "全渠道",
+    "不限制",
+    "活动批量导入示例"
+  ];
+  return `${headers.join(",")}\n${row.join(",")}\n`;
+}
+
+function campaignBatchImportDemo(presetPromoType = "", presetTemplateId = "") {
+  const meta = campaignImportPresetMeta(presetPromoType, presetTemplateId);
+  const actuals = AppState.data.actualSchedules || [];
+  const actual = actuals[0] || {};
+  const template = meta.template;
+  const promoType = meta.promoType || "商品折扣";
+  const names = {
+    "商品折扣": ["饮料折扣活动", "家清折扣活动"],
+    "满金额折扣": ["家清满额折扣", "乳品满额折扣"],
+    "满数量折扣": ["零食满件折扣", "饮料满件折扣"],
+    "单品直降": ["纸品单品直降", "洗护单品直降"],
+    "组合特价": ["零食组合特价", "家清组合特价"],
+    "最低免单": ["会员最低免单", "周末最低免单"],
+    "一口价": ["饮料一口价", "零食一口价"],
+    "时段折扣": ["早餐时段折扣", "夜间时段折扣"],
+    "倍数折扣": ["第二件折扣", "第三件折扣"],
+    "满金额减价": ["满额立减活动", "家清满额减价"],
+    "满数量减价": ["满件立减活动", "零食满件减价"],
+    "满金额赠礼": ["满额赠礼活动", "家清满额赠礼"],
+    "满数量赠礼": ["满件赠礼活动", "饮料满件赠礼"],
+    "满金额赠券": ["满额赠券活动", "会员满额赠券"],
+    "满数量赠券": ["满件赠券活动", "饮料满件赠券"],
+    "满金额加价购": ["满额加价购活动", "家清满额加价购"],
+    "满数量加价购": ["满件加价购活动", "零食满件加价购"]
+  };
+  const subjects = names[promoType] || [`${promoType}批量导入1`, `${promoType}批量导入2`];
+  const now = nowIsoSeconds();
+  const baseDate = new Date();
+  const items = subjects.map((subject, idx) => {
+    const startAt = `${baseDate.getFullYear()}-${String(baseDate.getMonth() + 1).padStart(2, "0")}-${String(Math.min(28, baseDate.getDate() + idx)).padStart(2, "0")} 09:00`;
+    const endAt = `${baseDate.getFullYear()}-${String(baseDate.getMonth() + 1).padStart(2, "0")}-${String(Math.min(28, baseDate.getDate() + 7 + idx)).padStart(2, "0")} 22:00`;
+    return {
+      id: `C-${String(Date.now() + idx).slice(-6)}`,
+      activityNo: nextCampaignNo(),
+      activitySubject: subject,
+      promoType,
+      scheduleId: actual.actualId || "",
+      templateId: template ? template.id : "",
+      templateNo: template ? (template.templateNo || "") : "",
+      templateName: template ? (template.name || "") : "",
+      activityType: template ? (campaignActivityTypeLabel(template) || "") : "",
+      desc: `${subject}（批量导入示例）`,
+      status: "输入",
+      startAt,
+      endAt,
+      cycle: ["周一", "周二", "周三"],
+      scope: { channel: "全渠道", userScope: "不限制", memberGrades: [], memberTags: [] },
+      storeScope: { storeType: "门店", stores: [], priceGroups: [], regions: [], excludeStores: [] },
+      goodsScope: { isAll: "否", discountAll: "", keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [], excludeCategories: [], excludeCounters: [], excludeSuppliers: [], excludeBrands: [] },
+      giftScope: {
+        mutex: "否",
+        mode: "倍数",
+        giftWay: "本品",
+        purchaseRange: "单组",
+        single: { keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [], excludeCategories: [], excludeCounters: [], excludeSuppliers: [], excludeBrands: [] },
+        multiPurchase: { isAll: "否", threshold: "", keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [], excludeCategories: [], excludeCounters: [], excludeSuppliers: [], excludeBrands: [] },
+        multiGifts: []
+      },
+      timeScope: { ranges: [] },
+      conditionScope: { qtyThreshold: "", amountThreshold: "", discountRate: "", isMultiple: "是", isLadder: "否", ladder: [] },
+      reduceScope: { mutex: "否", mode: "倍数", ladderLoop: "是", rules: [{ fullAmount: "", reduceAmount: "" }] },
+      burden: { method: "比例", supplier: "", purchase: "" },
+      voucherGiftScope: { giftType: "订单", amountThreshold: "", qtyThreshold: "", payMethods: [], vouchers: [] },
+      creator: "manle - m...",
+      createAt: now,
+      modifier: "manle - m...",
+      modifyAt: now,
+      auditor: "",
+      auditAt: "",
+      effectiveBy: "",
+      effectiveAt: ""
+    };
+  });
+  items.reverse().forEach((item) => AppState.data.campaigns.unshift(item));
+  return items.length;
 }
 
 function renderCampaignsListPage(presetPromoType = "", presetTemplateId = "") {
@@ -6131,6 +6391,7 @@ function renderCampaignsListPage(presetPromoType = "", presetTemplateId = "") {
     <button class="btn" type="button" data-act="campReset">重置</button>
   `;
   const listActionsHtml = `
+    <button class="btn" type="button" data-act="campImport" data-promo-type="${escapeHtml(presetPromoType || "")}" data-template-id="${escapeHtml(presetTemplateId || "")}">导入</button>
     <button class="btn btn--primary" type="button" data-act="campNew">+ 新建</button>
   `;
 
@@ -6160,6 +6421,7 @@ function renderCampaignsListPage(presetPromoType = "", presetTemplateId = "") {
       const canEdit = c.status === "输入";
       const canSubmit = c.status === "输入";
       const canEffective = c.status === "审核";
+      const canCancelEffective = c.status === "生效" || c.status === "延期";
       const canTerminate = c.status === "生效" || c.status === "延期";
       const canDelay = c.status === "生效" || c.status === "延期";
       const canVoid = c.status === "输入" || c.status === "审核";
@@ -6170,6 +6432,7 @@ function renderCampaignsListPage(presetPromoType = "", presetTemplateId = "") {
         canEdit ? `<button class="linkbtn" type="button" data-act="campEdit" data-id="${escapeHtml(c.activityNo)}">修改</button>` : `<span class="cell-muted">修改</span>`,
         canSubmit ? `<button class="linkbtn" type="button" data-act="campSubmit" data-id="${escapeHtml(c.activityNo)}">提交审核</button>` : `<span class="cell-muted">提交审核</span>`,
         canEffective ? `<button class="linkbtn" type="button" data-act="campEffective" data-id="${escapeHtml(c.activityNo)}">生效</button>` : `<span class="cell-muted">生效</span>`,
+        canCancelEffective ? `<button class="linkbtn" type="button" data-act="campCancelEffective" data-id="${escapeHtml(c.activityNo)}">取消生效</button>` : `<span class="cell-muted">取消生效</span>`,
         canTerminate ? `<button class="linkbtn" type="button" data-act="campTerminate" data-id="${escapeHtml(c.activityNo)}">终止</button>` : `<span class="cell-muted">终止</span>`,
         canDelay ? `<button class="linkbtn" type="button" data-act="campDelay" data-id="${escapeHtml(c.activityNo)}">延期</button>` : `<span class="cell-muted">延期</span>`,
         canVoid ? `<button class="linkbtn" type="button" data-act="campVoid" data-id="${escapeHtml(c.activityNo)}">作废</button>` : `<span class="cell-muted">作废</span>`,
@@ -6271,6 +6534,8 @@ function campaignWizardRefreshVisibility() {
   setShow("campStoreBoxStores", storeType === "门店");
   setShow("campStoreBoxPriceGroups", storeType === "价格组");
   setShow("campStoreBoxRegions", storeType === "区域");
+  setShow("campExcludeStoresBox", storeType !== "门店");
+  setShow("campGoodsAllHideBox", String(isAll || "否") !== "是");
   setShow("campGoodsDetailBox", (isDiscount || isReduce || isAddOn) && isAll !== "是");
   setShow("campLadderBox", (isAmount || isQty) && String((d.conditionScope && d.conditionScope.isLadder) || "否") === "是");
   setShow("campReduceBox", isReduce);
@@ -6320,11 +6585,11 @@ function campaignWizardEnsureDraft(mode) {
         goodsScope: { isAll: "否", discountAll: "", keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [] },
         giftScope: {
           mutex: "否",
-          mode: "倍数",
-          giftWay: "本品",
+          mode: "",
+          giftWay: "",
           purchaseRange: "单组",
-          single: { keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [] },
-          multiPurchase: { isAll: "否", threshold: "", keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [] },
+          single: { keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [], excludeCategories: [], excludeCounters: [], excludeSuppliers: [], excludeBrands: [] },
+          multiPurchase: { isAll: "否", threshold: "", keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [], excludeCategories: [], excludeCounters: [], excludeSuppliers: [], excludeBrands: [] },
           multiGifts: []
         },
         timeScope: { ranges: [] },
@@ -6352,16 +6617,16 @@ function campaignWizardEnsureDraft(mode) {
   if (!base.giftScope) {
     base.giftScope = {
       mutex: "否",
-      mode: "倍数",
-      giftWay: "本品",
+      mode: "",
+      giftWay: "",
       purchaseRange: "单组",
-      single: { keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [] },
-      multiPurchase: { isAll: "否", threshold: "", keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [] },
+      single: { keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [], excludeCategories: [], excludeCounters: [], excludeSuppliers: [], excludeBrands: [] },
+      multiPurchase: { isAll: "否", threshold: "", keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [], excludeCategories: [], excludeCounters: [], excludeSuppliers: [], excludeBrands: [] },
       multiGifts: []
     };
   }
-  if (!base.giftScope.single) base.giftScope.single = { keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [] };
-  if (!base.giftScope.multiPurchase) base.giftScope.multiPurchase = { isAll: "否", threshold: "", keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [] };
+  if (!base.giftScope.single) base.giftScope.single = { keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [], excludeCategories: [], excludeCounters: [], excludeSuppliers: [], excludeBrands: [] };
+  if (!base.giftScope.multiPurchase) base.giftScope.multiPurchase = { isAll: "否", threshold: "", keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [], excludeCategories: [], excludeCounters: [], excludeSuppliers: [], excludeBrands: [] };
   if (!Array.isArray(base.giftScope.multiGifts)) base.giftScope.multiGifts = [];
   if (!Array.isArray(base.giftScope.single.goods)) base.giftScope.single.goods = [];
   if (!Array.isArray(base.giftScope.single.categories)) base.giftScope.single.categories = [];
@@ -6369,12 +6634,20 @@ function campaignWizardEnsureDraft(mode) {
   if (!Array.isArray(base.giftScope.single.suppliers)) base.giftScope.single.suppliers = [];
   if (!Array.isArray(base.giftScope.single.brands)) base.giftScope.single.brands = [];
   if (!Array.isArray(base.giftScope.single.excludeGoods)) base.giftScope.single.excludeGoods = [];
+  if (!Array.isArray(base.giftScope.single.excludeCategories)) base.giftScope.single.excludeCategories = [];
+  if (!Array.isArray(base.giftScope.single.excludeCounters)) base.giftScope.single.excludeCounters = [];
+  if (!Array.isArray(base.giftScope.single.excludeSuppliers)) base.giftScope.single.excludeSuppliers = [];
+  if (!Array.isArray(base.giftScope.single.excludeBrands)) base.giftScope.single.excludeBrands = [];
   if (!Array.isArray(base.giftScope.multiPurchase.goods)) base.giftScope.multiPurchase.goods = [];
   if (!Array.isArray(base.giftScope.multiPurchase.categories)) base.giftScope.multiPurchase.categories = [];
   if (!Array.isArray(base.giftScope.multiPurchase.counters)) base.giftScope.multiPurchase.counters = [];
   if (!Array.isArray(base.giftScope.multiPurchase.suppliers)) base.giftScope.multiPurchase.suppliers = [];
   if (!Array.isArray(base.giftScope.multiPurchase.brands)) base.giftScope.multiPurchase.brands = [];
   if (!Array.isArray(base.giftScope.multiPurchase.excludeGoods)) base.giftScope.multiPurchase.excludeGoods = [];
+  if (!Array.isArray(base.giftScope.multiPurchase.excludeCategories)) base.giftScope.multiPurchase.excludeCategories = [];
+  if (!Array.isArray(base.giftScope.multiPurchase.excludeCounters)) base.giftScope.multiPurchase.excludeCounters = [];
+  if (!Array.isArray(base.giftScope.multiPurchase.excludeSuppliers)) base.giftScope.multiPurchase.excludeSuppliers = [];
+  if (!Array.isArray(base.giftScope.multiPurchase.excludeBrands)) base.giftScope.multiPurchase.excludeBrands = [];
   if (!base.timeScope) base.timeScope = { ranges: [] };
   if (!base.conditionScope) base.conditionScope = { qtyThreshold: "", amountThreshold: "", discountRate: "", isMultiple: "是", isLadder: "否", ladder: [] };
   if (!Array.isArray(base.conditionScope.ladder)) base.conditionScope.ladder = [];
@@ -6382,7 +6655,7 @@ function campaignWizardEnsureDraft(mode) {
   if (!Array.isArray(base.conditionScope.qtyDiscountCombos)) base.conditionScope.qtyDiscountCombos = [];
   if (!base.reduceScope) base.reduceScope = { mutex: "否", mode: "倍数", ladderLoop: "是", rules: [{ fullAmount: "", reduceAmount: "" }] };
   if (!Array.isArray(base.reduceScope.rules)) base.reduceScope.rules = [{ fullAmount: "", reduceAmount: "" }];
-  if (!base.burden) base.burden = { method: "比例", supplier: "", purchase: "" };
+  if (!base.burden) base.burden = { method: "比例", buyerSupplier: "", exchangeSupplier: "", supplier: "", purchase: "" };
   if (!base.voucherGiftScope) base.voucherGiftScope = { giftType: "订单", amountThreshold: "", qtyThreshold: "", payMethods: [], vouchers: [] };
   if (!Array.isArray(base.voucherGiftScope.payMethods)) base.voucherGiftScope.payMethods = [];
   if (!Array.isArray(base.voucherGiftScope.vouchers)) base.voucherGiftScope.vouchers = [];
@@ -6416,9 +6689,14 @@ function campaignWizardEnsureDraft(mode) {
   AppState.ui.campaignWizard.goodsRange = AppState.ui.campaignWizard.goodsRange || "participate";
   AppState.ui.campaignWizard.excludeRangeTab = AppState.ui.campaignWizard.excludeRangeTab || "excludeGoods";
   AppState.ui.campaignWizard.isAll = base.goodsScope.isAll || "否";
+  const giftRangeMode = String((base.giftScope && base.giftScope.purchaseRange) || "单组");
   AppState.ui.campaignWizard.giftBuyTab = (base.giftScope && base.giftScope.single && base.giftScope.single.tab) ? base.giftScope.single.tab : "goods";
+  AppState.ui.campaignWizard.giftBuyRange = giftRangeMode === "单组" ? "participate" : (AppState.ui.campaignWizard.giftBuyRange || "participate");
   AppState.ui.campaignWizard.giftPurchaseTab = (base.giftScope && base.giftScope.multiPurchase && base.giftScope.multiPurchase.tab) ? base.giftScope.multiPurchase.tab : "goods";
+  AppState.ui.campaignWizard.giftPurchaseRange = AppState.ui.campaignWizard.giftPurchaseRange || "participate";
   AppState.ui.campaignWizard.giftIsAll = (base.giftScope && base.giftScope.multiPurchase && base.giftScope.multiPurchase.isAll) ? base.giftScope.multiPurchase.isAll : "否";
+  AppState.ui.campaignWizard.giftBuyExcludeTab = AppState.ui.campaignWizard.giftBuyExcludeTab || "excludeGoods";
+  AppState.ui.campaignWizard.giftPurchaseExcludeTab = AppState.ui.campaignWizard.giftPurchaseExcludeTab || "excludeGoods";
 }
 
 function campaignWizardValidateStep(step) {
@@ -6440,7 +6718,7 @@ function campaignWizardValidateStep(step) {
   const isOnePrice = campaignIsOnePriceTemplate(tpl);
   if (Number(step) === 1) {
     if (!String(d.activitySubject || "").trim()) return "请填写活动主题";
-    if (!String(d.templateId || "").trim()) return "请选择促销模版";
+    if (!String(d.templateId || "").trim()) return "请选择活动模版";
     if (!String(d.scheduleId || "").trim()) return "请选择活动档期";
     if (!String(d.startAt || "").trim()) return "请选择开始时间";
     if (!String(d.endAt || "").trim()) return "请选择结束时间";
@@ -6550,12 +6828,6 @@ function campaignWizardValidateStep(step) {
       const dv = Number(dis);
       if (!Number.isFinite(dv)) return `第${i + 1}行：折扣需为数字`;
     }
-  }
-  if (isMultiple && Number(step) === 4) {
-    const cs = d.conditionScope || {};
-    const q = Number(cs.qtyThreshold);
-    if (!Number.isFinite(q) || q <= 0) return "请填写倍数数量（大于0）";
-    if (!Number.isInteger(q)) return "请填写倍数数量（正整数）";
   }
   if (isAmount && Number(step) === 4) {
     const cs = d.conditionScope || {};
@@ -7046,11 +7318,12 @@ function campaignWizardGoodsHeaders(tab, opts = {}) {
   const includePromoPrice = opts && typeof opts.includePromoPrice === "boolean" ? opts.includePromoPrice : false;
   const includeQtyThreshold = opts && typeof opts.includeQtyThreshold === "boolean" ? opts.includeQtyThreshold : false;
   const scopeDiscount = opts && typeof opts.scopeDiscount === "boolean" ? opts.scopeDiscount : false;
+  const scopeQtyThreshold = opts && typeof opts.scopeQtyThreshold === "boolean" ? opts.scopeQtyThreshold : false;
   const scopeLimitQty = opts && typeof opts.scopeLimitQty === "boolean" ? opts.scopeLimitQty : false;
-  if (tab === "categories") { const h = ["序号", "类别编码", "类别名称"]; if (scopeDiscount) h.push("折扣"); if (scopeLimitQty) h.push("限购数量"); return h; }
-  if (tab === "counters") { const h = ["序号", "柜组编码", "规则名称"]; if (scopeDiscount) h.push("折扣"); if (scopeLimitQty) h.push("限购数量"); return h; }
-  if (tab === "suppliers") { const h = ["序号", "供货商编码", "供货商名称"]; if (scopeDiscount) h.push("折扣"); if (scopeLimitQty) h.push("限购数量"); return h; }
-  if (tab === "brands") { const h = ["序号", "品牌编码", "品牌名称", "品牌分类"]; if (scopeDiscount) h.push("折扣"); if (scopeLimitQty) h.push("限购数量"); return h; }
+  if (tab === "categories") { const h = ["序号", "类别编码", "类别名称"]; if (scopeQtyThreshold) h.push("倍数数量"); if (scopeDiscount) h.push("折扣"); if (scopeLimitQty) h.push("限购数量"); return h; }
+  if (tab === "counters") { const h = ["序号", "柜组编码", "规则名称"]; if (scopeQtyThreshold) h.push("倍数数量"); if (scopeDiscount) h.push("折扣"); if (scopeLimitQty) h.push("限购数量"); return h; }
+  if (tab === "suppliers") { const h = ["序号", "供货商编码", "供货商名称"]; if (scopeQtyThreshold) h.push("倍数数量"); if (scopeDiscount) h.push("折扣"); if (scopeLimitQty) h.push("限购数量"); return h; }
+  if (tab === "brands") { const h = ["序号", "品牌编码", "品牌名称", "品牌分类"]; if (scopeQtyThreshold) h.push("倍数数量"); if (scopeDiscount) h.push("折扣"); if (scopeLimitQty) h.push("限购数量"); return h; }
   if (tab === "excludeGoods") return ["序号", "商品编码", "商品条码", "商品名称", "商品简称", "商品规格", "单位", "商品售价"];
   if (tab === "excludeCategories") return ["序号", "类别编码", "类别名称"];
   if (tab === "excludeCounters") return ["序号", "柜组编码", "规则名称"];
@@ -7100,31 +7373,34 @@ function campaignGiftBuyRowHeaders(tab, tpl) {
   return ["买品编码", "买品条码", "买品名称", "买品售价", th, "赠品信息", "操作"];
 }
 
-function campaignGiftPurchaseHeaders(tab) {
-  if (tab === "categories") return ["序号", "类别编码", "类别名称", "操作"];
-  if (tab === "counters") return ["序号", "柜组编码", "规则名称", "操作"];
-  if (tab === "suppliers") return ["序号", "供货商编码", "供货商名称", "操作"];
-  if (tab === "brands") return ["序号", "品牌编码", "品牌名称", "品牌分类", "操作"];
+function campaignGiftPurchaseHeaders(tab, tpl) {
+  const th = campaignGiftThresholdLabel(tpl);
+  if (tab === "categories") return ["序号", "买品类别编码", "买品类别名称", th, "赠品信息", "操作"];
+  if (tab === "counters") return ["序号", "买品柜组编码", "买品规则名称", th, "赠品信息", "操作"];
+  if (tab === "suppliers") return ["序号", "买品供货商编码", "买品供货商名称", th, "赠品信息", "操作"];
+  if (tab === "brands") return ["序号", "买品品牌编码", "买品品牌名称", th, "赠品信息", "操作"];
   if (tab === "excludeGoods") return ["序号", "商品编码", "商品条码", "商品名称", "商品简称", "商品规格", "单位", "商品售价", "操作"];
-  return ["商品编码", "商品条码", "商品名称", "商品规格", "商品单位", "商品售价", "操作"];
+  return ["买品编码", "买品条码", "买品名称", "买品售价", th, "赠品信息", "操作"];
 }
 
 function campaignGiftRewardHeaders() {
   return ["赠品编码", "赠品条码", "赠品名称", "赠品售价", "赠品数量", "操作"];
 }
 
-function campaignGiftInlineGiftsTable(gifts, buyIdx) {
+function campaignGiftInlineGiftsTable(gifts, buyIdx, scope = "single") {
   const arr = Array.isArray(gifts) ? gifts : [];
   if (!arr.length) return `<div class="empty">暂无赠品</div>`;
+  const cw = scope === "purchase" ? "giftPurchaseGifts" : "giftSingleGifts";
+  const delAct = scope === "purchase" ? "campGiftPurchaseDelGift" : "campGiftBuyDelGift";
   const rows = arr
     .map((g, gi) => {
       return `<tr>
-        <td><input class="input mono" style="width:100%" data-cw="giftSingleGifts" data-idx="${buyIdx}" data-subidx="${gi}" data-field="giftCode" value="${escapeHtml(g.giftCode || "")}" placeholder="赠品编码" /></td>
-        <td><input class="input mono" style="width:100%" data-cw="giftSingleGifts" data-idx="${buyIdx}" data-subidx="${gi}" data-field="giftBarcode" value="${escapeHtml(g.giftBarcode || "")}" placeholder="赠品条码" /></td>
-        <td><input class="input" style="width:100%" data-cw="giftSingleGifts" data-idx="${buyIdx}" data-subidx="${gi}" data-field="giftName" value="${escapeHtml(g.giftName || "")}" placeholder="赠品名称" /></td>
-        <td><input class="input" style="width:100%" data-cw="giftSingleGifts" data-idx="${buyIdx}" data-subidx="${gi}" data-field="giftPrice" type="number" min="0" step="0.01" value="${escapeHtml(String(g.giftPrice ?? ""))}" placeholder="赠品售价" /></td>
-        <td><input class="input" style="width:100%" data-cw="giftSingleGifts" data-idx="${buyIdx}" data-subidx="${gi}" data-field="giftQty" type="number" min="1" step="1" value="${escapeHtml(String(g.giftQty ?? ""))}" placeholder="数量" /></td>
-        <td><button class="btn btn--danger" type="button" data-act="campGiftBuyDelGift" data-idx="${buyIdx}" data-subidx="${gi}">删除</button></td>
+        <td><input class="input mono" style="width:100%" data-cw="${cw}" data-idx="${buyIdx}" data-subidx="${gi}" data-field="giftCode" value="${escapeHtml(g.giftCode || "")}" placeholder="赠品编码" /></td>
+        <td><input class="input mono" style="width:100%" data-cw="${cw}" data-idx="${buyIdx}" data-subidx="${gi}" data-field="giftBarcode" value="${escapeHtml(g.giftBarcode || "")}" placeholder="赠品条码" /></td>
+        <td><input class="input" style="width:100%" data-cw="${cw}" data-idx="${buyIdx}" data-subidx="${gi}" data-field="giftName" value="${escapeHtml(g.giftName || "")}" placeholder="赠品名称" /></td>
+        <td><input class="input" style="width:100%" data-cw="${cw}" data-idx="${buyIdx}" data-subidx="${gi}" data-field="giftPrice" type="number" min="0" step="0.01" value="${escapeHtml(String(g.giftPrice ?? ""))}" placeholder="赠品售价" /></td>
+        <td><input class="input" style="width:100%" data-cw="${cw}" data-idx="${buyIdx}" data-subidx="${gi}" data-field="giftQty" type="number" min="1" step="1" value="${escapeHtml(String(g.giftQty ?? ""))}" placeholder="数量" /></td>
+        <td><button class="btn btn--danger" type="button" data-act="${delAct}" data-idx="${buyIdx}" data-subidx="${gi}">删除</button></td>
       </tr>`;
     })
     .join("");
@@ -7144,7 +7420,7 @@ function campaignWizardRenderGiftSingleTable() {
   const d = AppState._tmpCampaign || {};
   const tpl = campaignTemplateById(d.templateId || "");
   d.giftScope = d.giftScope || {};
-  d.giftScope.single = d.giftScope.single || { keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [] };
+  d.giftScope.single = d.giftScope.single || { keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [], excludeCategories: [], excludeCounters: [], excludeSuppliers: [], excludeBrands: [] };
   const single = d.giftScope.single;
   const tab = AppState.ui.campaignWizard.giftBuyTab || single.tab || "goods";
   single.tab = tab;
@@ -7156,23 +7432,23 @@ function campaignWizardRenderGiftSingleTable() {
   const rows = arr
     .map((x, idx) => {
       const gifts = campaignGiftInlineGiftsTable(x.gifts, idx);
-      const ops = `<div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="btn" type="button" data-act="campGiftBuyAddGift" data-idx="${idx}">新增赠品</button></div>`;
+      const ops = `<div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="btn" type="button" data-act="campGiftBuyAddGift" data-idx="${idx}">选择赠品</button><button class="btn btn--danger" type="button" data-act="campGiftBuyDel" data-tab="${escapeHtml(tab)}" data-idx="${idx}">删除</button></div>`;
       if (tab === "categories") {
-        return `<tr><td>${idx + 1}</td><td><input class="input mono" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="buyCatCode" value="${escapeHtml(x.buyCatCode || "")}" placeholder="买品类别编码" /></td><td><input class="input" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="buyCatName" value="${escapeHtml(x.buyCatName || "")}" placeholder="买品类别名称" /></td><td><input class="input" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="threshold" type="number" min="${escapeHtml(thMin)}" step="${escapeHtml(thStep)}" value="${escapeHtml(String(x.threshold ?? ""))}" placeholder="${escapeHtml(th)}" /></td><td>${ops}${gifts}</td><td><button class="btn btn--danger" type="button" data-act="campGiftBuyDel" data-tab="${escapeHtml(tab)}" data-idx="${idx}">删除</button></td></tr>`;
+        return `<tr><td>${idx + 1}</td><td><input class="input mono" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="buyCatCode" value="${escapeHtml(x.buyCatCode || "")}" placeholder="买品类别编码" /></td><td><input class="input" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="buyCatName" value="${escapeHtml(x.buyCatName || "")}" placeholder="买品类别名称" /></td><td><input class="input" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="threshold" type="number" min="${escapeHtml(thMin)}" step="${escapeHtml(thStep)}" value="${escapeHtml(String(x.threshold ?? ""))}" placeholder="${escapeHtml(th)}" /></td><td>${gifts}</td><td>${ops}</td></tr>`;
       }
       if (tab === "counters") {
-        return `<tr><td>${idx + 1}</td><td><input class="input mono" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="buyCounterCode" value="${escapeHtml(x.buyCounterCode || "")}" placeholder="买品柜组编码" /></td><td><input class="input" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="buyRuleName" value="${escapeHtml(x.buyRuleName || "")}" placeholder="买品规则名称" /></td><td><input class="input" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="threshold" type="number" min="${escapeHtml(thMin)}" step="${escapeHtml(thStep)}" value="${escapeHtml(String(x.threshold ?? ""))}" placeholder="${escapeHtml(th)}" /></td><td>${ops}${gifts}</td><td><button class="btn btn--danger" type="button" data-act="campGiftBuyDel" data-tab="${escapeHtml(tab)}" data-idx="${idx}">删除</button></td></tr>`;
+        return `<tr><td>${idx + 1}</td><td><input class="input mono" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="buyCounterCode" value="${escapeHtml(x.buyCounterCode || "")}" placeholder="买品柜组编码" /></td><td><input class="input" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="buyRuleName" value="${escapeHtml(x.buyRuleName || "")}" placeholder="买品规则名称" /></td><td><input class="input" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="threshold" type="number" min="${escapeHtml(thMin)}" step="${escapeHtml(thStep)}" value="${escapeHtml(String(x.threshold ?? ""))}" placeholder="${escapeHtml(th)}" /></td><td>${gifts}</td><td>${ops}</td></tr>`;
       }
       if (tab === "suppliers") {
-        return `<tr><td>${idx + 1}</td><td><input class="input mono" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="buySupplierCode" value="${escapeHtml(x.buySupplierCode || "")}" placeholder="买品供货商编码" /></td><td><input class="input" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="buySupplierName" value="${escapeHtml(x.buySupplierName || "")}" placeholder="买品供货商名称" /></td><td><input class="input" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="threshold" type="number" min="${escapeHtml(thMin)}" step="${escapeHtml(thStep)}" value="${escapeHtml(String(x.threshold ?? ""))}" placeholder="${escapeHtml(th)}" /></td><td>${ops}${gifts}</td><td><button class="btn btn--danger" type="button" data-act="campGiftBuyDel" data-tab="${escapeHtml(tab)}" data-idx="${idx}">删除</button></td></tr>`;
+        return `<tr><td>${idx + 1}</td><td><input class="input mono" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="buySupplierCode" value="${escapeHtml(x.buySupplierCode || "")}" placeholder="买品供货商编码" /></td><td><input class="input" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="buySupplierName" value="${escapeHtml(x.buySupplierName || "")}" placeholder="买品供货商名称" /></td><td><input class="input" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="threshold" type="number" min="${escapeHtml(thMin)}" step="${escapeHtml(thStep)}" value="${escapeHtml(String(x.threshold ?? ""))}" placeholder="${escapeHtml(th)}" /></td><td>${gifts}</td><td>${ops}</td></tr>`;
       }
       if (tab === "brands") {
-        return `<tr><td>${idx + 1}</td><td><input class="input mono" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="buyBrandCode" value="${escapeHtml(x.buyBrandCode || "")}" placeholder="买品品牌编码" /></td><td><input class="input" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="buyBrandName" value="${escapeHtml(x.buyBrandName || "")}" placeholder="买品品牌名称" /></td><td><input class="input" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="threshold" type="number" min="${escapeHtml(thMin)}" step="${escapeHtml(thStep)}" value="${escapeHtml(String(x.threshold ?? ""))}" placeholder="${escapeHtml(th)}" /></td><td>${ops}${gifts}</td><td><button class="btn btn--danger" type="button" data-act="campGiftBuyDel" data-tab="${escapeHtml(tab)}" data-idx="${idx}">删除</button></td></tr>`;
+        return `<tr><td>${idx + 1}</td><td><input class="input mono" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="buyBrandCode" value="${escapeHtml(x.buyBrandCode || "")}" placeholder="买品品牌编码" /></td><td><input class="input" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="buyBrandName" value="${escapeHtml(x.buyBrandName || "")}" placeholder="买品品牌名称" /></td><td><input class="input" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="threshold" type="number" min="${escapeHtml(thMin)}" step="${escapeHtml(thStep)}" value="${escapeHtml(String(x.threshold ?? ""))}" placeholder="${escapeHtml(th)}" /></td><td>${gifts}</td><td>${ops}</td></tr>`;
       }
       if (tab === "excludeGoods") {
         return `<tr><td>${idx + 1}</td><td><input class="input mono" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="skuCode" value="${escapeHtml(x.skuCode || "")}" placeholder="商品编码" /></td><td><input class="input mono" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="barcode" value="${escapeHtml(x.barcode || "")}" placeholder="商品条码" /></td><td><input class="input" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="skuName" value="${escapeHtml(x.skuName || "")}" placeholder="商品名称" /></td><td><input class="input" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="shortName" value="${escapeHtml(x.shortName || "")}" placeholder="商品简称" /></td><td><input class="input" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="spec" value="${escapeHtml(x.spec || "")}" placeholder="商品规格" /></td><td><input class="input" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="unit" value="${escapeHtml(x.unit || "")}" placeholder="单位" /></td><td><input class="input" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="price" type="number" min="0" step="0.01" value="${escapeHtml(String(x.price ?? ""))}" placeholder="商品售价" /></td><td><button class="btn btn--danger" type="button" data-act="campGiftBuyDel" data-tab="${escapeHtml(tab)}" data-idx="${idx}">删除</button></td></tr>`;
       }
-      return `<tr><td><input class="input mono" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="buyCode" value="${escapeHtml(x.buyCode || "")}" placeholder="买品编码" /></td><td><input class="input mono" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="buyBarcode" value="${escapeHtml(x.buyBarcode || "")}" placeholder="买品条码" /></td><td><input class="input" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="buyName" value="${escapeHtml(x.buyName || "")}" placeholder="买品名称" /></td><td><input class="input" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="buyPrice" type="number" min="0" step="0.01" value="${escapeHtml(String(x.buyPrice ?? ""))}" placeholder="买品售价" /></td><td><input class="input" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="threshold" type="number" min="${escapeHtml(thMin)}" step="${escapeHtml(thStep)}" value="${escapeHtml(String(x.threshold ?? ""))}" placeholder="${escapeHtml(th)}" /></td><td>${ops}${gifts}</td><td><button class="btn btn--danger" type="button" data-act="campGiftBuyDel" data-tab="${escapeHtml(tab)}" data-idx="${idx}">删除</button></td></tr>`;
+      return `<tr><td><input class="input mono" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="buyCode" value="${escapeHtml(x.buyCode || "")}" placeholder="买品编码" /></td><td><input class="input mono" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="buyBarcode" value="${escapeHtml(x.buyBarcode || "")}" placeholder="买品条码" /></td><td><input class="input" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="buyName" value="${escapeHtml(x.buyName || "")}" placeholder="买品名称" /></td><td><input class="input" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="buyPrice" type="number" min="0" step="0.01" value="${escapeHtml(String(x.buyPrice ?? ""))}" placeholder="买品售价" /></td><td><input class="input" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="threshold" type="number" min="${escapeHtml(thMin)}" step="${escapeHtml(thStep)}" value="${escapeHtml(String(x.threshold ?? ""))}" placeholder="${escapeHtml(th)}" /></td><td>${gifts}</td><td>${ops}</td></tr>`;
     })
     .join("");
   box.innerHTML = campaignWizardRenderTable(headers, rows, "暂无数据，请新增或导入");
@@ -7184,23 +7460,29 @@ function campaignWizardRenderGiftPurchaseTable() {
   const box = document.getElementById("campGiftPurchaseTable");
   if (!box) return;
   const d = AppState._tmpCampaign || {};
+  const tpl = campaignTemplateById(d.templateId || "");
+  const th = campaignGiftThresholdLabel(tpl);
+  const thStep = campaignIsQtyGiftTemplate(tpl) ? "1" : "0.01";
+  const thMin = campaignIsQtyGiftTemplate(tpl) ? "1" : "0";
   d.giftScope = d.giftScope || {};
-  d.giftScope.multiPurchase = d.giftScope.multiPurchase || { isAll: "否", threshold: "", keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [] };
+  d.giftScope.multiPurchase = d.giftScope.multiPurchase || { isAll: "否", threshold: "", keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [], excludeCategories: [], excludeCounters: [], excludeSuppliers: [], excludeBrands: [] };
   const mp = d.giftScope.multiPurchase;
   const tab = AppState.ui.campaignWizard.giftPurchaseTab || mp.tab || "goods";
   mp.tab = tab;
-  const headers = campaignGiftPurchaseHeaders(tab);
+  const headers = campaignGiftPurchaseHeaders(tab, tpl);
   const arr = Array.isArray(mp[tab]) ? mp[tab] : [];
   const rows = arr
     .map((x, idx) => {
-      if (tab === "categories") return `<tr><td>${idx + 1}</td><td><input class="input mono" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="catCode" value="${escapeHtml(x.catCode || "")}" placeholder="类别编码" /></td><td><input class="input" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="catName" value="${escapeHtml(x.catName || "")}" placeholder="类别名称" /></td><td><button class="btn btn--danger" type="button" data-act="campGiftPurchaseDel" data-tab="${escapeHtml(tab)}" data-idx="${idx}">删除</button></td></tr>`;
-      if (tab === "counters") return `<tr><td>${idx + 1}</td><td><input class="input mono" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="counterCode" value="${escapeHtml(x.counterCode || "")}" placeholder="柜组编码" /></td><td><input class="input" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="ruleName" value="${escapeHtml(x.ruleName || "")}" placeholder="规则名称" /></td><td><button class="btn btn--danger" type="button" data-act="campGiftPurchaseDel" data-tab="${escapeHtml(tab)}" data-idx="${idx}">删除</button></td></tr>`;
-      if (tab === "suppliers") return `<tr><td>${idx + 1}</td><td><input class="input mono" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="supplierCode" value="${escapeHtml(x.supplierCode || "")}" placeholder="供货商编码" /></td><td><input class="input" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="supplierName" value="${escapeHtml(x.supplierName || "")}" placeholder="供货商名称" /></td><td><button class="btn btn--danger" type="button" data-act="campGiftPurchaseDel" data-tab="${escapeHtml(tab)}" data-idx="${idx}">删除</button></td></tr>`;
-      if (tab === "brands") return `<tr><td>${idx + 1}</td><td><input class="input mono" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="brandCode" value="${escapeHtml(x.brandCode || "")}" placeholder="品牌编码" /></td><td><input class="input" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="brandName" value="${escapeHtml(x.brandName || "")}" placeholder="品牌名称" /></td><td><input class="input" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="brandCat" value="${escapeHtml(x.brandCat || "")}" placeholder="品牌分类" /></td><td><button class="btn btn--danger" type="button" data-act="campGiftPurchaseDel" data-tab="${escapeHtml(tab)}" data-idx="${idx}">删除</button></td></tr>`;
+      const gifts = campaignGiftInlineGiftsTable(x.gifts, idx, "purchase");
+      const ops = `<div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="btn" type="button" data-act="campGiftPurchaseAddGift" data-idx="${idx}">选择赠品</button><button class="btn btn--danger" type="button" data-act="campGiftPurchaseDel" data-tab="${escapeHtml(tab)}" data-idx="${idx}">删除</button></div>`;
+      if (tab === "categories") return `<tr><td>${idx + 1}</td><td><input class="input mono" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="buyCatCode" value="${escapeHtml(x.buyCatCode || "")}" placeholder="买品类别编码" /></td><td><input class="input" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="buyCatName" value="${escapeHtml(x.buyCatName || "")}" placeholder="买品类别名称" /></td><td><input class="input" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="threshold" type="number" min="${escapeHtml(thMin)}" step="${escapeHtml(thStep)}" value="${escapeHtml(String(x.threshold ?? ""))}" placeholder="${escapeHtml(th)}" /></td><td>${gifts}</td><td>${ops}</td></tr>`;
+      if (tab === "counters") return `<tr><td>${idx + 1}</td><td><input class="input mono" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="buyCounterCode" value="${escapeHtml(x.buyCounterCode || "")}" placeholder="买品柜组编码" /></td><td><input class="input" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="buyRuleName" value="${escapeHtml(x.buyRuleName || "")}" placeholder="买品规则名称" /></td><td><input class="input" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="threshold" type="number" min="${escapeHtml(thMin)}" step="${escapeHtml(thStep)}" value="${escapeHtml(String(x.threshold ?? ""))}" placeholder="${escapeHtml(th)}" /></td><td>${gifts}</td><td>${ops}</td></tr>`;
+      if (tab === "suppliers") return `<tr><td>${idx + 1}</td><td><input class="input mono" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="buySupplierCode" value="${escapeHtml(x.buySupplierCode || "")}" placeholder="买品供货商编码" /></td><td><input class="input" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="buySupplierName" value="${escapeHtml(x.buySupplierName || "")}" placeholder="买品供货商名称" /></td><td><input class="input" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="threshold" type="number" min="${escapeHtml(thMin)}" step="${escapeHtml(thStep)}" value="${escapeHtml(String(x.threshold ?? ""))}" placeholder="${escapeHtml(th)}" /></td><td>${gifts}</td><td>${ops}</td></tr>`;
+      if (tab === "brands") return `<tr><td>${idx + 1}</td><td><input class="input mono" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="buyBrandCode" value="${escapeHtml(x.buyBrandCode || "")}" placeholder="买品品牌编码" /></td><td><input class="input" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="buyBrandName" value="${escapeHtml(x.buyBrandName || "")}" placeholder="买品品牌名称" /></td><td><input class="input" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="threshold" type="number" min="${escapeHtml(thMin)}" step="${escapeHtml(thStep)}" value="${escapeHtml(String(x.threshold ?? ""))}" placeholder="${escapeHtml(th)}" /></td><td>${gifts}</td><td>${ops}</td></tr>`;
       if (tab === "excludeGoods") {
         return `<tr><td>${idx + 1}</td><td><input class="input mono" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="skuCode" value="${escapeHtml(x.skuCode || "")}" placeholder="商品编码" /></td><td><input class="input mono" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="barcode" value="${escapeHtml(x.barcode || "")}" placeholder="商品条码" /></td><td><input class="input" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="skuName" value="${escapeHtml(x.skuName || "")}" placeholder="商品名称" /></td><td><input class="input" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="shortName" value="${escapeHtml(x.shortName || "")}" placeholder="商品简称" /></td><td><input class="input" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="spec" value="${escapeHtml(x.spec || "")}" placeholder="商品规格" /></td><td><input class="input" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="unit" value="${escapeHtml(x.unit || "")}" placeholder="单位" /></td><td><input class="input" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="price" type="number" min="0" step="0.01" value="${escapeHtml(String(x.price ?? ""))}" placeholder="商品售价" /></td><td><button class="btn btn--danger" type="button" data-act="campGiftPurchaseDel" data-tab="${escapeHtml(tab)}" data-idx="${idx}">删除</button></td></tr>`;
       }
-      return `<tr><td><input class="input mono" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="buyCode" value="${escapeHtml(x.buyCode || "")}" placeholder="商品编码" /></td><td><input class="input mono" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="buyBarcode" value="${escapeHtml(x.buyBarcode || "")}" placeholder="商品条码" /></td><td><input class="input" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="buyName" value="${escapeHtml(x.buyName || "")}" placeholder="商品名称" /></td><td><input class="input" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="buySpec" value="${escapeHtml(x.buySpec || "")}" placeholder="商品规格" /></td><td><input class="input" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="buyUnit" value="${escapeHtml(x.buyUnit || "")}" placeholder="商品单位" /></td><td><input class="input" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="buyPrice" type="number" min="0" step="0.01" value="${escapeHtml(String(x.buyPrice ?? ""))}" placeholder="商品售价" /></td><td><button class="btn btn--danger" type="button" data-act="campGiftPurchaseDel" data-tab="${escapeHtml(tab)}" data-idx="${idx}">删除</button></td></tr>`;
+      return `<tr><td><input class="input mono" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="buyCode" value="${escapeHtml(x.buyCode || "")}" placeholder="买品编码" /></td><td><input class="input mono" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="buyBarcode" value="${escapeHtml(x.buyBarcode || "")}" placeholder="买品条码" /></td><td><input class="input" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="buyName" value="${escapeHtml(x.buyName || "")}" placeholder="买品名称" /></td><td><input class="input" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="buyPrice" type="number" min="0" step="0.01" value="${escapeHtml(String(x.buyPrice ?? ""))}" placeholder="买品售价" /></td><td><input class="input" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="threshold" type="number" min="${escapeHtml(thMin)}" step="${escapeHtml(thStep)}" value="${escapeHtml(String(x.threshold ?? ""))}" placeholder="${escapeHtml(th)}" /></td><td>${gifts}</td><td>${ops}</td></tr>`;
     })
     .join("");
   box.innerHTML = campaignWizardRenderTable(headers, rows, "暂无数据，请新增或导入");
@@ -7241,20 +7523,61 @@ function campaignWizardRenderGiftBuyExcludeTable() {
   const single = d.giftScope.single;
   const tab = AppState.ui.campaignWizard.giftBuyExcludeTab || "excludeGoods";
   const flags = { includeDiscount: false, includeLimitQty: false, scopeDiscount: false, scopeLimitQty: false };
-  const headers = campaignWizardGoodsHeaders(tab, flags);
+  const headers = campaignWizardGoodsHeaders(tab, flags).concat(["操作"]);
   const arr = Array.isArray(single[tab]) ? single[tab] : [];
   const rows = arr
     .map((x, idx) => {
-      const td = (v) => `<td>${escapeHtml(String(v ?? ""))}</td>`;
-      if (tab === "excludeGoods") return `<tr>${td(idx + 1)}${td(x.skuCode)}${td(x.barcode)}${td(x.skuName)}${td(x.shortName)}${td(x.spec)}${td(x.unit)}${td(x.price)}</tr>`;
-      if (tab === "excludeCategories") return `<tr>${td(idx + 1)}${td(x.catCode)}${td(x.catName)}</tr>`;
-      if (tab === "excludeCounters") return `<tr>${td(idx + 1)}${td(x.counterCode)}${td(x.ruleName)}</tr>`;
-      if (tab === "excludeSuppliers") return `<tr>${td(idx + 1)}${td(x.supplierCode)}${td(x.supplierName)}</tr>`;
-      if (tab === "excludeBrands") return `<tr>${td(idx + 1)}${td(x.brandCode)}${td(x.brandName)}${td(x.brandCat)}</tr>`;
+      const delBtn = `<td><button class="btn btn--danger" type="button" data-act="campGiftBuyExcludeDel" data-tab="${escapeHtml(tab)}" data-idx="${idx}">删除</button></td>`;
+      if (tab === "excludeGoods") {
+        return `<tr>
+          <td>${idx + 1}</td>
+          <td><input class="input mono" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="skuCode" value="${escapeHtml(x.skuCode || "")}" placeholder="商品编码" /></td>
+          <td><input class="input mono" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="barcode" value="${escapeHtml(x.barcode || "")}" placeholder="商品条码" /></td>
+          <td><input class="input" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="skuName" value="${escapeHtml(x.skuName || "")}" placeholder="商品名称" /></td>
+          <td><input class="input" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="shortName" value="${escapeHtml(x.shortName || "")}" placeholder="商品简称" /></td>
+          <td><input class="input" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="spec" value="${escapeHtml(x.spec || "")}" placeholder="商品规格" /></td>
+          <td><input class="input" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="unit" value="${escapeHtml(x.unit || "")}" placeholder="单位" /></td>
+          <td><input class="input" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="price" type="number" min="0" step="0.01" value="${escapeHtml(String(x.price ?? ""))}" placeholder="商品售价" /></td>
+          ${delBtn}
+        </tr>`;
+      }
+      if (tab === "excludeCategories") {
+        return `<tr>
+          <td>${idx + 1}</td>
+          <td><input class="input mono" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="catCode" value="${escapeHtml(x.catCode || "")}" placeholder="类别编码" /></td>
+          <td><input class="input" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="catName" value="${escapeHtml(x.catName || "")}" placeholder="类别名称" /></td>
+          ${delBtn}
+        </tr>`;
+      }
+      if (tab === "excludeCounters") {
+        return `<tr>
+          <td>${idx + 1}</td>
+          <td><input class="input mono" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="counterCode" value="${escapeHtml(x.counterCode || "")}" placeholder="柜组编码" /></td>
+          <td><input class="input" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="ruleName" value="${escapeHtml(x.ruleName || "")}" placeholder="规则名称" /></td>
+          ${delBtn}
+        </tr>`;
+      }
+      if (tab === "excludeSuppliers") {
+        return `<tr>
+          <td>${idx + 1}</td>
+          <td><input class="input mono" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="supplierCode" value="${escapeHtml(x.supplierCode || "")}" placeholder="供货商编码" /></td>
+          <td><input class="input" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="supplierName" value="${escapeHtml(x.supplierName || "")}" placeholder="供货商名称" /></td>
+          ${delBtn}
+        </tr>`;
+      }
+      if (tab === "excludeBrands") {
+        return `<tr>
+          <td>${idx + 1}</td>
+          <td><input class="input mono" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="brandCode" value="${escapeHtml(x.brandCode || "")}" placeholder="品牌编码" /></td>
+          <td><input class="input" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="brandName" value="${escapeHtml(x.brandName || "")}" placeholder="品牌名称" /></td>
+          <td><input class="input" style="width:100%" data-cw="giftSingleRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="brandCat" value="${escapeHtml(x.brandCat || "")}" placeholder="品牌分类" /></td>
+          ${delBtn}
+        </tr>`;
+      }
       return "";
     })
     .join("");
-  box.innerHTML = campaignWizardRenderTable(headers, rows, "暂无数据，请新增");
+  box.innerHTML = campaignWizardRenderTable(headers, rows, "暂无数据，请新增或导入");
   const tabbar = document.getElementById("campGiftBuyExcludeTabs");
   if (tabbar) Array.from(tabbar.querySelectorAll(".tabbtn")).forEach((b) => b.classList.toggle("is-active", b.getAttribute("data-id") === tab));
 }
@@ -7268,20 +7591,61 @@ function campaignWizardRenderGiftPurchaseExcludeTable() {
   const mp = d.giftScope.multiPurchase;
   const tab = AppState.ui.campaignWizard.giftPurchaseExcludeTab || "excludeGoods";
   const flags = { includeDiscount: false, includeLimitQty: false, scopeDiscount: false, scopeLimitQty: false };
-  const headers = campaignWizardGoodsHeaders(tab, flags);
+  const headers = campaignWizardGoodsHeaders(tab, flags).concat(["操作"]);
   const arr = Array.isArray(mp[tab]) ? mp[tab] : [];
   const rows = arr
     .map((x, idx) => {
-      const td = (v) => `<td>${escapeHtml(String(v ?? ""))}</td>`;
-      if (tab === "excludeGoods") return `<tr>${td(idx + 1)}${td(x.skuCode)}${td(x.barcode)}${td(x.skuName)}${td(x.shortName)}${td(x.spec)}${td(x.unit)}${td(x.price)}</tr>`;
-      if (tab === "excludeCategories") return `<tr>${td(idx + 1)}${td(x.catCode)}${td(x.catName)}</tr>`;
-      if (tab === "excludeCounters") return `<tr>${td(idx + 1)}${td(x.counterCode)}${td(x.ruleName)}</tr>`;
-      if (tab === "excludeSuppliers") return `<tr>${td(idx + 1)}${td(x.supplierCode)}${td(x.supplierName)}</tr>`;
-      if (tab === "excludeBrands") return `<tr>${td(idx + 1)}${td(x.brandCode)}${td(x.brandName)}${td(x.brandCat)}</tr>`;
+      const delBtn = `<td><button class="btn btn--danger" type="button" data-act="campGiftPurchaseExcludeDel" data-tab="${escapeHtml(tab)}" data-idx="${idx}">删除</button></td>`;
+      if (tab === "excludeGoods") {
+        return `<tr>
+          <td>${idx + 1}</td>
+          <td><input class="input mono" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="skuCode" value="${escapeHtml(x.skuCode || "")}" placeholder="商品编码" /></td>
+          <td><input class="input mono" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="barcode" value="${escapeHtml(x.barcode || "")}" placeholder="商品条码" /></td>
+          <td><input class="input" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="skuName" value="${escapeHtml(x.skuName || "")}" placeholder="商品名称" /></td>
+          <td><input class="input" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="shortName" value="${escapeHtml(x.shortName || "")}" placeholder="商品简称" /></td>
+          <td><input class="input" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="spec" value="${escapeHtml(x.spec || "")}" placeholder="商品规格" /></td>
+          <td><input class="input" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="unit" value="${escapeHtml(x.unit || "")}" placeholder="单位" /></td>
+          <td><input class="input" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="price" type="number" min="0" step="0.01" value="${escapeHtml(String(x.price ?? ""))}" placeholder="商品售价" /></td>
+          ${delBtn}
+        </tr>`;
+      }
+      if (tab === "excludeCategories") {
+        return `<tr>
+          <td>${idx + 1}</td>
+          <td><input class="input mono" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="catCode" value="${escapeHtml(x.catCode || "")}" placeholder="类别编码" /></td>
+          <td><input class="input" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="catName" value="${escapeHtml(x.catName || "")}" placeholder="类别名称" /></td>
+          ${delBtn}
+        </tr>`;
+      }
+      if (tab === "excludeCounters") {
+        return `<tr>
+          <td>${idx + 1}</td>
+          <td><input class="input mono" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="counterCode" value="${escapeHtml(x.counterCode || "")}" placeholder="柜组编码" /></td>
+          <td><input class="input" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="ruleName" value="${escapeHtml(x.ruleName || "")}" placeholder="规则名称" /></td>
+          ${delBtn}
+        </tr>`;
+      }
+      if (tab === "excludeSuppliers") {
+        return `<tr>
+          <td>${idx + 1}</td>
+          <td><input class="input mono" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="supplierCode" value="${escapeHtml(x.supplierCode || "")}" placeholder="供货商编码" /></td>
+          <td><input class="input" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="supplierName" value="${escapeHtml(x.supplierName || "")}" placeholder="供货商名称" /></td>
+          ${delBtn}
+        </tr>`;
+      }
+      if (tab === "excludeBrands") {
+        return `<tr>
+          <td>${idx + 1}</td>
+          <td><input class="input mono" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="brandCode" value="${escapeHtml(x.brandCode || "")}" placeholder="品牌编码" /></td>
+          <td><input class="input" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="brandName" value="${escapeHtml(x.brandName || "")}" placeholder="品牌名称" /></td>
+          <td><input class="input" style="width:100%" data-cw="giftPurchaseRows" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="brandCat" value="${escapeHtml(x.brandCat || "")}" placeholder="品牌分类" /></td>
+          ${delBtn}
+        </tr>`;
+      }
       return "";
     })
     .join("");
-  box.innerHTML = campaignWizardRenderTable(headers, rows, "暂无数据，请新增");
+  box.innerHTML = campaignWizardRenderTable(headers, rows, "暂无数据，请新增或导入");
   const tabbar = document.getElementById("campGiftPurchaseExcludeTabs");
   if (tabbar) Array.from(tabbar.querySelectorAll(".tabbtn")).forEach((b) => b.classList.toggle("is-active", b.getAttribute("data-id") === tab));
 }
@@ -7291,6 +7655,7 @@ function campaignWizardRenderGoodsTable() {
   if (!box) return;
   const d = AppState._tmpCampaign || {};
   const tpl = campaignTemplateById(d.templateId || "");
+  const isDirectDrop = tpl && String(tpl.templateType || "") === "直降";
   const isQty = campaignIsQtyDiscountTemplate(tpl);
   const isGoodsDiscount = campaignIsGoodsDiscountTemplate(tpl);
   const isTime = campaignIsTimeDiscountTemplate(tpl);
@@ -7299,6 +7664,7 @@ function campaignWizardRenderGoodsTable() {
   const isAddOn = campaignIsAmountAddOnTemplate(tpl) || campaignIsQtyAddOnTemplate(tpl);
   const isVoucherGift = campaignIsVoucherGiftTemplate(tpl);
   let goodsFlags = campaignGoodsFlagsFromTemplate(tpl);
+  if (isTime) goodsFlags = { ...goodsFlags, scopeDiscount: false };
   /* isQty participate range: no 折扣/限购数量 columns */
   if (isQty) goodsFlags = { includeDiscount: false, includeLimitQty: false, scopeDiscount: false, scopeLimitQty: false };
   if (isAmount) goodsFlags = { includeDiscount: false, includeLimitQty: false, scopeDiscount: false, scopeLimitQty: false };
@@ -7311,14 +7677,14 @@ function campaignWizardRenderGoodsTable() {
   const tab = AppState.ui.campaignWizard.goodsTab || gs.tab || "goods";
   gs.tab = tab;
   let headers = campaignWizardGoodsHeaders(tab, goodsFlags);
-  if (isGoodsDiscount && tab === "goods") {
-    headers = ["商品编码", "商品条码", "商品名称", "商品规格", "商品单位", "商品进价", "商品售价", "折扣", "限购数量"];
-  }
   if (isTime && tab === "goods") {
-    headers = ["商品编码", "商品条码", "商品名称", "商品规格", "商品单位", "商品进价", "商品售价", "折扣", "限购数量"];
+    headers = ["商品编码", "商品条码", "商品名称", "商品规格", "商品单位", "商品进价", "商品售价", "限购数量"];
   }
   if ((isReduce || isAddOn || isVoucherGift) && tab === "goods") {
     headers = ["商品编码", "商品条码", "商品名称", "商品规格", "商品单位", "商品售价"];
+  }
+  if (isGoodsDiscount && tab === "goods") {
+    headers = ["商品编码", "商品条码", "商品名称", "商品规格", "商品单位", "商品进价", "商品售价", "折扣", "限购数量"];
   }
   /* isQty goods tab: swap to 进价 before 售价 */
   if (isQty && tab === "goods") {
@@ -7329,36 +7695,48 @@ function campaignWizardRenderGoodsTable() {
   if (isMultiple && tab === "goods") {
     headers = ["商品编码", "商品条码", "商品名称", "商品规格", "商品单位", "商品进价", "商品售价", "折扣", "限购数量"];
   }
-  const arr = Array.isArray(gs[tab]) ? gs[tab] : [];
-  const rows = arr
-    .map((x, idx) => {
+  const q = String((AppState.ui.campaignWizard && AppState.ui.campaignWizard.goodsListQ) || "").trim().toLowerCase();
+  const srcArr = Array.isArray(gs[tab]) ? gs[tab] : [];
+  const viewArr =
+    (isDirectDrop && tab === "goods" && q)
+      ? srcArr
+          .map((x, i) => ({ x, i }))
+          .filter(({ x }) => [x.skuCode, x.barcode, x.skuName, x.spec].some((v) => String(v || "").toLowerCase().includes(q)))
+      : srcArr.map((x, i) => ({ x, i }));
+  const rows = viewArr
+    .map(({ x, i: idx }, pos) => {
+      const no = pos + 1;
       if (tab === "categories") {
-        let catCells = `<td>${idx + 1}</td><td><input class="input mono" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="catCode" value="${escapeHtml(x.catCode || "")}" placeholder="类别编码" /></td><td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="catName" value="${escapeHtml(x.catName || "")}" placeholder="类别名称" /></td>`;
+        let catCells = `<td>${no}</td><td><input class="input mono" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="catCode" value="${escapeHtml(x.catCode || "")}" placeholder="类别编码" /></td><td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="catName" value="${escapeHtml(x.catName || "")}" placeholder="类别名称" /></td>`;
+        if (goodsFlags.scopeQtyThreshold) catCells += `<td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="qtyThreshold" type="number" min="1" step="1" value="${escapeHtml(String(x.qtyThreshold ?? ""))}" placeholder="倍数数量" /></td>`;
         if (goodsFlags.scopeDiscount) catCells += `<td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="discount" type="number" min="0" max="1" step="0.01" value="${escapeHtml(String(x.discount ?? ""))}" placeholder="折扣" /></td>`;
         if (goodsFlags.scopeLimitQty) catCells += `<td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="limitQty" type="number" min="0" step="1" value="${escapeHtml(String(x.limitQty ?? ""))}" placeholder="限购数量" /></td>`;
         return `<tr>${catCells}</tr>`;
       }
       if (tab === "counters") {
-        let ctrCells = `<td>${idx + 1}</td><td><input class="input mono" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="counterCode" value="${escapeHtml(x.counterCode || "")}" placeholder="柜组编码" /></td><td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="ruleName" value="${escapeHtml(x.ruleName || "")}" placeholder="规则名称" /></td>`;
+        let ctrCells = `<td>${no}</td><td><input class="input mono" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="counterCode" value="${escapeHtml(x.counterCode || "")}" placeholder="柜组编码" /></td><td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="ruleName" value="${escapeHtml(x.ruleName || "")}" placeholder="规则名称" /></td>`;
+        if (goodsFlags.scopeQtyThreshold) ctrCells += `<td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="qtyThreshold" type="number" min="1" step="1" value="${escapeHtml(String(x.qtyThreshold ?? ""))}" placeholder="倍数数量" /></td>`;
         if (goodsFlags.scopeDiscount) ctrCells += `<td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="discount" type="number" min="0" max="1" step="0.01" value="${escapeHtml(String(x.discount ?? ""))}" placeholder="折扣" /></td>`;
         if (goodsFlags.scopeLimitQty) ctrCells += `<td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="limitQty" type="number" min="0" step="1" value="${escapeHtml(String(x.limitQty ?? ""))}" placeholder="限购数量" /></td>`;
         return `<tr>${ctrCells}</tr>`;
       }
       if (tab === "suppliers") {
-        let supCells = `<td>${idx + 1}</td><td><input class="input mono" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="supplierCode" value="${escapeHtml(x.supplierCode || "")}" placeholder="供货商编码" /></td><td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="supplierName" value="${escapeHtml(x.supplierName || "")}" placeholder="供货商名称" /></td>`;
+        let supCells = `<td>${no}</td><td><input class="input mono" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="supplierCode" value="${escapeHtml(x.supplierCode || "")}" placeholder="供货商编码" /></td><td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="supplierName" value="${escapeHtml(x.supplierName || "")}" placeholder="供货商名称" /></td>`;
+        if (goodsFlags.scopeQtyThreshold) supCells += `<td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="qtyThreshold" type="number" min="1" step="1" value="${escapeHtml(String(x.qtyThreshold ?? ""))}" placeholder="倍数数量" /></td>`;
         if (goodsFlags.scopeDiscount) supCells += `<td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="discount" type="number" min="0" max="1" step="0.01" value="${escapeHtml(String(x.discount ?? ""))}" placeholder="折扣" /></td>`;
         if (goodsFlags.scopeLimitQty) supCells += `<td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="limitQty" type="number" min="0" step="1" value="${escapeHtml(String(x.limitQty ?? ""))}" placeholder="限购数量" /></td>`;
         return `<tr>${supCells}</tr>`;
       }
       if (tab === "brands") {
-        let brdCells = `<td>${idx + 1}</td><td><input class="input mono" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="brandCode" value="${escapeHtml(x.brandCode || "")}" placeholder="品牌编码" /></td><td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="brandName" value="${escapeHtml(x.brandName || "")}" placeholder="品牌名称" /></td><td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="brandCat" value="${escapeHtml(x.brandCat || "")}" placeholder="品牌分类" /></td>`;
+        let brdCells = `<td>${no}</td><td><input class="input mono" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="brandCode" value="${escapeHtml(x.brandCode || "")}" placeholder="品牌编码" /></td><td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="brandName" value="${escapeHtml(x.brandName || "")}" placeholder="品牌名称" /></td><td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="brandCat" value="${escapeHtml(x.brandCat || "")}" placeholder="品牌分类" /></td>`;
+        if (goodsFlags.scopeQtyThreshold) brdCells += `<td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="qtyThreshold" type="number" min="1" step="1" value="${escapeHtml(String(x.qtyThreshold ?? ""))}" placeholder="倍数数量" /></td>`;
         if (goodsFlags.scopeDiscount) brdCells += `<td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="discount" type="number" min="0" max="1" step="0.01" value="${escapeHtml(String(x.discount ?? ""))}" placeholder="折扣" /></td>`;
         if (goodsFlags.scopeLimitQty) brdCells += `<td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="limitQty" type="number" min="0" step="1" value="${escapeHtml(String(x.limitQty ?? ""))}" placeholder="限购数量" /></td>`;
         return `<tr>${brdCells}</tr>`;
       }
       if (tab === "excludeGoods") {
         return `<tr>
-          <td>${idx + 1}</td>
+          <td>${no}</td>
           <td><input class="input mono" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="skuCode" value="${escapeHtml(x.skuCode || "")}" placeholder="商品编码" /></td>
           <td><input class="input mono" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="barcode" value="${escapeHtml(x.barcode || "")}" placeholder="商品条码" /></td>
           <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="skuName" value="${escapeHtml(x.skuName || "")}" placeholder="商品名称" /></td>
@@ -7369,19 +7747,18 @@ function campaignWizardRenderGoodsTable() {
         </tr>`;
       }
       if (tab === "excludeCategories") {
-        return `<tr><td>${idx + 1}</td><td><input class="input mono" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="catCode" value="${escapeHtml(x.catCode || "")}" placeholder="类别编码" /></td><td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="catName" value="${escapeHtml(x.catName || "")}" placeholder="类别名称" /></td></tr>`;
+        return `<tr><td>${no}</td><td><input class="input mono" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="catCode" value="${escapeHtml(x.catCode || "")}" placeholder="类别编码" /></td><td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="catName" value="${escapeHtml(x.catName || "")}" placeholder="类别名称" /></td></tr>`;
       }
       if (tab === "excludeCounters") {
-        return `<tr><td>${idx + 1}</td><td><input class="input mono" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="counterCode" value="${escapeHtml(x.counterCode || "")}" placeholder="柜组编码" /></td><td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="ruleName" value="${escapeHtml(x.ruleName || "")}" placeholder="规则名称" /></td></tr>`;
+        return `<tr><td>${no}</td><td><input class="input mono" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="counterCode" value="${escapeHtml(x.counterCode || "")}" placeholder="柜组编码" /></td><td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="ruleName" value="${escapeHtml(x.ruleName || "")}" placeholder="规则名称" /></td></tr>`;
       }
       if (tab === "excludeSuppliers") {
-        return `<tr><td>${idx + 1}</td><td><input class="input mono" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="supplierCode" value="${escapeHtml(x.supplierCode || "")}" placeholder="供货商编码" /></td><td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="supplierName" value="${escapeHtml(x.supplierName || "")}" placeholder="供货商名称" /></td></tr>`;
+        return `<tr><td>${no}</td><td><input class="input mono" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="supplierCode" value="${escapeHtml(x.supplierCode || "")}" placeholder="供货商编码" /></td><td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="supplierName" value="${escapeHtml(x.supplierName || "")}" placeholder="供货商名称" /></td></tr>`;
       }
       if (tab === "excludeBrands") {
-        return `<tr><td>${idx + 1}</td><td><input class="input mono" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="brandCode" value="${escapeHtml(x.brandCode || "")}" placeholder="品牌编码" /></td><td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="brandName" value="${escapeHtml(x.brandName || "")}" placeholder="品牌名称" /></td><td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="brandCat" value="${escapeHtml(x.brandCat || "")}" placeholder="品牌分类" /></td></tr>`;
+        return `<tr><td>${no}</td><td><input class="input mono" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="brandCode" value="${escapeHtml(x.brandCode || "")}" placeholder="品牌编码" /></td><td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="brandName" value="${escapeHtml(x.brandName || "")}" placeholder="品牌名称" /></td><td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="brandCat" value="${escapeHtml(x.brandCat || "")}" placeholder="品牌分类" /></td></tr>`;
       }
-      /* isMultiple goods tab: 进价 before 售价, with 折扣 and 限购数量 */
-      if (isMultiple && tab === "goods") {
+      if (isGoodsDiscount && tab === "goods") {
         return `<tr>
           <td><input class="input mono" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="skuCode" value="${escapeHtml(x.skuCode || "")}" placeholder="商品编码" /></td>
           <td><input class="input mono" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="barcode" value="${escapeHtml(x.barcode || "")}" placeholder="商品条码" /></td>
@@ -7394,7 +7771,8 @@ function campaignWizardRenderGoodsTable() {
           <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="limitQty" type="number" min="0" step="1" value="${escapeHtml(String(x.limitQty ?? ""))}" placeholder="限购数量" /></td>
         </tr>`;
       }
-      if (isGoodsDiscount && tab === "goods") {
+      /* isMultiple goods tab: 进价 before 售价, with 折扣 and 限购数量 */
+      if (isMultiple && tab === "goods") {
         return `<tr>
           <td><input class="input mono" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="skuCode" value="${escapeHtml(x.skuCode || "")}" placeholder="商品编码" /></td>
           <td><input class="input mono" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="barcode" value="${escapeHtml(x.barcode || "")}" placeholder="商品条码" /></td>
@@ -7416,7 +7794,6 @@ function campaignWizardRenderGoodsTable() {
           <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="unit" value="${escapeHtml(x.unit || "")}" placeholder="商品单位" /></td>
           <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="costPrice" type="number" min="0" step="0.01" value="${escapeHtml(String(x.costPrice ?? ""))}" placeholder="商品进价" /></td>
           <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="price" type="number" min="0" step="0.01" value="${escapeHtml(String(x.price ?? ""))}" placeholder="商品售价" /></td>
-          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="discount" type="number" min="0" max="1" step="0.01" value="${escapeHtml(String(x.discount ?? ""))}" placeholder="折扣" /></td>
           <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="limitQty" type="number" min="0" step="1" value="${escapeHtml(String(x.limitQty ?? ""))}" placeholder="限购数量" /></td>
         </tr>`;
       }
@@ -7751,7 +8128,6 @@ function campaignWizardUpdateDraftFromEvent(e) {
     return;
   }
   if (cw === "giftScope" && field) {
-    const tpl = campaignTemplateById(d.templateId || "");
     d.giftScope = d.giftScope || {};
     if (field === "__singleKeyword") return;
     d.giftScope[field] = t.value;
@@ -7765,10 +8141,23 @@ function campaignWizardUpdateDraftFromEvent(e) {
       if (field === "purchaseRange" && String(t.value || "") === "单组") {
         d.giftScope.multiPurchase = d.giftScope.multiPurchase || {};
         d.giftScope.multiPurchase.isAll = d.giftScope.multiPurchase.isAll || "否";
+        AppState.ui.campaignWizard.giftBuyTab = "goods";
+        AppState.ui.campaignWizard.giftBuyRange = "participate";
+        AppState.ui.campaignWizard.giftPurchaseRange = "participate";
+        if (!d.giftScope.single) d.giftScope.single = { keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [], excludeCategories: [], excludeCounters: [], excludeSuppliers: [], excludeBrands: [] };
+        d.giftScope.single.tab = "goods";
       }
-      if (!d.giftScope.single) d.giftScope.single = { keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [] };
-      if (!d.giftScope.multiPurchase) d.giftScope.multiPurchase = { isAll: "否", threshold: "", keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [] };
+      if (field === "purchaseRange" && String(t.value || "") === "多组") {
+        AppState.ui.campaignWizard.giftPurchaseTab = (d.giftScope.multiPurchase && d.giftScope.multiPurchase.tab) || "goods";
+        AppState.ui.campaignWizard.giftPurchaseRange = "participate";
+      }
+      if (!d.giftScope.single) d.giftScope.single = { keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [], excludeCategories: [], excludeCounters: [], excludeSuppliers: [], excludeBrands: [] };
+      if (!d.giftScope.multiPurchase) d.giftScope.multiPurchase = { isAll: "否", threshold: "", keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [], excludeCategories: [], excludeCounters: [], excludeSuppliers: [], excludeBrands: [] };
       if (!Array.isArray(d.giftScope.multiGifts)) d.giftScope.multiGifts = [];
+      if (field === "purchaseRange") {
+        render();
+        return;
+      }
       campaignWizardRefreshVisibility();
       campaignWizardRenderGiftTables();
     } else if (field === "mutex") {
@@ -7795,7 +8184,7 @@ function campaignWizardUpdateDraftFromEvent(e) {
     const tpl = campaignTemplateById(d.templateId || "");
     const thIsInt = campaignIsQtyGiftTemplate(tpl);
     d.giftScope = d.giftScope || {};
-    d.giftScope.single = d.giftScope.single || { keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [] };
+    d.giftScope.single = d.giftScope.single || { keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [], excludeCategories: [], excludeCounters: [], excludeSuppliers: [], excludeBrands: [] };
     const k = tab || d.giftScope.single.tab || "goods";
     if (!Array.isArray(d.giftScope.single[k])) d.giftScope.single[k] = [];
     if (!d.giftScope.single[k][idx]) d.giftScope.single[k][idx] = {};
@@ -7811,7 +8200,7 @@ function campaignWizardUpdateDraftFromEvent(e) {
   }
   if (cw === "giftSingleGifts" && field && Number.isFinite(idx) && Number.isFinite(subIdx)) {
     d.giftScope = d.giftScope || {};
-    d.giftScope.single = d.giftScope.single || { keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [] };
+    d.giftScope.single = d.giftScope.single || { keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [], excludeCategories: [], excludeCounters: [], excludeSuppliers: [], excludeBrands: [] };
     const tabKey = d.giftScope.single.tab || "goods";
     const rows = Array.isArray(d.giftScope.single[tabKey]) ? d.giftScope.single[tabKey] : [];
     if (!rows[idx]) rows[idx] = {};
@@ -7823,13 +8212,31 @@ function campaignWizardUpdateDraftFromEvent(e) {
     return;
   }
   if (cw === "giftPurchaseRows" && field && Number.isFinite(idx)) {
+    const tpl = campaignTemplateById(d.templateId || "");
+    const thIsInt = campaignIsQtyGiftTemplate(tpl);
     d.giftScope = d.giftScope || {};
-    d.giftScope.multiPurchase = d.giftScope.multiPurchase || { isAll: "否", threshold: "", keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [] };
+    d.giftScope.multiPurchase = d.giftScope.multiPurchase || { isAll: "否", threshold: "", keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [], excludeCategories: [], excludeCounters: [], excludeSuppliers: [], excludeBrands: [] };
     const k = tab || d.giftScope.multiPurchase.tab || "goods";
     if (!Array.isArray(d.giftScope.multiPurchase[k])) d.giftScope.multiPurchase[k] = [];
     if (!d.giftScope.multiPurchase[k][idx]) d.giftScope.multiPurchase[k][idx] = {};
-    if (field === "buyPrice" || field === "price") d.giftScope.multiPurchase[k][idx][field] = t.value === "" ? "" : Number(t.value);
+    if (field === "threshold") {
+      const v = t.value === "" ? "" : Number(t.value);
+      d.giftScope.multiPurchase[k][idx].threshold = thIsInt && Number.isFinite(v) ? Math.trunc(v) : v;
+    } else if (field === "buyPrice" || field === "price") d.giftScope.multiPurchase[k][idx][field] = t.value === "" ? "" : Number(t.value);
     else d.giftScope.multiPurchase[k][idx][field] = t.value;
+    return;
+  }
+  if (cw === "giftPurchaseGifts" && field && Number.isFinite(idx) && Number.isFinite(subIdx)) {
+    d.giftScope = d.giftScope || {};
+    d.giftScope.multiPurchase = d.giftScope.multiPurchase || { isAll: "否", threshold: "", keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [], excludeCategories: [], excludeCounters: [], excludeSuppliers: [], excludeBrands: [] };
+    const tabKey = d.giftScope.multiPurchase.tab || "goods";
+    const rows = Array.isArray(d.giftScope.multiPurchase[tabKey]) ? d.giftScope.multiPurchase[tabKey] : [];
+    if (!rows[idx]) rows[idx] = {};
+    if (!Array.isArray(rows[idx].gifts)) rows[idx].gifts = [];
+    if (!rows[idx].gifts[subIdx]) rows[idx].gifts[subIdx] = {};
+    if (field === "giftPrice") rows[idx].gifts[subIdx][field] = t.value === "" ? "" : Number(t.value);
+    else if (field === "giftQty") rows[idx].gifts[subIdx][field] = t.value === "" ? "" : Number(t.value);
+    else rows[idx].gifts[subIdx][field] = t.value;
     return;
   }
   if (cw === "giftRewardRows" && field && Number.isFinite(idx)) {
@@ -7989,24 +8396,34 @@ function campaignWizardRenderGiftStepHtml({ d, tpl, stepNo }) {
   const thStep = campaignIsQtyGiftTemplate(tpl) ? "1" : "0.01";
   const thMin = campaignIsQtyGiftTemplate(tpl) ? "1" : "0";
   d.giftScope = d.giftScope || {};
-  d.giftScope.single = d.giftScope.single || { keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [] };
-  d.giftScope.multiPurchase = d.giftScope.multiPurchase || { isAll: "否", threshold: "", keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [] };
+  d.giftScope.single = d.giftScope.single || { keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [], excludeCategories: [], excludeCounters: [], excludeSuppliers: [], excludeBrands: [] };
+  d.giftScope.multiPurchase = d.giftScope.multiPurchase || { isAll: "否", threshold: "", keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [], excludeCategories: [], excludeCounters: [], excludeSuppliers: [], excludeBrands: [] };
   if (!Array.isArray(d.giftScope.multiGifts)) d.giftScope.multiGifts = [];
   const gs = d.giftScope;
   const pr = String(gs.purchaseRange || "单组");
-  const buyTab = AppState.ui.campaignWizard.giftBuyTab || (gs.single && gs.single.tab) || "goods";
+  const buyTabRaw = AppState.ui.campaignWizard.giftBuyTab || (gs.single && gs.single.tab) || "goods";
+  const buyTab = pr === "单组" ? "goods" : buyTabRaw;
+  const buyRange = pr === "单组" ? "participate" : (AppState.ui.campaignWizard.giftBuyRange || "participate");
+  if (pr === "单组") {
+    AppState.ui.campaignWizard.giftBuyTab = "goods";
+    AppState.ui.campaignWizard.giftBuyRange = "participate";
+    gs.single.tab = "goods";
+  }
   const purchaseTab = AppState.ui.campaignWizard.giftPurchaseTab || (gs.multiPurchase && gs.multiPurchase.tab) || "goods";
+  const purchaseRange = AppState.ui.campaignWizard.giftPurchaseRange || "participate";
   const tabsBuy = campaignGiftTabsHtml("campGiftBuyTab", buyTab);
   const tabsPurchase = campaignGiftTabsHtml("campGiftPurchaseTab", purchaseTab);
   const isAll = (gs.multiPurchase && gs.multiPurchase.isAll) ? gs.multiPurchase.isAll : "否";
   /* ── gift: separate participate / exclude tab bars ── */
-  const giftParticipateTabDefs = [
-    { k: "goods", t: "商品" },
-    { k: "categories", t: "类别" },
-    { k: "counters", t: "柜组" },
-    { k: "suppliers", t: "供货商" },
-    { k: "brands", t: "品牌" }
-  ];
+  const giftParticipateTabDefs = (pr === "单组")
+    ? [{ k: "goods", t: "商品" }]
+    : [
+        { k: "goods", t: "商品" },
+        { k: "categories", t: "类别" },
+        { k: "counters", t: "柜组" },
+        { k: "suppliers", t: "供货商" },
+        { k: "brands", t: "品牌" }
+      ];
   const giftExcludeTabDefs = [
     { k: "excludeGoods", t: "排除商品" },
     { k: "excludeCategories", t: "排除类别" },
@@ -8026,6 +8443,62 @@ function campaignWizardRenderGiftStepHtml({ d, tpl, stepNo }) {
   const giftExcludeTabsPurchase = giftExcludeTabDefs
     .map((x) => `<button class="tabbtn" type="button" data-act="campGiftPurchaseExcludeTab" data-id="${escapeHtml(x.k)}">${escapeHtml(x.t)}</button>`)
     .join("");
+  const giftBuyRangeTabsHtml = `
+    <div class="tabbar tabbar--underline" style="margin-bottom:10px;">
+      <button class="tabbtn ${buyRange === "participate" ? "is-active" : ""}" type="button" data-act="campGiftBuyRange" data-id="participate">参与范围</button>
+      ${pr === "单组" ? "" : `<button class="tabbtn ${buyRange === "exclude" ? "is-active" : ""}" type="button" data-act="campGiftBuyRange" data-id="exclude">排除范围</button>`}
+    </div>
+  `;
+  const giftPurchaseRangeTabsHtml = `
+    <div class="tabbar tabbar--underline" style="margin-bottom:10px;">
+      <button class="tabbtn ${purchaseRange === "participate" ? "is-active" : ""}" type="button" data-act="campGiftPurchaseRange" data-id="participate">参与范围</button>
+      <button class="tabbtn ${purchaseRange === "exclude" ? "is-active" : ""}" type="button" data-act="campGiftPurchaseRange" data-id="exclude">排除范围</button>
+    </div>
+  `;
+  const giftBuyQueryBarHtml = campaignWizardRenderQueryBar({
+    tabsHtml: `<div class="tabbar" id="campGiftBuyTabs">${giftParticipateTabsBuy}</div>`,
+    inputHtml: `<input class="input" data-cw="giftSingleScope" data-field="keyword" value="${escapeHtml(String((gs.single && gs.single.keyword) || ""))}" placeholder="按编码、名称查询" />`,
+    actionsHtml: `
+      <button class="btn btn--primary" type="button" data-act="campKeywordQuery" data-cw="giftSingleScope" data-field="keyword">查询</button>
+      <button class="btn" type="button" data-act="campKeywordReset" data-cw="giftSingleScope" data-field="keyword">重置</button>
+      <button class="btn" type="button" data-act="campGiftBuyAdd">新增一行</button>
+      <button class="btn btn--primary" type="button" data-act="campGiftBuyImport">导入</button>
+      <button class="btn" type="button" data-act="campGiftBuySelect">选择</button>
+    `
+  });
+  const giftBuyExcludeQueryBarHtml = campaignWizardRenderQueryBar({
+    tabsHtml: `<div class="tabbar" id="campGiftBuyExcludeTabs">${giftExcludeTabsBuy}</div>`,
+    inputHtml: `<input class="input" data-cw="giftSingleScope" data-field="keyword" value="${escapeHtml(String((gs.single && gs.single.keyword) || ""))}" placeholder="按编码、名称查询" />`,
+    actionsHtml: `
+      <button class="btn btn--primary" type="button" data-act="campKeywordQuery" data-cw="giftSingleScope" data-field="keyword">查询</button>
+      <button class="btn" type="button" data-act="campKeywordReset" data-cw="giftSingleScope" data-field="keyword">重置</button>
+      <button class="btn" type="button" data-act="campGiftBuyExcludeAdd">新增一行</button>
+      <button class="btn btn--primary" type="button" data-act="campGiftBuyExcludeImport">导入</button>
+      <button class="btn" type="button" data-act="campGiftBuyExcludeSelect">选择</button>
+    `
+  });
+  const giftPurchaseQueryBarHtml = campaignWizardRenderQueryBar({
+    tabsHtml: `<div class="tabbar" id="campGiftPurchaseTabs">${giftParticipateTabsPurchase}</div>`,
+    inputHtml: `<input class="input" data-cw="giftPurchaseScope" data-field="keyword" value="${escapeHtml(String((gs.multiPurchase && gs.multiPurchase.keyword) || ""))}" placeholder="按编码、名称查询" />`,
+    actionsHtml: `
+      <button class="btn btn--primary" type="button" data-act="campKeywordQuery" data-cw="giftPurchaseScope" data-field="keyword">查询</button>
+      <button class="btn" type="button" data-act="campKeywordReset" data-cw="giftPurchaseScope" data-field="keyword">重置</button>
+      <button class="btn" type="button" data-act="campGiftPurchaseAdd">新增一行</button>
+      <button class="btn btn--primary" type="button" data-act="campGiftPurchaseImport">导入</button>
+      <button class="btn" type="button" data-act="campGiftPurchaseSelect">选择</button>
+    `
+  });
+  const giftPurchaseExcludeQueryBarHtml = campaignWizardRenderQueryBar({
+    tabsHtml: `<div class="tabbar" id="campGiftPurchaseExcludeTabs">${giftExcludeTabsPurchase}</div>`,
+    inputHtml: `<input class="input" data-cw="giftPurchaseScope" data-field="keyword" value="${escapeHtml(String((gs.multiPurchase && gs.multiPurchase.keyword) || ""))}" placeholder="按编码、名称查询" />`,
+    actionsHtml: `
+      <button class="btn btn--primary" type="button" data-act="campKeywordQuery" data-cw="giftPurchaseScope" data-field="keyword">查询</button>
+      <button class="btn" type="button" data-act="campKeywordReset" data-cw="giftPurchaseScope" data-field="keyword">重置</button>
+      <button class="btn" type="button" data-act="campGiftPurchaseExcludeAdd">新增一行</button>
+      <button class="btn btn--primary" type="button" data-act="campGiftPurchaseExcludeImport">导入</button>
+      <button class="btn" type="button" data-act="campGiftPurchaseExcludeSelect">选择</button>
+    `
+  });
   return `
     <div class="wizard-step" data-step="${escapeHtml(String(stepNo))}">
       <div class="form">
@@ -8071,63 +8544,67 @@ function campaignWizardRenderGiftStepHtml({ d, tpl, stepNo }) {
         <div id="campGiftBox">
           <div id="campGiftSingleBox">
             <div class="section__title">买赠信息</div>
-            <div class="section__title">参与范围</div>
-            <div class="form__row">
-              <div class="field">
-                <div class="field__label">名称</div>
-                <input class="input" data-cw="giftSingleScope" data-field="keyword" value="${escapeHtml(String((gs.single && gs.single.keyword) || ""))}" placeholder="按编码、名称查询" />
-              </div>
+            ${giftBuyRangeTabsHtml}
+            <div id="campGiftBuyParticipateBox" style="${buyRange === "participate" ? "" : "display:none;"}">
+              ${giftBuyQueryBarHtml}
+              <div id="campGiftBuyTable"></div>
             </div>
-            <div class="tabbar" id="campGiftBuyTabs" style="margin-top: 10px;">${giftParticipateTabsBuy}</div>
-            <div class="toolbar__actions" style="margin: 10px 0 12px 0;">
-              <button class="btn" type="button" data-act="campGiftBuyAdd">新增一行</button>
-              <button class="btn" type="button" data-act="campGiftBuyTpl">导入模版</button>
-              <button class="btn btn--primary" type="button" data-act="campGiftBuyImport">导入</button>
+            <div id="campGiftBuyExcludeBox" style="${buyRange === "exclude" ? "" : "display:none;"}">
+              ${giftBuyExcludeQueryBarHtml}
+              <div id="campGiftBuyExcludeTable"></div>
             </div>
-            <div id="campGiftBuyTable"></div>
-            <div class="divider"></div>
-            <div class="section__title">排除范围</div>
-            <div class="tabbar" id="campGiftBuyExcludeTabs" style="margin-top: 10px;">${giftExcludeTabsBuy}</div>
-            <div id="campGiftBuyExcludeTable"></div>
           </div>
 
           <div id="campGiftMultiBox">
             <div class="section__title">购买信息</div>
-            <div class="form__row">
-              <div class="field">
-                <div class="field__label">${escapeHtml(th)}<span class="req">*</span></div>
-                <input class="input" data-cw="giftPurchaseScope" data-field="threshold" type="number" min="${escapeHtml(thMin)}" step="${escapeHtml(thStep)}" value="${escapeHtml(String((gs.multiPurchase && gs.multiPurchase.threshold) ?? ""))}" placeholder="${escapeHtml(th)}" />
-              </div>
+            ${giftPurchaseRangeTabsHtml}
+            <div id="campGiftPurchaseParticipateBox" style="${purchaseRange === "participate" ? "" : "display:none;"}">
+              ${giftPurchaseQueryBarHtml}
+              <div id="campGiftPurchaseTable"></div>
             </div>
-            <div class="section__title">参与范围</div>
-            <div class="form__row">
-              <div class="field">
-                <div class="field__label">名称</div>
-                <input class="input" data-cw="giftPurchaseScope" data-field="keyword" value="${escapeHtml(String((gs.multiPurchase && gs.multiPurchase.keyword) || ""))}" placeholder="按编码、名称查询" />
-              </div>
+            <div id="campGiftPurchaseExcludeBox" style="${purchaseRange === "exclude" ? "" : "display:none;"}">
+              ${giftPurchaseExcludeQueryBarHtml}
+              <div id="campGiftPurchaseExcludeTable"></div>
             </div>
-            <div class="tabbar" id="campGiftPurchaseTabs" style="margin-top: 10px;">${giftParticipateTabsPurchase}</div>
-            <div class="toolbar__actions" style="margin: 10px 0 12px 0;">
-              <button class="btn" type="button" data-act="campGiftPurchaseAdd">新增一行</button>
-              <button class="btn" type="button" data-act="campGiftPurchaseTpl">导入模版</button>
-              <button class="btn btn--primary" type="button" data-act="campGiftPurchaseImport">导入</button>
-            </div>
-            <div id="campGiftPurchaseTable"></div>
-            <div class="divider"></div>
-            <div class="section__title">排除范围</div>
-            <div class="tabbar" id="campGiftPurchaseExcludeTabs" style="margin-top: 10px;">${giftExcludeTabsPurchase}</div>
-            <div id="campGiftPurchaseExcludeTable"></div>
-
-            <div class="divider"></div>
-            <div class="section__title">赠品信息</div>
-            <div class="toolbar__actions" style="margin: 10px 0 12px 0;">
-              <button class="btn" type="button" data-act="campGiftRewardAdd">新增一行</button>
-              <button class="btn" type="button" data-act="campGiftRewardTpl">导入模版</button>
-              <button class="btn btn--primary" type="button" data-act="campGiftRewardImport">导入</button>
-            </div>
-            <div id="campGiftRewardsTable"></div>
           </div>
         </div>
+      </div>
+    </div>
+  `;
+}
+
+function campaignWizardRenderQueryBar({ tabsHtml = "", inputHtml = "", actionsHtml = "" }) {
+  return `
+    <div class="campaign-querybar">
+      <div class="campaign-querybar__tabs">${tabsHtml}</div>
+      <div class="campaign-querybar__search">${inputHtml}</div>
+      <div class="campaign-querybar__actions toolbar__actions">${actionsHtml}</div>
+    </div>
+  `;
+}
+
+function campaignWizardMainTabsForTemplate(tplSelected) {
+  const hasConditionTab = campaignIsAmountReduceTemplate(tplSelected) || campaignIsQtyReduceTemplate(tplSelected) || campaignIsVoucherGiftTemplate(tplSelected);
+  return [
+    { k: "basic", t: "基础信息" },
+    { k: "scope", t: "用户范围" },
+    { k: "store", t: "门店范围" },
+    ...(hasConditionTab ? [{ k: "condition", t: "条件范围" }] : []),
+    { k: "goods", t: "商品范围" },
+    { k: "burden", t: campaignIsVoucherGiftTemplate(tplSelected) ? "奖励券信息" : "承担规则" }
+  ];
+}
+
+function campaignWizardStepActionsHtml(currentTab, tabs) {
+  const keys = tabs.map((x) => x.k);
+  const idx = keys.indexOf(currentTab);
+  const hasPrev = idx > 0;
+  const hasNext = idx >= 0 && idx < tabs.length - 1;
+  return `
+    <div class="wizard__footer">
+      <div class="wizard__footer-actions">
+        <button class="btn" type="button" data-act="campWizPrev" ${hasPrev ? "" : "disabled"}>上一步</button>
+        <button class="btn btn--primary" type="button" data-act="campWizNext" ${hasNext ? "" : "disabled"}>下一步</button>
       </div>
     </div>
   `;
@@ -8314,6 +8791,54 @@ function renderCampaignWizardPage(mode) {
   const reduceExcludeTabsHtml = reduceExcludeTabDefs
     .map((x) => `<button class="tabbtn" type="button" data-act="campExcludeRangeTab" data-id="${escapeHtml(x.k)}">${escapeHtml(x.t)}</button>`)
     .join("");
+  const goodsKeywordValue = escapeHtml(String(d.goodsScope.keyword || ""));
+  const goodsIsAllValue = String((d.goodsScope && d.goodsScope.isAll) || "否");
+  const goodsIsAllHtml = `
+    <div class="form__row">
+      <div class="field">
+        <div class="field__label">是否全场</div>
+        <div class="checks">
+          <label class="check"><input type="radio" name="cwIsAll" data-cw="goodsScope" data-field="isAll" value="否" ${goodsIsAllValue === "否" ? "checked" : ""} />否</label>
+          <label class="check"><input type="radio" name="cwIsAll" data-cw="goodsScope" data-field="isAll" value="是" ${goodsIsAllValue === "是" ? "checked" : ""} />是</label>
+        </div>
+      </div>
+    </div>
+  `;
+  const goodsParticipateActionsHtml = `
+    <button class="btn btn--primary" type="button" data-act="campKeywordQuery" data-cw="goodsScope" data-field="keyword">查询</button>
+    <button class="btn" type="button" data-act="campKeywordReset" data-cw="goodsScope" data-field="keyword">重置</button>
+    <button class="btn" type="button" data-act="campGoodsAdd">新增一行</button>
+    <button class="btn btn--primary" type="button" data-act="campGoodsImport">导入</button>
+    <button class="btn" type="button" data-act="campSelectGoodsTab">选择</button>
+  `;
+  const goodsExcludeActionsHtml = `
+    <button class="btn btn--primary" type="button" data-act="campKeywordQuery" data-cw="goodsScope" data-field="keyword">查询</button>
+    <button class="btn" type="button" data-act="campKeywordReset" data-cw="goodsScope" data-field="keyword">重置</button>
+    <button class="btn" type="button" data-act="campExcludeRangeAdd">新增一行</button>
+    <button class="btn btn--primary" type="button" data-act="campGoodsImport">导入</button>
+    <button class="btn" type="button" data-act="campSelectExcludeTab">选择</button>
+  `;
+  const goodsParticipateQueryBarHtml = campaignWizardRenderQueryBar({
+    tabsHtml: `<div class="tabbar" id="campGoodsTabs">${reduceParticipateTabsHtml}</div>`,
+    inputHtml: `<input class="input" data-cw="goodsScope" data-field="keyword" value="${goodsKeywordValue}" placeholder="按编码、名称查询" />`,
+    actionsHtml: goodsParticipateActionsHtml
+  });
+  const goodsExcludeQueryBarHtml = campaignWizardRenderQueryBar({
+    tabsHtml: `<div class="tabbar" id="campExcludeRangeTabs">${reduceExcludeTabsHtml}</div>`,
+    inputHtml: `<input class="input" data-cw="goodsScope" data-field="keyword" value="${goodsKeywordValue}" placeholder="按编码、名称查询" />`,
+    actionsHtml: goodsExcludeActionsHtml
+  });
+  const directDropQueryBarHtml = campaignWizardRenderQueryBar({
+    tabsHtml: `<div class="tabbar"><span class="tabbtn is-active">商品</span></div>`,
+    inputHtml: `<input class="input" id="campGoodsListQ" value="${escapeHtml(String((AppState.ui.campaignWizard && AppState.ui.campaignWizard.goodsListQ) || ""))}" placeholder="按编码、条码、名称、规格查询" />`,
+    actionsHtml: `
+      <button class="btn btn--primary" type="button" data-act="campGoodsQuery">查询</button>
+      <button class="btn" type="button" data-act="campGoodsReset">重置</button>
+      <button class="btn" type="button" data-act="campGoodsAdd">新增一行</button>
+      <button class="btn btn--primary" type="button" data-act="campGoodsImport">导入</button>
+      <button class="btn" type="button" data-act="campSelectGoodsTab">选择</button>
+    `
+  });
 
   const midStepHtml = isTime
     ? `
@@ -8491,19 +9016,13 @@ function renderCampaignWizardPage(mode) {
   const showGoodsDetail = isDiscount || isReduce || isQtyReduce;
   const goodsRange = AppState.ui.campaignWizard.goodsRange || "participate";
 
-  const hasConditionTab = isTime || isReduce || isQtyReduce || campaignIsVoucherGiftTemplate(tplSelected);
-  const campMainTabs = [
-    { k: "basic", t: "基础信息" },
-    { k: "scope", t: "用户范围" },
-    { k: "store", t: "门店范围" },
-    ...(hasConditionTab ? [{ k: "condition", t: "条件范围" }] : []),
-    { k: "goods", t: "商品范围" },
-    { k: "burden", t: campaignIsVoucherGiftTemplate(tplSelected) ? "奖励券信息" : "承担规则" }
-  ];
+  const hasConditionTab = isReduce || isQtyReduce || campaignIsVoucherGiftTemplate(tplSelected);
+  const campMainTabs = campaignWizardMainTabsForTemplate(tplSelected);
   const campMainTabKeys = campMainTabs.map((x) => x.k);
   let campMainTab = AppState.ui.campaignWizard.campWizTab || "basic";
   if (!campMainTabKeys.includes(campMainTab)) campMainTab = "basic";
   const campMainTabBarHtml = campMainTabs.map(x => `<button class="tabbtn ${x.k === campMainTab ? "is-active" : ""}" type="button" data-act="campWizMainTab" data-id="${escapeHtml(x.k)}">${escapeHtml(x.t)}</button>`).join("");
+  const campStepActionsHtml = campaignWizardStepActionsHtml(campMainTab, campMainTabs);
 
   return `
     <div class="wizard wizard--tabbed" id="campWizard">
@@ -8529,11 +9048,11 @@ function renderCampaignWizardPage(mode) {
           </div>
           <div class="form__row">
             <div class="field">
-              <div class="field__label">促销模版<span class="req">*</span></div>
+              <div class="field__label">活动模版<span class="req">*</span></div>
               <select class="select" id="cwTemplateId" data-cw="root" data-field="templateId">${tplOps}</select>
             </div>
             <div class="field">
-              ${(useSixSteps || isDirectDrop) ? `<div class="field__label">活动类型</div><input class="input" id="cwActivityType" value="${escapeHtml(d.activityType || "")}" disabled />` : `<div class="field__label">促销类型</div><input class="input" id="cwPromoType" value="${escapeHtml(d.promoType || "")}" disabled />`}
+              ${(useSixSteps || isDirectDrop || isGift || isAddOn) ? `<div class="field__label">活动类型</div><input class="input" id="cwActivityType" value="${escapeHtml(d.activityType || "")}" disabled />` : `<div class="field__label">促销类型</div><input class="input" id="cwPromoType" value="${escapeHtml(d.promoType || "")}" disabled />`}
             </div>
           </div>
           <div class="form__row">
@@ -8567,6 +9086,7 @@ function renderCampaignWizardPage(mode) {
             <div class="checks">${weekOps}</div>
           </div>
         </div>
+        ${campStepActionsHtml}
       </div>
 
       <div class="detail-tab-panel ${campMainTab === "scope" ? "is-active" : ""}" data-tab="scope">
@@ -8590,7 +9110,6 @@ function renderCampaignWizardPage(mode) {
             <div class="section__title">会员等级</div>
             <div class="toolbar__actions" style="margin: 10px 0 12px 0;">
               <button class="btn" type="button" data-act="campGradeAdd">新增一行</button>
-              <button class="btn" type="button" data-act="campGradeTpl">导入模版</button>
               <button class="btn btn--primary" type="button" data-act="campGradeImport">导入</button>
               <button class="btn" type="button" data-act="campSelectMemberGrade">选择会员等级</button>
             </div>
@@ -8601,13 +9120,13 @@ function renderCampaignWizardPage(mode) {
             <div class="section__title">会员标签</div>
             <div class="toolbar__actions" style="margin: 10px 0 12px 0;">
               <button class="btn" type="button" data-act="campTagAdd">新增一行</button>
-              <button class="btn" type="button" data-act="campTagTpl">导入模版</button>
               <button class="btn btn--primary" type="button" data-act="campTagImport">导入</button>
               <button class="btn" type="button" data-act="campSelectMemberTag">选择会员标签</button>
             </div>
             <div id="campMemberTagsTable"></div>
           </div>
         </div>
+        ${campStepActionsHtml}
       </div>
 
       <div class="detail-tab-panel ${campMainTab === "store" ? "is-active" : ""}" data-tab="store">
@@ -8617,104 +9136,90 @@ function renderCampaignWizardPage(mode) {
               <div class="field__label">门店类型</div>
               <select class="select" data-cw="storeScope" data-field="storeType">${storeTypeOps}</select>
             </div>
-            <div class="field">
-              <div class="field__label">说明</div>
-              <div class="hint">门店信息/价格组/区域支持导入模版导入；价格组/区域允许排除门店。</div>
-            </div>
           </div>
 
           <div class="divider"></div>
           <div id="campStoreBoxStores">
-            <div class="section__title">门店信息</div>
-            <div class="toolbar__actions" style="margin: 10px 0 12px 0;">
-              <button class="btn" type="button" data-act="campStoreAdd">新增一行</button>
-              <button class="btn" type="button" data-act="campStoreTpl">导入模版</button>
-              <button class="btn btn--primary" type="button" data-act="campStoreImport">导入</button>
-              <button class="btn" type="button" data-act="campSelectStore">选择门店</button>
+            <div class="section__head">
+              <div class="section__title">门店信息</div>
+              <div class="toolbar__actions">
+                <button class="btn" type="button" data-act="campStoreAdd">新增一行</button>
+                <button class="btn btn--primary" type="button" data-act="campStoreImport">导入</button>
+                <button class="btn" type="button" data-act="campSelectStore">选择门店</button>
+              </div>
             </div>
             <div id="campStoresTable"></div>
           </div>
 
           <div id="campStoreBoxPriceGroups">
-            <div class="section__title">价格组</div>
-            <div class="toolbar__actions" style="margin: 10px 0 12px 0;">
-              <button class="btn" type="button" data-act="campStoreAdd">新增一行</button>
-              <button class="btn" type="button" data-act="campStoreTpl">导入模版</button>
-              <button class="btn btn--primary" type="button" data-act="campStoreImport">导入</button>
+            <div class="section__head">
+              <div class="section__title">价格组</div>
+              <div class="toolbar__actions">
+                <button class="btn" type="button" data-act="campStoreAdd">新增一行</button>
+                <button class="btn btn--primary" type="button" data-act="campStoreImport">导入</button>
+              </div>
             </div>
             <div id="campPriceGroupsTable"></div>
           </div>
 
           <div id="campStoreBoxRegions">
-            <div class="section__title">区域</div>
-            <div class="toolbar__actions" style="margin: 10px 0 12px 0;">
-              <button class="btn" type="button" data-act="campStoreAdd">新增一行</button>
-              <button class="btn" type="button" data-act="campStoreTpl">导入模版</button>
-              <button class="btn btn--primary" type="button" data-act="campStoreImport">导入</button>
+            <div class="section__head">
+              <div class="section__title">区域</div>
+              <div class="toolbar__actions">
+                <button class="btn" type="button" data-act="campStoreAdd">新增一行</button>
+                <button class="btn btn--primary" type="button" data-act="campStoreImport">导入</button>
+              </div>
             </div>
             <div id="campRegionsTable"></div>
           </div>
 
-          <div class="divider"></div>
-          <div class="section__title">排除门店</div>
-          <div class="toolbar__actions" style="margin: 10px 0 12px 0;">
-            <button class="btn" type="button" data-act="campExcludeAdd">新增一行</button>
-            <button class="btn" type="button" data-act="campExcludeTpl">导入模版</button>
-            <button class="btn btn--primary" type="button" data-act="campExcludeImport">导入</button>
+          <div id="campExcludeStoresBox">
+            <div class="divider"></div>
+            <div class="section__head">
+              <div class="section__title">排除门店</div>
+              <div class="toolbar__actions">
+                <button class="btn" type="button" data-act="campExcludeAdd">新增一行</button>
+                <button class="btn btn--primary" type="button" data-act="campExcludeImport">导入</button>
+              </div>
+            </div>
+            <div id="campExcludeStoresTable"></div>
           </div>
-          <div id="campExcludeStoresTable"></div>
         </div>
+        ${campStepActionsHtml}
       </div>
 
       ${hasConditionTab ? `<div class="detail-tab-panel ${campMainTab === "condition" ? "is-active" : ""}" data-tab="condition">
         ${midStepHtml}
+        ${campStepActionsHtml}
       </div>` : ""}
 
       <div class="detail-tab-panel ${campMainTab === "goods" ? "is-active" : ""}" data-tab="goods">
         ${isGoodsDiscount ? `
           <div class="wizard-step" data-step="${goodsStepNo}">
             <div class="form">
+              <div class="form__row">
+                <div class="field">
+                  <div class="field__label">折扣</div>
+                  <input class="input" data-cw="goodsScope" data-field="discountAll" type="number" min="0" max="1" step="0.01" value="${escapeHtml(String(d.goodsScope.discountAll ?? ""))}" placeholder="输入后同步商品折扣" />
+                </div>
+              </div>
+              <div class="divider"></div>
+              ${goodsIsAllHtml}
+              <div id="campGoodsAllHideBox" style="${goodsIsAllValue === "是" ? "display:none;" : ""}">
               <div class="tabbar tabbar--underline" style="margin-bottom:10px;">
                 <button class="tabbtn ${goodsRange === "participate" ? "is-active" : ""}" type="button" data-act="campGoodsRange" data-id="participate">参与范围</button>
                 <button class="tabbtn ${goodsRange === "exclude" ? "is-active" : ""}" type="button" data-act="campGoodsRange" data-id="exclude">排除范围</button>
               </div>
 
               <div id="campGoodsDiscountParticipateBox" style="${goodsRange === "participate" ? "" : "display:none;"}">
-                <div class="form__row">
-                  <div class="field">
-                    <div class="field__label">折扣</div>
-                    <input class="input" data-cw="goodsScope" data-field="discountAll" type="number" min="0" max="1" step="0.01" value="${escapeHtml(String(d.goodsScope.discountAll ?? ""))}" placeholder="输入后同步商品折扣" />
-                  </div>
-                </div>
-
-                <div class="divider"></div>
-                <div class="form__row">
-                  <div class="field">
-                    <div class="field__label">名称</div>
-                    <input class="input" data-cw="goodsScope" data-field="keyword" value="${escapeHtml(String(d.goodsScope.keyword || ""))}" placeholder="按编码、名称查询" />
-                  </div>
-                </div>
-                <div class="tabbar" id="campGoodsTabs" style="margin-top: 10px;">${reduceParticipateTabsHtml}</div>
-                <div class="toolbar__actions" style="margin: 10px 0 12px 0;">
-                  <button class="btn" type="button" data-act="campGoodsAdd">新增一行</button>
-                  <button class="btn" type="button" data-act="campGoodsTpl">导入模版</button>
-                  <button class="btn btn--primary" type="button" data-act="campGoodsImport">导入</button>
-                  <button class="btn" type="button" data-act="campSelectGoodsTab">选择</button>
-                </div>
+                ${goodsParticipateQueryBarHtml}
                 <div id="campGoodsTable"></div>
               </div>
-
               <div id="campGoodsDiscountExcludeBox" style="${goodsRange === "exclude" ? "" : "display:none;"}">
-                <div class="tabbar" id="campExcludeRangeTabs" style="margin-top: 10px;">${reduceExcludeTabsHtml}</div>
-                <div class="toolbar__actions" style="margin: 10px 0 12px 0;">
-                  <button class="btn" type="button" data-act="campExcludeRangeAdd">新增一行</button>
-                  <button class="btn" type="button" data-act="campGoodsTpl">导入模版</button>
-                  <button class="btn btn--primary" type="button" data-act="campGoodsImport">导入</button>
-                  <button class="btn" type="button" data-act="campSelectExcludeTab">选择</button>
-                </div>
+                ${goodsExcludeQueryBarHtml}
                 <div id="campExcludeRangeTable"></div>
               </div>
-            </div>
+              </div>
           </div>
         ` : isAddOn ? `
           <div class="wizard-step" data-step="${goodsStepNo}">
@@ -8739,90 +9244,72 @@ function renderCampaignWizardPage(mode) {
                 </div>
               </div>
               <div class="divider"></div>
-              <div class="section__title">${isQtyAddOn ? "购满数量" : "购满金额"}</div>
-              <div class="toolbar__actions" style="margin: 10px 0 12px 0;">
-                <button class="btn" type="button" data-act="campAddOnRuleAdd">新增一行</button>
+              <div class="section__head">
+                <div class="section__title">${isQtyAddOn ? "购满数量" : "购满金额"}</div>
+                <div class="toolbar__actions">
+                  <button class="btn" type="button" data-act="campAddOnRuleAdd">新增一行</button>
+                </div>
               </div>
               <div id="campAddOnRulesTable"></div>
 
               <div class="divider"></div>
               <div class="section__title">购买信息</div>
-              <div class="section__title">参与范围</div>
-              <div class="form__row">
-                <div class="field">
-                  <div class="field__label">名称</div>
-                  <input class="input" data-cw="goodsScope" data-field="keyword" value="${escapeHtml(String(d.goodsScope.keyword || ""))}" placeholder="按编码、名称查询" />
-                </div>
-              </div>
-              <div class="tabbar" id="campGoodsTabs" style="margin-top: 10px;">${reduceParticipateTabsHtml}</div>
-              <div class="toolbar__actions" style="margin: 10px 0 12px 0;">
-                <button class="btn" type="button" data-act="campGoodsAdd">新增一行</button>
-                <button class="btn" type="button" data-act="campGoodsTpl">导入模版</button>
-                <button class="btn btn--primary" type="button" data-act="campGoodsImport">导入</button>
-                <button class="btn" type="button" data-act="campSelectGoodsTab">选择</button>
-              </div>
-              <div id="campGoodsTable"></div>
-              <div class="divider"></div>
-              <div class="section__title">排除范围</div>
-              <div class="tabbar" id="campExcludeRangeTabs" style="margin-top: 10px;">${reduceExcludeTabsHtml}</div>
-              <div class="toolbar__actions" style="margin: 10px 0 12px 0;">
-                <button class="btn" type="button" data-act="campExcludeRangeAdd">新增一行</button>
-                <button class="btn" type="button" data-act="campSelectExcludeTab">选择</button>
-              </div>
-              <div id="campExcludeRangeTable"></div>
-
-              <div class="divider"></div>
-              <div class="section__title">换购信息</div>
-              <div class="toolbar__actions" style="margin: 10px 0 12px 0;">
-                <button class="btn" type="button" data-act="campAddOnGoodsAdd">新增一行</button>
-                <button class="btn" type="button" data-act="campAddOnGoodsTpl">导入模版</button>
-              </div>
-              <div id="campAddOnGoodsTable"></div>
-            </div>
-          </div>
-        ` : isQty
-        ? `
-          <div class="wizard-step" data-step="${goodsStepNo}">
-            <div class="form">
-              <div class="section__title">满数量折扣</div>
-              <div class="hint">满数量与折扣为必填，可添加多个组。</div>
-              <div class="toolbar__actions" style="margin: 10px 0 12px 0;">
-                <button class="btn" type="button" data-act="campQtyDiscAdd">新增一组</button>
-              </div>
-              <div id="campQtyDiscountTable"></div>
-
               <div class="divider"></div>
               <div class="tabbar tabbar--underline" style="margin-bottom:10px;">
                 <button class="tabbtn ${goodsRange === "participate" ? "is-active" : ""}" type="button" data-act="campGoodsRange" data-id="participate">参与范围</button>
                 <button class="tabbtn ${goodsRange === "exclude" ? "is-active" : ""}" type="button" data-act="campGoodsRange" data-id="exclude">排除范围</button>
               </div>
 
+              <div id="campAddOnParticipateBox" style="${goodsRange === "participate" ? "" : "display:none;"}">
+                ${goodsParticipateQueryBarHtml}
+                <div id="campGoodsTable"></div>
+              </div>
+
+              <div id="campAddOnExcludeBox" style="${goodsRange === "exclude" ? "" : "display:none;"}">
+                ${goodsExcludeQueryBarHtml}
+                <div id="campExcludeRangeTable"></div>
+              </div>
+
+              <div class="divider"></div>
+              <div class="section__head">
+                <div class="section__title">换购信息</div>
+                <div class="toolbar__actions">
+                  <button class="btn" type="button" data-act="campAddOnGoodsAdd">新增一行</button>
+                  <button class="btn btn--primary" type="button" data-act="campAddOnGoodsImport">导入</button>
+                </div>
+              </div>
+              <div id="campAddOnGoodsTable"></div>
+            </div>
+          </div>
+        ` : isGift ? campaignWizardRenderGiftStepHtml({ d, tpl: tplSelected, stepNo: goodsStepNo }) : isQty
+        ? `
+          <div class="wizard-step" data-step="${goodsStepNo}">
+            <div class="form">
+              <div class="section__head">
+                <div class="section__title">满数量折扣（满数量与折扣为必填，可添加多个组。）</div>
+                <div class="toolbar__actions">
+                  <button class="btn" type="button" data-act="campQtyDiscAdd">新增一组</button>
+                </div>
+              </div>
+              <div id="campQtyDiscountTable"></div>
+
+              <div class="divider"></div>
+              ${goodsIsAllHtml}
+              <div id="campGoodsAllHideBox" style="${goodsIsAllValue === "是" ? "display:none;" : ""}">
+              <div class="tabbar tabbar--underline" style="margin-bottom:10px;">
+                <button class="tabbtn ${goodsRange === "participate" ? "is-active" : ""}" type="button" data-act="campGoodsRange" data-id="participate">参与范围</button>
+                <button class="tabbtn ${goodsRange === "exclude" ? "is-active" : ""}" type="button" data-act="campGoodsRange" data-id="exclude">排除范围</button>
+              </div>
+
               <div style="${goodsRange === "participate" ? "" : "display:none;"}">
-                <div class="form__row">
-                  <div class="field">
-                    <div class="field__label">名称</div>
-                    <input class="input" data-cw="goodsScope" data-field="keyword" value="${escapeHtml(String(d.goodsScope.keyword || ""))}" placeholder="按编码、名称查询" />
-                  </div>
-                </div>
-                <div class="tabbar" id="campGoodsTabs" style="margin-top: 10px;">${reduceParticipateTabsHtml}</div>
-                <div class="toolbar__actions" style="margin: 10px 0 12px 0;">
-                  <button class="btn" type="button" data-act="campGoodsAdd">新增一行</button>
-                  <button class="btn" type="button" data-act="campGoodsTpl">导入模版</button>
-                  <button class="btn btn--primary" type="button" data-act="campGoodsImport">导入</button>
-                  <button class="btn" type="button" data-act="campSelectGoodsTab">选择</button>
-                </div>
+                ${goodsParticipateQueryBarHtml}
                 <div id="campGoodsTable"></div>
               </div>
 
               <div style="${goodsRange === "exclude" ? "" : "display:none;"}">
-                <div class="tabbar" id="campExcludeRangeTabs" style="margin-top: 10px;">${reduceExcludeTabsHtml}</div>
-                <div class="toolbar__actions" style="margin: 10px 0 12px 0;">
-                  <button class="btn" type="button" data-act="campExcludeRangeAdd">新增一行</button>
-                  <button class="btn" type="button" data-act="campGoodsTpl">导入模版</button>
-                  <button class="btn btn--primary" type="button" data-act="campGoodsImport">导入</button>
-                  <button class="btn" type="button" data-act="campSelectExcludeTab">选择</button>
-                </div>
+                ${goodsExcludeQueryBarHtml}
                 <div id="campExcludeRangeTable"></div>
+              </div>
               </div>
             </div>
           </div>
@@ -8831,32 +9318,23 @@ function renderCampaignWizardPage(mode) {
         ? `
           <div class="wizard-step" data-step="${goodsStepNo}">
             <div class="form">
-              <div class="form__row">
-                <div class="field">
-                  <div class="field__label">名称</div>
-                  <input class="input" data-cw="goodsScope" data-field="keyword" value="${escapeHtml(String(d.goodsScope.keyword || ""))}" placeholder="按编码、名称查询" />
-                </div>
+              ${goodsIsAllHtml}
+              <div id="campGoodsAllHideBox" style="${goodsIsAllValue === "是" ? "display:none;" : ""}">
+              <div class="tabbar tabbar--underline" style="margin-bottom:10px;">
+                <button class="tabbtn ${goodsRange === "participate" ? "is-active" : ""}" type="button" data-act="campGoodsRange" data-id="participate">参与范围</button>
+                <button class="tabbtn ${goodsRange === "exclude" ? "is-active" : ""}" type="button" data-act="campGoodsRange" data-id="exclude">排除范围</button>
               </div>
 
-              <div class="divider"></div>
-              <div class="section__title">参与范围</div>
-              <div class="tabbar" id="campGoodsTabs" style="margin-top: 10px;">${reduceParticipateTabsHtml}</div>
-              <div class="toolbar__actions" style="margin: 10px 0 12px 0;">
-                <button class="btn" type="button" data-act="campGoodsAdd">新增一行</button>
-                <button class="btn" type="button" data-act="campGoodsTpl">导入模版</button>
-                <button class="btn btn--primary" type="button" data-act="campGoodsImport">导入</button>
-                <button class="btn" type="button" data-act="campSelectGoodsTab">选择</button>
+              <div style="${goodsRange === "participate" ? "" : "display:none;"}">
+                ${goodsParticipateQueryBarHtml}
+                <div id="campGoodsTable"></div>
               </div>
-              <div id="campGoodsTable"></div>
 
-              <div class="divider"></div>
-              <div class="section__title">排除范围</div>
-              <div class="tabbar" id="campExcludeRangeTabs" style="margin-top: 10px;">${reduceExcludeTabsHtml}</div>
-              <div class="toolbar__actions" style="margin: 10px 0 12px 0;">
-                <button class="btn" type="button" data-act="campExcludeRangeAdd">新增一行</button>
-                <button class="btn" type="button" data-act="campSelectExcludeTab">选择</button>
+              <div style="${goodsRange === "exclude" ? "" : "display:none;"}">
+                ${goodsExcludeQueryBarHtml}
+                <div id="campExcludeRangeTable"></div>
               </div>
-              <div id="campExcludeRangeTable"></div>
+              </div>
             </div>
           </div>
         `
@@ -8864,32 +9342,23 @@ function renderCampaignWizardPage(mode) {
         ? `
           <div class="wizard-step" data-step="${goodsStepNo}">
             <div class="form">
-              <div class="form__row">
-                <div class="field">
-                  <div class="field__label">名称</div>
-                  <input class="input" data-cw="goodsScope" data-field="keyword" value="${escapeHtml(String(d.goodsScope.keyword || ""))}" placeholder="按编码、名称查询" />
-                </div>
+              ${goodsIsAllHtml}
+              <div id="campGoodsAllHideBox" style="${goodsIsAllValue === "是" ? "display:none;" : ""}">
+              <div class="tabbar tabbar--underline" style="margin-bottom:10px;">
+                <button class="tabbtn ${goodsRange === "participate" ? "is-active" : ""}" type="button" data-act="campGoodsRange" data-id="participate">参与范围</button>
+                <button class="tabbtn ${goodsRange === "exclude" ? "is-active" : ""}" type="button" data-act="campGoodsRange" data-id="exclude">排除范围</button>
               </div>
 
-              <div class="divider"></div>
-              <div class="section__title">参与范围</div>
-              <div class="tabbar" id="campGoodsTabs" style="margin-top: 10px;">${reduceParticipateTabsHtml}</div>
-              <div class="toolbar__actions" style="margin: 10px 0 12px 0;">
-                <button class="btn" type="button" data-act="campGoodsAdd">新增一行</button>
-                <button class="btn" type="button" data-act="campGoodsTpl">导入模版</button>
-                <button class="btn btn--primary" type="button" data-act="campGoodsImport">导入</button>
-                <button class="btn" type="button" data-act="campSelectGoodsTab">选择</button>
+              <div style="${goodsRange === "participate" ? "" : "display:none;"}">
+                ${goodsParticipateQueryBarHtml}
+                <div id="campGoodsTable"></div>
               </div>
-              <div id="campGoodsTable"></div>
 
-              <div class="divider"></div>
-              <div class="section__title">排除范围</div>
-              <div class="tabbar" id="campExcludeRangeTabs" style="margin-top: 10px;">${reduceExcludeTabsHtml}</div>
-              <div class="toolbar__actions" style="margin: 10px 0 12px 0;">
-                <button class="btn" type="button" data-act="campExcludeRangeAdd">新增一行</button>
-                <button class="btn" type="button" data-act="campSelectExcludeTab">选择</button>
+              <div style="${goodsRange === "exclude" ? "" : "display:none;"}">
+                ${goodsExcludeQueryBarHtml}
+                <div id="campExcludeRangeTable"></div>
               </div>
-              <div id="campExcludeRangeTable"></div>
+              </div>
             </div>
           </div>
         `
@@ -8897,45 +9366,31 @@ function renderCampaignWizardPage(mode) {
         ? `
           <div class="wizard-step" data-step="${goodsStepNo}">
             <div class="form">
-              <div class="section__title">满金额折扣</div>
-              <div class="hint">满金额与折扣为必填，可添加多个组。</div>
-              <div class="toolbar__actions" style="margin: 10px 0 12px 0;">
-                <button class="btn" type="button" data-act="campAmtDiscAdd">新增一组</button>
+              <div class="section__head">
+                <div class="section__title">满金额折扣（满金额与折扣为必填，可添加多个组。）</div>
+                <div class="toolbar__actions">
+                  <button class="btn" type="button" data-act="campAmtDiscAdd">新增一组</button>
+                </div>
               </div>
               <div id="campAmountDiscountTable"></div>
 
               <div class="divider"></div>
+              ${goodsIsAllHtml}
+              <div id="campGoodsAllHideBox" style="${goodsIsAllValue === "是" ? "display:none;" : ""}">
               <div class="tabbar tabbar--underline" style="margin-bottom:10px;">
                 <button class="tabbtn ${goodsRange === "participate" ? "is-active" : ""}" type="button" data-act="campGoodsRange" data-id="participate">参与范围</button>
                 <button class="tabbtn ${goodsRange === "exclude" ? "is-active" : ""}" type="button" data-act="campGoodsRange" data-id="exclude">排除范围</button>
               </div>
 
               <div style="${goodsRange === "participate" ? "" : "display:none;"}">
-                <div class="form__row">
-                  <div class="field">
-                    <div class="field__label">名称</div>
-                    <input class="input" data-cw="goodsScope" data-field="keyword" value="${escapeHtml(String(d.goodsScope.keyword || ""))}" placeholder="按编码、名称查询" />
-                  </div>
-                </div>
-                <div class="tabbar" id="campGoodsTabs" style="margin-top: 10px;">${reduceParticipateTabsHtml}</div>
-                <div class="toolbar__actions" style="margin: 10px 0 12px 0;">
-                  <button class="btn" type="button" data-act="campGoodsAdd">新增一行</button>
-                  <button class="btn" type="button" data-act="campGoodsTpl">导入模版</button>
-                  <button class="btn btn--primary" type="button" data-act="campGoodsImport">导入</button>
-                  <button class="btn" type="button" data-act="campSelectGoodsTab">选择</button>
-                </div>
+                ${goodsParticipateQueryBarHtml}
                 <div id="campGoodsTable"></div>
               </div>
 
               <div style="${goodsRange === "exclude" ? "" : "display:none;"}">
-                <div class="tabbar" id="campExcludeRangeTabs" style="margin-top: 10px;">${reduceExcludeTabsHtml}</div>
-                <div class="toolbar__actions" style="margin: 10px 0 12px 0;">
-                  <button class="btn" type="button" data-act="campExcludeRangeAdd">新增一行</button>
-                  <button class="btn" type="button" data-act="campGoodsTpl">导入模版</button>
-                  <button class="btn btn--primary" type="button" data-act="campGoodsImport">导入</button>
-                  <button class="btn" type="button" data-act="campSelectExcludeTab">选择</button>
-                </div>
+                ${goodsExcludeQueryBarHtml}
                 <div id="campExcludeRangeTable"></div>
+              </div>
               </div>
             </div>
           </div>
@@ -8944,45 +9399,22 @@ function renderCampaignWizardPage(mode) {
         ? `
           <div class="wizard-step" data-step="${goodsStepNo}">
             <div class="form">
-              <div class="form__row">
-                <div class="field">
-                  <div class="field__label">倍数数量</div>
-                  <input class="input" data-cw="conditionScope" data-field="qtyThreshold" type="number" min="1" step="1" value="${escapeHtml(String((d.conditionScope && d.conditionScope.qtyThreshold) ?? ""))}" placeholder="如：倍数数量输入2，标识第二件5折扣" />
-                </div>
-              </div>
-
-              <div class="divider"></div>
+              ${goodsIsAllHtml}
+              <div id="campGoodsAllHideBox" style="${goodsIsAllValue === "是" ? "display:none;" : ""}">
               <div class="tabbar tabbar--underline" style="margin-bottom:10px;">
                 <button class="tabbtn ${goodsRange === "participate" ? "is-active" : ""}" type="button" data-act="campGoodsRange" data-id="participate">参与范围</button>
                 <button class="tabbtn ${goodsRange === "exclude" ? "is-active" : ""}" type="button" data-act="campGoodsRange" data-id="exclude">排除范围</button>
               </div>
 
               <div style="${goodsRange === "participate" ? "" : "display:none;"}">
-                <div class="form__row">
-                  <div class="field">
-                    <div class="field__label">名称</div>
-                    <input class="input" data-cw="goodsScope" data-field="keyword" value="${escapeHtml(String(d.goodsScope.keyword || ""))}" placeholder="按编码、名称查询" />
-                  </div>
-                </div>
-                <div class="tabbar" id="campGoodsTabs" style="margin-top: 10px;">${reduceParticipateTabsHtml}</div>
-                <div class="toolbar__actions" style="margin: 10px 0 12px 0;">
-                  <button class="btn" type="button" data-act="campGoodsAdd">新增一行</button>
-                  <button class="btn" type="button" data-act="campGoodsTpl">导入模版</button>
-                  <button class="btn btn--primary" type="button" data-act="campGoodsImport">导入</button>
-                  <button class="btn" type="button" data-act="campSelectGoodsTab">选择</button>
-                </div>
+                ${goodsParticipateQueryBarHtml}
                 <div id="campGoodsTable"></div>
               </div>
 
               <div style="${goodsRange === "exclude" ? "" : "display:none;"}">
-                <div class="tabbar" id="campExcludeRangeTabs" style="margin-top: 10px;">${reduceExcludeTabsHtml}</div>
-                <div class="toolbar__actions" style="margin: 10px 0 12px 0;">
-                  <button class="btn" type="button" data-act="campExcludeRangeAdd">新增一行</button>
-                  <button class="btn" type="button" data-act="campGoodsTpl">导入模版</button>
-                  <button class="btn btn--primary" type="button" data-act="campGoodsImport">导入</button>
-                  <button class="btn" type="button" data-act="campSelectExcludeTab">选择</button>
-                </div>
+                ${goodsExcludeQueryBarHtml}
                 <div id="campExcludeRangeTable"></div>
+              </div>
               </div>
             </div>
           </div>
@@ -9008,85 +9440,61 @@ function renderCampaignWizardPage(mode) {
               <div id="campOnePriceCondTable"></div>
               <div class="divider"></div>
               ` : ""}
-              <div class="form__row">
-                <div class="field">
-                  <div class="field__label">名称</div>
-                  <input class="input" data-cw="goodsScope" data-field="keyword" value="${escapeHtml(String(d.goodsScope.keyword || ""))}" placeholder="按编码、条码、名称、规格查询" />
-                </div>
+              <div class="section__head">
+                <div class="section__title">商品</div>
               </div>
-              <div class="divider"></div>
-              <div class="section__title">商品</div>
-              <div class="toolbar__actions" style="margin: 10px 0 12px 0;">
-                <button class="btn" type="button" data-act="campGoodsAdd">新增一行</button>
-                <button class="btn" type="button" data-act="campGoodsTpl">导入模版</button>
-                <button class="btn btn--primary" type="button" data-act="campGoodsImport">导入</button>
-                <button class="btn" type="button" data-act="campSelectGoodsTab">选择</button>
-              </div>
+              ${directDropQueryBarHtml}
               <div id="campGoodsTable"></div>
             </div>
           </div>
         ` : campaignIsVoucherGiftTemplate(tplSelected) ? `
           <div class="wizard-step" data-step="${goodsStepNo}">
             <div class="form">
-              <div class="section__title">参与范围</div>
-              <div class="form__row">
-                <div class="field">
-                  <div class="field__label">名称</div>
-                  <input class="input" data-cw="goodsScope" data-field="keyword" value="${escapeHtml(String(d.goodsScope.keyword || ""))}" placeholder="按编码、名称查询" />
+              ${goodsIsAllHtml}
+              <div id="campGoodsAllHideBox" style="${goodsIsAllValue === "是" ? "display:none;" : ""}">
+                <div class="tabbar tabbar--underline" style="margin-bottom:10px;">
+                  <button class="tabbtn ${goodsRange === "participate" ? "is-active" : ""}" type="button" data-act="campGoodsRange" data-id="participate">参与范围</button>
+                  <button class="tabbtn ${goodsRange === "exclude" ? "is-active" : ""}" type="button" data-act="campGoodsRange" data-id="exclude">排除范围</button>
+                </div>
+                <div style="${goodsRange === "participate" ? "" : "display:none;"}">
+                  ${goodsParticipateQueryBarHtml}
+                  <div id="campGoodsTable"></div>
+                </div>
+                <div style="${goodsRange === "exclude" ? "" : "display:none;"}">
+                  ${goodsExcludeQueryBarHtml}
+                  <div id="campExcludeRangeTable"></div>
                 </div>
               </div>
-              <div class="tabbar" id="campGoodsTabs" style="margin-top: 10px;">${reduceParticipateTabsHtml}</div>
-              <div class="toolbar__actions" style="margin: 10px 0 12px 0;">
-                <button class="btn" type="button" data-act="campGoodsAdd">新增一行</button>
-                <button class="btn" type="button" data-act="campGoodsTpl">导入模版</button>
-                <button class="btn btn--primary" type="button" data-act="campGoodsImport">导入</button>
-                <button class="btn" type="button" data-act="campSelectGoodsTab">选择</button>
-              </div>
-              <div id="campGoodsTable"></div>
-              <div class="divider"></div>
-              <div class="section__title">排除范围</div>
-              <div class="tabbar" id="campExcludeRangeTabs" style="margin-top: 10px;">${reduceExcludeTabsHtml}</div>
-              <div class="toolbar__actions" style="margin: 10px 0 12px 0;">
-                <button class="btn" type="button" data-act="campExcludeRangeAdd">新增一行</button>
-                <button class="btn" type="button" data-act="campSelectExcludeTab">选择</button>
-              </div>
-              <div id="campExcludeRangeTable"></div>
             </div>
           </div>
         ` : isTime ? `
           <div class="wizard-step" data-step="${goodsStepNo}">
             <div class="form">
+              <div class="section__head">
+                <div class="section__title">时段范围（开始时段/结束时段为必填，可新增多个时间段；折扣与时间段组合展示。）</div>
+                <div class="toolbar__actions">
+                  <button class="btn" type="button" data-act="campTimeAdd">新增一行</button>
+                </div>
+              </div>
+              <div id="campTimeRangesTable"></div>
+
+              <div class="divider"></div>
+              ${goodsIsAllHtml}
+              <div id="campGoodsAllHideBox" style="${goodsIsAllValue === "是" ? "display:none;" : ""}">
               <div class="tabbar tabbar--underline" style="margin-bottom:10px;">
                 <button class="tabbtn ${goodsRange === "participate" ? "is-active" : ""}" type="button" data-act="campGoodsRange" data-id="participate">参与范围</button>
                 <button class="tabbtn ${goodsRange === "exclude" ? "is-active" : ""}" type="button" data-act="campGoodsRange" data-id="exclude">排除范围</button>
               </div>
 
               <div style="${goodsRange === "participate" ? "" : "display:none;"}">
-                <div class="form__row">
-                  <div class="field">
-                    <div class="field__label">名称</div>
-                    <input class="input" data-cw="goodsScope" data-field="keyword" value="${escapeHtml(String(d.goodsScope.keyword || ""))}" placeholder="按编码、名称查询" />
-                  </div>
-                </div>
-                <div class="tabbar" id="campGoodsTabs" style="margin-top: 10px;">${reduceParticipateTabsHtml}</div>
-                <div class="toolbar__actions" style="margin: 10px 0 12px 0;">
-                  <button class="btn" type="button" data-act="campGoodsAdd">新增一行</button>
-                  <button class="btn" type="button" data-act="campGoodsTpl">导入模版</button>
-                  <button class="btn btn--primary" type="button" data-act="campGoodsImport">导入</button>
-                  <button class="btn" type="button" data-act="campSelectGoodsTab">选择</button>
-                </div>
+                ${goodsParticipateQueryBarHtml}
                 <div id="campGoodsTable"></div>
               </div>
 
               <div style="${goodsRange === "exclude" ? "" : "display:none;"}">
-                <div class="tabbar" id="campExcludeRangeTabs" style="margin-top: 10px;">${reduceExcludeTabsHtml}</div>
-                <div class="toolbar__actions" style="margin: 10px 0 12px 0;">
-                  <button class="btn" type="button" data-act="campExcludeRangeAdd">新增一行</button>
-                  <button class="btn" type="button" data-act="campGoodsTpl">导入模版</button>
-                  <button class="btn btn--primary" type="button" data-act="campGoodsImport">导入</button>
-                  <button class="btn" type="button" data-act="campSelectExcludeTab">选择</button>
-                </div>
+                ${goodsExcludeQueryBarHtml}
                 <div id="campExcludeRangeTable"></div>
+              </div>
               </div>
             </div>
           </div>
@@ -9110,18 +9518,23 @@ function renderCampaignWizardPage(mode) {
                 ${noDiscount ? "" : `<div class="form__row"><div class="field"><div class="field__label">折扣</div><input class="input" data-cw="goodsScope" data-field="discountAll" type="number" min="0" max="1" step="0.01" value="${escapeHtml(String(d.goodsScope.discountAll ?? ""))}" placeholder="输入后同步商品折扣" /></div></div>`}
 
                 <div class="section__title">参与范围</div>
-                <div class="tabbar" id="campGoodsTabs" style="margin-top: 10px;">${goodsTabs}</div>
-                <div class="toolbar__actions" style="margin: 10px 0 12px 0;">
-                  <button class="btn" type="button" data-act="campGoodsAdd">新增一行</button>
-                  <button class="btn" type="button" data-act="campGoodsTpl">导入模版</button>
-                  <button class="btn btn--primary" type="button" data-act="campGoodsImport">导入</button>
-                <button class="btn" type="button" data-act="campSelectGoodsTab">选择</button>
-                </div>
+                ${campaignWizardRenderQueryBar({
+                  tabsHtml: `<div class="tabbar" id="campGoodsTabs">${goodsTabs}</div>`,
+                  inputHtml: `<input class="input" data-cw="goodsScope" data-field="keyword" value="${goodsKeywordValue}" placeholder="按编码、名称查询" />`,
+                  actionsHtml: `
+                    <button class="btn btn--primary" type="button" data-act="campKeywordQuery" data-cw="goodsScope" data-field="keyword">查询</button>
+                    <button class="btn" type="button" data-act="campKeywordReset" data-cw="goodsScope" data-field="keyword">重置</button>
+                    <button class="btn" type="button" data-act="campGoodsAdd">新增一行</button>
+                    <button class="btn btn--primary" type="button" data-act="campGoodsImport">导入</button>
+                    <button class="btn" type="button" data-act="campSelectGoodsTab">选择</button>
+                  `
+                })}
                 <div id="campGoodsTable"></div>
               </div>
             </div>
           </div>
         `}
+        ${campStepActionsHtml}
       </div>
 
       <div class="detail-tab-panel ${campMainTab === "burden" ? "is-active" : ""}" data-tab="burden">
@@ -9189,6 +9602,7 @@ function renderCampaignWizardPage(mode) {
             </div>
           </div>
         `}
+        ${campStepActionsHtml}
       </div>
     </div>
   `;
@@ -9224,13 +9638,25 @@ function renderCampaignDetailPage(activityNo) {
   const gs = c.goodsScope || {};
   const detailTab = isDirectDrop ? "goods" : (AppState.ui.campaignDetail.goodsTab || gs.tab || "goods");
   const excludeTab = AppState.ui.campaignDetail.excludeTab || "excludeCategories";
+  const canEdit = c.status === "输入";
+  const canSubmit = c.status === "输入";
+  const canEffective = c.status === "审核";
+  const canCancelEffective = c.status === "生效" || c.status === "延期";
+  const canTerminate = c.status === "生效" || c.status === "延期";
+  const canDelay = c.status === "生效" || c.status === "延期";
+  const canVoid = c.status === "输入" || c.status === "审核";
+  const canDelete = c.status === "输入" || c.status === "作废";
   const ops = `
     <div class="op-inline">
-      ${c.status === "输入" ? `<button class="btn btn--primary" type="button" data-act="campEdit" data-id="${escapeHtml(c.activityNo)}">修改</button>` : `<button class="btn" type="button" disabled>修改</button>`}
-      ${c.status === "输入" ? `<button class="btn" type="button" data-act="campSubmit" data-id="${escapeHtml(c.activityNo)}">提交审核</button>` : `<button class="btn" type="button" disabled>提交审核</button>`}
-      ${c.status === "审核" ? `<button class="btn" type="button" data-act="campEffective" data-id="${escapeHtml(c.activityNo)}">生效</button>` : `<button class="btn" type="button" disabled>生效</button>`}
-      ${(c.status === "生效" || c.status === "延期") ? `<button class="btn" type="button" data-act="campDelay" data-id="${escapeHtml(c.activityNo)}">延期</button>` : `<button class="btn" type="button" disabled>延期</button>`}
-      ${(c.status === "生效" || c.status === "延期") ? `<button class="btn btn--danger" type="button" data-act="campTerminate" data-id="${escapeHtml(c.activityNo)}">终止</button>` : `<button class="btn" type="button" disabled>终止</button>`}
+      <button class="btn" type="button" data-act="campCopy" data-id="${escapeHtml(c.activityNo)}">复制</button>
+      ${canEdit ? `<button class="btn btn--primary" type="button" data-act="campEdit" data-id="${escapeHtml(c.activityNo)}">修改</button>` : `<button class="btn" type="button" disabled>修改</button>`}
+      ${canSubmit ? `<button class="btn" type="button" data-act="campSubmit" data-id="${escapeHtml(c.activityNo)}">提交审核</button>` : `<button class="btn" type="button" disabled>提交审核</button>`}
+      ${canEffective ? `<button class="btn" type="button" data-act="campEffective" data-id="${escapeHtml(c.activityNo)}">生效</button>` : `<button class="btn" type="button" disabled>生效</button>`}
+      ${canCancelEffective ? `<button class="btn" type="button" data-act="campCancelEffective" data-id="${escapeHtml(c.activityNo)}">取消生效</button>` : `<button class="btn" type="button" disabled>取消生效</button>`}
+      ${canDelay ? `<button class="btn" type="button" data-act="campDelay" data-id="${escapeHtml(c.activityNo)}">延期</button>` : `<button class="btn" type="button" disabled>延期</button>`}
+      ${canTerminate ? `<button class="btn btn--danger" type="button" data-act="campTerminate" data-id="${escapeHtml(c.activityNo)}">终止</button>` : `<button class="btn" type="button" disabled>终止</button>`}
+      ${canVoid ? `<button class="btn" type="button" data-act="campVoid" data-id="${escapeHtml(c.activityNo)}">作废</button>` : `<button class="btn" type="button" disabled>作废</button>`}
+      ${canDelete ? `<button class="btn btn--danger" type="button" data-act="campDelete" data-id="${escapeHtml(c.activityNo)}">删除</button>` : `<button class="btn btn--danger" type="button" disabled>删除</button>`}
     </div>
   `;
   const goodsTabs = [
@@ -9394,7 +9820,7 @@ function renderCampaignDetailPage(activityNo) {
     { k: "excludeSuppliers", t: "排除供货商" },
     { k: "excludeBrands", t: "排除品牌" }
   ];
-  const mulFlags = { includeDiscount: true, includeLimitQty: true, scopeDiscount: true, scopeLimitQty: true };
+  const mulFlags = { includeDiscount: true, includeLimitQty: true, scopeDiscount: true, scopeQtyThreshold: true, scopeLimitQty: true };
   const mulParticipateTab = AppState.ui.campaignDetail.qtyParticipateTab || "goods";
   const mulExcludeTab = AppState.ui.campaignDetail.qtyExcludeTab || "excludeGoods";
   const mulParticipateTabsHtml = mulParticipateTabDefs
@@ -9409,10 +9835,10 @@ function renderCampaignDetailPage(activityNo) {
   const mulParticipateRows = (Array.isArray(gs[mulParticipateTab]) ? gs[mulParticipateTab] : [])
     .map((x, idx) => {
       const td = (v) => `<td>${escapeHtml(String(v ?? ""))}</td>`;
-      if (mulParticipateTab === "categories") return `<tr>${td(idx + 1)}${td(x.catCode)}${td(x.catName)}${td(x.discount)}${td(x.limitQty)}</tr>`;
-      if (mulParticipateTab === "counters") return `<tr>${td(idx + 1)}${td(x.counterCode)}${td(x.ruleName)}${td(x.discount)}${td(x.limitQty)}</tr>`;
-      if (mulParticipateTab === "suppliers") return `<tr>${td(idx + 1)}${td(x.supplierCode)}${td(x.supplierName)}${td(x.discount)}${td(x.limitQty)}</tr>`;
-      if (mulParticipateTab === "brands") return `<tr>${td(idx + 1)}${td(x.brandCode)}${td(x.brandName)}${td(x.brandCat)}${td(x.discount)}${td(x.limitQty)}</tr>`;
+      if (mulParticipateTab === "categories") return `<tr>${td(idx + 1)}${td(x.catCode)}${td(x.catName)}${td(x.qtyThreshold)}${td(x.discount)}${td(x.limitQty)}</tr>`;
+      if (mulParticipateTab === "counters") return `<tr>${td(idx + 1)}${td(x.counterCode)}${td(x.ruleName)}${td(x.qtyThreshold)}${td(x.discount)}${td(x.limitQty)}</tr>`;
+      if (mulParticipateTab === "suppliers") return `<tr>${td(idx + 1)}${td(x.supplierCode)}${td(x.supplierName)}${td(x.qtyThreshold)}${td(x.discount)}${td(x.limitQty)}</tr>`;
+      if (mulParticipateTab === "brands") return `<tr>${td(idx + 1)}${td(x.brandCode)}${td(x.brandName)}${td(x.brandCat)}${td(x.qtyThreshold)}${td(x.discount)}${td(x.limitQty)}</tr>`;
       return `<tr>${td(x.skuCode)}${td(x.barcode)}${td(x.skuName)}${td(x.spec)}${td(x.unit)}${td(x.costPrice)}${td(x.price)}${td(x.discount)}${td(x.limitQty)}</tr>`;
     })
     .join("");
@@ -9531,7 +9957,7 @@ function renderCampaignDetailPage(activityNo) {
     .map((x) => `<button class="tabbtn ${x.k === giftPurchaseExcludeTab ? "is-active" : ""}" type="button" data-act="campDetailGiftPurchaseExcludeTab" data-id="${escapeHtml(x.k)}">${escapeHtml(x.t)}</button>`)
     .join("");
   const giftBuyHeaders = campaignGiftBuyRowHeaders(giftBuyTab, tpl).slice(0, -1);
-  const giftPurchaseHeaders = campaignGiftPurchaseHeaders(giftPurchaseTab).slice(0, -1);
+  const giftPurchaseHeaders = campaignGiftPurchaseHeaders(giftPurchaseTab, tpl).slice(0, -1);
   const giftSingle = giftScope.single || {};
   const giftSingleArr = Array.isArray(giftSingle[giftBuyTab]) ? giftSingle[giftBuyTab] : [];
   const giftBuyRows = giftSingleArr
@@ -9559,17 +9985,22 @@ function renderCampaignDetailPage(activityNo) {
   const giftPurchaseRows = giftPurchaseArr
     .map((x, idx) => {
       const td = (v) => `<td>${escapeHtml(String(v ?? ""))}</td>`;
-      if (giftPurchaseTab === "categories") return `<tr>${td(idx + 1)}${td(x.catCode)}${td(x.catName)}</tr>`;
-      if (giftPurchaseTab === "counters") return `<tr>${td(idx + 1)}${td(x.counterCode)}${td(x.ruleName)}</tr>`;
-      if (giftPurchaseTab === "suppliers") return `<tr>${td(idx + 1)}${td(x.supplierCode)}${td(x.supplierName)}</tr>`;
-      if (giftPurchaseTab === "brands") return `<tr>${td(idx + 1)}${td(x.brandCode)}${td(x.brandName)}${td(x.brandCat)}</tr>`;
+      const gifts = Array.isArray(x.gifts) ? x.gifts : [];
+      const giftList = gifts.length
+        ? table(
+            ["赠品编码", "赠品条码", "赠品名称", "赠品售价", "赠品数量"],
+            gifts
+              .map((g) => `<tr><td class="mono">${escapeHtml(g.giftCode || "")}</td><td class="mono">${escapeHtml(g.giftBarcode || "")}</td><td>${escapeHtml(g.giftName || "")}</td><td class="mono">${escapeHtml(String(g.giftPrice ?? ""))}</td><td class="mono">${escapeHtml(String(g.giftQty ?? ""))}</td></tr>`)
+              .join("")
+          )
+        : `<div class="empty">暂无赠品</div>`;
+      if (giftPurchaseTab === "categories") return `<tr>${td(idx + 1)}${td(x.buyCatCode)}${td(x.buyCatName)}${td(x.threshold)}<td>${giftList}</td></tr>`;
+      if (giftPurchaseTab === "counters") return `<tr>${td(idx + 1)}${td(x.buyCounterCode)}${td(x.buyRuleName)}${td(x.threshold)}<td>${giftList}</td></tr>`;
+      if (giftPurchaseTab === "suppliers") return `<tr>${td(idx + 1)}${td(x.buySupplierCode)}${td(x.buySupplierName)}${td(x.threshold)}<td>${giftList}</td></tr>`;
+      if (giftPurchaseTab === "brands") return `<tr>${td(idx + 1)}${td(x.buyBrandCode)}${td(x.buyBrandName)}${td(x.threshold)}<td>${giftList}</td></tr>`;
       if (giftPurchaseTab === "excludeGoods") return `<tr>${td(idx + 1)}${td(x.skuCode)}${td(x.barcode)}${td(x.skuName)}${td(x.shortName)}${td(x.spec)}${td(x.unit)}${td(x.price)}</tr>`;
-      return `<tr>${td(x.buyCode)}${td(x.buyBarcode)}${td(x.buyName)}${td(x.buySpec)}${td(x.buyUnit)}${td(x.buyPrice)}</tr>`;
+      return `<tr>${td(x.buyCode)}${td(x.buyBarcode)}${td(x.buyName)}${td(x.buyPrice)}${td(x.threshold)}<td>${giftList}</td></tr>`;
     })
-    .join("");
-  const rewardArr = Array.isArray(giftScope.multiGifts) ? giftScope.multiGifts : [];
-  const rewardRows = rewardArr
-    .map((g) => `<tr><td class="mono">${escapeHtml(g.giftCode || "")}</td><td class="mono">${escapeHtml(g.giftBarcode || "")}</td><td>${escapeHtml(g.giftName || "")}</td><td class="mono">${escapeHtml(String(g.giftPrice ?? ""))}</td><td class="mono">${escapeHtml(String(g.giftQty ?? ""))}</td></tr>`)
     .join("");
   const giftExcludeFlags = { includeDiscount: false, includeLimitQty: false, scopeDiscount: false, scopeLimitQty: false };
   const giftBuyExcludeHeaders = campaignWizardGoodsHeaders(giftBuyExcludeTab, giftExcludeFlags);
@@ -9615,16 +10046,12 @@ function renderCampaignDetailPage(activityNo) {
         `
         : `
           <div class="section__title">购买信息</div>
-          ${kvHtml([[giftThresholdLabel, escapeHtml(String(mp.threshold ?? "—"))]])}
           <div class="tabbar" style="margin-top:10px;">${giftPurchaseTabs}</div>
           ${table(giftPurchaseHeaders, giftPurchaseRows || `<tr><td colspan="${giftPurchaseHeaders.length}"><div class="empty">暂无数据</div></td></tr>`)}
           <div class="divider"></div>
           <div class="section__title">排除范围</div>
           <div class="tabbar" style="margin-top:10px;">${giftPurchaseExcludeTabs}</div>
           ${table(giftPurchaseExcludeHeaders, giftPurchaseExcludeRows || `<tr><td colspan="${giftPurchaseExcludeHeaders.length}"><div class="empty">暂无数据</div></td></tr>`)}
-          <div class="divider"></div>
-          <div class="section__title">赠品信息</div>
-          ${table(["赠品编码", "赠品条码", "赠品名称", "赠品售价", "赠品数量"], rewardRows || `<tr><td colspan="5"><div class="empty">暂无数据</div></td></tr>`)}
         `}
       <div class="divider"></div>
       <div class="section__title">步骤五：承担规则</div>
@@ -9701,7 +10128,7 @@ function renderCampaignDetailPage(activityNo) {
   const mainTabBar = `<div class="tabbar tabbar--underline">${mainTabs.map(x => `<button class="tabbtn ${x.k === mainTab ? "is-active" : ""}" type="button" data-act="campDetailTab" data-id="${escapeHtml(x.k)}">${escapeHtml(x.t)}</button>`).join("")}</div>`;
 
   const basicPanel = `
-    ${detailSectionHtml("基础信息", kvHtml([
+    ${detailSectionHtml((isGift || isAmountAddOn || isQtyAddOn) ? "步骤一：基础信息" : "基础信息", kvHtml([
       ["活动编码", `<span class="mono">${escapeHtml(c.activityNo || "—")}</span>`],
       ["活动主题", escapeHtml(c.activitySubject || "—")],
       ["活动模版", `<span class="mono">${escapeHtml(c.templateNo || "—")}</span> ${escapeHtml(c.templateName || "")}`.trim()],
@@ -9716,7 +10143,7 @@ function renderCampaignDetailPage(activityNo) {
   `;
 
   const scopePanel = `
-    ${detailSectionHtml("用户范围", kvHtml([
+    ${detailSectionHtml((isGift || isAmountAddOn || isQtyAddOn) ? "步骤二：用户范围" : "用户范围", kvHtml([
       ["渠道范围", escapeHtml((c.scope && c.scope.channel) || "—")],
       ["用户范围", escapeHtml((c.scope && c.scope.userScope) || "—")]
     ]))}
@@ -9733,7 +10160,7 @@ function renderCampaignDetailPage(activityNo) {
   `;
 
   const storePanel = `
-    ${detailSectionHtml("门店范围", `
+    ${detailSectionHtml((isGift || isAmountAddOn || isQtyAddOn) ? "步骤三：门店范围" : "门店范围", `
       ${kvHtml([["门店类型", escapeHtml((c.storeScope && c.storeScope.storeType) || "—")]])}
       ${(c.storeScope && c.storeScope.storeType) === "价格组"
         ? table(
@@ -9773,8 +10200,8 @@ function renderCampaignDetailPage(activityNo) {
     ${isQty ? `` : ""}
     ${isReduce ? `${detailSectionHtml("步骤四：条件范围", kvHtml([["活动互斥", escapeHtml(String(rs.mutex || "否"))], ["满减方式", escapeHtml(String(rs.mode || "—"))], ["优惠方式", escapeHtml(String(rs.discountType || "金额"))]]))}${detailSectionHtml(`${escapeHtml(reduceFullLabel)} / ${escapeHtml(String(rs.discountType || "金额") === "比例" ? "减比例" : reduceCutLabel)}`, table(["序号", reduceFullLabel, String(rs.discountType || "金额") === "比例" ? "减比例" : reduceCutLabel], reduceRows || `<tr><td colspan="3"><div class="empty">暂无数据</div></td></tr>`))}` : ""}
     ${isQtyReduce ? `${detailSectionHtml("步骤四：条件范围", kvHtml([["活动互斥", escapeHtml(String(rs.mutex || "否"))], ["满减方式", escapeHtml(String(rs.mode || "—"))], ["优惠方式", escapeHtml(String(rs.discountType || "金额"))]]))}${detailSectionHtml(`${escapeHtml(reduceFullLabel)} / ${escapeHtml(String(rs.discountType || "金额") === "比例" ? "减比例" : reduceCutLabel)}`, table(["序号", reduceFullLabel, String(rs.discountType || "金额") === "比例" ? "减比例" : reduceCutLabel], reduceRows || `<tr><td colspan="3"><div class="empty">暂无数据</div></td></tr>`))}` : ""}
-    ${isAmountAddOn ? `${detailSectionHtml("条件范围", kvHtml([["活动互斥", escapeHtml(String(rs.mutex || "否"))], ["换购方式", escapeHtml(String(rs.mode || "—"))], ["阶梯循环", escapeHtml(String(rs.ladderLoop || "是"))]]))}${detailSectionHtml("购买金额", table(["序号", "满金额", "减金额"], reduceRows || `<tr><td colspan="3"><div class="empty">暂无数据</div></td></tr>`))}` : ""}
-    ${isQtyAddOn ? `${detailSectionHtml("条件范围", kvHtml([["活动互斥", escapeHtml(String(rs.mutex || "否"))], ["换购方式", escapeHtml(String(rs.mode || "—"))], ["阶梯循环", escapeHtml(String(rs.ladderLoop || "是"))]]))}${detailSectionHtml("购买数量", table(["序号", "满数量", "减数量"], reduceRows || `<tr><td colspan="3"><div class="empty">暂无数据</div></td></tr>`))}` : ""}
+    ${isAmountAddOn ? `` : ""}
+    ${isQtyAddOn ? `` : ""}
     ${(campaignIsAmountVoucherGiftTemplate(tpl) || campaignIsQtyVoucherGiftTemplate(tpl)) ? `${detailSectionHtml("步骤四：条件范围", kvHtml([["活动互斥", escapeHtml(String(rs.mutex || "否"))], ["赠券方式", escapeHtml(String(rs.mode || "—"))]]))}${detailSectionHtml("参与支付方式", table(["序号", "支付方式编码", "支付方式名称"], ((c.voucherGiftScope && c.voucherGiftScope.payMethods) || []).map((x, idx) => `<tr><td>${idx + 1}</td><td class="mono">${escapeHtml(x.code)}</td><td>${escapeHtml(x.name)}</td></tr>`).join("") || `<tr><td colspan="3"><div class="empty">暂无数据</div></td></tr>`))}` : ""}
     ${!isTime && !isMultiple && !isAmount && !isQty && !isReduce && !isQtyReduce && !isGift && !isAddOn && !campaignIsVoucherGiftTemplate(tpl) ? `<div class="empty">当前活动类型无额外条件范围（原型演示）</div>` : ""}
   `;
@@ -9854,20 +10281,34 @@ function renderCampaignDetailPage(activityNo) {
       })()
     : isGift
     ? `
-      ${detailSectionHtml("商品范围（满赠）", kvHtml([["活动互斥", escapeHtml(String(giftScope.mutex || "否"))], ["满赠方式", escapeHtml(giftMode)], ["赠送方式", escapeHtml(giftWay)], ["购买范围", escapeHtml(giftPurchaseRange)]]))}
-      ${giftPurchaseRange === "单组"
-        ? `${detailSectionHtml("买赠信息", `
+      ${detailSectionHtml("步骤四：商品范围", `
+        ${kvHtml([["活动互斥", escapeHtml(String(giftScope.mutex || "否"))], ["满赠方式", escapeHtml(giftMode)], ["赠送方式", escapeHtml(giftWay)], ["购买范围", escapeHtml(giftPurchaseRange)]])}
+        <div class="divider"></div>
+        ${giftPurchaseRange === "单组"
+          ? `
+            <div class="section__title">买赠信息</div>
             <div class="tabbar" style="margin-top:10px;">${giftBuyTabs}</div>
             ${table(giftBuyHeaders, giftBuyRows || `<tr><td colspan="${giftBuyHeaders.length}"><div class="empty">暂无数据</div></td></tr>`)}
-          `)}`
-        : `
-          ${detailSectionHtml("购买信息", `
+            <div class="divider"></div>
+            <div class="section__title">排除范围</div>
+            <div class="tabbar" style="margin-top:10px;">${giftBuyExcludeTabs}</div>
+            ${table(giftBuyExcludeHeaders, giftBuyExcludeRows || `<tr><td colspan="${giftBuyExcludeHeaders.length}"><div class="empty">暂无数据</div></td></tr>`)}
+          `
+          : `
+            <div class="section__title">购买信息</div>
             ${kvHtml([[giftThresholdLabel, escapeHtml(String(mp.threshold ?? "—"))]])}
             <div class="tabbar" style="margin-top:10px;">${giftPurchaseTabs}</div>
             ${table(giftPurchaseHeaders, giftPurchaseRows || `<tr><td colspan="${giftPurchaseHeaders.length}"><div class="empty">暂无数据</div></td></tr>`)}
-          `)}
-          ${detailSectionHtml("赠品信息", table(["赠品编码", "赠品条码", "赠品名称", "赠品售价", "赠品数量"], rewardRows || `<tr><td colspan="5"><div class="empty">暂无数据</div></td></tr>`))}
-        `}
+            <div class="divider"></div>
+            <div class="section__title">排除范围</div>
+            <div class="tabbar" style="margin-top:10px;">${giftPurchaseExcludeTabs}</div>
+            ${table(giftPurchaseExcludeHeaders, giftPurchaseExcludeRows || `<tr><td colspan="${giftPurchaseExcludeHeaders.length}"><div class="empty">暂无数据</div></td></tr>`)}
+            <div class="divider"></div>
+            <div class="section__title">赠品信息</div>
+            ${table(["赠品编码", "赠品条码", "赠品名称", "赠品售价", "赠品数量"], rewardRows || `<tr><td colspan="5"><div class="empty">暂无数据</div></td></tr>`)}
+          `
+        }
+      `)}
     `
     : isAmountAddOn
     ? `
@@ -10035,7 +10476,7 @@ function renderCampaignDetailPage(activityNo) {
     : isMultiple
     ? `
       ${detailSectionHtml("步骤五：商品范围", `
-        ${kvHtml([["倍数数量", escapeHtml(String(cs.qtyThreshold ?? "—"))], ["名称", escapeHtml(String((c.goodsScope && c.goodsScope.keyword) || ""))]])}
+        ${kvHtml([["名称", escapeHtml(String((c.goodsScope && c.goodsScope.keyword) || ""))]])}
         <div class="divider"></div>
         <div class="tabbar tabbar--underline" style="margin-bottom:10px;">
           <button class="tabbtn ${(AppState.ui.campaignDetail.goodsRange || "participate") === "participate" ? "is-active" : ""}" type="button" data-act="campDetailGoodsRange" data-id="participate">参与范围</button>
@@ -10131,7 +10572,7 @@ function renderCampaignDetailPage(activityNo) {
   const burdenPanel = (campaignIsAmountVoucherGiftTemplate(tpl) || campaignIsQtyVoucherGiftTemplate(tpl))
     ? `${detailSectionHtml("步骤六：奖励券信息", vgCombosHtml || `<div class="empty">暂无数据</div>`)}`
     : `
-    ${detailSectionHtml("承担规则", kvHtml([
+    ${detailSectionHtml((isGift || isAmountAddOn || isQtyAddOn) ? "步骤五：承担规则" : "承担规则", kvHtml([
       ["承担方式", escapeHtml((c.burden && c.burden.method) || "—")],
       ...((isAddOn || isGift) ? [["买方供货商", escapeHtml(String((c.burden && c.burden.buyerSupplier) || ""))], [isGift ? "赠方供货商" : "换方供货商", escapeHtml(String((c.burden && c.burden.exchangeSupplier) || ""))]] : []),
       ...(!isGift ? [["供货商承担", escapeHtml(String((c.burden && c.burden.supplier) || ""))]] : []),
@@ -10159,9 +10600,15 @@ function renderCampaignDetailPage(activityNo) {
           { label: "活动周期", value: escapeHtml(campaignCycleText(c)) }
         ],
         actions: [
-          ...(c.status === "输入" ? [`<button class="btn btn--primary" type="button" data-act="campEdit" data-id="${escapeHtml(c.activityNo)}">修改</button>`, `<button class="btn" type="button" data-act="campSubmit" data-id="${escapeHtml(c.activityNo)}">提交审核</button>`] : [`<button class="btn" type="button" disabled>修改</button>`, `<button class="btn" type="button" disabled>提交审核</button>`]),
-          ...(c.status === "审核" ? [`<button class="btn" type="button" data-act="campEffective" data-id="${escapeHtml(c.activityNo)}">生效</button>`] : [`<button class="btn" type="button" disabled>生效</button>`]),
-          ...(c.status === "生效" || c.status === "延期" ? [`<button class="btn" type="button" data-act="campDelay" data-id="${escapeHtml(c.activityNo)}">延期</button>`, `<button class="btn btn--danger" type="button" data-act="campTerminate" data-id="${escapeHtml(c.activityNo)}">终止</button>`] : [`<button class="btn" type="button" disabled>延期</button>`, `<button class="btn btn--danger" type="button" disabled>终止</button>`])
+          `<button class="btn" type="button" data-act="campCopy" data-id="${escapeHtml(c.activityNo)}">复制</button>`,
+          ...(canEdit ? [`<button class="btn btn--primary" type="button" data-act="campEdit" data-id="${escapeHtml(c.activityNo)}">修改</button>`] : [`<button class="btn" type="button" disabled>修改</button>`]),
+          ...(canSubmit ? [`<button class="btn" type="button" data-act="campSubmit" data-id="${escapeHtml(c.activityNo)}">提交审核</button>`] : [`<button class="btn" type="button" disabled>提交审核</button>`]),
+          ...(canEffective ? [`<button class="btn" type="button" data-act="campEffective" data-id="${escapeHtml(c.activityNo)}">生效</button>`] : [`<button class="btn" type="button" disabled>生效</button>`]),
+          ...(canCancelEffective ? [`<button class="btn" type="button" data-act="campCancelEffective" data-id="${escapeHtml(c.activityNo)}">取消生效</button>`] : [`<button class="btn" type="button" disabled>取消生效</button>`]),
+          ...(canDelay ? [`<button class="btn" type="button" data-act="campDelay" data-id="${escapeHtml(c.activityNo)}">延期</button>`] : [`<button class="btn" type="button" disabled>延期</button>`]),
+          ...(canTerminate ? [`<button class="btn btn--danger" type="button" data-act="campTerminate" data-id="${escapeHtml(c.activityNo)}">终止</button>`] : [`<button class="btn btn--danger" type="button" disabled>终止</button>`]),
+          ...(canVoid ? [`<button class="btn" type="button" data-act="campVoid" data-id="${escapeHtml(c.activityNo)}">作废</button>`] : [`<button class="btn" type="button" disabled>作废</button>`]),
+          ...(canDelete ? [`<button class="btn btn--danger" type="button" data-act="campDelete" data-id="${escapeHtml(c.activityNo)}">删除</button>`] : [`<button class="btn btn--danger" type="button" disabled>删除</button>`])
         ]
       })}
       ${mainTabBar}
@@ -10769,9 +11216,59 @@ function openGmPayDetail(code) {
 }
 
 function renderGmCategoryPage(kind) {
-  const isOnline = kind === "online";
-  const ui = isOnline ? AppState.ui.gm.onlineCat : AppState.ui.gm.offlineCat;
-  const data = isOnline ? AppState.data.gmOnlineCategories : AppState.data.gmOfflineCategories;
+  const cfg = {
+    online: {
+      uiKey: "onlineCat",
+      dataKey: "gmOnlineCategories",
+      rowKey: "gmOnlineCat",
+      queryAct: "gmOnlineCatQuery",
+      resetAct: "gmOnlineCatReset",
+      qId: "gmOnlineCatQ",
+      statusId: "gmOnlineCatStatus",
+      listTitle: "线上类别列表"
+    },
+    offline: {
+      uiKey: "offlineCat",
+      dataKey: "gmOfflineCategories",
+      rowKey: "gmOfflineCat",
+      queryAct: "gmOfflineCatQuery",
+      resetAct: "gmOfflineCatReset",
+      qId: "gmOfflineCatQ",
+      statusId: "gmOfflineCatStatus",
+      listTitle: "线下类别列表"
+    },
+    deptOnline: {
+      uiKey: "deptOnlineCat",
+      dataKey: "gmOnlineCategories",
+      rowKey: "gmDeptOnlineCat",
+      queryAct: "gmDeptOnlineCatQuery",
+      resetAct: "gmDeptOnlineCatReset",
+      qId: "gmDeptOnlineCatQ",
+      statusId: "gmDeptOnlineCatStatus",
+      listTitle: "百货线上类别列表"
+    },
+    deptOffline: {
+      uiKey: "deptOfflineCat",
+      dataKey: "gmOfflineCategories",
+      rowKey: "gmDeptOfflineCat",
+      queryAct: "gmDeptOfflineCatQuery",
+      resetAct: "gmDeptOfflineCatReset",
+      qId: "gmDeptOfflineCatQ",
+      statusId: "gmDeptOfflineCatStatus",
+      listTitle: "百货线下类别列表"
+    }
+  }[kind] || {
+    uiKey: "onlineCat",
+    dataKey: "gmOnlineCategories",
+    rowKey: "gmOnlineCat",
+    queryAct: "gmOnlineCatQuery",
+    resetAct: "gmOnlineCatReset",
+    qId: "gmOnlineCatQ",
+    statusId: "gmOnlineCatStatus",
+    listTitle: "线上类别列表"
+  };
+  const ui = AppState.ui.gm[cfg.uiKey];
+  const data = AppState.data[cfg.dataKey];
   const list = (data || []).filter((x) => {
     const q = String(ui.q || "").trim();
     if (q) {
@@ -10784,23 +11281,23 @@ function renderGmCategoryPage(kind) {
   const filtersHtml = `
     <div class="field">
       <div class="field__label">关键字</div>
-      <input class="input" id="${isOnline ? "gmOnlineCatQ" : "gmOfflineCatQ"}" value="${escapeHtml(ui.q)}" placeholder="类别编码/名称" />
+      <input class="input" id="${cfg.qId}" value="${escapeHtml(ui.q)}" placeholder="类别编码/名称" />
     </div>
     <div class="field">
       <div class="field__label">状态</div>
-      <select class="select" id="${isOnline ? "gmOnlineCatStatus" : "gmOfflineCatStatus"}">
+      <select class="select" id="${cfg.statusId}">
         ${["全部", "启用", "停用"].map((x) => `<option ${x === ui.status ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}
       </select>
     </div>
   `;
   const actionsHtml = `
-    <button class="btn btn--primary" type="button" data-act="${isOnline ? "gmOnlineCatQuery" : "gmOfflineCatQuery"}">查询</button>
-    <button class="btn" type="button" data-act="${isOnline ? "gmOnlineCatReset" : "gmOfflineCatReset"}">重置</button>
+    <button class="btn btn--primary" type="button" data-act="${cfg.queryAct}">查询</button>
+    <button class="btn" type="button" data-act="${cfg.resetAct}">重置</button>
   `;
   const rows = list
     .map((x, idx) => {
       return `
-        <tr data-row="${isOnline ? "gmOnlineCat" : "gmOfflineCat"}" data-id="${escapeHtml(x.catCode)}">
+        <tr data-row="${cfg.rowKey}" data-id="${escapeHtml(x.catCode)}">
           <td>${idx + 1}</td>
           <td class="mono"><a class="link" href="javascript:void(0)">${escapeHtml(x.catCode)}</a></td>
           <td>${escapeHtml(x.catName)}</td>
@@ -10817,7 +11314,7 @@ function renderGmCategoryPage(kind) {
   return listPageLayout({
     filtersHtml,
     filterActionsHtml: actionsHtml,
-    listTitle: (kind === "online" ? "线上类别列表" : "线下类别列表"),
+    listTitle: cfg.listTitle,
     tableHtml: table(headers, rows || `<tr><td colspan="${headers.length}"><div class="empty">暂无数据</div></td></tr>`),
     footerHtml: footerbar(`共 ${list.length} 条`, "第 1 页")
   });
@@ -11790,7 +12287,6 @@ function renderVoucherThemeWizardPage(mode) {
           <div class="hint">参与对象：门店范围。表格支持模版导入（原型演示）。</div>
           <div class="toolbar__actions" style="margin: 10px 0 12px 0;">
             <button class="btn" type="button" data-act="vtStoreAdd">新增一行</button>
-            <button class="btn" type="button" data-act="vtStoreTpl">导入模版</button>
             <button class="btn btn--primary" type="button" data-act="vtStoreImport">导入</button>
           </div>
           <div id="vtStoreTable"></div>
@@ -11808,7 +12304,6 @@ function renderVoucherThemeWizardPage(mode) {
           </div>
           <div class="toolbar__actions" style="margin: 10px 0 12px 0;">
             <button class="btn" type="button" data-act="vtScopeAdd">新增一行</button>
-            <button class="btn" type="button" data-act="vtScopeTpl">导入模版</button>
             <button class="btn btn--primary" type="button" data-act="vtScopeImport">导入</button>
           </div>
           <div id="vtScopeTable"></div>
@@ -11823,7 +12318,6 @@ function renderVoucherThemeWizardPage(mode) {
           </div>
           <div class="toolbar__actions" style="margin: 10px 0 12px 0;">
             <button class="btn" type="button" data-act="vtBillAdd">新增一行</button>
-            <button class="btn" type="button" data-act="vtBillTpl">导入模版</button>
             <button class="btn btn--primary" type="button" data-act="vtBillImport">导入</button>
           </div>
           <div id="vtBillTable"></div>
@@ -13109,6 +13603,8 @@ function render() {
   else if (r === "/gm-pay") html = renderGmPayPage();
   else if (r === "/gm-online-cat") html = renderGmCategoryPage("online");
   else if (r === "/gm-offline-cat") html = renderGmCategoryPage("offline");
+  else if (r === "/gm-dept-online-cat") html = renderGmCategoryPage("deptOnline");
+  else if (r === "/gm-dept-offline-cat") html = renderGmCategoryPage("deptOffline");
   else if (r === "/gm-brands") html = renderGmBrandsPage();
   else if (r === "/gm-suppliers") html = renderGmSuppliersPage();
   else if (r === "/gm-stores") html = renderGmStoresPage();
@@ -13173,6 +13669,8 @@ function bindPageEvents(r) {
       if (row === "gmPay") return openGmPayDetail(id);
       if (row === "gmOnlineCat") return openGmCategoryDetail("online", id);
       if (row === "gmOfflineCat") return openGmCategoryDetail("offline", id);
+      if (row === "gmDeptOnlineCat") return openGmCategoryDetail("online", id);
+      if (row === "gmDeptOfflineCat") return openGmCategoryDetail("offline", id);
       if (row === "gmBrands") return openGmBrandDetail(id);
       if (row === "gmSuppliers") return openGmSupplierDetail(id);
       if (row === "gmStores") return openGmStoreDetail(id);
@@ -13531,6 +14029,34 @@ function handleAction(r, act, btn) {
       return;
     }
   }
+  if (r === "/gm-dept-online-cat") {
+    if (act === "gmDeptOnlineCatQuery") {
+      AppState.ui.gm.deptOnlineCat.q = document.getElementById("gmDeptOnlineCatQ") ? document.getElementById("gmDeptOnlineCatQ").value : "";
+      AppState.ui.gm.deptOnlineCat.status = document.getElementById("gmDeptOnlineCatStatus") ? document.getElementById("gmDeptOnlineCatStatus").value : "全部";
+      render();
+      toast("查询完成（原型演示）");
+      return;
+    }
+    if (act === "gmDeptOnlineCatReset") {
+      AppState.ui.gm.deptOnlineCat = { q: "", status: "全部" };
+      render();
+      return;
+    }
+  }
+  if (r === "/gm-dept-offline-cat") {
+    if (act === "gmDeptOfflineCatQuery") {
+      AppState.ui.gm.deptOfflineCat.q = document.getElementById("gmDeptOfflineCatQ") ? document.getElementById("gmDeptOfflineCatQ").value : "";
+      AppState.ui.gm.deptOfflineCat.status = document.getElementById("gmDeptOfflineCatStatus") ? document.getElementById("gmDeptOfflineCatStatus").value : "全部";
+      render();
+      toast("查询完成（原型演示）");
+      return;
+    }
+    if (act === "gmDeptOfflineCatReset") {
+      AppState.ui.gm.deptOfflineCat = { q: "", status: "全部" };
+      render();
+      return;
+    }
+  }
   if (r === "/gm-brands") {
     if (act === "gmBrandsQuery") {
       AppState.ui.gm.brands.q = document.getElementById("gmBrandsQ") ? document.getElementById("gmBrandsQ").value : "";
@@ -13801,7 +14327,12 @@ function handleAction(r, act, btn) {
       openModal({
         title: "导入门店范围",
         subtitle: "原型演示：确认后写入示例数据",
-        bodyHtml: `<div class="hint">将使用导入模版的表头字段进行导入。</div>`,
+        bodyHtml: `
+          <div class="toolbar__actions" style="margin: 0 0 10px 0;">
+            <button class="btn" type="button" data-act="vtStoreTpl">下载导入模版</button>
+          </div>
+          <div class="hint">将使用导入模版的表头字段进行导入。</div>
+        `,
         primaryText: "确认导入",
         secondaryText: "取消",
         onPrimary: () => {
@@ -13836,7 +14367,12 @@ function handleAction(r, act, btn) {
       openModal({
         title: "导入参与范围",
         subtitle: "原型演示：确认后写入示例数据",
-        bodyHtml: `<div class="hint">当前导入维度：${escapeHtml(tab)}</div>`,
+        bodyHtml: `
+          <div class="toolbar__actions" style="margin: 0 0 10px 0;">
+            <button class="btn" type="button" data-act="vtScopeTpl">下载导入模版</button>
+          </div>
+          <div class="hint">当前导入维度：${escapeHtml(tab)}</div>
+        `,
         primaryText: "确认导入",
         secondaryText: "取消",
         onPrimary: () => {
@@ -13872,7 +14408,12 @@ function handleAction(r, act, btn) {
       openModal({
         title: "导入计费规则",
         subtitle: "原型演示：确认后写入示例数据",
-        bodyHtml: `<div class="hint">当前导入：${escapeHtml(tab)}</div>`,
+        bodyHtml: `
+          <div class="toolbar__actions" style="margin: 0 0 10px 0;">
+            <button class="btn" type="button" data-act="vtBillTpl">下载导入模版</button>
+          </div>
+          <div class="hint">当前导入：${escapeHtml(tab)}</div>
+        `,
         primaryText: "确认导入",
         secondaryText: "取消",
         onPrimary: () => {
@@ -14360,8 +14901,31 @@ function handleAction(r, act, btn) {
     if (act === "planImport") return toast("导入：支持下载模版与一次性导入年度档期（原型演示）");
   }
   if (r === "/schedule-plan-create") {
-    if (act === "planDownloadTpl") return toast("已下载导入模版（原型演示）");
-    if (act === "planImport") return toast("已打开导入对话框（原型演示）");
+    if (act === "planDownloadTpl") {
+      const csv = ["档期年度,档期分类,档期年度数,备注", `${new Date().getFullYear()},常规档期,12,`].join("\n");
+      downloadTextFile("年度档期导入模版.csv", csv, "text/csv;charset=utf-8");
+      toast("已下载导入模版（原型演示）");
+      return;
+    }
+    if (act === "planImport") {
+      openModal({
+        title: "导入年度档期",
+        subtitle: "原型演示：建议先下载导入模版，按模版维护后导入",
+        bodyHtml: `
+          <div class="toolbar__actions" style="margin: 0 0 10px 0;">
+            <button class="btn" type="button" data-act="planDownloadTpl">下载导入模版</button>
+          </div>
+          <div class="hint">此处不解析真实文件，点击确认将写入示例数据。</div>
+        `,
+        primaryText: "确认导入",
+        secondaryText: "取消",
+        onPrimary: () => {
+          closeModal();
+          toast("导入完成（原型演示）");
+        }
+      });
+      return;
+    }
     if (act === "planSaveAnnual") {
       const year = normalizeNumber(document.getElementById("planYear") ? document.getElementById("planYear").value : "", 0);
       const category = document.getElementById("planCategory") ? document.getElementById("planCategory").value : "";
@@ -14727,7 +15291,12 @@ function handleAction(r, act, btn) {
       openModal({
         title: "导入",
         subtitle: "原型演示：此处不解析真实文件，点击确认将写入示例数据",
-        bodyHtml: `<div class="hint">建议：先下载导入模版，按模版维护后导入。</div>`,
+        bodyHtml: `
+          <div class="toolbar__actions" style="margin: 0 0 10px 0;">
+            <button class="btn" type="button" data-act="planPromoDownloadTpl" data-target="${escapeHtml(target)}">下载导入模版</button>
+          </div>
+          <div class="hint">建议：先下载导入模版，按模版维护后导入。</div>
+        `,
         primaryText: "确认导入",
         onPrimary: () => {
           const md = AppState.data.masterData || {};
@@ -14853,6 +15422,12 @@ function handleAction(r, act, btn) {
     }
   }
   if (r === "/assortment") {
+    if (act === "asView") {
+      const id = btn.getAttribute("data-id") || "";
+      AppState.ui.assortment.summaryActualId = id;
+      location.hash = "#/assortment-summary";
+      return;
+    }
     if (act === "asNew") {
       AppState.ui.assortment.editingDocNo = "";
       AppState.ui.assortment.draftLines = [];
@@ -14934,7 +15509,12 @@ function handleAction(r, act, btn) {
       openModal({
         title: "导入选品明细",
         subtitle: "原型演示：点击确认将导入示例商品",
-        bodyHtml: `<div class="hint">请先下载导入模版，按模版维护后导入。</div>`,
+        bodyHtml: `
+          <div class="toolbar__actions" style="margin: 0 0 10px 0;">
+            <button class="btn" type="button" data-act="asDownloadLinesTpl">下载导入模版</button>
+          </div>
+          <div class="hint">请先下载导入模版，按模版维护后导入。</div>
+        `,
         primaryText: "确认导入",
         onPrimary: () => {
           const md = AppState.data.masterData || {};
@@ -15201,6 +15781,42 @@ function handleAction(r, act, btn) {
   }
   if (r === "/campaigns" || r === "/campaigns-discount" || r.startsWith("/campaigns-pt/") || r.startsWith("/campaigns-tpl/") || r.startsWith("/campaigns-detail/")) {
     const findByNo = (no) => (AppState.data.campaigns || []).find((x) => String(x.activityNo || x.id) === String(no));
+    if (act === "campDownloadTpl") {
+      const presetPromoType = btn.getAttribute("data-promo-type") || "";
+      const presetTemplateId = btn.getAttribute("data-template-id") || "";
+      const meta = campaignImportPresetMeta(presetPromoType, presetTemplateId);
+      const name = meta.template
+        ? `${meta.template.name || "活动"}导入模版.csv`
+        : (meta.promoType ? `${meta.promoType}活动导入模版.csv` : "活动批量导入模版.csv");
+      downloadTextFile(name, campaignImportTemplateCsv(presetPromoType, presetTemplateId), "text/csv;charset=utf-8");
+      toast("已下载导入模版（原型演示）");
+      return;
+    }
+    if (act === "campImport") {
+      const presetPromoType = btn.getAttribute("data-promo-type") || "";
+      const presetTemplateId = btn.getAttribute("data-template-id") || "";
+      const meta = campaignImportPresetMeta(presetPromoType, presetTemplateId);
+      openModal({
+        title: "导入活动",
+        subtitle: "原型演示：模板下载按钮放在导入弹窗内，确认后批量写入示例活动",
+        bodyHtml: `
+          <div class="toolbar__actions" style="margin:0 0 10px 0;">
+            <button class="btn" type="button" data-act="campDownloadTpl" data-promo-type="${escapeHtml(presetPromoType)}" data-template-id="${escapeHtml(presetTemplateId)}">下载导入模版</button>
+          </div>
+          <div class="hint">当前导入口径：${escapeHtml(meta.template ? `${meta.template.name || ""} / ${meta.template.templateNo || ""}` : (meta.promoType || "全部活动"))}</div>
+          <div class="hint">点击确认后将批量导入 2 条示例活动数据，不解析真实文件。</div>
+        `,
+        primaryText: "确认导入",
+        secondaryText: "取消",
+        onPrimary: () => {
+          const count = campaignBatchImportDemo(presetPromoType, presetTemplateId);
+          closeModal();
+          toast(`导入完成，新增 ${count} 条活动（原型演示）`);
+          render();
+        }
+      });
+      return;
+    }
     if (act === "campQuery") {
       AppState.ui.campaigns.qNo = document.getElementById("campQNo") ? document.getElementById("campQNo").value.trim() : "";
       AppState.ui.campaigns.qName = document.getElementById("campQName") ? document.getElementById("campQName").value.trim() : "";
@@ -15299,6 +15915,19 @@ function handleAction(r, act, btn) {
       c.status = "生效";
       c.effectiveBy = "leader - l...";
       c.effectiveAt = nowIsoSeconds();
+      c.modifier = "manle - m...";
+      c.modifyAt = nowIsoSeconds();
+      toast("操作成功（原型演示）");
+      render();
+      return;
+    }
+    if (act === "campCancelEffective") {
+      const c = findByNo(id);
+      if (!c) return toast("未找到活动（原型演示）");
+      if (!(c.status === "生效" || c.status === "延期")) return toast("仅生效活动可取消生效");
+      c.status = "审核";
+      c.effectiveBy = "—";
+      c.effectiveAt = "—";
       c.modifier = "manle - m...";
       c.modifyAt = nowIsoSeconds();
       toast("操作成功（原型演示）");
@@ -15450,8 +16079,54 @@ function handleAction(r, act, btn) {
   if (r === "/campaigns-create" || r === "/campaigns-edit") {
     if (act === "campWizMainTab") {
       const tab = btn.getAttribute("data-id") || "basic";
+      const d = AppState._tmpCampaign || {};
+      const tpl = campaignTemplateById((d && d.templateId) || "");
+      const tabs = campaignWizardMainTabsForTemplate(tpl);
       AppState.ui.campaignWizard.campWizTab = tab;
+      const idx = tabs.findIndex((x) => x.k === tab);
+      if (idx >= 0) AppState.ui.campaignWizard.wizardStep = idx + 1;
       render();
+      return;
+    }
+    if (act === "campGoodsQuery") {
+      const el = document.getElementById("campGoodsListQ");
+      AppState.ui.campaignWizard.goodsListQ = el ? el.value : "";
+      campaignWizardRenderGoodsTable();
+      toast("查询完成（原型演示）");
+      return;
+    }
+    if (act === "campGoodsReset") {
+      AppState.ui.campaignWizard.goodsListQ = "";
+      const el = document.getElementById("campGoodsListQ");
+      if (el) el.value = "";
+      campaignWizardRenderGoodsTable();
+      toast("已重置（原型演示）");
+      return;
+    }
+    if (act === "campKeywordQuery") {
+      render();
+      toast("查询完成（原型演示）");
+      return;
+    }
+    if (act === "campKeywordReset") {
+      const d = AppState._tmpCampaign;
+      if (!d) return;
+      const cw = btn.getAttribute("data-cw") || "";
+      const field = btn.getAttribute("data-field") || "keyword";
+      if (cw === "goodsScope") {
+        d.goodsScope = d.goodsScope || {};
+        d.goodsScope[field] = "";
+      } else if (cw === "giftSingleScope") {
+        d.giftScope = d.giftScope || {};
+        d.giftScope.single = d.giftScope.single || { keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [], excludeCategories: [], excludeCounters: [], excludeSuppliers: [], excludeBrands: [] };
+        d.giftScope.single[field] = "";
+      } else if (cw === "giftPurchaseScope") {
+        d.giftScope = d.giftScope || {};
+        d.giftScope.multiPurchase = d.giftScope.multiPurchase || { isAll: "否", threshold: "", keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [], excludeCategories: [], excludeCounters: [], excludeSuppliers: [], excludeBrands: [] };
+        d.giftScope.multiPurchase[field] = "";
+      }
+      render();
+      toast("已重置（原型演示）");
       return;
     }
     if (act === "campGoodsRange") {
@@ -15470,17 +16145,29 @@ function handleAction(r, act, btn) {
       return;
     }
     if (act === "campWizPrev") {
-      const cur = AppState.ui.campaignWizard.wizardStep || 1;
-      campaignWizardSetStep(cur - 1);
+      const d = AppState._tmpCampaign || {};
+      const tpl = campaignTemplateById((d && d.templateId) || "");
+      const tabs = campaignWizardMainTabsForTemplate(tpl);
+      const cur = AppState.ui.campaignWizard.campWizTab || "basic";
+      const idx = tabs.findIndex((x) => x.k === cur);
+      if (idx <= 0) return;
+      AppState.ui.campaignWizard.campWizTab = tabs[idx - 1].k;
+      AppState.ui.campaignWizard.wizardStep = idx;
+      render();
       return;
     }
     if (act === "campWizNext") {
-      const cur = AppState.ui.campaignWizard.wizardStep || 1;
-      const max = campaignWizardMaxStep();
-      if (cur >= max) return toast("已到最后一步，可保存或提交审核");
-      const msg = campaignWizardValidateStep(cur);
+      const d = AppState._tmpCampaign || {};
+      const tpl = campaignTemplateById((d && d.templateId) || "");
+      const tabs = campaignWizardMainTabsForTemplate(tpl);
+      const cur = AppState.ui.campaignWizard.campWizTab || "basic";
+      const idx = tabs.findIndex((x) => x.k === cur);
+      if (idx < 0 || idx >= tabs.length - 1) return toast("已到最后一步，可保存或提交审核");
+      const msg = campaignWizardValidateStep(idx + 1);
       if (msg) return toast(msg);
-      campaignWizardSetStep(cur + 1);
+      AppState.ui.campaignWizard.campWizTab = tabs[idx + 1].k;
+      AppState.ui.campaignWizard.wizardStep = idx + 2;
+      render();
       return;
     }
     if (act === "campWizSave") {
@@ -15659,13 +16346,33 @@ function handleAction(r, act, btn) {
       campaignWizardRenderAddOnGoodsTable();
       return;
     }
-    if (act === "campAddOnGoodsTpl") {
-      toast("已导入换购商品模版（原型演示）");
+    if (act === "campAddOnGoodsImport") {
       const d = AppState._tmpCampaign;
       if (!d) return;
-      d.addOnGoods = d.addOnGoods || [];
-      d.addOnGoods.push({ code: "SKU-ADDON-001", barcode: "6901234567890", name: "换购商品A", price: "29.9", addOnPrice: "9.9", qty: "1" });
-      campaignWizardRenderAddOnGoodsTable();
+      openModal({
+        title: "导入换购信息",
+        subtitle: "原型演示：确认后写入示例数据",
+        bodyHtml: `
+          <div class="toolbar__actions" style="margin: 0 0 10px 0;">
+            <button class="btn" type="button" data-act="campAddOnGoodsTpl">下载导入模版</button>
+          </div>
+          <div class="hint">将使用导入模版的表头字段进行导入。</div>
+        `,
+        primaryText: "确认导入",
+        secondaryText: "取消",
+        onPrimary: () => {
+          d.addOnGoods = d.addOnGoods || [];
+          d.addOnGoods.push({ code: "SKU-ADDON-001", barcode: "6901234567890", name: "换购商品A", price: "29.9", addOnPrice: "9.9", qty: "1" });
+          closeModal();
+          campaignWizardRenderAddOnGoodsTable();
+          toast("导入成功（原型演示）");
+        }
+      });
+      return;
+    }
+    if (act === "campAddOnGoodsTpl") {
+      downloadTextFile("换购信息导入模版.csv", "换购商品编码,换购商品条码,换购商品名称,商品售价,换购价,数量\n", "text/csv;charset=utf-8");
+      toast("已下载导入模版（原型演示）");
       return;
     }
     if (act === "campAddOnGoodsDel") {
@@ -15785,8 +16492,76 @@ function handleAction(r, act, btn) {
       const tab = AppState.ui.campaignWizard.goodsTab || (d.goodsScope ? d.goodsScope.tab : "goods") || "goods";
       const tpl = campaignTemplateById(d.templateId || "");
       const isMulSel = campaignIsMultipleDiscountTemplate(tpl);
-      const mulExtra = isMulSel ? { discount: "", limitQty: "" } : {};
+      const isGoodsDiscount = campaignIsGoodsDiscountTemplate(tpl);
+      const isQty = campaignIsQtyDiscountTemplate(tpl);
+      const isAmount = campaignIsAmountDiscountTemplate(tpl);
+      const isTime = campaignIsTimeDiscountTemplate(tpl);
+      const isReduce = campaignIsAmountReduceTemplate(tpl) || campaignIsQtyReduceTemplate(tpl);
+      const mulExtraGoods = isMulSel ? { discount: "", limitQty: "" } : {};
+      const mulExtraScope = isMulSel ? { qtyThreshold: "", discount: "", limitQty: "" } : {};
       if (tab === "goods") {
+        const isDirectDrop = tpl && String(tpl.templateType || "") === "直降";
+        if (isDirectDrop || isGoodsDiscount || isQty || isAmount || isTime || isMulSel || isReduce) {
+          const src = (AppState.data.masterData && AppState.data.masterData.goods) || [];
+          const brands = AppState.data.gmBrands || [];
+          const counters = AppState.data.gmCounters || [];
+          const pickIdx = (seed, len) => {
+            const s = String(seed || "");
+            let h = 0;
+            for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+            return len ? h % len : 0;
+          };
+          const items = src.map((g) => {
+            const bi = pickIdx(String(g.major || g.sku || ""), brands.length);
+            const ci = pickIdx(String(g.supplier || g.sku || ""), counters.length);
+            return {
+              ...g,
+              category: g.major || "",
+              brand: brands[bi] ? (brands[bi].brandName || "") : "",
+              counter: counters[ci] ? (counters[ci].ruleName || "") : "",
+              supplierName: g.supplier || ""
+            };
+          });
+          openCampSelectModal({
+            title: "选择商品",
+            subtitle: "支持按商品/类别/品牌/柜组/供应商查询（原型演示）",
+            items,
+            columns: [
+              { key: "sku", label: "商品编码" },
+              { key: "barcode", label: "商品条码" },
+              { key: "name", label: "商品名称" },
+              { key: "spec", label: "商品规格" },
+              { key: "unit", label: "单位" },
+              { key: "category", label: "类别" },
+              { key: "brand", label: "品牌" },
+              { key: "counter", label: "柜组" },
+              { key: "supplierName", label: "供应商" },
+              { key: "originPrice", label: "商品售价" }
+            ],
+            modeOptions: [
+              { id: "goods", label: "商品", searchKeys: ["sku", "barcode", "name", "spec"] },
+              { id: "category", label: "类别", searchKeys: ["category"] },
+              { id: "brand", label: "品牌", searchKeys: ["brand"] },
+              { id: "counter", label: "柜组", searchKeys: ["counter"] },
+              { id: "supplier", label: "供应商", searchKeys: ["supplierName"] }
+            ],
+            searchKeys: ["sku", "name", "barcode"],
+            checkboxName: "campPickGoods",
+            uniqueKey: "sku",
+            modalSize: "xl",
+            onPicked: (sel) => {
+              d.goodsScope = d.goodsScope || {};
+              if (!Array.isArray(d.goodsScope.goods)) d.goodsScope.goods = [];
+              const ex = new Set(d.goodsScope.goods.map((x) => String(x.skuCode)));
+              sel.forEach((g) => {
+                if (ex.has(String(g.sku))) return;
+                d.goodsScope.goods.push({ skuCode: g.sku, barcode: g.barcode, skuName: g.name, spec: g.spec, unit: g.unit, costPrice: g.originCost, price: g.originPrice, ...mulExtraGoods });
+              });
+              campaignWizardRenderGoodsTable();
+            }
+          });
+          return;
+        }
         openCampSelectModal({
           title: "选择商品",
           items: (AppState.data.masterData && AppState.data.masterData.goods) || [],
@@ -15800,7 +16575,7 @@ function handleAction(r, act, btn) {
             const ex = new Set(d.goodsScope.goods.map((x) => String(x.skuCode)));
             sel.forEach((g) => {
               if (ex.has(String(g.sku))) return;
-              d.goodsScope.goods.push({ skuCode: g.sku, barcode: g.barcode, skuName: g.name, spec: g.spec, unit: g.unit, costPrice: g.originCost, price: g.originPrice, ...mulExtra });
+              d.goodsScope.goods.push({ skuCode: g.sku, barcode: g.barcode, skuName: g.name, spec: g.spec, unit: g.unit, costPrice: g.originCost, price: g.originPrice, ...mulExtraGoods });
             });
             campaignWizardRenderGoodsTable();
           }
@@ -15818,7 +16593,7 @@ function handleAction(r, act, btn) {
             d.goodsScope = d.goodsScope || {};
             if (!Array.isArray(d.goodsScope.categories)) d.goodsScope.categories = [];
             const ex = new Set(d.goodsScope.categories.map((x) => String(x.catCode)));
-            sel.forEach((s) => { if (!ex.has(String(s.catCode))) d.goodsScope.categories.push({ catCode: s.catCode, catName: s.catName, ...mulExtra }); });
+            sel.forEach((s) => { if (!ex.has(String(s.catCode))) d.goodsScope.categories.push({ catCode: s.catCode, catName: s.catName, ...(isMulSel ? mulExtraScope : mulExtraGoods) }); });
             campaignWizardRenderGoodsTable();
           }
         });
@@ -15834,7 +16609,7 @@ function handleAction(r, act, btn) {
             d.goodsScope = d.goodsScope || {};
             if (!Array.isArray(d.goodsScope.counters)) d.goodsScope.counters = [];
             const ex = new Set(d.goodsScope.counters.map((x) => String(x.counterCode)));
-            sel.forEach((s) => { if (!ex.has(String(s.counterCode))) d.goodsScope.counters.push({ counterCode: s.counterCode, ruleName: s.ruleName, ...mulExtra }); });
+            sel.forEach((s) => { if (!ex.has(String(s.counterCode))) d.goodsScope.counters.push({ counterCode: s.counterCode, ruleName: s.ruleName, ...(isMulSel ? mulExtraScope : mulExtraGoods) }); });
             campaignWizardRenderGoodsTable();
           }
         });
@@ -15850,7 +16625,7 @@ function handleAction(r, act, btn) {
             d.goodsScope = d.goodsScope || {};
             if (!Array.isArray(d.goodsScope.suppliers)) d.goodsScope.suppliers = [];
             const ex = new Set(d.goodsScope.suppliers.map((x) => String(x.supplierCode)));
-            sel.forEach((s) => { if (!ex.has(String(s.supplierCode))) d.goodsScope.suppliers.push({ supplierCode: s.supplierCode, supplierName: s.supplierName, ...mulExtra }); });
+            sel.forEach((s) => { if (!ex.has(String(s.supplierCode))) d.goodsScope.suppliers.push({ supplierCode: s.supplierCode, supplierName: s.supplierName, ...(isMulSel ? mulExtraScope : mulExtraGoods) }); });
             campaignWizardRenderGoodsTable();
           }
         });
@@ -15866,7 +16641,7 @@ function handleAction(r, act, btn) {
             d.goodsScope = d.goodsScope || {};
             if (!Array.isArray(d.goodsScope.brands)) d.goodsScope.brands = [];
             const ex = new Set(d.goodsScope.brands.map((x) => String(x.brandCode)));
-            sel.forEach((s) => { if (!ex.has(String(s.brandCode))) d.goodsScope.brands.push({ brandCode: s.brandCode, brandName: s.brandName, brandCat: s.brandEn || "", ...mulExtra }); });
+            sel.forEach((s) => { if (!ex.has(String(s.brandCode))) d.goodsScope.brands.push({ brandCode: s.brandCode, brandName: s.brandName, brandCat: s.brandEn || "", ...(isMulSel ? mulExtraScope : mulExtraGoods) }); });
             campaignWizardRenderGoodsTable();
           }
         });
@@ -15877,6 +16652,74 @@ function handleAction(r, act, btn) {
       const d = AppState._tmpCampaign;
       const tab = AppState.ui.campaignWizard.excludeRangeTab || "excludeGoods";
       if (tab === "excludeGoods") {
+        const tpl = campaignTemplateById(d.templateId || "");
+        const isGoodsDiscount = campaignIsGoodsDiscountTemplate(tpl);
+        const isQty = campaignIsQtyDiscountTemplate(tpl);
+        const isAmount = campaignIsAmountDiscountTemplate(tpl);
+        const isTime = campaignIsTimeDiscountTemplate(tpl);
+        const isMultiple = campaignIsMultipleDiscountTemplate(tpl);
+        const isReduce = campaignIsAmountReduceTemplate(tpl) || campaignIsQtyReduceTemplate(tpl);
+        if (isGoodsDiscount || isQty || isAmount || isTime || isMultiple || isReduce) {
+          const src = (AppState.data.masterData && AppState.data.masterData.goods) || [];
+          const brands = AppState.data.gmBrands || [];
+          const counters = AppState.data.gmCounters || [];
+          const pickIdx = (seed, len) => {
+            const s = String(seed || "");
+            let h = 0;
+            for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+            return len ? h % len : 0;
+          };
+          const items = src.map((g) => {
+            const bi = pickIdx(String(g.major || g.sku || ""), brands.length);
+            const ci = pickIdx(String(g.supplier || g.sku || ""), counters.length);
+            return {
+              ...g,
+              category: g.major || "",
+              brand: brands[bi] ? (brands[bi].brandName || "") : "",
+              counter: counters[ci] ? (counters[ci].ruleName || "") : "",
+              supplierName: g.supplier || ""
+            };
+          });
+          openCampSelectModal({
+            title: "选择排除商品",
+            subtitle: "支持按商品/类别/品牌/柜组/供应商查询（原型演示）",
+            items,
+            columns: [
+              { key: "sku", label: "商品编码" },
+              { key: "barcode", label: "商品条码" },
+              { key: "name", label: "商品名称" },
+              { key: "spec", label: "商品规格" },
+              { key: "unit", label: "单位" },
+              { key: "category", label: "类别" },
+              { key: "brand", label: "品牌" },
+              { key: "counter", label: "柜组" },
+              { key: "supplierName", label: "供应商" },
+              { key: "originPrice", label: "商品售价" }
+            ],
+            modeOptions: [
+              { id: "goods", label: "商品", searchKeys: ["sku", "barcode", "name", "spec"] },
+              { id: "category", label: "类别", searchKeys: ["category"] },
+              { id: "brand", label: "品牌", searchKeys: ["brand"] },
+              { id: "counter", label: "柜组", searchKeys: ["counter"] },
+              { id: "supplier", label: "供应商", searchKeys: ["supplierName"] }
+            ],
+            searchKeys: ["sku", "name", "barcode"],
+            checkboxName: "campPickExGoods",
+            uniqueKey: "sku",
+            modalSize: "xl",
+            onPicked: (sel) => {
+              d.goodsScope = d.goodsScope || {};
+              if (!Array.isArray(d.goodsScope.excludeGoods)) d.goodsScope.excludeGoods = [];
+              const ex = new Set(d.goodsScope.excludeGoods.map((x) => String(x.skuCode)));
+              sel.forEach((g) => {
+                if (ex.has(String(g.sku))) return;
+                d.goodsScope.excludeGoods.push({ skuCode: g.sku, barcode: g.barcode, skuName: g.name, shortName: "", spec: g.spec, unit: g.unit, price: g.originPrice });
+              });
+              campaignWizardRenderExcludeRangeTable();
+            }
+          });
+          return;
+        }
         openCampSelectModal({
           title: "选择排除商品",
           items: (AppState.data.masterData && AppState.data.masterData.goods) || [],
@@ -15984,10 +16827,10 @@ function handleAction(r, act, btn) {
       d.goodsScope = d.goodsScope || {};
       const tab = AppState.ui.campaignWizard.goodsTab || d.goodsScope.tab || "goods";
       if (!Array.isArray(d.goodsScope[tab])) d.goodsScope[tab] = [];
-      if (tab === "categories") d.goodsScope.categories.push({ catCode: "", catName: "", ...(goodsFlags.scopeDiscount ? { discount: "" } : {}), ...(goodsFlags.scopeLimitQty ? { limitQty: "" } : {}) });
-      else if (tab === "counters") d.goodsScope.counters.push({ counterCode: "", ruleName: "", ...(goodsFlags.scopeDiscount ? { discount: "" } : {}), ...(goodsFlags.scopeLimitQty ? { limitQty: "" } : {}) });
-      else if (tab === "suppliers") d.goodsScope.suppliers.push({ supplierCode: "", supplierName: "", ...(goodsFlags.scopeDiscount ? { discount: "" } : {}), ...(goodsFlags.scopeLimitQty ? { limitQty: "" } : {}) });
-      else if (tab === "brands") d.goodsScope.brands.push({ brandCode: "", brandName: "", brandCat: "", ...(goodsFlags.scopeDiscount ? { discount: "" } : {}), ...(goodsFlags.scopeLimitQty ? { limitQty: "" } : {}) });
+      if (tab === "categories") d.goodsScope.categories.push({ catCode: "", catName: "", ...(goodsFlags.scopeQtyThreshold ? { qtyThreshold: "" } : {}), ...(goodsFlags.scopeDiscount ? { discount: "" } : {}), ...(goodsFlags.scopeLimitQty ? { limitQty: "" } : {}) });
+      else if (tab === "counters") d.goodsScope.counters.push({ counterCode: "", ruleName: "", ...(goodsFlags.scopeQtyThreshold ? { qtyThreshold: "" } : {}), ...(goodsFlags.scopeDiscount ? { discount: "" } : {}), ...(goodsFlags.scopeLimitQty ? { limitQty: "" } : {}) });
+      else if (tab === "suppliers") d.goodsScope.suppliers.push({ supplierCode: "", supplierName: "", ...(goodsFlags.scopeQtyThreshold ? { qtyThreshold: "" } : {}), ...(goodsFlags.scopeDiscount ? { discount: "" } : {}), ...(goodsFlags.scopeLimitQty ? { limitQty: "" } : {}) });
+      else if (tab === "brands") d.goodsScope.brands.push({ brandCode: "", brandName: "", brandCat: "", ...(goodsFlags.scopeQtyThreshold ? { qtyThreshold: "" } : {}), ...(goodsFlags.scopeDiscount ? { discount: "" } : {}), ...(goodsFlags.scopeLimitQty ? { limitQty: "" } : {}) });
       else if (tab === "excludeGoods") d.goodsScope.excludeGoods.push({ skuCode: "", barcode: "", skuName: "", shortName: "", spec: "", unit: "", price: "" });
       else if (tab === "excludeCategories") { if (!Array.isArray(d.goodsScope.excludeCategories)) d.goodsScope.excludeCategories = []; d.goodsScope.excludeCategories.push({ catCode: "", catName: "" }); }
       else if (tab === "excludeCounters") { if (!Array.isArray(d.goodsScope.excludeCounters)) d.goodsScope.excludeCounters = []; d.goodsScope.excludeCounters.push({ counterCode: "", ruleName: "" }); }
@@ -16039,7 +16882,7 @@ function handleAction(r, act, btn) {
       const isAddOn = campaignIsAmountAddOnTemplate(tpl) || campaignIsQtyAddOnTemplate(tpl);
       const isVoucherGift = campaignIsVoucherGiftTemplate(tpl);
       const goodsRange = AppState.ui.campaignWizard.goodsRange || "participate";
-      const rangeDriven = isGoodsDiscount || isAmount || isQty || isTime || isMultiple;
+      const rangeDriven = isGoodsDiscount || isAmount || isQty || isTime || isMultiple || isReduce;
       const tab = (rangeDriven && goodsRange === "exclude")
         ? (AppState.ui.campaignWizard.excludeRangeTab || "excludeGoods")
         : (AppState.ui.campaignWizard.goodsTab || (d.goodsScope ? d.goodsScope.tab : "goods") || "goods");
@@ -16078,17 +16921,22 @@ function handleAction(r, act, btn) {
       const isAddOn = campaignIsAmountAddOnTemplate(tpl) || campaignIsQtyAddOnTemplate(tpl);
       const isVoucherGift = campaignIsVoucherGiftTemplate(tpl);
       const goodsRange = AppState.ui.campaignWizard.goodsRange || "participate";
-      const rangeDriven = isGoodsDiscount || isAmount || isQty || isTime || isMultiple;
+      const rangeDriven = isGoodsDiscount || isAmount || isQty || isTime || isMultiple || isReduce;
       const tab = (rangeDriven && goodsRange === "exclude")
         ? (AppState.ui.campaignWizard.excludeRangeTab || "excludeGoods")
         : (AppState.ui.campaignWizard.goodsTab || (d.goodsScope ? d.goodsScope.tab : "goods") || "goods");
-      const mulExtra = isMulImp ? { discount: 0.5, limitQty: 10 } : {};
+      const mulExtra = isMulImp ? { qtyThreshold: 2, discount: 0.5, limitQty: 10 } : {};
       const discountExtra = (isGoodsDiscount || isTime) ? { discount: 0.9, limitQty: 5 } : {};
       const extra = isMulImp ? mulExtra : discountExtra;
       openModal({
         title: "导入商品范围",
         subtitle: "原型演示：确认后写入示例数据",
-        bodyHtml: `<div class="hint">当前导入维度：${escapeHtml(tab)}</div>`,
+        bodyHtml: `
+          <div class="toolbar__actions" style="margin: 0 0 10px 0;">
+            <button class="btn" type="button" data-act="campGoodsTpl">下载导入模版</button>
+          </div>
+          <div class="hint">当前导入维度：${escapeHtml(tab)}</div>
+        `,
         primaryText: "确认导入",
         secondaryText: "取消",
         onPrimary: () => {
@@ -16119,11 +16967,21 @@ function handleAction(r, act, btn) {
       const d = AppState._tmpCampaign;
       if (!d) return;
       const tab = btn.getAttribute("data-id") || "goods";
+      const pr = String((d.giftScope && d.giftScope.purchaseRange) || "单组");
+      if (pr === "单组" && tab !== "goods") return;
       AppState.ui.campaignWizard.giftBuyTab = tab;
       d.giftScope = d.giftScope || {};
       d.giftScope.single = d.giftScope.single || {};
       d.giftScope.single.tab = tab;
       campaignWizardRenderGiftSingleTable();
+      return;
+    }
+    if (act === "campGiftBuyRange") {
+      const d = AppState._tmpCampaign;
+      if (!d) return;
+      const tab = btn.getAttribute("data-id") || "participate";
+      AppState.ui.campaignWizard.giftBuyRange = tab === "exclude" ? "exclude" : "participate";
+      render();
       return;
     }
     if (act === "campGiftPurchaseTab") {
@@ -16137,15 +16995,774 @@ function handleAction(r, act, btn) {
       campaignWizardRenderGiftPurchaseTable();
       return;
     }
+    if (act === "campGiftPurchaseRange") {
+      const d = AppState._tmpCampaign;
+      if (!d) return;
+      const tab = btn.getAttribute("data-id") || "participate";
+      AppState.ui.campaignWizard.giftPurchaseRange = tab === "exclude" ? "exclude" : "participate";
+      render();
+      return;
+    }
+    if (act === "campGiftBuyExcludeTab") {
+      const tab = btn.getAttribute("data-id") || "excludeGoods";
+      AppState.ui.campaignWizard.giftBuyExcludeTab = tab;
+      campaignWizardRenderGiftBuyExcludeTable();
+      return;
+    }
+    if (act === "campGiftPurchaseExcludeTab") {
+      const tab = btn.getAttribute("data-id") || "excludeGoods";
+      AppState.ui.campaignWizard.giftPurchaseExcludeTab = tab;
+      campaignWizardRenderGiftPurchaseExcludeTable();
+      return;
+    }
+    if (act === "campGiftBuySelect") {
+      const d = AppState._tmpCampaign;
+      if (!d) return;
+      const tab = AppState.ui.campaignWizard.giftBuyTab || (d.giftScope && d.giftScope.single ? d.giftScope.single.tab : "goods") || "goods";
+      const mode = String((d.giftScope && d.giftScope.mode) || "");
+      const canAddOnlyOne = mode === "倍数";
+      const ensureArr = (k) => {
+        d.giftScope = d.giftScope || {};
+        d.giftScope.single = d.giftScope.single || { keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [], excludeCategories: [], excludeCounters: [], excludeSuppliers: [], excludeBrands: [] };
+        if (!Array.isArray(d.giftScope.single[k])) d.giftScope.single[k] = [];
+        return d.giftScope.single[k];
+      };
+      if (tab === "goods") {
+        const src = (AppState.data.masterData && AppState.data.masterData.goods) || [];
+        const brands = AppState.data.gmBrands || [];
+        const counters = AppState.data.gmCounters || [];
+        const pickIdx = (seed, len) => {
+          const s = String(seed || "");
+          let h = 0;
+          for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+          return len ? h % len : 0;
+        };
+        const items = src.map((g) => {
+          const bi = pickIdx(String(g.major || g.sku || ""), brands.length);
+          const ci = pickIdx(String(g.supplier || g.sku || ""), counters.length);
+          return {
+            ...g,
+            category: g.major || "",
+            brand: brands[bi] ? (brands[bi].brandName || "") : "",
+            counter: counters[ci] ? (counters[ci].ruleName || "") : "",
+            supplierName: g.supplier || ""
+          };
+        });
+        openCampSelectModal({
+          title: "选择商品",
+          subtitle: "支持按商品/类别/品牌/柜组/供应商查询（原型演示）",
+          items,
+          columns: [
+            { key: "sku", label: "商品编码" },
+            { key: "barcode", label: "商品条码" },
+            { key: "name", label: "商品名称" },
+            { key: "spec", label: "商品规格" },
+            { key: "unit", label: "单位" },
+            { key: "category", label: "类别" },
+            { key: "brand", label: "品牌" },
+            { key: "counter", label: "柜组" },
+            { key: "supplierName", label: "供应商" },
+            { key: "originPrice", label: "商品售价" }
+          ],
+          modeOptions: [
+            { id: "goods", label: "商品", searchKeys: ["sku", "barcode", "name", "spec"] },
+            { id: "category", label: "类别", searchKeys: ["category"] },
+            { id: "brand", label: "品牌", searchKeys: ["brand"] },
+            { id: "counter", label: "柜组", searchKeys: ["counter"] },
+            { id: "supplier", label: "供应商", searchKeys: ["supplierName"] }
+          ],
+          searchKeys: ["sku", "name", "barcode"],
+          checkboxName: "campPickGiftBuyGoods",
+          uniqueKey: "sku",
+          modalSize: "xl",
+          onPicked: (sel) => {
+            const arr = ensureArr("goods");
+            if (canAddOnlyOne && arr.length >= 1) return toast("倍数满赠仅允许一条买赠记录（原型演示）");
+            const ex = new Set(arr.map((x) => String(x.buyCode)));
+            sel.forEach((g) => {
+              if (canAddOnlyOne && arr.length >= 1) return;
+              if (ex.has(String(g.sku))) return;
+              arr.push({ buyCode: g.sku, buyBarcode: g.barcode, buyName: g.name, buyPrice: g.originPrice, threshold: "", gifts: [] });
+            });
+            campaignWizardRenderGiftSingleTable();
+          }
+        });
+        return;
+      }
+      if (tab === "categories") {
+        const cats = (AppState.data.gmOnlineCategories || []).concat(AppState.data.gmOfflineCategories || []);
+        openCampSelectModal({
+          title: "选择类别",
+          items: cats,
+          columns: [{ key: "catCode", label: "类别编码" }, { key: "catName", label: "类别名称" }],
+          searchKeys: ["catCode", "catName"],
+          checkboxName: "campPickGiftBuyCat",
+          uniqueKey: "catCode",
+          onPicked: (sel) => {
+            const arr = ensureArr("categories");
+            if (canAddOnlyOne && arr.length >= 1) return toast("倍数满赠仅允许一条买赠记录（原型演示）");
+            const ex = new Set(arr.map((x) => String(x.buyCatCode)));
+            sel.forEach((s) => {
+              if (canAddOnlyOne && arr.length >= 1) return;
+              if (ex.has(String(s.catCode))) return;
+              arr.push({ buyCatCode: s.catCode, buyCatName: s.catName, threshold: "", gifts: [] });
+            });
+            campaignWizardRenderGiftSingleTable();
+          }
+        });
+        return;
+      }
+      if (tab === "counters") {
+        openCampSelectModal({
+          title: "选择柜组",
+          items: AppState.data.gmCounters || [],
+          columns: [{ key: "counterCode", label: "柜组编码" }, { key: "ruleName", label: "规则名称" }],
+          searchKeys: ["counterCode", "ruleName"],
+          checkboxName: "campPickGiftBuyCtr",
+          uniqueKey: "counterCode",
+          onPicked: (sel) => {
+            const arr = ensureArr("counters");
+            if (canAddOnlyOne && arr.length >= 1) return toast("倍数满赠仅允许一条买赠记录（原型演示）");
+            const ex = new Set(arr.map((x) => String(x.buyCounterCode)));
+            sel.forEach((s) => {
+              if (canAddOnlyOne && arr.length >= 1) return;
+              if (ex.has(String(s.counterCode))) return;
+              arr.push({ buyCounterCode: s.counterCode, buyRuleName: s.ruleName, threshold: "", gifts: [] });
+            });
+            campaignWizardRenderGiftSingleTable();
+          }
+        });
+        return;
+      }
+      if (tab === "suppliers") {
+        openCampSelectModal({
+          title: "选择供货商",
+          items: AppState.data.gmSuppliers || [],
+          columns: [{ key: "supplierCode", label: "供货商编码" }, { key: "supplierName", label: "供货商名称" }],
+          searchKeys: ["supplierCode", "supplierName"],
+          checkboxName: "campPickGiftBuySup",
+          uniqueKey: "supplierCode",
+          onPicked: (sel) => {
+            const arr = ensureArr("suppliers");
+            if (canAddOnlyOne && arr.length >= 1) return toast("倍数满赠仅允许一条买赠记录（原型演示）");
+            const ex = new Set(arr.map((x) => String(x.buySupplierCode)));
+            sel.forEach((s) => {
+              if (canAddOnlyOne && arr.length >= 1) return;
+              if (ex.has(String(s.supplierCode))) return;
+              arr.push({ buySupplierCode: s.supplierCode, buySupplierName: s.supplierName, threshold: "", gifts: [] });
+            });
+            campaignWizardRenderGiftSingleTable();
+          }
+        });
+        return;
+      }
+      if (tab === "brands") {
+        openCampSelectModal({
+          title: "选择品牌",
+          items: AppState.data.gmBrands || [],
+          columns: [{ key: "brandCode", label: "品牌编码" }, { key: "brandName", label: "品牌名称" }, { key: "brandEn", label: "品牌分类" }],
+          searchKeys: ["brandCode", "brandName"],
+          checkboxName: "campPickGiftBuyBrd",
+          uniqueKey: "brandCode",
+          onPicked: (sel) => {
+            const arr = ensureArr("brands");
+            if (canAddOnlyOne && arr.length >= 1) return toast("倍数满赠仅允许一条买赠记录（原型演示）");
+            const ex = new Set(arr.map((x) => String(x.buyBrandCode)));
+            sel.forEach((s) => {
+              if (canAddOnlyOne && arr.length >= 1) return;
+              if (ex.has(String(s.brandCode))) return;
+              arr.push({ buyBrandCode: s.brandCode, buyBrandName: s.brandName, threshold: "", gifts: [] });
+            });
+            campaignWizardRenderGiftSingleTable();
+          }
+        });
+        return;
+      }
+      return;
+    }
+    if (act === "campGiftPurchaseSelect") {
+      const d = AppState._tmpCampaign;
+      if (!d) return;
+      const tpl = campaignTemplateById(d.templateId || "");
+      const tab = AppState.ui.campaignWizard.giftPurchaseTab || (d.giftScope && d.giftScope.multiPurchase ? d.giftScope.multiPurchase.tab : "goods") || "goods";
+      const ensureArr = (k) => {
+        d.giftScope = d.giftScope || {};
+        d.giftScope.multiPurchase = d.giftScope.multiPurchase || { isAll: "否", threshold: "", keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [], excludeCategories: [], excludeCounters: [], excludeSuppliers: [], excludeBrands: [] };
+        if (!Array.isArray(d.giftScope.multiPurchase[k])) d.giftScope.multiPurchase[k] = [];
+        return d.giftScope.multiPurchase[k];
+      };
+      const threshold = campaignIsQtyGiftTemplate(tpl) ? 1 : 100;
+      if (tab === "goods") {
+        const src = (AppState.data.masterData && AppState.data.masterData.goods) || [];
+        const brands = AppState.data.gmBrands || [];
+        const counters = AppState.data.gmCounters || [];
+        const pickIdx = (seed, len) => {
+          const s = String(seed || "");
+          let h = 0;
+          for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+          return len ? h % len : 0;
+        };
+        const items = src.map((g) => {
+          const bi = pickIdx(String(g.major || g.sku || ""), brands.length);
+          const ci = pickIdx(String(g.supplier || g.sku || ""), counters.length);
+          return {
+            ...g,
+            category: g.major || "",
+            brand: brands[bi] ? (brands[bi].brandName || "") : "",
+            counter: counters[ci] ? (counters[ci].ruleName || "") : "",
+            supplierName: g.supplier || ""
+          };
+        });
+        openCampSelectModal({
+          title: "选择商品",
+          subtitle: "支持按商品/类别/品牌/柜组/供应商查询（原型演示）",
+          items,
+          columns: [
+            { key: "sku", label: "商品编码" },
+            { key: "barcode", label: "商品条码" },
+            { key: "name", label: "商品名称" },
+            { key: "spec", label: "商品规格" },
+            { key: "unit", label: "单位" },
+            { key: "category", label: "类别" },
+            { key: "brand", label: "品牌" },
+            { key: "counter", label: "柜组" },
+            { key: "supplierName", label: "供应商" },
+            { key: "originPrice", label: "商品售价" }
+          ],
+          modeOptions: [
+            { id: "goods", label: "商品", searchKeys: ["sku", "barcode", "name", "spec"] },
+            { id: "category", label: "类别", searchKeys: ["category"] },
+            { id: "brand", label: "品牌", searchKeys: ["brand"] },
+            { id: "counter", label: "柜组", searchKeys: ["counter"] },
+            { id: "supplier", label: "供应商", searchKeys: ["supplierName"] }
+          ],
+          searchKeys: ["sku", "name", "barcode"],
+          checkboxName: "campPickGiftPurchaseGoods",
+          uniqueKey: "sku",
+          modalSize: "xl",
+          onPicked: (sel) => {
+            const arr = ensureArr("goods");
+            const ex = new Set(arr.map((x) => String(x.buyCode)));
+            sel.forEach((g) => {
+              if (ex.has(String(g.sku))) return;
+              arr.push({ buyCode: g.sku, buyBarcode: g.barcode, buyName: g.name, buyPrice: g.originPrice, threshold, gifts: [] });
+            });
+            campaignWizardRenderGiftPurchaseTable();
+          }
+        });
+        return;
+      }
+      if (tab === "categories") {
+        const cats = (AppState.data.gmOnlineCategories || []).concat(AppState.data.gmOfflineCategories || []);
+        openCampSelectModal({
+          title: "选择类别",
+          items: cats,
+          columns: [{ key: "catCode", label: "类别编码" }, { key: "catName", label: "类别名称" }],
+          searchKeys: ["catCode", "catName"],
+          checkboxName: "campPickGiftPurchaseCat",
+          uniqueKey: "catCode",
+          onPicked: (sel) => {
+            const arr = ensureArr("categories");
+            const ex = new Set(arr.map((x) => String(x.buyCatCode)));
+            sel.forEach((s) => { if (!ex.has(String(s.catCode))) arr.push({ buyCatCode: s.catCode, buyCatName: s.catName, threshold, gifts: [] }); });
+            campaignWizardRenderGiftPurchaseTable();
+          }
+        });
+        return;
+      }
+      if (tab === "counters") {
+        openCampSelectModal({
+          title: "选择柜组",
+          items: AppState.data.gmCounters || [],
+          columns: [{ key: "counterCode", label: "柜组编码" }, { key: "ruleName", label: "规则名称" }],
+          searchKeys: ["counterCode", "ruleName"],
+          checkboxName: "campPickGiftPurchaseCtr",
+          uniqueKey: "counterCode",
+          onPicked: (sel) => {
+            const arr = ensureArr("counters");
+            const ex = new Set(arr.map((x) => String(x.buyCounterCode)));
+            sel.forEach((s) => { if (!ex.has(String(s.counterCode))) arr.push({ buyCounterCode: s.counterCode, buyRuleName: s.ruleName, threshold, gifts: [] }); });
+            campaignWizardRenderGiftPurchaseTable();
+          }
+        });
+        return;
+      }
+      if (tab === "suppliers") {
+        openCampSelectModal({
+          title: "选择供货商",
+          items: AppState.data.gmSuppliers || [],
+          columns: [{ key: "supplierCode", label: "供货商编码" }, { key: "supplierName", label: "供货商名称" }],
+          searchKeys: ["supplierCode", "supplierName"],
+          checkboxName: "campPickGiftPurchaseSup",
+          uniqueKey: "supplierCode",
+          onPicked: (sel) => {
+            const arr = ensureArr("suppliers");
+            const ex = new Set(arr.map((x) => String(x.buySupplierCode)));
+            sel.forEach((s) => { if (!ex.has(String(s.supplierCode))) arr.push({ buySupplierCode: s.supplierCode, buySupplierName: s.supplierName, threshold, gifts: [] }); });
+            campaignWizardRenderGiftPurchaseTable();
+          }
+        });
+        return;
+      }
+      if (tab === "brands") {
+        openCampSelectModal({
+          title: "选择品牌",
+          items: AppState.data.gmBrands || [],
+          columns: [{ key: "brandCode", label: "品牌编码" }, { key: "brandName", label: "品牌名称" }, { key: "brandEn", label: "品牌分类" }],
+          searchKeys: ["brandCode", "brandName"],
+          checkboxName: "campPickGiftPurchaseBrd",
+          uniqueKey: "brandCode",
+          onPicked: (sel) => {
+            const arr = ensureArr("brands");
+            const ex = new Set(arr.map((x) => String(x.buyBrandCode)));
+            sel.forEach((s) => { if (!ex.has(String(s.brandCode))) arr.push({ buyBrandCode: s.brandCode, buyBrandName: s.brandName, threshold, gifts: [] }); });
+            campaignWizardRenderGiftPurchaseTable();
+          }
+        });
+        return;
+      }
+      return;
+    }
+    if (act === "campGiftBuyExcludeAdd") {
+      const d = AppState._tmpCampaign;
+      if (!d) return;
+      const tab = AppState.ui.campaignWizard.giftBuyExcludeTab || "excludeGoods";
+      d.giftScope = d.giftScope || {};
+      d.giftScope.single = d.giftScope.single || { keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [], excludeCategories: [], excludeCounters: [], excludeSuppliers: [], excludeBrands: [] };
+      if (!Array.isArray(d.giftScope.single[tab])) d.giftScope.single[tab] = [];
+      if (tab === "excludeGoods") d.giftScope.single.excludeGoods.push({ skuCode: "", barcode: "", skuName: "", shortName: "", spec: "", unit: "", price: "" });
+      else if (tab === "excludeCategories") d.giftScope.single.excludeCategories.push({ catCode: "", catName: "" });
+      else if (tab === "excludeCounters") d.giftScope.single.excludeCounters.push({ counterCode: "", ruleName: "" });
+      else if (tab === "excludeSuppliers") d.giftScope.single.excludeSuppliers.push({ supplierCode: "", supplierName: "" });
+      else if (tab === "excludeBrands") d.giftScope.single.excludeBrands.push({ brandCode: "", brandName: "", brandCat: "" });
+      campaignWizardRenderGiftBuyExcludeTable();
+      toast("已新增一行（原型演示）");
+      return;
+    }
+    if (act === "campGiftBuyExcludeDel") {
+      const d = AppState._tmpCampaign;
+      if (!d) return;
+      const tab = btn.getAttribute("data-tab") || (AppState.ui.campaignWizard.giftBuyExcludeTab || "excludeGoods");
+      const idx = Number(btn.getAttribute("data-idx"));
+      d.giftScope = d.giftScope || {};
+      d.giftScope.single = d.giftScope.single || {};
+      if (!Array.isArray(d.giftScope.single[tab])) d.giftScope.single[tab] = [];
+      if (!Number.isFinite(idx) || idx < 0 || idx >= d.giftScope.single[tab].length) return;
+      d.giftScope.single[tab].splice(idx, 1);
+      campaignWizardRenderGiftBuyExcludeTable();
+      toast("已删除（原型演示）");
+      return;
+    }
+    if (act === "campGiftBuyExcludeTpl") {
+      const tab = AppState.ui.campaignWizard.giftBuyExcludeTab || "excludeGoods";
+      const headers = {
+        excludeGoods: "商品编码,商品条码,商品名称,商品简称,商品规格,单位,商品售价\n",
+        excludeCategories: "类别编码,类别名称\n",
+        excludeCounters: "柜组编码,规则名称\n",
+        excludeSuppliers: "供货商编码,供货商名称\n",
+        excludeBrands: "品牌编码,品牌名称,品牌分类\n"
+      };
+      const names = { excludeGoods: "排除商品", excludeCategories: "排除类别", excludeCounters: "排除柜组", excludeSuppliers: "排除供货商", excludeBrands: "排除品牌" };
+      downloadTextFile(`买赠信息-${names[tab] || "排除商品"}导入模版.csv`, headers[tab] || "");
+      toast("已下载导入模版（原型演示）");
+      return;
+    }
+    if (act === "campGiftBuyExcludeImport") {
+      const d = AppState._tmpCampaign;
+      if (!d) return;
+      const tab = AppState.ui.campaignWizard.giftBuyExcludeTab || "excludeGoods";
+      openModal({
+        title: "导入排除范围",
+        subtitle: "原型演示：确认后写入示例数据",
+        bodyHtml: `
+          <div class="toolbar__actions" style="margin: 0 0 10px 0;">
+            <button class="btn" type="button" data-act="campGiftBuyExcludeTpl">下载导入模版</button>
+          </div>
+          <div class="hint">当前导入维度：${escapeHtml(tab)}</div>
+        `,
+        primaryText: "确认导入",
+        secondaryText: "取消",
+        onPrimary: () => {
+          d.giftScope = d.giftScope || {};
+          d.giftScope.single = d.giftScope.single || { keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [], excludeCategories: [], excludeCounters: [], excludeSuppliers: [], excludeBrands: [] };
+          if (tab === "excludeGoods") d.giftScope.single.excludeGoods = [{ skuCode: "SKU-9001", barcode: "6900000000010", skuName: "限制商品", shortName: "限制", spec: "500ml", unit: "瓶", price: 19.9 }];
+          else if (tab === "excludeCategories") d.giftScope.single.excludeCategories = [{ catCode: "C-010", catName: "家清" }];
+          else if (tab === "excludeCounters") d.giftScope.single.excludeCounters = [{ counterCode: "G-01", ruleName: "厨房用品" }];
+          else if (tab === "excludeSuppliers") d.giftScope.single.excludeSuppliers = [{ supplierCode: "S-001", supplierName: "供应商A" }];
+          else if (tab === "excludeBrands") d.giftScope.single.excludeBrands = [{ brandCode: "B-001", brandName: "品牌A", brandCat: "日化" }];
+          closeModal();
+          campaignWizardRenderGiftBuyExcludeTable();
+          toast("导入成功（原型演示）");
+        }
+      });
+      return;
+    }
+    if (act === "campGiftBuyExcludeSelect") {
+      const d = AppState._tmpCampaign;
+      if (!d) return;
+      const tab = AppState.ui.campaignWizard.giftBuyExcludeTab || "excludeGoods";
+      const ensureArr = (k) => {
+        d.giftScope = d.giftScope || {};
+        d.giftScope.single = d.giftScope.single || { keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [], excludeCategories: [], excludeCounters: [], excludeSuppliers: [], excludeBrands: [] };
+        if (!Array.isArray(d.giftScope.single[k])) d.giftScope.single[k] = [];
+        return d.giftScope.single[k];
+      };
+      if (tab === "excludeGoods") {
+        const src = (AppState.data.masterData && AppState.data.masterData.goods) || [];
+        const brands = AppState.data.gmBrands || [];
+        const counters = AppState.data.gmCounters || [];
+        const pickIdx = (seed, len) => {
+          const s = String(seed || "");
+          let h = 0;
+          for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+          return len ? h % len : 0;
+        };
+        const items = src.map((g) => {
+          const bi = pickIdx(String(g.major || g.sku || ""), brands.length);
+          const ci = pickIdx(String(g.supplier || g.sku || ""), counters.length);
+          return {
+            ...g,
+            category: g.major || "",
+            brand: brands[bi] ? (brands[bi].brandName || "") : "",
+            counter: counters[ci] ? (counters[ci].ruleName || "") : "",
+            supplierName: g.supplier || ""
+          };
+        });
+        openCampSelectModal({
+          title: "选择排除商品",
+          subtitle: "支持按商品/类别/品牌/柜组/供应商查询（原型演示）",
+          items,
+          columns: [
+            { key: "sku", label: "商品编码" },
+            { key: "barcode", label: "商品条码" },
+            { key: "name", label: "商品名称" },
+            { key: "spec", label: "商品规格" },
+            { key: "unit", label: "单位" },
+            { key: "category", label: "类别" },
+            { key: "brand", label: "品牌" },
+            { key: "counter", label: "柜组" },
+            { key: "supplierName", label: "供应商" },
+            { key: "originPrice", label: "商品售价" }
+          ],
+          modeOptions: [
+            { id: "goods", label: "商品", searchKeys: ["sku", "barcode", "name", "spec"] },
+            { id: "category", label: "类别", searchKeys: ["category"] },
+            { id: "brand", label: "品牌", searchKeys: ["brand"] },
+            { id: "counter", label: "柜组", searchKeys: ["counter"] },
+            { id: "supplier", label: "供应商", searchKeys: ["supplierName"] }
+          ],
+          searchKeys: ["sku", "name", "barcode"],
+          checkboxName: "campPickGiftBuyExGoods",
+          uniqueKey: "sku",
+          modalSize: "xl",
+          onPicked: (sel) => {
+            const arr = ensureArr("excludeGoods");
+            const ex = new Set(arr.map((x) => String(x.skuCode)));
+            sel.forEach((g) => {
+              if (ex.has(String(g.sku))) return;
+              arr.push({ skuCode: g.sku, barcode: g.barcode, skuName: g.name, shortName: "", spec: g.spec, unit: g.unit, price: g.originPrice });
+            });
+            campaignWizardRenderGiftBuyExcludeTable();
+          }
+        });
+        return;
+      }
+      if (tab === "excludeCategories") {
+        const cats = (AppState.data.gmOnlineCategories || []).concat(AppState.data.gmOfflineCategories || []);
+        openCampSelectModal({
+          title: "选择排除类别",
+          items: cats,
+          columns: [{ key: "catCode", label: "类别编码" }, { key: "catName", label: "类别名称" }],
+          searchKeys: ["catCode", "catName"],
+          checkboxName: "campPickGiftBuyExCat",
+          uniqueKey: "catCode",
+          onPicked: (sel) => {
+            const arr = ensureArr("excludeCategories");
+            const ex = new Set(arr.map((x) => String(x.catCode)));
+            sel.forEach((s) => { if (!ex.has(String(s.catCode))) arr.push({ catCode: s.catCode, catName: s.catName }); });
+            campaignWizardRenderGiftBuyExcludeTable();
+          }
+        });
+        return;
+      }
+      if (tab === "excludeCounters") {
+        openCampSelectModal({
+          title: "选择排除柜组",
+          items: AppState.data.gmCounters || [],
+          columns: [{ key: "counterCode", label: "柜组编码" }, { key: "ruleName", label: "规则名称" }],
+          searchKeys: ["counterCode", "ruleName"],
+          checkboxName: "campPickGiftBuyExCtr",
+          uniqueKey: "counterCode",
+          onPicked: (sel) => {
+            const arr = ensureArr("excludeCounters");
+            const ex = new Set(arr.map((x) => String(x.counterCode)));
+            sel.forEach((s) => { if (!ex.has(String(s.counterCode))) arr.push({ counterCode: s.counterCode, ruleName: s.ruleName }); });
+            campaignWizardRenderGiftBuyExcludeTable();
+          }
+        });
+        return;
+      }
+      if (tab === "excludeSuppliers") {
+        openCampSelectModal({
+          title: "选择排除供货商",
+          items: AppState.data.gmSuppliers || [],
+          columns: [{ key: "supplierCode", label: "供货商编码" }, { key: "supplierName", label: "供货商名称" }],
+          searchKeys: ["supplierCode", "supplierName"],
+          checkboxName: "campPickGiftBuyExSup",
+          uniqueKey: "supplierCode",
+          onPicked: (sel) => {
+            const arr = ensureArr("excludeSuppliers");
+            const ex = new Set(arr.map((x) => String(x.supplierCode)));
+            sel.forEach((s) => { if (!ex.has(String(s.supplierCode))) arr.push({ supplierCode: s.supplierCode, supplierName: s.supplierName }); });
+            campaignWizardRenderGiftBuyExcludeTable();
+          }
+        });
+        return;
+      }
+      if (tab === "excludeBrands") {
+        openCampSelectModal({
+          title: "选择排除品牌",
+          items: AppState.data.gmBrands || [],
+          columns: [{ key: "brandCode", label: "品牌编码" }, { key: "brandName", label: "品牌名称" }, { key: "brandEn", label: "品牌分类" }],
+          searchKeys: ["brandCode", "brandName"],
+          checkboxName: "campPickGiftBuyExBrd",
+          uniqueKey: "brandCode",
+          onPicked: (sel) => {
+            const arr = ensureArr("excludeBrands");
+            const ex = new Set(arr.map((x) => String(x.brandCode)));
+            sel.forEach((s) => { if (!ex.has(String(s.brandCode))) arr.push({ brandCode: s.brandCode, brandName: s.brandName, brandCat: s.brandEn || "" }); });
+            campaignWizardRenderGiftBuyExcludeTable();
+          }
+        });
+        return;
+      }
+      return;
+    }
+    if (act === "campGiftPurchaseExcludeAdd") {
+      const d = AppState._tmpCampaign;
+      if (!d) return;
+      const tab = AppState.ui.campaignWizard.giftPurchaseExcludeTab || "excludeGoods";
+      d.giftScope = d.giftScope || {};
+      d.giftScope.multiPurchase = d.giftScope.multiPurchase || { isAll: "否", threshold: "", keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [], excludeCategories: [], excludeCounters: [], excludeSuppliers: [], excludeBrands: [] };
+      if (!Array.isArray(d.giftScope.multiPurchase[tab])) d.giftScope.multiPurchase[tab] = [];
+      if (tab === "excludeGoods") d.giftScope.multiPurchase.excludeGoods.push({ skuCode: "", barcode: "", skuName: "", shortName: "", spec: "", unit: "", price: "" });
+      else if (tab === "excludeCategories") d.giftScope.multiPurchase.excludeCategories.push({ catCode: "", catName: "" });
+      else if (tab === "excludeCounters") d.giftScope.multiPurchase.excludeCounters.push({ counterCode: "", ruleName: "" });
+      else if (tab === "excludeSuppliers") d.giftScope.multiPurchase.excludeSuppliers.push({ supplierCode: "", supplierName: "" });
+      else if (tab === "excludeBrands") d.giftScope.multiPurchase.excludeBrands.push({ brandCode: "", brandName: "", brandCat: "" });
+      campaignWizardRenderGiftPurchaseExcludeTable();
+      toast("已新增一行（原型演示）");
+      return;
+    }
+    if (act === "campGiftPurchaseExcludeDel") {
+      const d = AppState._tmpCampaign;
+      if (!d) return;
+      const tab = btn.getAttribute("data-tab") || (AppState.ui.campaignWizard.giftPurchaseExcludeTab || "excludeGoods");
+      const idx = Number(btn.getAttribute("data-idx"));
+      d.giftScope = d.giftScope || {};
+      d.giftScope.multiPurchase = d.giftScope.multiPurchase || {};
+      if (!Array.isArray(d.giftScope.multiPurchase[tab])) d.giftScope.multiPurchase[tab] = [];
+      if (!Number.isFinite(idx) || idx < 0 || idx >= d.giftScope.multiPurchase[tab].length) return;
+      d.giftScope.multiPurchase[tab].splice(idx, 1);
+      campaignWizardRenderGiftPurchaseExcludeTable();
+      toast("已删除（原型演示）");
+      return;
+    }
+    if (act === "campGiftPurchaseExcludeTpl") {
+      const tab = AppState.ui.campaignWizard.giftPurchaseExcludeTab || "excludeGoods";
+      const headers = {
+        excludeGoods: "商品编码,商品条码,商品名称,商品简称,商品规格,单位,商品售价\n",
+        excludeCategories: "类别编码,类别名称\n",
+        excludeCounters: "柜组编码,规则名称\n",
+        excludeSuppliers: "供货商编码,供货商名称\n",
+        excludeBrands: "品牌编码,品牌名称,品牌分类\n"
+      };
+      const names = { excludeGoods: "排除商品", excludeCategories: "排除类别", excludeCounters: "排除柜组", excludeSuppliers: "排除供货商", excludeBrands: "排除品牌" };
+      downloadTextFile(`购买信息-${names[tab] || "排除商品"}导入模版.csv`, headers[tab] || "");
+      toast("已下载导入模版（原型演示）");
+      return;
+    }
+    if (act === "campGiftPurchaseExcludeImport") {
+      const d = AppState._tmpCampaign;
+      if (!d) return;
+      const tab = AppState.ui.campaignWizard.giftPurchaseExcludeTab || "excludeGoods";
+      openModal({
+        title: "导入排除范围",
+        subtitle: "原型演示：确认后写入示例数据",
+        bodyHtml: `
+          <div class="toolbar__actions" style="margin: 0 0 10px 0;">
+            <button class="btn" type="button" data-act="campGiftPurchaseExcludeTpl">下载导入模版</button>
+          </div>
+          <div class="hint">当前导入维度：${escapeHtml(tab)}</div>
+        `,
+        primaryText: "确认导入",
+        secondaryText: "取消",
+        onPrimary: () => {
+          d.giftScope = d.giftScope || {};
+          d.giftScope.multiPurchase = d.giftScope.multiPurchase || { isAll: "否", threshold: "", keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [], excludeCategories: [], excludeCounters: [], excludeSuppliers: [], excludeBrands: [] };
+          if (tab === "excludeGoods") d.giftScope.multiPurchase.excludeGoods = [{ skuCode: "SKU-9001", barcode: "6900000000010", skuName: "限制商品", shortName: "限制", spec: "500ml", unit: "瓶", price: 19.9 }];
+          else if (tab === "excludeCategories") d.giftScope.multiPurchase.excludeCategories = [{ catCode: "C-010", catName: "家清" }];
+          else if (tab === "excludeCounters") d.giftScope.multiPurchase.excludeCounters = [{ counterCode: "G-01", ruleName: "厨房用品" }];
+          else if (tab === "excludeSuppliers") d.giftScope.multiPurchase.excludeSuppliers = [{ supplierCode: "S-001", supplierName: "供应商A" }];
+          else if (tab === "excludeBrands") d.giftScope.multiPurchase.excludeBrands = [{ brandCode: "B-001", brandName: "品牌A", brandCat: "日化" }];
+          closeModal();
+          campaignWizardRenderGiftPurchaseExcludeTable();
+          toast("导入成功（原型演示）");
+        }
+      });
+      return;
+    }
+    if (act === "campGiftPurchaseExcludeSelect") {
+      const d = AppState._tmpCampaign;
+      if (!d) return;
+      const tab = AppState.ui.campaignWizard.giftPurchaseExcludeTab || "excludeGoods";
+      const ensureArr = (k) => {
+        d.giftScope = d.giftScope || {};
+        d.giftScope.multiPurchase = d.giftScope.multiPurchase || { isAll: "否", threshold: "", keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [], excludeCategories: [], excludeCounters: [], excludeSuppliers: [], excludeBrands: [] };
+        if (!Array.isArray(d.giftScope.multiPurchase[k])) d.giftScope.multiPurchase[k] = [];
+        return d.giftScope.multiPurchase[k];
+      };
+      if (tab === "excludeGoods") {
+        const src = (AppState.data.masterData && AppState.data.masterData.goods) || [];
+        const brands = AppState.data.gmBrands || [];
+        const counters = AppState.data.gmCounters || [];
+        const pickIdx = (seed, len) => {
+          const s = String(seed || "");
+          let h = 0;
+          for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+          return len ? h % len : 0;
+        };
+        const items = src.map((g) => {
+          const bi = pickIdx(String(g.major || g.sku || ""), brands.length);
+          const ci = pickIdx(String(g.supplier || g.sku || ""), counters.length);
+          return {
+            ...g,
+            category: g.major || "",
+            brand: brands[bi] ? (brands[bi].brandName || "") : "",
+            counter: counters[ci] ? (counters[ci].ruleName || "") : "",
+            supplierName: g.supplier || ""
+          };
+        });
+        openCampSelectModal({
+          title: "选择排除商品",
+          subtitle: "支持按商品/类别/品牌/柜组/供应商查询（原型演示）",
+          items,
+          columns: [
+            { key: "sku", label: "商品编码" },
+            { key: "barcode", label: "商品条码" },
+            { key: "name", label: "商品名称" },
+            { key: "spec", label: "商品规格" },
+            { key: "unit", label: "单位" },
+            { key: "category", label: "类别" },
+            { key: "brand", label: "品牌" },
+            { key: "counter", label: "柜组" },
+            { key: "supplierName", label: "供应商" },
+            { key: "originPrice", label: "商品售价" }
+          ],
+          modeOptions: [
+            { id: "goods", label: "商品", searchKeys: ["sku", "barcode", "name", "spec"] },
+            { id: "category", label: "类别", searchKeys: ["category"] },
+            { id: "brand", label: "品牌", searchKeys: ["brand"] },
+            { id: "counter", label: "柜组", searchKeys: ["counter"] },
+            { id: "supplier", label: "供应商", searchKeys: ["supplierName"] }
+          ],
+          searchKeys: ["sku", "name", "barcode"],
+          checkboxName: "campPickGiftPurchaseExGoods",
+          uniqueKey: "sku",
+          modalSize: "xl",
+          onPicked: (sel) => {
+            const arr = ensureArr("excludeGoods");
+            const ex = new Set(arr.map((x) => String(x.skuCode)));
+            sel.forEach((g) => {
+              if (ex.has(String(g.sku))) return;
+              arr.push({ skuCode: g.sku, barcode: g.barcode, skuName: g.name, shortName: "", spec: g.spec, unit: g.unit, price: g.originPrice });
+            });
+            campaignWizardRenderGiftPurchaseExcludeTable();
+          }
+        });
+        return;
+      }
+      if (tab === "excludeCategories") {
+        const cats = (AppState.data.gmOnlineCategories || []).concat(AppState.data.gmOfflineCategories || []);
+        openCampSelectModal({
+          title: "选择排除类别",
+          items: cats,
+          columns: [{ key: "catCode", label: "类别编码" }, { key: "catName", label: "类别名称" }],
+          searchKeys: ["catCode", "catName"],
+          checkboxName: "campPickGiftPurchaseExCat",
+          uniqueKey: "catCode",
+          onPicked: (sel) => {
+            const arr = ensureArr("excludeCategories");
+            const ex = new Set(arr.map((x) => String(x.catCode)));
+            sel.forEach((s) => { if (!ex.has(String(s.catCode))) arr.push({ catCode: s.catCode, catName: s.catName }); });
+            campaignWizardRenderGiftPurchaseExcludeTable();
+          }
+        });
+        return;
+      }
+      if (tab === "excludeCounters") {
+        openCampSelectModal({
+          title: "选择排除柜组",
+          items: AppState.data.gmCounters || [],
+          columns: [{ key: "counterCode", label: "柜组编码" }, { key: "ruleName", label: "规则名称" }],
+          searchKeys: ["counterCode", "ruleName"],
+          checkboxName: "campPickGiftPurchaseExCtr",
+          uniqueKey: "counterCode",
+          onPicked: (sel) => {
+            const arr = ensureArr("excludeCounters");
+            const ex = new Set(arr.map((x) => String(x.counterCode)));
+            sel.forEach((s) => { if (!ex.has(String(s.counterCode))) arr.push({ counterCode: s.counterCode, ruleName: s.ruleName }); });
+            campaignWizardRenderGiftPurchaseExcludeTable();
+          }
+        });
+        return;
+      }
+      if (tab === "excludeSuppliers") {
+        openCampSelectModal({
+          title: "选择排除供货商",
+          items: AppState.data.gmSuppliers || [],
+          columns: [{ key: "supplierCode", label: "供货商编码" }, { key: "supplierName", label: "供货商名称" }],
+          searchKeys: ["supplierCode", "supplierName"],
+          checkboxName: "campPickGiftPurchaseExSup",
+          uniqueKey: "supplierCode",
+          onPicked: (sel) => {
+            const arr = ensureArr("excludeSuppliers");
+            const ex = new Set(arr.map((x) => String(x.supplierCode)));
+            sel.forEach((s) => { if (!ex.has(String(s.supplierCode))) arr.push({ supplierCode: s.supplierCode, supplierName: s.supplierName }); });
+            campaignWizardRenderGiftPurchaseExcludeTable();
+          }
+        });
+        return;
+      }
+      if (tab === "excludeBrands") {
+        openCampSelectModal({
+          title: "选择排除品牌",
+          items: AppState.data.gmBrands || [],
+          columns: [{ key: "brandCode", label: "品牌编码" }, { key: "brandName", label: "品牌名称" }, { key: "brandEn", label: "品牌分类" }],
+          searchKeys: ["brandCode", "brandName"],
+          checkboxName: "campPickGiftPurchaseExBrd",
+          uniqueKey: "brandCode",
+          onPicked: (sel) => {
+            const arr = ensureArr("excludeBrands");
+            const ex = new Set(arr.map((x) => String(x.brandCode)));
+            sel.forEach((s) => { if (!ex.has(String(s.brandCode))) arr.push({ brandCode: s.brandCode, brandName: s.brandName, brandCat: s.brandEn || "" }); });
+            campaignWizardRenderGiftPurchaseExcludeTable();
+          }
+        });
+        return;
+      }
+      return;
+    }
     if (act === "campGiftBuyAdd") {
       const d = AppState._tmpCampaign;
       if (!d) return;
       const tpl = campaignTemplateById(d.templateId || "");
       d.giftScope = d.giftScope || {};
-      d.giftScope.single = d.giftScope.single || { keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [] };
+      d.giftScope.single = d.giftScope.single || { keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [], excludeCategories: [], excludeCounters: [], excludeSuppliers: [], excludeBrands: [] };
       const tab = AppState.ui.campaignWizard.giftBuyTab || d.giftScope.single.tab || "goods";
       d.giftScope.single.tab = tab;
-      const mode = String(d.giftScope.mode || "倍数");
+      const mode = String(d.giftScope.mode || "");
+      if (mode !== "倍数" && mode !== "阶梯") return toast("请选择满赠方式（倍数/阶梯）");
       if (mode === "倍数" && Array.isArray(d.giftScope.single[tab]) && d.giftScope.single[tab].length >= 1) return toast("倍数满赠仅允许一条记录（原型演示）");
       if (!Array.isArray(d.giftScope.single[tab])) d.giftScope.single[tab] = [];
       if (tab === "categories") d.giftScope.single.categories.push({ buyCatCode: "", buyCatName: "", threshold: "", gifts: [] });
@@ -16182,9 +17799,19 @@ function handleAction(r, act, btn) {
       const arr = Array.isArray(d.giftScope.single[tab]) ? d.giftScope.single[tab] : [];
       if (!Number.isFinite(idx) || idx < 0 || idx >= arr.length) return;
       if (!Array.isArray(arr[idx].gifts)) arr[idx].gifts = [];
-      arr[idx].gifts.push({ giftCode: "", giftBarcode: "", giftName: "", giftPrice: "", giftQty: 1 });
-      campaignWizardRenderGiftSingleTable();
-      toast("已新增赠品（原型演示）");
+      openCampaignGiftSelectModal({
+        checkboxName: "campPickGiftInfo",
+        onPicked: (sel) => {
+          const gifts = arr[idx].gifts;
+          const ex = new Set(gifts.map((g) => String(g.giftCode)));
+          sel.forEach((g) => {
+            if (ex.has(String(g.sku))) return;
+            gifts.push({ giftCode: g.sku, giftBarcode: g.barcode, giftName: g.name, giftPrice: g.originPrice, giftQty: 1 });
+          });
+          campaignWizardRenderGiftSingleTable();
+          toast("已添加赠品（原型演示）");
+        }
+      });
       return;
     }
     if (act === "campGiftBuyDelGift") {
@@ -16231,12 +17858,17 @@ function handleAction(r, act, btn) {
       openModal({
         title: "导入买赠信息",
         subtitle: "原型演示：确认后写入示例数据",
-        bodyHtml: `<div class="hint">当前导入维度：${escapeHtml(tab)}</div>`,
+        bodyHtml: `
+          <div class="toolbar__actions" style="margin: 0 0 10px 0;">
+            <button class="btn" type="button" data-act="campGiftBuyTpl">下载导入模版</button>
+          </div>
+          <div class="hint">当前导入维度：${escapeHtml(tab)}</div>
+        `,
         primaryText: "确认导入",
         secondaryText: "取消",
         onPrimary: () => {
           d.giftScope = d.giftScope || {};
-          d.giftScope.single = d.giftScope.single || { keyword: "", tab: tab, goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [] };
+          d.giftScope.single = d.giftScope.single || { keyword: "", tab: tab, goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [], excludeCategories: [], excludeCounters: [], excludeSuppliers: [], excludeBrands: [] };
           d.giftScope.single.tab = tab;
           const threshold = thIsInt ? 3 : 200;
           const gifts = [
@@ -16259,17 +17891,19 @@ function handleAction(r, act, btn) {
     if (act === "campGiftPurchaseAdd") {
       const d = AppState._tmpCampaign;
       if (!d) return;
+      const tpl = campaignTemplateById(d.templateId || "");
+      const threshold = campaignIsQtyGiftTemplate(tpl) ? 1 : "";
       d.giftScope = d.giftScope || {};
-      d.giftScope.multiPurchase = d.giftScope.multiPurchase || { isAll: "否", threshold: "", keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [] };
+      d.giftScope.multiPurchase = d.giftScope.multiPurchase || { isAll: "否", threshold: "", keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [], excludeCategories: [], excludeCounters: [], excludeSuppliers: [], excludeBrands: [] };
       const tab = AppState.ui.campaignWizard.giftPurchaseTab || d.giftScope.multiPurchase.tab || "goods";
       d.giftScope.multiPurchase.tab = tab;
       if (!Array.isArray(d.giftScope.multiPurchase[tab])) d.giftScope.multiPurchase[tab] = [];
-      if (tab === "categories") d.giftScope.multiPurchase.categories.push({ catCode: "", catName: "" });
-      else if (tab === "counters") d.giftScope.multiPurchase.counters.push({ counterCode: "", ruleName: "" });
-      else if (tab === "suppliers") d.giftScope.multiPurchase.suppliers.push({ supplierCode: "", supplierName: "" });
-      else if (tab === "brands") d.giftScope.multiPurchase.brands.push({ brandCode: "", brandName: "", brandCat: "" });
+      if (tab === "categories") d.giftScope.multiPurchase.categories.push({ buyCatCode: "", buyCatName: "", threshold, gifts: [] });
+      else if (tab === "counters") d.giftScope.multiPurchase.counters.push({ buyCounterCode: "", buyRuleName: "", threshold, gifts: [] });
+      else if (tab === "suppliers") d.giftScope.multiPurchase.suppliers.push({ buySupplierCode: "", buySupplierName: "", threshold, gifts: [] });
+      else if (tab === "brands") d.giftScope.multiPurchase.brands.push({ buyBrandCode: "", buyBrandName: "", threshold, gifts: [] });
       else if (tab === "excludeGoods") d.giftScope.multiPurchase.excludeGoods.push({ skuCode: "", barcode: "", skuName: "", shortName: "", spec: "", unit: "", price: "" });
-      else d.giftScope.multiPurchase.goods.push({ buyCode: "", buyBarcode: "", buyName: "", buySpec: "", buyUnit: "", buyPrice: "" });
+      else d.giftScope.multiPurchase.goods.push({ buyCode: "", buyBarcode: "", buyName: "", buyPrice: "", threshold, gifts: [] });
       campaignWizardRenderGiftPurchaseTable();
       toast("已新增一行（原型演示）");
       return;
@@ -16290,13 +17924,15 @@ function handleAction(r, act, btn) {
     }
     if (act === "campGiftPurchaseTpl") {
       const d = AppState._tmpCampaign || {};
+      const tpl = campaignTemplateById(d.templateId || "");
+      const th = campaignGiftThresholdLabel(tpl);
       const tab = AppState.ui.campaignWizard.giftPurchaseTab || (d.giftScope && d.giftScope.multiPurchase ? d.giftScope.multiPurchase.tab : "goods") || "goods";
       const headers = {
-        goods: "商品编码,商品条码,商品名称,商品规格,商品单位,商品售价\n",
-        categories: "类别编码,类别名称\n",
-        counters: "柜组编码,规则名称\n",
-        suppliers: "供货商编码,供货商名称\n",
-        brands: "品牌编码,品牌名称,品牌分类\n",
+        goods: `买品编码,买品条码,买品名称,买品售价,${th},赠品编码,赠品条码,赠品名称,赠品售价,赠品数量\n`,
+        categories: `买品类别编码,买品类别名称,${th},赠品编码,赠品条码,赠品名称,赠品售价,赠品数量\n`,
+        counters: `买品柜组编码,买品规则名称,${th},赠品编码,赠品条码,赠品名称,赠品售价,赠品数量\n`,
+        suppliers: `买品供货商编码,买品供货商名称,${th},赠品编码,赠品条码,赠品名称,赠品售价,赠品数量\n`,
+        brands: `买品品牌编码,买品品牌名称,${th},赠品编码,赠品条码,赠品名称,赠品售价,赠品数量\n`,
         excludeGoods: "商品编码,商品条码,商品名称,商品简称,商品规格,单位,商品售价\n"
       };
       const names = { goods: "商品", categories: "类别", counters: "柜组", suppliers: "供货商", brands: "品牌", excludeGoods: "排除商品" };
@@ -16307,28 +17943,82 @@ function handleAction(r, act, btn) {
     if (act === "campGiftPurchaseImport") {
       const d = AppState._tmpCampaign;
       if (!d) return;
+      const tpl = campaignTemplateById(d.templateId || "");
+      const thIsInt = campaignIsQtyGiftTemplate(tpl);
       const tab = AppState.ui.campaignWizard.giftPurchaseTab || (d.giftScope && d.giftScope.multiPurchase ? d.giftScope.multiPurchase.tab : "goods") || "goods";
       openModal({
         title: "导入购买信息",
         subtitle: "原型演示：确认后写入示例数据",
-        bodyHtml: `<div class="hint">当前导入维度：${escapeHtml(tab)}</div>`,
+        bodyHtml: `
+          <div class="toolbar__actions" style="margin: 0 0 10px 0;">
+            <button class="btn" type="button" data-act="campGiftPurchaseTpl">下载导入模版</button>
+          </div>
+          <div class="hint">当前导入维度：${escapeHtml(tab)}</div>
+        `,
         primaryText: "确认导入",
         secondaryText: "取消",
         onPrimary: () => {
           d.giftScope = d.giftScope || {};
-          d.giftScope.multiPurchase = d.giftScope.multiPurchase || { isAll: "否", threshold: "", keyword: "", tab: tab, goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [] };
+          d.giftScope.multiPurchase = d.giftScope.multiPurchase || { isAll: "否", threshold: "", keyword: "", tab: tab, goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [], excludeCategories: [], excludeCounters: [], excludeSuppliers: [], excludeBrands: [] };
           d.giftScope.multiPurchase.tab = tab;
-          if (tab === "categories") d.giftScope.multiPurchase.categories = [{ catCode: "C-010", catName: "家清" }];
-          else if (tab === "counters") d.giftScope.multiPurchase.counters = [{ counterCode: "G-01", ruleName: "厨房用品" }];
-          else if (tab === "suppliers") d.giftScope.multiPurchase.suppliers = [{ supplierCode: "S-001", supplierName: "供应商A" }];
-          else if (tab === "brands") d.giftScope.multiPurchase.brands = [{ brandCode: "B-001", brandName: "品牌A", brandCat: "日化" }];
+          const threshold = thIsInt ? 3 : 200;
+          const gifts = [
+            { giftCode: "G-1001", giftBarcode: "6900000001001", giftName: "赠品A", giftPrice: 3.9, giftQty: 1 },
+            { giftCode: "G-1002", giftBarcode: "6900000001002", giftName: "赠品B", giftPrice: 5.9, giftQty: 1 }
+          ];
+          if (tab === "categories") d.giftScope.multiPurchase.categories = [{ buyCatCode: "C-010", buyCatName: "家清", threshold, gifts }];
+          else if (tab === "counters") d.giftScope.multiPurchase.counters = [{ buyCounterCode: "G-01", buyRuleName: "厨房用品", threshold, gifts }];
+          else if (tab === "suppliers") d.giftScope.multiPurchase.suppliers = [{ buySupplierCode: "S-001", buySupplierName: "供应商A", threshold, gifts }];
+          else if (tab === "brands") d.giftScope.multiPurchase.brands = [{ buyBrandCode: "B-001", buyBrandName: "品牌A", threshold, gifts }];
           else if (tab === "excludeGoods") d.giftScope.multiPurchase.excludeGoods = [{ skuCode: "SKU-9001", barcode: "6900000000010", skuName: "限制商品", shortName: "限制", spec: "500ml", unit: "瓶", price: 19.9 }];
-          else d.giftScope.multiPurchase.goods = [{ buyCode: "SKU-1001", buyBarcode: "6900000000001", buyName: "清洁剂500ml", buySpec: "500ml", buyUnit: "瓶", buyPrice: 29.9 }];
+          else d.giftScope.multiPurchase.goods = [{ buyCode: "SKU-1001", buyBarcode: "6900000000001", buyName: "清洁剂500ml", buyPrice: 29.9, threshold, gifts }];
           closeModal();
           campaignWizardRenderGiftPurchaseTable();
           toast("导入成功（原型演示）");
         }
       });
+      return;
+    }
+    if (act === "campGiftPurchaseAddGift") {
+      const d = AppState._tmpCampaign;
+      if (!d) return;
+      const idx = Number(btn.getAttribute("data-idx"));
+      d.giftScope = d.giftScope || {};
+      d.giftScope.multiPurchase = d.giftScope.multiPurchase || {};
+      const tab = d.giftScope.multiPurchase.tab || AppState.ui.campaignWizard.giftPurchaseTab || "goods";
+      const arr = Array.isArray(d.giftScope.multiPurchase[tab]) ? d.giftScope.multiPurchase[tab] : [];
+      if (!Number.isFinite(idx) || idx < 0 || idx >= arr.length) return;
+      if (!Array.isArray(arr[idx].gifts)) arr[idx].gifts = [];
+      openCampaignGiftSelectModal({
+        checkboxName: "campPickGiftPurchaseInfo",
+        onPicked: (sel) => {
+          const gifts = arr[idx].gifts;
+          const ex = new Set(gifts.map((g) => String(g.giftCode)));
+          sel.forEach((g) => {
+            if (ex.has(String(g.sku))) return;
+            gifts.push({ giftCode: g.sku, giftBarcode: g.barcode, giftName: g.name, giftPrice: g.originPrice, giftQty: 1 });
+          });
+          campaignWizardRenderGiftPurchaseTable();
+          toast("已选择赠品（原型演示）");
+        }
+      });
+      return;
+    }
+    if (act === "campGiftPurchaseDelGift") {
+      const d = AppState._tmpCampaign;
+      if (!d) return;
+      const idx = Number(btn.getAttribute("data-idx"));
+      const subIdx = Number(btn.getAttribute("data-subidx"));
+      d.giftScope = d.giftScope || {};
+      d.giftScope.multiPurchase = d.giftScope.multiPurchase || {};
+      const tab = d.giftScope.multiPurchase.tab || AppState.ui.campaignWizard.giftPurchaseTab || "goods";
+      const arr = Array.isArray(d.giftScope.multiPurchase[tab]) ? d.giftScope.multiPurchase[tab] : [];
+      if (!Number.isFinite(idx) || idx < 0 || idx >= arr.length) return;
+      if (!Array.isArray(arr[idx].gifts)) arr[idx].gifts = [];
+      if (!Number.isFinite(subIdx) || subIdx < 0 || subIdx >= arr[idx].gifts.length) return;
+      arr[idx].gifts.splice(subIdx, 1);
+      campaignWizardRenderGiftPurchaseTable();
+      toast("已删除赠品（原型演示）");
       return;
     }
     if (act === "campGiftRewardAdd") {
@@ -16364,7 +18054,12 @@ function handleAction(r, act, btn) {
       openModal({
         title: "导入赠品信息",
         subtitle: "原型演示：确认后写入示例数据",
-        bodyHtml: `<div class="hint">将使用导入模版的表头字段进行导入。</div>`,
+        bodyHtml: `
+          <div class="toolbar__actions" style="margin: 0 0 10px 0;">
+            <button class="btn" type="button" data-act="campGiftRewardTpl">下载导入模版</button>
+          </div>
+          <div class="hint">将使用导入模版的表头字段进行导入。</div>
+        `,
         primaryText: "确认导入",
         secondaryText: "取消",
         onPrimary: () => {
@@ -16408,7 +18103,12 @@ function handleAction(r, act, btn) {
       openModal({
         title: "导入门店范围",
         subtitle: "原型演示：确认后写入示例数据",
-        bodyHtml: `<div class="hint">当前门店类型：${escapeHtml(type)}</div>`,
+        bodyHtml: `
+          <div class="toolbar__actions" style="margin: 0 0 10px 0;">
+            <button class="btn" type="button" data-act="campStoreTpl">下载导入模版</button>
+          </div>
+          <div class="hint">当前门店类型：${escapeHtml(type)}</div>
+        `,
         primaryText: "确认导入",
         secondaryText: "取消",
         onPrimary: () => {
@@ -16443,7 +18143,12 @@ function handleAction(r, act, btn) {
       openModal({
         title: "导入排除门店",
         subtitle: "原型演示：确认后写入示例数据",
-        bodyHtml: `<div class="hint">将使用导入模版的表头字段进行导入。</div>`,
+        bodyHtml: `
+          <div class="toolbar__actions" style="margin: 0 0 10px 0;">
+            <button class="btn" type="button" data-act="campExcludeTpl">下载导入模版</button>
+          </div>
+          <div class="hint">将使用导入模版的表头字段进行导入。</div>
+        `,
         primaryText: "确认导入",
         secondaryText: "取消",
         onPrimary: () => {
@@ -16476,7 +18181,12 @@ function handleAction(r, act, btn) {
       openModal({
         title: "导入会员等级",
         subtitle: "原型演示：确认后写入示例数据",
-        bodyHtml: `<div class="hint">将使用导入模版的表头字段进行导入。</div>`,
+        bodyHtml: `
+          <div class="toolbar__actions" style="margin: 0 0 10px 0;">
+            <button class="btn" type="button" data-act="campGradeTpl">下载导入模版</button>
+          </div>
+          <div class="hint">将使用导入模版的表头字段进行导入。</div>
+        `,
         primaryText: "确认导入",
         secondaryText: "取消",
         onPrimary: () => {
@@ -16509,7 +18219,12 @@ function handleAction(r, act, btn) {
       openModal({
         title: "导入会员标签",
         subtitle: "原型演示：确认后写入示例数据",
-        bodyHtml: `<div class="hint">将使用导入模版的表头字段进行导入。</div>`,
+        bodyHtml: `
+          <div class="toolbar__actions" style="margin: 0 0 10px 0;">
+            <button class="btn" type="button" data-act="campTagTpl">下载导入模版</button>
+          </div>
+          <div class="hint">将使用导入模版的表头字段进行导入。</div>
+        `,
         primaryText: "确认导入",
         secondaryText: "取消",
         onPrimary: () => {
@@ -16632,7 +18347,7 @@ function openTemplateDetail(id) {
           `渠道范围：${obj.channelRadio || "全部"}`,
           `门店范围：${obj.storeRadio || "门店"}`,
           obj.storeExcludeEnabled ? "门店排除：启用" : "",
-          `用户范围：${(obj.userOptions || []).join("/") || "—"}`,
+          `用户范围：${obj.userRange || (obj.userOptions || []).join("/") || "—"}`,
           `商品范围：${(obj.goodsScopeOptions || []).join("/") || "—"}（${obj.goodsScopeJoin || "AND"}）`
         ].filter(Boolean);
         if (obj.excludeEnabled) objBits.push(`排除范围：${(obj.excludeScopeOptions || []).join("/") || "—"}`);
@@ -16643,7 +18358,7 @@ function openTemplateDetail(id) {
           ct.itemCount && ct.itemCount.enabled ? `商品数量(${ct.itemCount.value || "—"})` : "商品数量：不启用",
           ct.fullQty && ct.fullQty.enabled ? `满数量(${ct.fullQty.value || "—"})` : "满数量：不启用",
           ct.fullAmt && ct.fullAmt.enabled ? `满金额(${ct.fullAmt.value || "—"})` : "满金额：不启用",
-          `阶梯：${cond.ladderRadio === "是" ? "是(" + (cond.ladderTiers || "—") + ")" : "否"}`,
+          cond.ladderEnabled ? `阶梯(启用：${cond.ladderTiers || "—"})` : "阶梯：不启用",
           cond.multipleEnabled ? `倍数(${cond.multipleValue || "—"})` : "倍数：不启用"
         ];
         const rewardBits = [
@@ -16689,7 +18404,7 @@ function openTemplateDetail(id) {
                   ["渠道范围", escapeHtml(obj.channelRadio || "全部")],
                   ["门店范围", escapeHtml(obj.storeRadio || "门店")],
                   ["门店排除", escapeHtml(obj.storeExcludeEnabled ? "启用" : "关闭")],
-                  ["用户范围", escapeHtml((obj.userOptions || []).join("·") || "—")],
+                  ["用户范围", escapeHtml(obj.userRange || (obj.userOptions || []).join("·") || "—")],
                   ["商品范围", escapeHtml((obj.goodsScopeOptions || []).join("·") || "—")],
                   ["组合关系", escapeHtml(obj.goodsScopeJoin || "AND")],
                   ["排除范围", obj.excludeEnabled ? escapeHtml((obj.excludeScopeOptions || []).join("·") || "—") : "关闭"]
@@ -16705,7 +18420,7 @@ function openTemplateDetail(id) {
                   ["商品数量", ct.itemCount && ct.itemCount.enabled ? escapeHtml(ct.itemCount.value || "启用") : "关闭"],
                   ["满数量", ct.fullQty && ct.fullQty.enabled ? escapeHtml(ct.fullQty.value || "启用") : "关闭"],
                   ["满金额", ct.fullAmt && ct.fullAmt.enabled ? escapeHtml(ct.fullAmt.value || "启用") : "关闭"],
-                  ["阶梯", escapeHtml(cond.ladderRadio === "是" ? "是 · " + (cond.ladderTiers || "—") : "否")],
+                  ["阶梯", cond.ladderEnabled ? escapeHtml("启用 · " + (cond.ladderTiers || "—")) : "关闭"],
                   ["倍数", cond.multipleEnabled ? escapeHtml(cond.multipleValue || "启用") : "关闭"]
                 ]))}
               </div>
