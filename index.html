@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>商品促销平台原型</title>
+    <link rel="stylesheet" href="./styles.css?v=202606091000" />
+  </head>
+  <body>
+    <div id="app" class="app-shell">
+      <aside class="sidebar" aria-label="主导航">
+        <div class="sidebar__top">
+          <div class="brand">
+            <div class="brand__mark">P</div>
+            <div class="brand__text">
+              <div class="brand__title">促销中心</div>
+              <div class="brand__sub">Prototype</div>
+            </div>
+          </div>
+          <button id="sidebarToggle" class="icon-btn sidebar__toggle" type="button" aria-label="展开/收起菜单">
+            <span class="icon">≡</span>
+          </button>
+        </div>
+
+        <nav class="nav">
+          <div class="nav__section">
+            <a class="nav__item" href="#/dashboard" data-route="/dashboard">
+              <span class="nav__icon">📊</span>
+              <span class="nav__text">数据看板</span>
+            </a>
+          </div>
+          <div class="nav__section" data-section="promo">
+            <button class="nav__labelbtn" type="button" data-act="navSection" data-section="promo" aria-expanded="true">促销管理</button>
+            <div class="nav__panel" data-section-panel="promo">
+              <a class="nav__item" href="#/schedule-plan" data-route="/schedule-plan">
+                <span class="nav__icon">📅</span>
+                <span class="nav__text">计划档期</span>
+              </a>
+              <a class="nav__item" href="#/schedule-actual" data-route="/schedule-actual">
+                <span class="nav__icon">🗓</span>
+                <span class="nav__text">实际档期</span>
+              </a>
+              <a class="nav__item" href="#/assortment" data-route="/assortment">
+                <span class="nav__icon">🧺</span>
+                <span class="nav__text">选品汇总</span>
+              </a>
+              <a class="nav__item" href="#/templates" data-route="/templates">
+                <span class="nav__icon">🧩</span>
+                <span class="nav__text">促销模板</span>
+              </a>
+              <div class="nav__group nav__group--collapsible" id="campaignsGroup">
+                <button class="nav__item nav__item--toggle" type="button" data-act="navCampaigns" data-route="/campaigns" aria-expanded="false">
+                  <span class="nav__icon">🎯</span>
+                  <span class="nav__text">促销活动</span>
+                </button>
+                <div class="nav__sub" id="campaignsSubNav"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="nav__section" data-section="pricing">
+            <button class="nav__labelbtn" type="button" data-act="navSection" data-section="pricing" aria-expanded="false">价格与引擎</button>
+            <div class="nav__panel" data-section-panel="pricing">
+              <a class="nav__item" href="#/pricing" data-route="/pricing">
+                <span class="nav__icon">🧮</span>
+                <span class="nav__text">模拟算价</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="nav__section" data-section="goods">
+            <button class="nav__labelbtn" type="button" data-act="navSection" data-section="goods" aria-expanded="false">商品管理</button>
+            <div class="nav__panel" data-section-panel="goods">
+              <a class="nav__item" href="#/gm-goods" data-route="/gm-goods">
+                <span class="nav__icon">📦</span>
+                <span class="nav__text">商品信息</span>
+              </a>
+              <a class="nav__item" href="#/gm-pay" data-route="/gm-pay">
+                <span class="nav__icon">💳</span>
+                <span class="nav__text">支付方式</span>
+              </a>
+              <a class="nav__item" href="#/gm-online-cat" data-route="/gm-online-cat">
+                <span class="nav__icon">🌐</span>
+                <span class="nav__text">线上类别</span>
+              </a>
+              <a class="nav__item" href="#/gm-offline-cat" data-route="/gm-offline-cat">
+                <span class="nav__icon">🏬</span>
+                <span class="nav__text">线下类别</span>
+              </a>
+              <a class="nav__item" href="#/gm-brands" data-route="/gm-brands">
+                <span class="nav__icon">🏷</span>
+                <span class="nav__text">商品品牌</span>
+              </a>
+              <a class="nav__item" href="#/gm-suppliers" data-route="/gm-suppliers">
+                <span class="nav__icon">🚚</span>
+                <span class="nav__text">供应商信息</span>
+              </a>
+              <a class="nav__item" href="#/gm-stores" data-route="/gm-stores">
+                <span class="nav__icon">🏪</span>
+                <span class="nav__text">门店信息</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="nav__section" data-section="voucher">
+            <button class="nav__labelbtn" type="button" data-act="navSection" data-section="voucher" aria-expanded="false">礼券主题</button>
+            <div class="nav__panel" data-section-panel="voucher">
+              <a class="nav__item" href="#/voucher-themes" data-route="/voucher-themes">
+                <span class="nav__icon">🎫</span>
+                <span class="nav__text">礼券主题</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="nav__section" data-section="sys">
+            <button class="nav__labelbtn" type="button" data-act="navSection" data-section="sys" aria-expanded="false">系统管理</button>
+            <div class="nav__panel" data-section-panel="sys">
+              <a class="nav__item" href="#/sys-dict" data-route="/sys-dict">
+                <span class="nav__icon">🧾</span>
+                <span class="nav__text">数据字典</span>
+              </a>
+              <a class="nav__item" href="#/sys-params" data-route="/sys-params">
+                <span class="nav__icon">🧩</span>
+                <span class="nav__text">系统参数</span>
+              </a>
+            </div>
+          </div>
+          <div class="nav__section" data-section="rpt">
+            <button class="nav__labelbtn" type="button" data-act="navSection" data-section="rpt" aria-expanded="false">报表管理</button>
+            <div class="nav__panel" data-section-panel="rpt">
+              <a class="nav__item" href="#/rpt-voucher" data-route="/rpt-voucher">
+                <span class="nav__icon">📋</span>
+                <span class="nav__text">活动出券明细</span>
+              </a>
+              <a class="nav__item" href="#/rpt-activity" data-route="/rpt-activity">
+                <span class="nav__icon">📊</span>
+                <span class="nav__text">活动明细表</span>
+              </a>
+              <a class="nav__item" href="#/rpt-goods" data-route="/rpt-goods">
+                <span class="nav__icon">📦</span>
+                <span class="nav__text">商品明细表</span>
+              </a>
+              <a class="nav__item" href="#/rpt-goods-store" data-route="/rpt-goods-store">
+                <span class="nav__icon">🏪</span>
+                <span class="nav__text">商品明细-门店</span>
+              </a>
+              <a class="nav__item" href="#/rpt-goods-cat" data-route="/rpt-goods-cat">
+                <span class="nav__icon">🏷</span>
+                <span class="nav__text">商品明细-品类</span>
+              </a>
+              <a class="nav__item" href="#/rpt-goods-brand" data-route="/rpt-goods-brand">
+                <span class="nav__icon">⭐</span>
+                <span class="nav__text">商品明细-品牌</span>
+              </a>
+              <a class="nav__item" href="#/rpt-goods-supplier" data-route="/rpt-goods-supplier">
+                <span class="nav__icon">🏭</span>
+                <span class="nav__text">商品明细-供应商</span>
+              </a>
+              <a class="nav__item" href="#/rpt-goods-counter" data-route="/rpt-goods-counter">
+                <span class="nav__icon">🗂</span>
+                <span class="nav__text">商品明细-柜组</span>
+              </a>
+              <a class="nav__item" href="#/rpt-ongoing-activity" data-route="/rpt-ongoing-activity">
+                <span class="nav__icon">🔥</span>
+                <span class="nav__text">进行中促销活动报表</span>
+              </a>
+              <a class="nav__item" href="#/rpt-ongoing-goods" data-route="/rpt-ongoing-goods">
+                <span class="nav__icon">🛒</span>
+                <span class="nav__text">进行中促销活动商品报表</span>
+              </a>
+            </div>
+          </div>
+        </nav>
+
+        <div class="sidebar__bottom">
+          <div class="user">
+            <div class="user__avatar">M</div>
+            <div class="user__meta">
+              <div class="user__name">manic v</div>
+              <div class="user__role">运营 / 管理员</div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="topbar__left">
+            <div id="pageTitle" class="page-title">—</div>
+            <div id="pageSubTitle" class="page-subtitle">—</div>
+          </div>
+          <div class="topbar__right">
+            <div class="chip" id="envChip">H5 / Web</div>
+          </div>
+        </header>
+
+        <section id="content" class="content" aria-label="主内容"></section>
+      </main>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <div id="drawerBackdrop" class="drawer-backdrop" aria-hidden="true">
+      <div class="drawer" role="dialog" aria-modal="true" aria-label="详情">
+        <div class="drawer__header">
+          <div>
+            <div id="drawerTitle" class="drawer__title">—</div>
+            <div id="drawerSubtitle" class="drawer__subtitle">—</div>
+          </div>
+          <button id="drawerClose" class="icon-btn" type="button" aria-label="关闭">
+            <span class="icon">✕</span>
+          </button>
+        </div>
+        <div id="drawerBody" class="drawer__body"></div>
+        <div class="drawer__footer">
+          <button id="drawerSecondary" class="btn" type="button">关闭</button>
+          <button id="drawerPrimary" class="btn btn--primary" type="button">操作</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="modalBackdrop" class="modal-backdrop" aria-hidden="true">
+      <div class="modal" role="dialog" aria-modal="true" aria-label="新建">
+        <div class="modal__header">
+          <div>
+            <div id="modalTitle" class="modal__title">新建</div>
+            <div id="modalSubtitle" class="modal__subtitle">—</div>
+          </div>
+          <button id="modalClose" class="icon-btn" type="button" aria-label="关闭">
+            <span class="icon">✕</span>
+          </button>
+        </div>
+        <div id="modalBody" class="modal__body"></div>
+        <div class="modal__footer">
+          <button id="modalSecondary" class="btn" type="button">取消</button>
+          <button id="modalPrimary" class="btn btn--primary" type="button">保存</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      window.onerror = function(msg, url, line, col, err) {
+        document.body.innerHTML = '<pre style="color:red;padding:20px;">JS Error: ' + msg + '\\nLine: ' + line + ', Col: ' + col + '\\n' + (err && err.stack ? err.stack : '') + '</pre>';
+        return true;
+      };
+    </script>
+    <script src="./app.js?v=202606082930"></script>
+  </body>
+</html>
