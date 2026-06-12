@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>商品促销平台原型</title>
-    <link rel="stylesheet" href="./styles.css?v=202606100420" />
+    <link rel="stylesheet" href="./styles.css?v=202606112130" />
   </head>
   <body>
     <div id="app" class="app-shell">
@@ -32,10 +32,6 @@
           <div class="nav__section" data-section="promo">
             <button class="nav__labelbtn" type="button" data-act="navSection" data-section="promo" aria-expanded="true">促销管理</button>
             <div class="nav__panel" data-section-panel="promo">
-              <a class="nav__item" href="#/schedule-plan" data-route="/schedule-plan">
-                <span class="nav__icon">📅</span>
-                <span class="nav__text">计划档期</span>
-              </a>
               <a class="nav__item" href="#/schedule-actual" data-route="/schedule-actual">
                 <span class="nav__icon">🗓</span>
                 <span class="nav__text">实际档期</span>
@@ -48,6 +44,14 @@
                 <span class="nav__icon">🧩</span>
                 <span class="nav__text">促销模板</span>
               </a>
+              <a class="nav__item" href="#/template-priority" data-route="/template-priority">
+                <span class="nav__icon">🥇</span>
+                <span class="nav__text">模版优先级</span>
+              </a>
+              <a class="nav__item" href="#/template-priority-schedule-import" data-route="/template-priority-schedule-import">
+                <span class="nav__icon">📥</span>
+                <span class="nav__text">档期商品导入</span>
+              </a>
               <div class="nav__group nav__group--collapsible" id="campaignsGroup">
                 <button class="nav__item nav__item--toggle" type="button" data-act="navCampaigns" data-route="/campaigns" aria-expanded="false">
                   <span class="nav__icon">🎯</span>
@@ -55,6 +59,10 @@
                 </button>
                 <div class="nav__sub" id="campaignsSubNav"></div>
               </div>
+              <a class="nav__item" href="#/promo-goods-terminate" data-route="/promo-goods-terminate">
+                <span class="nav__icon">⛔</span>
+                <span class="nav__text">促销商品终止</span>
+              </a>
             </div>
           </div>
 
@@ -87,14 +95,6 @@
                 <span class="nav__icon">🏬</span>
                 <span class="nav__text">线下类别</span>
               </a>
-              <a class="nav__item" href="#/gm-dept-online-cat" data-route="/gm-dept-online-cat">
-                <span class="nav__icon">🛍</span>
-                <span class="nav__text">百货线上类别</span>
-              </a>
-              <a class="nav__item" href="#/gm-dept-offline-cat" data-route="/gm-dept-offline-cat">
-                <span class="nav__icon">🏢</span>
-                <span class="nav__text">百货线下类别</span>
-              </a>
               <a class="nav__item" href="#/gm-brands" data-route="/gm-brands">
                 <span class="nav__icon">🏷</span>
                 <span class="nav__text">商品品牌</span>
@@ -103,7 +103,25 @@
                 <span class="nav__icon">🚚</span>
                 <span class="nav__text">供应商信息</span>
               </a>
-              <a class="nav__item" href="#/gm-stores" data-route="/gm-stores">
+            </div>
+          </div>
+
+          <div class="nav__section" data-section="store">
+            <button class="nav__labelbtn" type="button" data-act="navSection" data-section="store" aria-expanded="false">门店管理</button>
+            <div class="nav__panel" data-section-panel="store">
+              <a class="nav__item" href="#/sm-counters" data-route="/sm-counters">
+                <span class="nav__icon">🗂</span>
+                <span class="nav__text">柜组信息</span>
+              </a>
+              <a class="nav__item" href="#/sm-regions" data-route="/sm-regions">
+                <span class="nav__icon">🧭</span>
+                <span class="nav__text">区域信息</span>
+              </a>
+              <a class="nav__item" href="#/sm-price-groups" data-route="/sm-price-groups">
+                <span class="nav__icon">💹</span>
+                <span class="nav__text">价格组信息</span>
+              </a>
+              <a class="nav__item" href="#/sm-stores" data-route="/sm-stores">
                 <span class="nav__icon">🏪</span>
                 <span class="nav__text">门店信息</span>
               </a>
@@ -116,6 +134,10 @@
               <a class="nav__item" href="#/voucher-themes" data-route="/voucher-themes">
                 <span class="nav__icon">🎫</span>
                 <span class="nav__text">礼券主题</span>
+              </a>
+              <a class="nav__item" href="#/voucher-categories" data-route="/voucher-categories">
+                <span class="nav__icon">🗂</span>
+                <span class="nav__text">礼券分类</span>
               </a>
             </div>
           </div>
@@ -130,6 +152,10 @@
               <a class="nav__item" href="#/sys-params" data-route="/sys-params">
                 <span class="nav__icon">🧩</span>
                 <span class="nav__text">系统参数</span>
+              </a>
+              <a class="nav__item" href="#/sys-approval" data-route="/sys-approval">
+                <span class="nav__icon">✅</span>
+                <span class="nav__text">审批配置</span>
               </a>
             </div>
           </div>
@@ -252,6 +278,6 @@
         return true;
       };
     </script>
-    <script src="./app.js?v=202606100420"></script>
+    <script src="./app.js?v=202606112130"></script>
   </body>
 </html>
