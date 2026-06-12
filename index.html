@@ -270,6 +270,25 @@
 
     <script>
       window.onerror = function(msg, url, line, col, err) {
+        try {
+          const payload = JSON.stringify({
+            sessionId: "gift-button-click",
+            runId: "pre-fix",
+            hypothesisId: "B",
+            location: "index.html:window.onerror",
+            msg: "[DEBUG] window.onerror captured",
+            data: {
+              message: String(msg || ""),
+              url: String(url || ""),
+              line: Number(line || 0),
+              col: Number(col || 0),
+              stack: err && err.stack ? String(err.stack) : ""
+            },
+            ts: Date.now()
+          });
+          if (navigator.sendBeacon) navigator.sendBeacon("http://127.0.0.1:7777/event", payload);
+          else fetch("http://127.0.0.1:7777/event", { method: "POST", headers: { "Content-Type": "application/json" }, body: payload }).catch(() => {});
+        } catch (_) {}
         document.body.innerHTML = '<pre style="color:red;padding:20px;">JS Error: ' + msg + '\\nLine: ' + line + ', Col: ' + col + '\\n' + (err && err.stack ? err.stack : '') + '</pre>';
         return true;
       };
