@@ -283,6 +283,7 @@ button,input,select,textarea{font-family:inherit}
 .campaign-querybar{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:10px 0 12px}
 .campaign-querybar__tabs{display:flex;align-items:center;flex:0 1 auto;min-width:0}
 .campaign-querybar__tabs .tabbar{flex-wrap:wrap}
+.campaign-querybar__tabs .tabbar--underline{margin-top:0}
 .campaign-querybar__search{flex:1 1 220px;min-width:220px;max-width:320px}
 .campaign-querybar__actions{justify-content:flex-end;flex:1 1 auto}
 .campaign-querybar--compact{justify-content:flex-start}
