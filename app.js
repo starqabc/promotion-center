@@ -30,6 +30,9 @@ const AppState = {
     assortment: {
       creatingActualId: "",
       summaryActualId: "",
+      listTab: "schedule",
+      filterActualId: "",
+      filterStatus: "",
       editingDocNo: "",
       draftMajor: "",
       draftRemark: "",
@@ -98,9 +101,7 @@ const AppState = {
       qSupplier: ""
     },
     promoGoodsPriority: {
-      qType: "全部",
-      qRuleNo: "",
-      qScopeText: ""
+      qScope: "全部"
     },
     campaignWizard: {
       editingNo: "",
@@ -195,6 +196,10 @@ const AppState = {
       sysApproval: { qId: "", qName: "", status: "全部", publishStatus: "全部" }
     },
     rpt: {
+      analysis: { schedule: "全部6档", storeLevel: "门店层级", store: "所有门店", view: "商品·顾客·效率", unit: "万元 / 人次" },
+      achievement: { schedule: "全部6档", store: "全部12家", compare: "达成率·ROI", unit: "万元" },
+      warning: { qGoodsCode: "", qCat: "", qPromoType: "全部", qStore: "", qEffectiveAt: "", qTplName: "", qSchedule: "", qBrand: "" },
+      storeAbnormal: { qGoodsCode: "", qCat: "", qPromoType: "全部", qStore: "", qEffectiveRange: "", qBrand: "", qSchedule: "" },
       voucher: { qActNo: "", qActName: "", qPromoType: "全部", qScheduleId: "", qStartFrom: "", qEndTo: "", qStatus: "全部", qVoucherCode: "", qVoucherName: "" },
       activity: { qActNo: "", qActName: "", qPromoType: "全部", qTplNo: "", qScheduleId: "", qStartFrom: "", qEndTo: "", qStatus: "全部" },
       goods: { qActNo: "", qActName: "", qPromoType: "全部", qStartFrom: "", qEndTo: "", qGoodsCode: "", qGoodsBarcode: "", qGoodsName: "" },
@@ -221,9 +226,9 @@ const AppState = {
     "/templates": { title: "促销模板", sub: "玩法模板 · 规则组件与参数占位" },
     "/templates-create": { title: "创建促销模板", sub: "按步骤配置：基本策略/条件/奖励/展示/预览生成" },
     "/templates-edit": { title: "编辑促销模板", sub: "按步骤配置：基本策略/条件/奖励/展示/预览生成" },
-    "/template-priority": { title: "模版规则设置", sub: "按模版类型维护模板优先级顺序（原型演示）" },
-    "/template-priority-create": { title: "新增模版规则设置", sub: "维护模版类型、模版、优先级与说明（原型演示）" },
-    "/template-priority-edit": { title: "编辑模版规则设置", sub: "维护模版类型、模版、优先级与说明（原型演示）" },
+    "/template-priority": { title: "模版优先级", sub: "按模版类型维护模板优先级顺序（原型演示）" },
+    "/template-priority-create": { title: "新增模版优先级", sub: "维护模版类型、模版、优先级与说明（原型演示）" },
+    "/template-priority-edit": { title: "编辑模版优先级", sub: "维护模版类型、模版、优先级与说明（原型演示）" },
     "/promo-goods-priority": { title: "促销商品优先级", sub: "按商品范围维护活动中商品优先级顺序（原型演示）" },
     "/promo-goods-priority-create": { title: "新增促销商品优先级", sub: "维护促销类型、商品范围、商品与优先级（原型演示）" },
     "/promo-goods-priority-edit": { title: "编辑促销商品优先级", sub: "维护促销类型、商品范围、商品与优先级（原型演示）" },
@@ -265,6 +270,10 @@ const AppState = {
     "/sys-params": { title: "系统参数", sub: "系统开关/阈值/默认值（原型演示）" },
     "/sys-approval": { title: "审批配置", sub: "审批流程配置与发布应用（原型演示）" },
     "/sys-approval-edit": { title: "审批配置设计器", sub: "流程节点配置 · 分支结构 · 审批人规则（原型演示）" },
+    "/rpt-analysis": { title: "促销分析", sub: "活动概览 · 品类/渠道/价格带/会员分析（原型演示）" },
+    "/rpt-achievement": { title: "促销达成", sub: "档期达成 · ROI · 毛利 · 客流（原型演示）" },
+    "/rpt-warning": { title: "促销预警", sub: "冲突预警 · 互斥校验 · 规则命中链路（原型演示）" },
+    "/rpt-store-abnormal": { title: "门店促销品异常", sub: "参与促销商品门店缺失校验（原型演示）" },
     "/rpt-voucher": { title: "促销活动出券明细表", sub: "查询赠券发放明细（原型演示）" },
     "/rpt-activity": { title: "促销活动明细表", sub: "查询活动汇总信息（原型演示）" },
     "/rpt-goods": { title: "促销活动商品明细表", sub: "查询商品级别明细（原型演示）" },
@@ -698,7 +707,9 @@ const AppState = {
     promoGoodsPriorities: [
       { id: "PGP-2026-0001", promoType: "直降", productScope: "单品", goodsCode: "690123400001", goodsBarcode: "6901234000010", goodsName: "可口可乐 330ml", goodsPrice: 3.50, priority: 1, status: "启用", remark: "同活动内优先命中", creator: "manle - m...", createAt: "2026-06-05 09:30:00", modifier: "manle - m...", modifyAt: "2026-06-12 10:50:00" },
       { id: "PGP-2026-0002", promoType: "直降", productScope: "单品", goodsCode: "690123400002", goodsBarcode: "6901234000027", goodsName: "雪碧 330ml", goodsPrice: 3.50, priority: 2, status: "启用", remark: "", creator: "manle - m...", createAt: "2026-06-05 09:35:00", modifier: "manle - m...", modifyAt: "2026-06-12 10:55:00" },
-      { id: "PGP-2026-0003", promoType: "折扣", productScope: "品牌", goodsCode: "690123400101", goodsBarcode: "6901234001016", goodsName: "百事可乐无糖 300ml", goodsPrice: 3.50, priority: 1, status: "启用", remark: "折扣类优先级示例", creator: "manle - m...", createAt: "2026-06-06 09:00:00", modifier: "manle - m...", modifyAt: "2026-06-12 11:00:00" }
+      { id: "PGP-2026-0003", promoType: "折扣", productScope: "品类", goodsCode: "690123400101", goodsBarcode: "6901234001016", goodsName: "百事可乐无糖 300ml", goodsPrice: 3.50, priority: 1, status: "启用", remark: "折扣类优先级示例", creator: "manle - m...", createAt: "2026-06-06 09:00:00", modifier: "manle - m...", modifyAt: "2026-06-12 11:00:00" },
+      { id: "PGP-2026-0004", promoType: "满减满赠", productScope: "全场", goodsCode: "—", goodsBarcode: "—", goodsName: "全场商品", goodsPrice: 0, priority: 1, status: "启用", remark: "", creator: "manle - m...", createAt: "2026-06-06 09:10:00", modifier: "manle - m...", modifyAt: "2026-06-12 11:05:00" },
+      { id: "PGP-2026-0005", promoType: "折扣", productScope: "品牌", goodsCode: "690123400202", goodsBarcode: "6901234002023", goodsName: "维达抽纸 130抽", goodsPrice: 12.90, priority: 1, status: "启用", remark: "", creator: "manle - m...", createAt: "2026-06-06 09:20:00", modifier: "manle - m...", modifyAt: "2026-06-12 11:10:00" }
     ],
     tpScheduleImports: [
       { id: "TSI-2026-0001", actualId: "100000001601", scheduleTheme: "2026年会员日", scheduleStart: "2026-05-01", scheduleEnd: "2026-07-31", status: "已保存", goodsCount: 12, creator: "manle - m...", createAt: "2026-05-12 10:20:00", modifier: "manle - m...", modifyAt: "2026-05-12 10:20:00", goodsSkus: ["690123400001", "690123400002"], userScope: { grades: ["MG-01"], tags: [] }, storeScope: { stores: ["ST-001", "ST-002"] } },
@@ -785,6 +796,166 @@ const AppState = {
       }
     ],
     templates: [
+      {
+        id: "T-2001",
+        templateNo: "2001",
+        name: "特价单品模板（草稿）",
+        templateType: "直降",
+        status: "草稿",
+        enableStatus: "启用",
+        creator: "manle - m...",
+        createAt: "2026-06-20 09:10:08",
+        modifier: "manle - m...",
+        modifyAt: "2026-06-20 09:10:08",
+        updatedAt: "2026-06-20 09:10",
+        config: {
+          basic: {
+            templateNo: "2001",
+            status: "草稿",
+            enableStatus: "启用",
+            name: "特价单品模板（草稿）",
+            type: "直降",
+            desc: "示例：用于展示草稿状态下可编辑/可提交操作",
+            time: { startEnabled: true, endEnabled: true, enableCycle: false, weekdays: [], enableTimeRange: false, timeRanges: "" },
+            object: {
+              channelRequired: true,
+              channelOptions: ["全部"],
+              storeRequired: true,
+              storeOptions: ["门店"],
+              userRequired: true,
+              userOptions: ["全部"],
+              singleItem: true,
+              multiItem: false,
+              goodsCats: [{ major: "日百", sub: "家清" }]
+            },
+            other: { enableRefundRule: false, refundOptions: [], enableCostSharing: false, costShareTypes: [], costShareRatio: "", enablePayMethods: false, payMethods: [] }
+          },
+          rule: { promoType: "直降" },
+          conditions: { userLimit: { enabled: true, value: "1" } },
+          rewards: { types: { discount: { enabled: true, modes: ["单品优惠"], minFreeEnabled: false, benefitTypeEnabled: false, benefitTypes: [] } } },
+          display: { labelEnabled: false, labelText: "", fontEnabled: false, fontStyle: "", desc: "" }
+        }
+      },
+      {
+        id: "T-2002",
+        templateNo: "2002",
+        name: "折扣模板（审核中）",
+        templateType: "折扣",
+        status: "审核中",
+        enableStatus: "启用",
+        creator: "manle - m...",
+        createAt: "2026-06-18 14:22:08",
+        modifier: "manle - m...",
+        modifyAt: "2026-06-19 11:02:33",
+        updatedAt: "2026-06-19 11:02",
+        config: {
+          basic: {
+            templateNo: "2002",
+            status: "审核中",
+            enableStatus: "启用",
+            name: "折扣模板（审核中）",
+            type: "折扣",
+            desc: "示例：用于展示审核中状态下可审核操作",
+            time: { startEnabled: true, endEnabled: true, enableCycle: true, weekdays: ["周五", "周六"], enableTimeRange: false, timeRanges: "" },
+            object: {
+              channelRequired: true,
+              channelOptions: ["全部", "线上"],
+              storeRequired: true,
+              storeOptions: ["门店", "区域"],
+              userRequired: true,
+              userOptions: ["全部", "会员"],
+              singleItem: true,
+              multiItem: false,
+              goodsCats: [{ major: "生鲜", sub: "水果" }]
+            },
+            other: { enableRefundRule: false, refundOptions: [], enableCostSharing: true, costShareTypes: ["平台承担"], costShareRatio: "100%", enablePayMethods: false, payMethods: [] }
+          },
+          rule: { promoType: "折扣" },
+          conditions: { memberLimit: { enabled: true, value: "2" } },
+          rewards: { types: { discount: { enabled: true, modes: ["组合优惠", "整单优惠"], minFreeEnabled: true, benefitTypeEnabled: false, benefitTypes: [] } } },
+          display: { labelEnabled: true, labelText: "折扣", fontEnabled: false, fontStyle: "", desc: "" }
+        }
+      },
+      {
+        id: "T-2003",
+        templateNo: "2003",
+        name: "满减模板（有效可停用）",
+        templateType: "满减满赠",
+        status: "有效",
+        enableStatus: "启用",
+        creator: "manle - m...",
+        createAt: "2026-06-10 10:12:08",
+        modifier: "manle - m...",
+        modifyAt: "2026-06-12 10:24:33",
+        updatedAt: "2026-06-12 10:24",
+        config: {
+          basic: {
+            templateNo: "2003",
+            status: "有效",
+            enableStatus: "启用",
+            name: "满减模板（有效可停用）",
+            type: "满减满赠",
+            desc: "示例：用于展示有效且未使用时可停用操作",
+            time: { startEnabled: true, endEnabled: true, enableCycle: false, weekdays: [], enableTimeRange: false, timeRanges: "" },
+            object: {
+              channelRequired: true,
+              channelOptions: ["全部"],
+              storeRequired: true,
+              storeOptions: ["门店"],
+              userRequired: true,
+              userOptions: ["全部"],
+              singleItem: true,
+              multiItem: true,
+              goodsCats: [{ major: "饮料", sub: "水饮" }]
+            },
+            other: { enableRefundRule: false, refundOptions: [], enableCostSharing: false, costShareTypes: [], costShareRatio: "", enablePayMethods: false, payMethods: [] }
+          },
+          rule: { promoType: "满减满赠" },
+          conditions: { fullAmt: { enabled: true, value: "99" } },
+          rewards: { types: { fullReduceGift: { enabled: true, options: ["金额"], purchaseTypeEnabled: false, purchaseTypes: [], benefitTypeEnabled: false, benefitTypes: [] } } },
+          display: { labelEnabled: false, labelText: "", fontEnabled: false, fontStyle: "", desc: "" }
+        }
+      },
+      {
+        id: "T-2004",
+        templateNo: "2004",
+        name: "特价模板（有效已使用）",
+        templateType: "直降",
+        status: "有效",
+        enableStatus: "禁用",
+        creator: "manle - m...",
+        createAt: "2026-06-08 11:12:08",
+        modifier: "manle - m...",
+        modifyAt: "2026-06-09 10:24:33",
+        updatedAt: "2026-06-09 10:24",
+        config: {
+          basic: {
+            templateNo: "2004",
+            status: "有效",
+            enableStatus: "禁用",
+            name: "特价模板（有效已使用）",
+            type: "直降",
+            desc: "示例：用于展示有效但已使用时停用按钮置灰",
+            time: { startEnabled: true, endEnabled: true, enableCycle: false, weekdays: [], enableTimeRange: false, timeRanges: "" },
+            object: {
+              channelRequired: true,
+              channelOptions: ["全部"],
+              storeRequired: true,
+              storeOptions: ["门店"],
+              userRequired: true,
+              userOptions: ["全部"],
+              singleItem: true,
+              multiItem: false,
+              goodsCats: [{ major: "日百", sub: "纸品" }]
+            },
+            other: { enableRefundRule: false, refundOptions: [], enableCostSharing: false, costShareTypes: [], costShareRatio: "", enablePayMethods: false, payMethods: [] }
+          },
+          rule: { promoType: "直降" },
+          conditions: { fullQty: { enabled: true, value: "2" } },
+          rewards: { types: { discount: { enabled: true, modes: ["单品优惠"], minFreeEnabled: false, benefitTypeEnabled: false, benefitTypes: [] } } },
+          display: { labelEnabled: true, labelText: "特价", fontEnabled: true, fontStyle: "加粗/16", desc: "示例描述" }
+        }
+      },
       {
         id: "T-1032",
         templateNo: "1032",
@@ -1471,6 +1642,34 @@ const AppState = {
       }
     ],
     campaigns: [
+      {
+        id: "C-8899",
+        activityNo: "ACT-2026-0099",
+        activitySubject: "特价模板（已使用）示例活动",
+        promoType: "直降",
+        scheduleId: "AC-2026-0001",
+        templateId: "T-2004",
+        templateNo: "2004",
+        templateName: "特价模板（有效已使用）",
+        activityType: "特价",
+        desc: "用于占用模板以展示停用按钮置灰（原型演示）",
+        status: "生效",
+        startAt: "2026-06-10 00:00",
+        endAt: "2026-06-20 23:59",
+        cycle: [],
+        scope: { channel: "全渠道", userScope: "不限制", memberGrades: [], memberTags: [] },
+        storeScope: { storeType: "门店", stores: [], priceGroups: [], regions: [], excludeStores: [] },
+        goodsScope: { isAll: "否", discountAll: 0.9, keyword: "", tab: "goods", goods: [], categories: [], counters: [], suppliers: [], brands: [], excludeGoods: [] },
+        burden: { method: "比例", supplier: "", purchase: "" },
+        creator: "manle - m...",
+        createAt: "2026-06-08 12:00:00",
+        modifier: "manle - m...",
+        modifyAt: "2026-06-09 09:30:00",
+        auditor: "leader - l...",
+        auditAt: "2026-06-09 10:00:00",
+        effectiveBy: "leader - l...",
+        effectiveAt: "2026-06-10 00:00:00"
+      },
       {
         id: "C-8801",
         activityNo: "ACT-2026-0001",
@@ -3702,6 +3901,32 @@ function templateWizardSetStep(step) {
       if (dot) dot.textContent = n <= s ? "✓" : "⏳";
     });
   }
+  const pageActionsEl = document.querySelector(".tpl-page__actions");
+  if (pageActionsEl) {
+    pageActionsEl.innerHTML = s === 3
+      ? `
+        <button class="btn" type="button" data-act="tplWizBack">返回列表</button>
+        <button class="btn" type="button" data-act="tplWizSaveDraft">保存草稿</button>
+        <button class="btn btn--primary" type="button" data-act="tplWizEnable">保存并启用</button>
+      `
+      : `
+        <button class="btn" type="button" data-act="tplWizBack">返回列表</button>
+        <button class="btn btn--primary" type="button" data-act="tplWizSaveDraft">保存草稿</button>
+      `;
+  }
+  const actionsEl = document.querySelector(".tpl-wizard__actions");
+  if (actionsEl) {
+    actionsEl.innerHTML = s === 3
+      ? `
+        <button class="btn" type="button" data-act="tplWizPrev">上一步</button>
+      `
+      : `
+        <button class="btn" type="button" data-act="tplWizPrev">上一步</button>
+        <button class="btn btn--primary" type="button" data-act="tplWizNext">下一步</button>
+      `;
+  }
+  const prevBtn = document.querySelector('.tpl-wizard__actions button[data-act="tplWizPrev"]');
+  if (prevBtn) prevBtn.disabled = s === 1;
   templateWizardRefreshVisibility();
   if (s === 3) templateWizardRenderPreview();
 }
@@ -3785,6 +4010,107 @@ function templateWizardBenefitTypeText(list) {
   return arr.length ? arr.join("/") : "—";
 }
 
+function templateWizardPurchaseTypeValues(name) {
+  return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map((x) => String(x.value || ""));
+}
+
+function templateWizardPurchaseTypeChecksHtml(name, picked = []) {
+  const list = Array.isArray(picked) ? picked : [];
+  return `
+    <div class="field">
+      <div class="field__label">购买类型</div>
+      <div class="checks">
+        ${["单品", "组合", "整单"].map((x) => `<label class="check"><input type="checkbox" name="${escapeHtml(name)}" value="${escapeHtml(x)}" ${list.includes(x) ? "checked" : ""} />${escapeHtml(x)}</label>`).join("")}
+      </div>
+    </div>
+  `;
+}
+
+function templateWizardPurchaseTypeCardHtml({ id, boxId, name, picked = [] }) {
+  return `
+    <div class="tpl-stacked-group">
+      <div class="tpl-option-card tpl-option-card--sub">
+        <div class="tpl-option-card__head">
+          <div>
+            <div class="tpl-option-card__title">购买类型</div>
+          </div>
+          <div class="tpl-option-card__control">
+            <label class="switch"><input type="checkbox" id="${escapeHtml(id)}" /><span class="switch__track"><span class="switch__text switch__text--on">启用</span><span class="switch__text switch__text--off">禁用</span><span class="switch__thumb"></span></span></label>
+          </div>
+        </div>
+        <div class="tpl-option-card__body" id="${escapeHtml(boxId)}" style="display:none;">${templateWizardPurchaseTypeChecksHtml(name, picked)}</div>
+      </div>
+    </div>
+  `;
+}
+
+function templateWizardPurchaseTypeText(list) {
+  const arr = Array.isArray(list) ? list.filter(Boolean) : [];
+  return arr.length ? arr.join("/") : "—";
+}
+
+function normalizeTemplateType(type) {
+  const raw = String(type || "").trim();
+  if (raw === "特价") return "直降";
+  return raw;
+}
+
+function displayTemplateType(type) {
+  const raw = normalizeTemplateType(type);
+  if (raw === "直降") return "特价";
+  return raw;
+}
+
+function templateTypeOptions() {
+  const md = AppState.data.masterData || {};
+  const base = md.templateTypes || ["直降", "折扣", "满减满赠", "满赠券"];
+  const seen = new Set();
+  return base
+    .map((x) => normalizeTemplateType(x))
+    .filter((x) => x && x !== "满购券" && (!seen.has(x) && (seen.add(x), true)));
+}
+
+function templateTypeSpec(type) {
+  const t = normalizeTemplateType(type);
+  const common = {
+    object: { goods: true, join: false, cost: true },
+    conditionTitle: "限量设置",
+    rules: { fullAmt: true, fullQty: true, ladder: true, multiple: true },
+    rewards: { discount: false, fullReduceGift: false, limit: false, voucherRule: false, voucherCap: false },
+    discountModes: []
+  };
+  if (t === "直降") {
+    return {
+      ...common,
+      object: { goods: true, join: true, cost: true },
+      conditionTitle: "限量设置",
+      rules: { fullAmt: true, fullQty: true, ladder: true, multiple: false },
+      rewards: { discount: true, fullReduceGift: false, limit: false, voucherRule: false, voucherCap: false },
+      discountModes: ["单品优惠", "组合优惠", "整单优惠"]
+    };
+  }
+  if (t === "折扣") {
+    return {
+      ...common,
+      rewards: { discount: true, fullReduceGift: false, limit: false, voucherRule: false, voucherCap: false },
+      discountModes: ["单品优惠", "组合优惠", "整单优惠"]
+    };
+  }
+  if (t === "满减满赠") {
+    return {
+      ...common,
+      rewards: { discount: false, fullReduceGift: true, limit: true, voucherRule: false, voucherCap: false }
+    };
+  }
+  if (t === "满赠券") {
+    return {
+      ...common,
+      rewards: { discount: false, fullReduceGift: false, limit: false, voucherRule: true, voucherCap: true }
+    };
+  }
+  return common;
+}
+
 function templateWizardRefreshVisibility() {
   const setShow = (id, ok) => {
     const el = document.getElementById(id);
@@ -3792,37 +4118,45 @@ function templateWizardRefreshVisibility() {
     el.style.display = ok ? "" : "none";
   };
 
+  const promoType = document.getElementById("twType") ? normalizeTemplateType(document.getElementById("twType").value || "") : "";
+  const spec = templateTypeSpec(promoType);
+
+  const condTitleEl = document.querySelector("#tcSectionWrap .tpl-form-section__title");
+  if (condTitleEl) condTitleEl.textContent = spec.conditionTitle;
+
+  setShow("twGoodsScopeRow", true);
+  setShow("twGoodsJoinRow", !!spec.object.join);
+  setShow("twCostSharingRow", !!spec.object.cost);
+
+  setShow("tcUserLimitRow", true);
+  setShow("tcMemberLimitRow", true);
+  setShow("tcStoreLimitRow", true);
+  setShow("tcRegionLimitRow", true);
+  setShow("tcFullAmtRow", !!spec.rules.fullAmt);
+  setShow("tcFullQtyRow", !!spec.rules.fullQty);
+  setShow("tcLadderRow", !!spec.rules.ladder);
+  setShow("tcMultipleRow", !!spec.rules.multiple);
+
+  setShow("rwDiscountRow", !!spec.rewards.discount);
+  setShow("rwFullReduceGiftRow", !!spec.rewards.fullReduceGift);
+  setShow("rwLimitRow", !!spec.rewards.limit);
+  setShow("rwVoucherRuleRow", !!spec.rewards.voucherRule);
+  setShow("rwVoucherCapRow", !!spec.rewards.voucherCap);
+
   const discountEnable = document.getElementById("rwDiscountEnable") ? document.getElementById("rwDiscountEnable").checked : false;
   setShow("rwDiscountBox", discountEnable);
-  const discountBenefitTypeEnable = document.getElementById("rwDiscountBenefitTypeEnable") ? document.getElementById("rwDiscountBenefitTypeEnable").checked : false;
-  setShow("rwDiscountBenefitTypeBox", discountEnable && discountBenefitTypeEnable);
-
-  const promoType = document.getElementById("twType") ? String(document.getElementById("twType").value || "") : "";
-  setShow("twGoodsJoinRow", promoType === "直降");
-
-  const enableCycle = document.getElementById("twEnableCycle") ? document.getElementById("twEnableCycle").checked : false;
-  setShow("twCycleOptsBox", enableCycle);
-  if (enableCycle) {
-    const weekEl = document.querySelector('input[name="twCycleScope"][value="周"]');
-    const dayEl = document.querySelector('input[name="twCycleScope"][value="日"]');
-    if (weekEl && dayEl && weekEl.checked && dayEl.checked) dayEl.checked = false;
-  }
-
-  setShow("twCostSharingBox", false);
 
   setShow("tcLadderBox", false);
 
   const fullReduceGift = document.getElementById("rwFullReduceGift") ? document.getElementById("rwFullReduceGift").checked : false;
   setShow("rwFullReduceGiftBox", fullReduceGift);
-  const frgBenefitTypeEnable = document.getElementById("rwFullReduceGiftBenefitTypeEnable") ? document.getElementById("rwFullReduceGiftBenefitTypeEnable").checked : false;
-  setShow("rwFullReduceGiftBenefitTypeBox", fullReduceGift && frgBenefitTypeEnable);
+  const frgPurchaseTypeEnable = document.getElementById("rwFullReduceGiftPurchaseTypeEnable") ? document.getElementById("rwFullReduceGiftPurchaseTypeEnable").checked : false;
+  setShow("rwFullReduceGiftPurchaseTypeBox", fullReduceGift && frgPurchaseTypeEnable);
   const frgOpts = templateWizardNormalizeFullReduceGiftOptions();
   const frgHasGoods = frgOpts.includes("商品");
   const frgHasAmountOrRate = frgOpts.includes("金额") || frgOpts.includes("比例");
-  setShow("rwFRGItemModeRow", false);
 
   const limitEnable = document.getElementById("rwLimitEnable") ? document.getElementById("rwLimitEnable").checked : false;
-  setShow("rwLimitWrap", fullReduceGift);
   setShow("rwLimitBox", fullReduceGift && limitEnable);
   const qtyRadio = document.querySelector('input[name="rwLimitType"][value="数量"]');
   const amtRadio = document.querySelector('input[name="rwLimitType"][value="金额"]');
@@ -3831,12 +4165,33 @@ function templateWizardRefreshVisibility() {
   if (fullReduceGift && frgHasAmountOrRate && amtRadio) amtRadio.checked = true;
   if (fullReduceGift && frgHasGoods && qtyRadio) qtyRadio.checked = true;
 
-  const voucherGift = document.getElementById("rwVoucherGift") ? document.getElementById("rwVoucherGift").checked : false;
-  setShow("rwVoucherGiftExtraWrap", voucherGift);
-  const voucherBenefitTypeEnable = document.getElementById("rwVoucherBenefitTypeEnable") ? document.getElementById("rwVoucherBenefitTypeEnable").checked : false;
-  setShow("rwVoucherBenefitTypeBox", voucherGift && voucherBenefitTypeEnable);
-  setShow("rwVoucherCapBox", false);
-  setShow("rwVoucherRuleBox", false);
+  const voucherCap = document.getElementById("rwVoucherCap") ? document.getElementById("rwVoucherCap").checked : false;
+  const voucherRule = document.getElementById("rwVoucherRule") ? document.getElementById("rwVoucherRule").checked : false;
+  setShow("rwVoucherCapBox", voucherCap);
+  setShow("rwVoucherRuleBox", voucherRule);
+  const voucherRulePurchaseTypeEnable = document.getElementById("rwVoucherRulePurchaseTypeEnable") ? document.getElementById("rwVoucherRulePurchaseTypeEnable").checked : false;
+  setShow("rwVoucherRulePurchaseTypeBox", voucherRule && voucherRulePurchaseTypeEnable);
+
+  const discountModeNodes = Array.from(document.querySelectorAll('input[name="rwDiscountModes"]'));
+  if (discountModeNodes.length) {
+    discountModeNodes.forEach((x) => {
+      const v = String(x.value || "");
+      if (!spec.discountModes.includes(v)) x.checked = false;
+    });
+    const picked = discountModeNodes.filter((x) => x.checked).map((x) => String(x.value || ""));
+    if (!picked.length) {
+      const fallback = discountModeNodes.find((x) => String(x.value || "") === "单品优惠") || discountModeNodes[0];
+      if (fallback) fallback.checked = true;
+    }
+  }
+
+  const discountModes = Array.from(document.querySelectorAll('input[name="rwDiscountModes"]:checked')).map((x) => String(x.value || ""));
+  const minFreeEl = document.getElementById("rwDiscountMinFree");
+  const canMinFree = discountModes.includes("组合优惠") || discountModes.includes("整单优惠");
+  if (minFreeEl) {
+    minFreeEl.disabled = !canMinFree;
+    if (!canMinFree) minFreeEl.checked = false;
+  }
 }
 
 function templateWizardValidateStep(step) {
@@ -3851,32 +4206,41 @@ function templateWizardValidateStep(step) {
 
 function templateWizardCollectPayload() {
   const editId = document.getElementById("twEditId") ? document.getElementById("twEditId").value : "";
+  const existing = editId ? (AppState.data.templates || []).find((x) => String(x.id) === String(editId)) : null;
+  const existingObj = existing && existing.config && existing.config.basic && existing.config.basic.object ? existing.config.basic.object : {};
+  const enableStatus = document.querySelector('input[name="twEnableStatus"]:checked') ? document.querySelector('input[name="twEnableStatus"]:checked').value : "启用";
   const name = document.getElementById("twName") ? document.getElementById("twName").value : "";
-  const type = document.getElementById("twType") ? document.getElementById("twType").value : "";
+  const type = document.getElementById("twType") ? normalizeTemplateType(document.getElementById("twType").value) : "";
   const desc = document.getElementById("twDesc") ? document.getElementById("twDesc").value : "";
-
+  const spec = templateTypeSpec(type);
   const time = {
-    startEnabled: true,
-    endEnabled: true,
-    enableCycle: document.getElementById("twEnableCycle") ? document.getElementById("twEnableCycle").checked : false,
-    enableTimeRange: document.getElementById("twEnableTimeRange") ? document.getElementById("twEnableTimeRange").checked : false,
-    cycleOptions: (document.getElementById("twEnableCycle") && document.getElementById("twEnableCycle").checked) ? pickCheckedValues("twCycleScope") : [],
+    startEnabled: false,
+    endEnabled: false,
+    enableCycle: false,
+    enableTimeRange: false,
+    cycleOptions: [],
     weekdays: [],
     timeRanges: ""
   };
 
   const object = {
-    channelRequired: true,
-    channelRadio: "全部",
-    storeRequired: true,
-    storeRadio: document.querySelector('input[name="twStoreRadio"]:checked') ? document.querySelector('input[name="twStoreRadio"]:checked').value : "",
+    channelRequired: false,
+    channelRadio: "",
+    storeRequired: false,
+    storeRadio: "",
     storeExcludeEnabled: false,
-    userRequired: true,
-    userRange: "全部",
-    userOptions: ["全部"],
+    userRequired: false,
+    userRange: "",
+    userOptions: [],
     goodsScopeOptions: ["单品"],
-    goodsJoinEnabled: document.getElementById("twGoodsJoinEnable") ? document.getElementById("twGoodsJoinEnable").checked : false,
-    goodsScopeJoin: (document.getElementById("twGoodsJoinEnable") && document.getElementById("twGoodsJoinEnable").checked) ? "且" : "",
+    goodsJoinEnabled: spec.object.join
+      ? (document.getElementById("twGoodsJoinEnable")
+          ? document.getElementById("twGoodsJoinEnable").checked
+          : Boolean(existingObj.goodsJoinEnabled) || Boolean(existingObj.goodsScopeJoin))
+      : false,
+    goodsScopeJoin: (spec.object.join && document.getElementById("twGoodsJoinEnable") && document.getElementById("twGoodsJoinEnable").checked)
+      ? "且"
+      : (spec.object.join ? (existingObj.goodsScopeJoin || "") : ""),
     excludeEnabled: false,
     excludeScopeOptions: []
   };
@@ -3886,7 +4250,7 @@ function templateWizardCollectPayload() {
     costShareTypes: []
   };
 
-  const basic = { templateNo: "", status: "", name, type, desc, time, object, other };
+  const basic = { templateNo: "", status: "", enableStatus, name, type, desc, time, object, other };
 
   const cond = {
     types: {
@@ -3907,34 +4271,38 @@ function templateWizardCollectPayload() {
     types: {
       discount: {
         enabled: document.getElementById("rwDiscountEnable") ? document.getElementById("rwDiscountEnable").checked : false,
-        mode: document.querySelector('input[name="rwDiscountType"]:checked') ? document.querySelector('input[name="rwDiscountType"]:checked').value : "整单优惠",
-        benefitTypeEnabled: document.getElementById("rwDiscountBenefitTypeEnable") ? document.getElementById("rwDiscountBenefitTypeEnable").checked : false,
-        benefitTypes: templateWizardBenefitTypeValues("rwDiscountBenefitType")
+        modes: pickCheckedValues("rwDiscountModes"),
+        minFreeEnabled: document.getElementById("rwDiscountMinFree") ? document.getElementById("rwDiscountMinFree").checked : false,
+        benefitTypeEnabled: false,
+        benefitTypes: []
       },
       fullReduceGift: {
         enabled: document.getElementById("rwFullReduceGift") ? document.getElementById("rwFullReduceGift").checked : false,
         options: pickCheckedValues("twFullReduceGiftOpts"),
         itemMode: document.querySelector('input[name="rwFRGItemMode"]:checked') ? document.querySelector('input[name="rwFRGItemMode"]:checked').value : "单品",
-        benefitTypeEnabled: document.getElementById("rwFullReduceGiftBenefitTypeEnable") ? document.getElementById("rwFullReduceGiftBenefitTypeEnable").checked : false,
-        benefitTypes: templateWizardBenefitTypeValues("rwFullReduceGiftBenefitType")
+        purchaseTypeEnabled: document.getElementById("rwFullReduceGiftPurchaseTypeEnable") ? document.getElementById("rwFullReduceGiftPurchaseTypeEnable").checked : false,
+        purchaseTypes: templateWizardPurchaseTypeValues("rwFullReduceGiftPurchaseType"),
+        benefitTypeEnabled: false,
+        benefitTypes: []
       },
       limit: {
         enabled: document.getElementById("rwLimitEnable") ? document.getElementById("rwLimitEnable").checked : false,
         type: document.querySelector('input[name="rwLimitType"]:checked') ? document.querySelector('input[name="rwLimitType"]:checked').value : "数量"
       },
       voucherGift: {
-        enabled: document.getElementById("rwVoucherGift") ? document.getElementById("rwVoucherGift").checked : false,
-        benefitTypeEnabled: document.getElementById("rwVoucherBenefitTypeEnable") ? document.getElementById("rwVoucherBenefitTypeEnable").checked : false,
-        benefitTypes: templateWizardBenefitTypeValues("rwVoucherBenefitType")
-      }
-      ,
+        enabled: spec.rewards.voucherRule || spec.rewards.voucherCap,
+        benefitTypeEnabled: false,
+        benefitTypes: []
+      },
       voucherCap: {
         enabled: document.getElementById("rwVoucherCap") ? document.getElementById("rwVoucherCap").checked : false,
         value: document.getElementById("rwVoucherCapVal") ? document.getElementById("rwVoucherCapVal").value : ""
       },
       voucherRule: {
         enabled: document.getElementById("rwVoucherRule") ? document.getElementById("rwVoucherRule").checked : false,
-        text: document.getElementById("rwVoucherRuleText") ? document.getElementById("rwVoucherRuleText").value : ""
+        text: document.getElementById("rwVoucherRuleText") ? document.getElementById("rwVoucherRuleText").value : "",
+        purchaseTypeEnabled: document.getElementById("rwVoucherRulePurchaseTypeEnable") ? document.getElementById("rwVoucherRulePurchaseTypeEnable").checked : false,
+        purchaseTypes: templateWizardPurchaseTypeValues("rwVoucherRulePurchaseType")
       }
     }
   };
@@ -3953,11 +4321,11 @@ function templateWizardRenderPreview() {
 
   const cfg = p.config || {};
   const b = cfg.basic || {};
-  const time = b.time || {};
   const obj = b.object || {};
   const other = b.other || {};
   const cond = cfg.conditions || {};
   const rewards = cfg.rewards || {};
+  const spec = templateTypeSpec(b.type || p.type || "");
   const existing = p.editId ? (AppState.data.templates || []).find((x) => String(x.id) === String(p.editId)) : null;
   const meta = {
     templateNo: existing ? (existing.templateNo || existing.id || "") : "",
@@ -3968,21 +4336,11 @@ function templateWizardRenderPreview() {
     modifyAt: existing ? (existing.modifyAt || "—") : "—"
   };
 
-  const timeBits = [
-    "活动时间范围（必选）",
-    time.enableCycle ? `生效周期：启用${(time.cycleOptions || []).length ? "（" + (time.cycleOptions || []).join("/") + "）" : ""}` : "生效周期：不启用",
-    time.enableTimeRange ? "按时间段促销：启用" : "按时间段促销：不启用"
-  ];
   const objBits = [
-    "渠道范围：活动创建时配置",
-    "门店范围：活动创建时配置",
     "顾客范围：活动创建时配置",
     "商品范围：活动创建时配置",
-    (String(b.type || "") === "直降") ? `组合关系：${obj.goodsJoinEnabled ? "启用" : "关闭"}` : ""
+    `费用承担：${other.enableCostSharing ? "已启用" : "不启用"}`
   ].filter(Boolean);
-  const otherBits = [
-    other.enableCostSharing ? "费用承担：已启用" : "费用承担：不启用"
-  ];
 
   const ct = cond.types || {};
   const condBits = [
@@ -3990,20 +4348,27 @@ function templateWizardRenderPreview() {
     ct.memberLimit && ct.memberLimit.enabled ? `会员限量(${ct.memberLimit.value || "—"})` : "会员限量：不启用",
     ct.storeLimit && ct.storeLimit.enabled ? `门店限量(${ct.storeLimit.value || "—"})` : "门店限量：不启用",
     ct.regionLimit && ct.regionLimit.enabled ? `区域限量(${ct.regionLimit.value || "—"})` : "区域限量：不启用",
-    ct.fullQty && ct.fullQty.enabled ? `满数量(${ct.fullQty.value || "—"})` : "满数量：不启用",
-    ct.fullAmt && ct.fullAmt.enabled ? `满金额(${ct.fullAmt.value || "—"})` : "满金额：不启用",
-    cond.ladderEnabled ? "阶梯：启用" : "阶梯：不启用",
-    cond.multipleEnabled ? `倍数(${cond.multipleValue || "—"})` : "倍数：不启用"
-  ];
+    spec.rules.fullAmt ? (ct.fullAmt && ct.fullAmt.enabled ? `满金额(${ct.fullAmt.value || "—"})` : "满金额：不启用") : "",
+    spec.rules.fullQty ? (ct.fullQty && ct.fullQty.enabled ? `满数量(${ct.fullQty.value || "—"})` : "满数量：不启用") : "",
+    spec.rules.ladder ? (cond.ladderEnabled ? "阶梯：启用" : "阶梯：不启用") : "",
+    spec.rules.multiple ? (cond.multipleEnabled ? `倍数(${cond.multipleValue || "—"})` : "倍数：不启用") : ""
+  ].filter(Boolean);
 
   const rt = rewards.types || {};
+  const discountModes = (rt.discount && Array.isArray(rt.discount.modes) ? rt.discount.modes : []);
+  const discountModeText = discountModes.length ? discountModes.join("/") : ((rt.discount && rt.discount.mode) ? String(rt.discount.mode) : "单品优惠");
   const rewardBits = [
-    rt.discount && rt.discount.enabled ? `直降/折扣(${rt.discount.mode || "整单优惠"}${rt.discount.benefitTypeEnabled ? `；优惠类型：${templateWizardBenefitTypeText(rt.discount.benefitTypes)}` : ""})` : "",
-    rt.fullReduceGift && rt.fullReduceGift.enabled ? `满减/赠优惠(${(rt.fullReduceGift.options || []).join("/") || "—"}${rt.fullReduceGift.benefitTypeEnabled ? `；优惠类型：${templateWizardBenefitTypeText(rt.fullReduceGift.benefitTypes)}` : ""})` : "",
-    rt.limit && rt.limit.enabled ? `上限设置(${rt.limit.type || "数量"})` : "",
-    rt.voucherGift && rt.voucherGift.enabled ? `赠券${rt.voucherGift.benefitTypeEnabled ? `(优惠类型：${templateWizardBenefitTypeText(rt.voucherGift.benefitTypes)})` : ""}` : "",
-    rt.voucherGift && rt.voucherGift.enabled && rt.voucherCap && rt.voucherCap.enabled ? "上限出券：启用" : "",
-    rt.voucherGift && rt.voucherGift.enabled && rt.voucherRule && rt.voucherRule.enabled ? "用券送券规则：启用" : ""
+    spec.rewards.discount && rt.discount && rt.discount.enabled
+      ? `直降/折扣(${discountModeText}${rt.discount.minFreeEnabled ? "；最低免单：开启" : ""})`
+      : "",
+    spec.rewards.fullReduceGift && rt.fullReduceGift && rt.fullReduceGift.enabled
+      ? `满减/赠优惠(${(rt.fullReduceGift.options || []).join("/") || "—"}${rt.fullReduceGift.purchaseTypeEnabled ? `；购买类型：${templateWizardPurchaseTypeText(rt.fullReduceGift.purchaseTypes)}` : ""})`
+      : "",
+    spec.rewards.limit && rt.limit && rt.limit.enabled ? `上限设置(${rt.limit.type || "数量"})` : "",
+    spec.rewards.voucherRule && rt.voucherRule && rt.voucherRule.enabled
+      ? `用券出券规则：启用${rt.voucherRule.purchaseTypeEnabled ? `；购买类型：${templateWizardPurchaseTypeText(rt.voucherRule.purchaseTypes)}` : ""}`
+      : "",
+    spec.rewards.voucherCap && rt.voucherCap && rt.voucherCap.enabled ? "上限设置：启用" : ""
   ].filter(Boolean);
 
   const onChip = `<span class="tpl-preview-chip tpl-preview-chip--on">启用</span>`;
@@ -4016,20 +4381,12 @@ function templateWizardRenderPreview() {
           <div class="tpl-preview__grid">
             <div class="tpl-preview__kv"><div class="k">模板编号</div><div class="v mono">${escapeHtml(meta.templateNo || "—")}</div></div>
             <div class="tpl-preview__kv"><div class="k">模板名称</div><div class="v">${escapeHtml(p.name || "未填写")}</div></div>
-            <div class="tpl-preview__kv"><div class="k">促销类型</div><div class="v">${escapeHtml(b.type || "—")}</div></div>
+            <div class="tpl-preview__kv"><div class="k">模版类型</div><div class="v">${escapeHtml(displayTemplateType(b.type || "—"))}</div></div>
             <div class="tpl-preview__kv"><div class="k">模板说明</div><div class="v">${escapeHtml(p.desc || "—")}</div></div>
             <div class="tpl-preview__kv"><div class="k">创建人</div><div class="v">${escapeHtml(meta.creator || "—")}</div></div>
             <div class="tpl-preview__kv"><div class="k">创建时间</div><div class="v mono">${escapeHtml(meta.createAt || "—")}</div></div>
             <div class="tpl-preview__kv"><div class="k">修改人</div><div class="v">${escapeHtml(meta.modifier || "—")}</div></div>
             <div class="tpl-preview__kv"><div class="k">修改时间</div><div class="v mono">${escapeHtml(meta.modifyAt || "—")}</div></div>
-          </div>
-          <div class="tpl-preview__sub">
-            <div class="tpl-preview__sub-title">时间周期</div>
-            <div class="tpl-preview__sub-grid">
-              <div class="tpl-preview__kv"><div class="k">活动时间范围</div><div class="v">${onChip}</div></div>
-              <div class="tpl-preview__kv"><div class="k">生效周期</div><div class="v">${time.enableCycle ? onChip : offChip}</div></div>
-              <div class="tpl-preview__kv"><div class="k">按时间段促销</div><div class="v">${time.enableTimeRange ? onChip : offChip}</div></div>
-            </div>
           </div>
         </div>
       </div>
@@ -4037,20 +4394,8 @@ function templateWizardRenderPreview() {
       <div class="tpl-preview__sec">
         <div class="tpl-preview__sec-hd">2 促销对象</div>
         <div class="tpl-preview__sec-bd">
-          <div class="tpl-preview__grid">
-            <div class="tpl-preview__kv"><div class="k">渠道范围</div><div class="v">活动创建时配置</div></div>
-            <div class="tpl-preview__kv"><div class="k">门店范围</div><div class="v">活动创建时配置</div></div>
-            <div class="tpl-preview__kv"><div class="k">顾客范围</div><div class="v">活动创建时配置</div></div>
-            <div class="tpl-preview__kv"><div class="k">商品范围</div><div class="v">活动创建时配置</div></div>
-            ${(String(b.type || "") === "直降")
-              ? `<div class="tpl-preview__kv"><div class="k">组合关系</div><div class="v">${obj.goodsJoinEnabled ? "启用" : "关闭"}</div></div>`
-              : ``}
-          </div>
-          <div class="tpl-preview__sub">
-            <div class="tpl-preview__sub-title">其它选项</div>
-            <div class="tpl-preview__sub-grid">
-              <div class="tpl-preview__kv"><div class="k">费用承担</div><div class="v">${other.enableCostSharing ? onChip : offChip}</div></div>
-            </div>
+          <div class="tpl-preview__list">
+            ${(objBits.length ? objBits : ["—"]).map((x) => `<div class="tpl-preview__li">${escapeHtml(x)}</div>`).join("")}
           </div>
         </div>
       </div>
@@ -4077,7 +4422,8 @@ function templateWizardSave(targetStatus) {
   const must = [];
   if (!p.name) must.push("模板名称未填写");
   if (!p.type) must.push("模板类型未选择");
-  if (targetStatus === "审核中" && must.length) return toast(must[0]);
+  if ((targetStatus === "审核中" || targetStatus === "有效") && must.length) return toast(must[0]);
+  if (targetStatus === "有效" && p.config && p.config.basic) p.config.basic.enableStatus = "启用";
 
   const nextNo = () => {
     const nums = AppState.data.templates.map((x) => Number(x.templateNo)).filter((n) => Number.isFinite(n));
@@ -4092,6 +4438,7 @@ function templateWizardSave(targetStatus) {
     t.name = p.name;
     t.templateType = p.type;
     t.desc = p.desc || "";
+    t.enableStatus = (p.config && p.config.basic && p.config.basic.enableStatus) ? p.config.basic.enableStatus : (t.enableStatus || "启用");
     t.status = targetStatus;
     t.config = p.config;
     t.modifier = "manle - m...";
@@ -4107,6 +4454,7 @@ function templateWizardSave(targetStatus) {
       name: p.name,
       templateType: p.type,
       desc: p.desc || "",
+      enableStatus: (p.config && p.config.basic && p.config.basic.enableStatus) ? p.config.basic.enableStatus : "启用",
       status: targetStatus,
       creator: "manle - m...",
       createAt: nowIsoSeconds(),
@@ -4117,7 +4465,13 @@ function templateWizardSave(targetStatus) {
     });
   }
 
-  toast(targetStatus === "审核中" ? "已生成模板并提交审核（原型演示）" : "已保存草稿（原型演示）");
+  toast(
+    targetStatus === "审核中"
+      ? "已生成模板并提交审核（原型演示）"
+      : targetStatus === "有效"
+        ? "已保存并启用模板（原型演示）"
+        : "已保存草稿（原型演示）"
+  );
   AppState.ui.templates.editingId = "";
   AppState.ui.templates.wizardStep = 1;
   location.hash = "#/templates";
@@ -4127,7 +4481,6 @@ function templateWizardLoadExisting(existing) {
   if (!existing) return;
   const cfg = existing.config || {};
   const b = cfg.basic || {};
-  const time = b.time || {};
   const obj = b.object || {};
   const other = b.other || {};
   const cond = cfg.conditions || {};
@@ -4136,20 +4489,15 @@ function templateWizardLoadExisting(existing) {
   const editEl = document.getElementById("twEditId");
   if (editEl) editEl.value = existing.id || "";
   if (document.getElementById("twName")) document.getElementById("twName").value = existing.name || "";
-  if (document.getElementById("twType")) document.getElementById("twType").value = existing.templateType || b.type || "";
+  if (document.getElementById("twType")) document.getElementById("twType").value = normalizeTemplateType(existing.templateType || b.type || "");
   if (document.getElementById("twDesc")) document.getElementById("twDesc").value = existing.desc || b.desc || "";
-
-  /* 周期时间 */
-  if (document.getElementById("twEnableCycle")) document.getElementById("twEnableCycle").checked = Boolean(time.enableCycle);
-  if (document.getElementById("twEnableTimeRange")) document.getElementById("twEnableTimeRange").checked = Boolean(time.enableTimeRange);
-  Array.from(document.querySelectorAll('input[name="twCycleScope"]')).forEach((x) => {
-    x.checked = Boolean(time.enableCycle) && (time.cycleOptions || []).includes(x.value);
+  const enableStatus = String(existing.enableStatus || b.enableStatus || "启用");
+  Array.from(document.querySelectorAll('input[name="twEnableStatus"]')).forEach((x) => {
+    x.checked = String(x.value || "") === enableStatus;
   });
 
   const promoType = existing.templateType || b.type || "";
-  if (promoType === "直降" && document.getElementById("twGoodsJoinEnable")) {
-    document.getElementById("twGoodsJoinEnable").checked = Boolean(obj.goodsJoinEnabled) || Boolean(obj.goodsScopeJoin);
-  }
+  if (promoType === "直降" && document.getElementById("twGoodsJoinEnable")) document.getElementById("twGoodsJoinEnable").checked = Boolean(obj.goodsJoinEnabled) || Boolean(obj.goodsScopeJoin);
 
   /* 其它选项 */
   if (document.getElementById("twCostSharing")) document.getElementById("twCostSharing").checked = Boolean(other.enableCostSharing);
@@ -4178,24 +4526,24 @@ function templateWizardLoadExisting(existing) {
   /* Step 3: 优惠规则 */
   const rt = reward.types || {};
   if (document.getElementById("rwDiscountEnable")) document.getElementById("rwDiscountEnable").checked = Boolean(rt.discount && rt.discount.enabled);
-  const discountMode = (rt.discount && rt.discount.mode) || "整单优惠";
-  const discountRadio = document.querySelector(`input[name="rwDiscountType"][value="${discountMode}"]`);
-  if (discountRadio) discountRadio.checked = true;
-  if (document.getElementById("rwDiscountBenefitTypeEnable")) document.getElementById("rwDiscountBenefitTypeEnable").checked = Boolean(rt.discount && rt.discount.benefitTypeEnabled);
-  Array.from(document.querySelectorAll('input[name="rwDiscountBenefitType"]')).forEach((x) => {
-    x.checked = Boolean(rt.discount && Array.isArray(rt.discount.benefitTypes) && rt.discount.benefitTypes.includes(x.value));
+  const discountModesRaw = rt.discount && Array.isArray(rt.discount.modes) ? rt.discount.modes : [];
+  const discountModeRaw = String(rt.discount && rt.discount.mode ? rt.discount.mode : "");
+  const discountModeMap = { "整单": "整单优惠", "单品": "单品优惠", "最低免单": "整单优惠", "整单优惠": "整单优惠", "单品优惠": "单品优惠", "组合优惠": "组合优惠" };
+  const modes = (discountModesRaw.length ? discountModesRaw : (discountModeRaw ? discountModeRaw.split("/").map((x) => x.trim()).filter(Boolean) : ["单品优惠"]))
+    .map((x) => discountModeMap[String(x || "")] || String(x || ""))
+    .filter(Boolean);
+  Array.from(document.querySelectorAll('input[name="rwDiscountModes"]')).forEach((x) => {
+    x.checked = modes.includes(String(x.value || ""));
   });
+  if (document.getElementById("rwDiscountMinFree")) document.getElementById("rwDiscountMinFree").checked = Boolean(rt.discount && (rt.discount.minFreeEnabled || discountModeRaw === "最低免单"));
   if (document.getElementById("rwFullReduceGift")) document.getElementById("rwFullReduceGift").checked = Boolean(rt.fullReduceGift && rt.fullReduceGift.enabled);
   Array.from(document.querySelectorAll('input[name="twFullReduceGiftOpts"]')).forEach((x) => {
     x.checked = (rt.fullReduceGift && rt.fullReduceGift.options || []).includes(x.value);
   });
-  if (document.getElementById("rwFullReduceGiftBenefitTypeEnable")) document.getElementById("rwFullReduceGiftBenefitTypeEnable").checked = Boolean(rt.fullReduceGift && rt.fullReduceGift.benefitTypeEnabled);
-  Array.from(document.querySelectorAll('input[name="rwFullReduceGiftBenefitType"]')).forEach((x) => {
-    x.checked = Boolean(rt.fullReduceGift && Array.isArray(rt.fullReduceGift.benefitTypes) && rt.fullReduceGift.benefitTypes.includes(x.value));
+  if (document.getElementById("rwFullReduceGiftPurchaseTypeEnable")) document.getElementById("rwFullReduceGiftPurchaseTypeEnable").checked = Boolean(rt.fullReduceGift && rt.fullReduceGift.purchaseTypeEnabled);
+  Array.from(document.querySelectorAll('input[name="rwFullReduceGiftPurchaseType"]')).forEach((x) => {
+    x.checked = Boolean(rt.fullReduceGift && Array.isArray(rt.fullReduceGift.purchaseTypes) && rt.fullReduceGift.purchaseTypes.includes(x.value));
   });
-  const frgItemMode = (rt.fullReduceGift && rt.fullReduceGift.itemMode) || "单品";
-  const frgRadio = document.querySelector(`input[name="rwFRGItemMode"][value="${frgItemMode}"]`);
-  if (frgRadio) frgRadio.checked = true;
   const legacyCapQtyEnabled = Boolean(rt.capQty && rt.capQty.enabled);
   const legacyCapAmtEnabled = Boolean(rt.capAmt && rt.capAmt.enabled);
   const limitEnabled = Boolean(rt.limit && rt.limit.enabled) || legacyCapQtyEnabled || legacyCapAmtEnabled;
@@ -4203,15 +4551,12 @@ function templateWizardLoadExisting(existing) {
   if (document.getElementById("rwLimitEnable")) document.getElementById("rwLimitEnable").checked = limitEnabled;
   const limitRadio = document.querySelector(`input[name="rwLimitType"][value="${limitType}"]`);
   if (limitRadio) limitRadio.checked = true;
-  if (document.getElementById("rwVoucherGift")) document.getElementById("rwVoucherGift").checked = Boolean(rt.voucherGift && rt.voucherGift.enabled);
-  if (document.getElementById("rwVoucherBenefitTypeEnable")) document.getElementById("rwVoucherBenefitTypeEnable").checked = Boolean(rt.voucherGift && rt.voucherGift.benefitTypeEnabled);
-  Array.from(document.querySelectorAll('input[name="rwVoucherBenefitType"]')).forEach((x) => {
-    x.checked = Boolean(rt.voucherGift && Array.isArray(rt.voucherGift.benefitTypes) && rt.voucherGift.benefitTypes.includes(x.value));
-  });
   if (document.getElementById("rwVoucherCap")) document.getElementById("rwVoucherCap").checked = Boolean(rt.voucherCap && rt.voucherCap.enabled);
-  if (document.getElementById("rwVoucherCapVal")) document.getElementById("rwVoucherCapVal").value = rt.voucherCap ? (rt.voucherCap.value || "") : "";
   if (document.getElementById("rwVoucherRule")) document.getElementById("rwVoucherRule").checked = Boolean(rt.voucherRule && rt.voucherRule.enabled);
-  if (document.getElementById("rwVoucherRuleText")) document.getElementById("rwVoucherRuleText").value = rt.voucherRule ? (rt.voucherRule.text || "") : "";
+  if (document.getElementById("rwVoucherRulePurchaseTypeEnable")) document.getElementById("rwVoucherRulePurchaseTypeEnable").checked = Boolean(rt.voucherRule && rt.voucherRule.purchaseTypeEnabled);
+  Array.from(document.querySelectorAll('input[name="rwVoucherRulePurchaseType"]')).forEach((x) => {
+    x.checked = Boolean(rt.voucherRule && Array.isArray(rt.voucherRule.purchaseTypes) && rt.voucherRule.purchaseTypes.includes(x.value));
+  });
 
   templateWizardRefreshVisibility();
 }
@@ -4770,8 +5115,7 @@ function campaignWizardMaxStep() {
   const d = AppState._tmpCampaign || {};
   const tpl = campaignTemplateById(d.templateId || "");
   const isSix = campaignIsTimeDiscountTemplate(tpl)
-    || campaignIsAmountDiscountTemplate(tpl)
-    || campaignIsVoucherGiftTemplate(tpl);
+    || campaignIsAmountDiscountTemplate(tpl);
   return isSix ? 6 : 5;
 }
 
@@ -5886,6 +6230,7 @@ function renderSchedulePage() {
 
 function renderAssortmentPage() {
   const actualOps = AppState.data.actualSchedules.map((a) => `<option value="${escapeHtml(a.actualId)}">${escapeHtml(a.actualId)}</option>`).join("");
+  const tab = String(AppState.ui.assortment.listTab || "schedule");
   const filtersHtml = `
     <div class="field">
       <div class="field__label">实际档期ID</div>
@@ -5906,11 +6251,18 @@ function renderAssortmentPage() {
 
   const fActual = (AppState.ui.assortment.filterActualId || "").trim();
   const fStatus = (AppState.ui.assortment.filterStatus || "").trim();
-  const list = (AppState.data.assortmentSummary || [])
+  const scheduleList = (AppState.data.assortmentSummary || [])
     .filter((d) => (!fActual ? true : d.actualId === fActual))
     .filter((d) => (!fStatus ? true : d.pickStatus === fStatus));
 
-  const rows = list
+  const tabsHtml = `
+    <div class="tabbar">
+      <button class="tabbtn ${tab === "schedule" ? "is-active" : ""}" type="button" data-act="asListTab" data-id="schedule">档期维度</button>
+      <button class="tabbtn ${tab === "goods" ? "is-active" : ""}" type="button" data-act="asListTab" data-id="goods">商品维度</button>
+    </div>
+  `;
+
+  const scheduleRows = scheduleList
     .map((d, idx) => {
       const actual = AppState.data.actualSchedules.find((x) => x.actualId === d.actualId);
       return `
@@ -5928,12 +6280,44 @@ function renderAssortmentPage() {
       `;
     })
     .join("");
-  const headers = ["序号", "实际档期ID", "选品状态", "档期分类", "档期重要性", "档期起始日期", "档期结束日期", "档期主题", "操作"];
+  const scheduleHeaders = ["序号", "实际档期ID", "选品状态", "档期分类", "档期重要性", "档期起始日期", "档期结束日期", "档期主题", "操作"];
+
+  const goodsLines = scheduleList.flatMap((sum) => {
+    const docs = (AppState.data.assortmentDocs || []).filter((d) => d.actualId === sum.actualId);
+    return docs.flatMap((d) => (d.lines || []).map((ln) => ({ ...ln, docNo: d.docNo, majorCategory: d.majorCategory, actualId: d.actualId })));
+  });
+  const goodsRows = goodsLines
+    .map((ln, idx) => {
+      const actual = AppState.data.actualSchedules.find((x) => x.actualId === ln.actualId);
+      return `
+        <tr>
+          <td>${idx + 1}</td>
+          <td class="mono">${escapeHtml(ln.actualId || "")}</td>
+          <td>${escapeHtml(actual ? actual.theme : "—")}</td>
+          <td class="mono">${escapeHtml(ln.docNo || "")}</td>
+          <td>${escapeHtml(ln.majorCategory || "")}</td>
+          <td class="mono">${escapeHtml(ln.productCode || "")}</td>
+          <td class="mono">${escapeHtml(ln.barcode || "")}</td>
+          <td>${escapeHtml(ln.productName || "")}</td>
+          <td class="mono">${escapeHtml(String(ln.promoPrice ?? ""))}</td>
+          <td class="mono">${escapeHtml(String(ln.priceCutPct ?? ""))}</td>
+          <td>${escapeHtml(ln.source || "")}</td>
+          <td><button class="linkbtn" type="button" data-act="asView" data-id="${escapeHtml(ln.actualId || "")}">详情</button></td>
+        </tr>
+      `;
+    })
+    .join("");
+  const goodsHeaders = ["序号", "实际档期ID", "档期主题", "档期选品单号", "大类", "商品编码", "条形码", "商品名称", "促销售价", "降价幅度(%)", "选品来源", "操作"];
+
+  const tableHtml = tab === "goods"
+    ? table(goodsHeaders, goodsRows || `<tr><td colspan="${goodsHeaders.length}"><div class="empty">暂无数据</div></td></tr>`)
+    : table(scheduleHeaders, scheduleRows || `<tr><td colspan="${scheduleHeaders.length}"><div class="empty">暂无数据</div></td></tr>`);
+  const total = tab === "goods" ? goodsLines.length : scheduleList.length;
   return listPageLayout({
     filtersHtml,
     listTitle: "档期商品列表",
-    tableHtml: table(headers, rows || `<tr><td colspan="${headers.length}"><div class="empty">暂无数据</div></td></tr>`),
-    footerHtml: footerbar(`共 ${list.length} 条`, "第 1 页")
+    tableHtml: `<div class="as-list-tabs">${tabsHtml}</div>${tableHtml}`,
+    footerHtml: footerbar(`共 ${total} 条`, "第 1 页")
   });
 }
 
@@ -6128,7 +6512,6 @@ function renderAssortmentSummaryPage() {
         </div>
         <div class="toolbar__actions">
           <button class="btn" type="button" data-act="asSummaryBack">返回列表</button>
-          <button class="btn btn--primary" type="button" data-act="asPickDone">选品完成</button>
         </div>
       </div>
       <div style="padding:14px;">
@@ -6356,13 +6739,11 @@ function openAssortmentPickGoodsModal({ actualId, majorCategory }) {
 
 function renderTemplatesPage() {
   const ui = AppState.ui.templates;
-  const md = AppState.data.masterData || {};
-  const typeOps = ["全部"].concat(md.templateTypes || ["直降", "折扣", "满减满赠", "满赠券"]);
-  if (!typeOps.includes("满购券")) typeOps.push("满购券");
+  const typeOps = ["全部"].concat(templateTypeOptions());
   const typeSideList = typeOps.filter((x) => {
     const q = String(ui.typeSideQ || "").trim();
     if (!q) return true;
-    return String(x).includes(q);
+    return String(displayTemplateType(x)).includes(q);
   });
   const statusOps = [
     { v: "全部", t: "全部" },
@@ -6405,7 +6786,8 @@ function renderTemplatesPage() {
   const filtered = AppState.data.templates.filter((t) => {
     const okNo = !ui.qNo || String(t.templateNo || "").includes(ui.qNo);
     const okName = !ui.qName || String(t.name || "").includes(ui.qName);
-    const okType = ui.qType === "全部" || String(t.templateType || (t.config && t.config.basic ? t.config.basic.type : "") || t.type || "") === ui.qType;
+    const tplType = normalizeTemplateType(t.templateType || (t.config && t.config.basic ? t.config.basic.type : "") || t.type || "");
+    const okType = ui.qType === "全部" || tplType === normalizeTemplateType(ui.qType);
     const okStatus = ui.qStatus === "全部" || String(t.status || "") === ui.qStatus;
     const as = auditStatusText(t);
     const okAudit = (ui.qAuditStatus || "全部") === "全部" || as === String(ui.qAuditStatus || "");
@@ -6425,6 +6807,7 @@ function renderTemplatesPage() {
     "模板类型",
     "模板状态",
     "审核状态",
+    "状态",
     "创建人",
     "创建时间",
     "修改人",
@@ -6437,7 +6820,7 @@ function renderTemplatesPage() {
     const id = String(t.id || "");
     const checked = pickedSet.has(id);
     const usedCount = AppState.data.campaigns.filter((c) => c.templateId === id).length;
-    const typeText = t.templateType || (t.config && t.config.basic ? t.config.basic.type : "") || t.type || "—";
+    const typeText = displayTemplateType(t.templateType || (t.config && t.config.basic ? t.config.basic.type : "") || t.type || "—");
     const canEdit = String(t.status || "") === "草稿";
     const canSubmit = String(t.status || "") === "草稿";
     const canApprove = String(t.status || "") === "审核中";
@@ -6460,6 +6843,7 @@ function renderTemplatesPage() {
         <td>${escapeHtml(typeText)}</td>
         <td>${escapeHtml(String(t.status || "—"))}</td>
         <td>${escapeHtml(auditStatusText(t))}</td>
+        <td>${escapeHtml(String(t.enableStatus || (t.config && t.config.basic ? t.config.basic.enableStatus : "") || "启用"))}</td>
         <td>${escapeHtml(t.creator || "—")}</td>
         <td class="mono">${escapeHtml(t.createAt || "—")}</td>
         <td>${escapeHtml(t.modifier || "—")}</td>
@@ -6481,7 +6865,7 @@ function renderTemplatesPage() {
         <input class="input" id="tplTypeSideQ" placeholder="搜索模版类型" value="${escapeHtml(String(ui.typeSideQ || ""))}" />
         <div class="tpl-type-title">模板类型</div>
         <div class="tpl-type-group">
-          ${typeSideList.map((x) => `<button class="tpl-type-item ${String(ui.qType || "全部") === String(x) ? "is-active" : ""}" type="button" data-act="tplTypePick" data-type="${escapeHtml(String(x))}">${escapeHtml(String(x))}</button>`).join("")}
+          ${typeSideList.map((x) => `<button class="tpl-type-item ${String(ui.qType || "全部") === String(x) ? "is-active" : ""}" type="button" data-act="tplTypePick" data-type="${escapeHtml(String(x))}">${escapeHtml(displayTemplateType(String(x)))}</button>`).join("")}
         </div>
       </div>
       <div>
@@ -6499,7 +6883,7 @@ function renderTemplatesPage() {
                 </div>
                 <div class="campaign-list-field">
                   <div class="campaign-list-field__label">模板类型</div>
-                  <select class="select" id="tplQType">${typeOps.map((x) => `<option ${String(x) === String(ui.qType || "全部") ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select>
+                  <select class="select" id="tplQType">${typeOps.map((x) => `<option value="${escapeHtml(String(x))}" ${String(x) === String(ui.qType || "全部") ? "selected" : ""}>${escapeHtml(displayTemplateType(x))}</option>`).join("")}</select>
                 </div>
                 <div class="campaign-list-field">
                   <div class="campaign-list-field__label">模板状态</div>
@@ -6559,14 +6943,13 @@ function nextTemplatePriorityNo() {
 }
 
 function templatePriorityTypeOptions() {
-  const md = AppState.data.masterData || {};
-  return md.templateTypes || ["直降", "折扣", "满减满赠", "满赠券"];
+  return templateTypeOptions();
 }
 
 function templatePriorityTemplatesByType(type) {
   return (AppState.data.templates || []).filter((t) => {
-    const tplType = String(t.templateType || (t.config && t.config.basic ? t.config.basic.type : "") || t.type || "");
-    return !type || tplType === String(type);
+    const tplType = normalizeTemplateType(t.templateType || (t.config && t.config.basic ? t.config.basic.type : "") || t.type || "");
+    return !type || tplType === normalizeTemplateType(type);
   });
 }
 
@@ -6575,6 +6958,7 @@ function normalizeTemplatePriorityDraft(draft) {
   if (!Array.isArray(d.selectedIds)) d.selectedIds = [];
   if (!d.priorities || typeof d.priorities !== "object") d.priorities = {};
   if (!String(d.templateType || "").trim()) d.templateType = "直降";
+  d.templateType = normalizeTemplateType(d.templateType);
   if (!String(d.status || "").trim()) d.status = "启用";
   return d;
 }
@@ -6615,12 +6999,18 @@ function nextPromoGoodsPriorityNo() {
 }
 
 function promoGoodsPriorityTypeOptions() {
-  const md = AppState.data.masterData || {};
-  return md.templateTypes || ["直降", "折扣", "满减满赠", "满赠券"];
+  return templateTypeOptions();
 }
 
 function promoGoodsPriorityScopeOptions() {
-  return ["全场", "单品", "类别", "品牌"];
+  return ["单品", "全场", "品类", "品牌"];
+}
+
+function promoGoodsPriorityScopeNorm(scope) {
+  const s = String(scope || "").trim();
+  const mapped = (s === "类别") ? "品类" : s;
+  const ops = promoGoodsPriorityScopeOptions();
+  return ops.includes(mapped) ? mapped : "单品";
 }
 
 function normalizePromoGoodsPriorityDraft(draft) {
@@ -6628,6 +7018,7 @@ function normalizePromoGoodsPriorityDraft(draft) {
   if (!Array.isArray(d.rows)) d.rows = [];
   if (!String(d.promoType || "").trim()) d.promoType = "直降";
   if (!String(d.productScope || "").trim()) d.productScope = "单品";
+  d.productScope = promoGoodsPriorityScopeNorm(d.productScope);
   if (!String(d.status || "").trim()) d.status = "启用";
   return d;
 }
@@ -6635,7 +7026,7 @@ function normalizePromoGoodsPriorityDraft(draft) {
 function promoGoodsPriorityGroupedList(list) {
   const groups = new Map();
   (Array.isArray(list) ? list : []).forEach((item) => {
-    const scope = String((item && item.productScope) || "未分类");
+    const scope = promoGoodsPriorityScopeNorm(String((item && item.productScope) || "未分类"));
     if (!groups.has(scope)) groups.set(scope, []);
     groups.get(scope).push(item);
   });
@@ -6648,7 +7039,7 @@ function promoGoodsPriorityGroupedList(list) {
 function promoGoodsPriorityResequenceByScope(scope) {
   const all = AppState.data.promoGoodsPriorities || (AppState.data.promoGoodsPriorities = []);
   const scoped = all
-    .filter((x) => String(x.productScope || "单品") === String(scope || "单品"))
+    .filter((x) => promoGoodsPriorityScopeNorm(String(x.productScope || "单品")) === promoGoodsPriorityScopeNorm(String(scope || "单品")))
     .sort((a, b) => Number(a.priority || 0) - Number(b.priority || 0));
   scoped.forEach((x, idx) => {
     x.priority = idx + 1;
@@ -6656,25 +7047,48 @@ function promoGoodsPriorityResequenceByScope(scope) {
 }
 
 function renderPromoGoodsPriorityPage() {
-  const ui = AppState.ui.promoGoodsPriority || (AppState.ui.promoGoodsPriority = { qType: "全部", qRuleNo: "", qScopeText: "" });
-  const typeOps = ["全部"].concat(promoGoodsPriorityTypeOptions());
+  const ui = AppState.ui.promoGoodsPriority || (AppState.ui.promoGoodsPriority = { qScope: "全部" });
+  (AppState.data.promoGoodsPriorities || []).forEach((x) => {
+    if (x && x.productScope) x.productScope = promoGoodsPriorityScopeNorm(x.productScope);
+  });
+  const scopeOps = ["全部"].concat(promoGoodsPriorityScopeOptions());
   const list = (AppState.data.promoGoodsPriorities || [])
     .filter((x) => {
-      if (ui.qType !== "全部" && String(x.promoType || "") !== String(ui.qType)) return false;
-      if (ui.qRuleNo && !String(x.id || "").includes(ui.qRuleNo)) return false;
-      if (ui.qScopeText && !String(x.productScope || "").includes(ui.qScopeText)) return false;
+      if (String(ui.qScope || "全部") !== "全部" && promoGoodsPriorityScopeNorm(String(x.productScope || "")) !== promoGoodsPriorityScopeNorm(ui.qScope)) return false;
       return true;
     })
     .sort((a, b) => Number(a.priority || 0) - Number(b.priority || 0));
   const headers = ["序号", "规则编码", "商品范围", "优先级", "修改人", "修改时间", "操作"];
-  const rows = list.map((x, idx) => {
+  const scopeOrder = ["单品", "全场", "品类", "品牌"];
+  const listByScope = new Map();
+  list.forEach((x) => {
+    const s = promoGoodsPriorityScopeNorm(x.productScope || "单品") || "单品";
+    if (!listByScope.has(s)) listByScope.set(s, []);
+    listByScope.get(s).push(x);
+  });
+  const ordered = [];
+  scopeOrder.forEach((s) => {
+    const arr = (listByScope.get(s) || []).slice().sort((a, b) => Number(a.priority || 0) - Number(b.priority || 0));
+    arr.forEach((x) => ordered.push({ x, scope: s }));
+  });
+  const restScopes = Array.from(listByScope.keys()).filter((s) => !scopeOrder.includes(s)).sort();
+  restScopes.forEach((s) => {
+    const arr = (listByScope.get(s) || []).slice().sort((a, b) => Number(a.priority || 0) - Number(b.priority || 0));
+    arr.forEach((x) => ordered.push({ x, scope: s }));
+  });
+
+  let seq = 0;
+  const rows = ordered.map(({ x, scope }) => {
+    seq += 1;
+    const scoped = (listByScope.get(scope) || []).slice().sort((a, b) => Number(a.priority || 0) - Number(b.priority || 0));
+    const idx = scoped.findIndex((it) => String(it.id || "") === String(x.id || ""));
     const canUp = idx > 0;
-    const canDown = idx < list.length - 1;
+    const canDown = idx > -1 && idx < scoped.length - 1;
     return `
       <tr>
-        <td>${idx + 1}</td>
+        <td>${seq}</td>
         <td class="mono">${escapeHtml(x.id || "")}</td>
-        <td>${escapeHtml(x.productScope || "")}</td>
+        <td>${escapeHtml(promoGoodsPriorityScopeNorm(x.productScope || ""))}</td>
         <td class="mono">${escapeHtml(String(x.priority ?? ""))}</td>
         <td>${escapeHtml(x.modifier || "—")}</td>
         <td class="mono">${escapeHtml(x.modifyAt || "—")}</td>
@@ -6690,17 +7104,10 @@ function renderPromoGoodsPriorityPage() {
   return `
     <div class="pgp-list-layout">
       <div class="pgp-list-filterbar">
-        <div class="pgp-list-filterbar__search">
-          <input class="input" id="pgpTypeSearch" placeholder="搜索模板类型" value="" />
-        </div>
         <div class="pgp-list-filterbar__grid">
           <div class="campaign-list-field">
-            <div class="campaign-list-field__label">规则编码</div>
-            <input class="input" id="pgpQRuleNo" value="${escapeHtml(ui.qRuleNo || "")}" placeholder="请输入规则编码查询" />
-          </div>
-          <div class="campaign-list-field">
             <div class="campaign-list-field__label">商品范围</div>
-            <input class="input" id="pgpQScopeText" value="${escapeHtml(ui.qScopeText || "")}" placeholder="请输入商品范围查询" />
+            <select class="select" id="pgpQScope">${scopeOps.map((x) => `<option value="${escapeHtml(String(x))}" ${String(x) === String(ui.qScope || "全部") ? "selected" : ""}>${escapeHtml(String(x))}</option>`).join("")}</select>
           </div>
           <div class="pgp-list-filterbar__actions">
             <button class="btn btn--primary" type="button" data-act="pgpQuery">查询</button>
@@ -6708,22 +7115,14 @@ function renderPromoGoodsPriorityPage() {
           </div>
         </div>
       </div>
-      <div class="pgp-list-body">
-        <div class="pgp-list-side">
-          <div class="pgp-list-side__title">模板类型</div>
-          <div class="pgp-list-side__tree">
-            ${typeOps.map((x, idx) => `<button class="pgp-list-side__item ${String(ui.qType || "全部") === String(x) ? "is-active" : ""}" type="button" data-act="pgpTypePick" data-type="${escapeHtml(String(x))}">${idx === 0 ? '<span class="pgp-tree-icon">▾</span>' : '<span class="pgp-tree-icon pgp-tree-icon--leaf">■</span>'}${escapeHtml(String(x))}</button>`).join("")}
+      <div class="campaign-list-page">
+        <div class="campaign-list-shell">
+          <div class="campaign-list-table pgp-list-table">
+            ${table(headers, (rows + emptyRows) || `<tr><td colspan="${headers.length}"><div class="empty">暂无数据</div></td></tr>`)}
           </div>
-        </div>
-        <div class="campaign-list-page">
-          <div class="campaign-list-shell">
-            <div class="campaign-list-table pgp-list-table">
-              ${table(headers, (rows + emptyRows) || `<tr><td colspan="${headers.length}"><div class="empty">暂无数据</div></td></tr>`)}
-            </div>
-            <div class="pgp-list-footer">
-              <button class="btn" type="button" data-act="pgpCancel">取消</button>
-              <button class="btn btn--primary" type="button" data-act="pgpSave">保存</button>
-            </div>
+          <div class="pgp-list-footer">
+            <button class="btn" type="button" data-act="pgpCancel">取消</button>
+            <button class="btn btn--primary" type="button" data-act="pgpSave">保存</button>
           </div>
         </div>
       </div>
@@ -6763,7 +7162,7 @@ function renderPromoGoodsPriorityEditPage(mode) {
             <div class="form__row">
               <div class="field">
                 <div class="field__label">促销类型</div>
-                <select class="select" id="pgpType">${typeOps.map((x) => `<option value="${escapeHtml(x)}" ${x === d.promoType ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select>
+                <select class="select" id="pgpType">${typeOps.map((x) => `<option value="${escapeHtml(x)}" ${x === d.promoType ? "selected" : ""}>${escapeHtml(displayTemplateType(x))}</option>`).join("")}</select>
               </div>
               <div class="field">
                 <div class="field__label">状态</div>
@@ -6810,7 +7209,7 @@ function renderPromoGoodsPriorityEditPage(mode) {
             </div>
             <div class="field">
               <div class="field__label">促销类型</div>
-              <select class="select" id="pgpType">${typeOps.map((x) => `<option value="${escapeHtml(x)}" ${(x === (cur.promoType || d.promoType)) ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select>
+              <select class="select" id="pgpType">${typeOps.map((x) => `<option value="${escapeHtml(x)}" ${(x === (cur.promoType || d.promoType)) ? "selected" : ""}>${escapeHtml(displayTemplateType(x))}</option>`).join("")}</select>
             </div>
           </div>
           <div class="form__row">
@@ -6851,7 +7250,7 @@ function renderTemplatePriorityPage() {
   const typeOps = ["全部"].concat(templatePriorityTypeOptions());
   const list = (AppState.data.templatePriorities || [])
     .filter((x) => {
-      if (ui.qType !== "全部" && String(x.templateType || "") !== String(ui.qType)) return false;
+      if (ui.qType !== "全部" && normalizeTemplateType(x.templateType || "") !== normalizeTemplateType(ui.qType)) return false;
       if (ui.qRuleNo && !String(x.id || "").includes(ui.qRuleNo)) return false;
       if (ui.qTplNo && !String(x.templateNo || "").includes(ui.qTplNo)) return false;
       if (ui.qTplName && !String(x.templateName || "").includes(ui.qTplName)) return false;
@@ -6906,7 +7305,7 @@ function renderTemplatePriorityPage() {
       </div>
       <div class="tp-list-body">
         <div class="tp-list-side">
-          ${typeOps.map((x, idx) => `<button class="tp-list-side__item ${String(ui.qType || "全部") === String(x) ? "is-active" : ""}" type="button" data-act="tpTypePick" data-type="${escapeHtml(String(x))}">${idx === 0 ? "+" : ""}${escapeHtml(String(x))}</button>`).join("")}
+          ${typeOps.map((x, idx) => `<button class="tp-list-side__item ${String(ui.qType || "全部") === String(x) ? "is-active" : ""}" type="button" data-act="tpTypePick" data-type="${escapeHtml(String(x))}">${idx === 0 ? "+" : ""}${escapeHtml(displayTemplateType(String(x)))}</button>`).join("")}
         </div>
         <div class="campaign-list-page">
           <div class="campaign-list-shell">
@@ -6948,10 +7347,10 @@ function renderTemplatePriorityEditPage(mode) {
       `;
     }).join("");
     return `
-      <div class="crumbs"><span class="crumbs__muted">促销中心</span> / <a class="link" href="#/template-priority">模版规则设置</a> / <span>新增</span></div>
+      <div class="crumbs"><span class="crumbs__muted">促销中心</span> / <a class="link" href="#/template-priority">模版优先级</a> / <span>新增</span></div>
       <div class="card">
         <div class="card__header">
-          <div class="card__title">新增模版规则设置</div>
+          <div class="card__title">新增模版优先级</div>
           <div class="card__actions">
             <button class="btn btn--primary" type="button" data-act="tpSave">保存</button>
             <button class="btn" type="button" data-act="tpBack">返回</button>
@@ -6962,7 +7361,7 @@ function renderTemplatePriorityEditPage(mode) {
             <div class="form__row">
               <div class="field">
                 <div class="field__label">模版类型</div>
-                <select class="select" id="tpType">${typeOps.map((x) => `<option value="${escapeHtml(x)}" ${x === d.templateType ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select>
+                <select class="select" id="tpType">${typeOps.map((x) => `<option value="${escapeHtml(x)}" ${x === d.templateType ? "selected" : ""}>${escapeHtml(displayTemplateType(x))}</option>`).join("")}</select>
               </div>
               <div class="field">
                 <div class="field__label">状态</div>
@@ -6985,10 +7384,10 @@ function renderTemplatePriorityEditPage(mode) {
   }
 
   return `
-    <div class="crumbs"><span class="crumbs__muted">促销中心</span> / <a class="link" href="#/template-priority">模版规则设置</a> / <span>${escapeHtml(isEdit ? "编辑" : "新增")}</span></div>
+    <div class="crumbs"><span class="crumbs__muted">促销中心</span> / <a class="link" href="#/template-priority">模版优先级</a> / <span>${escapeHtml(isEdit ? "编辑" : "新增")}</span></div>
     <div class="card">
       <div class="card__header">
-        <div class="card__title">${escapeHtml(isEdit ? "编辑模版规则设置" : "新增模版规则设置")}</div>
+        <div class="card__title">${escapeHtml(isEdit ? "编辑模版优先级" : "新增模版优先级")}</div>
         <div class="card__actions">
           <button class="btn btn--primary" type="button" data-act="tpSave">保存</button>
           <button class="btn" type="button" data-act="tpBack">返回</button>
@@ -7003,7 +7402,7 @@ function renderTemplatePriorityEditPage(mode) {
             </div>
             <div class="field">
               <div class="field__label">模版类型</div>
-              <select class="select" id="tpType">${typeOps.map((x) => `<option value="${escapeHtml(x)}" ${x === d.templateType ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select>
+              <select class="select" id="tpType">${typeOps.map((x) => `<option value="${escapeHtml(x)}" ${x === d.templateType ? "selected" : ""}>${escapeHtml(displayTemplateType(x))}</option>`).join("")}</select>
             </div>
           </div>
           <div class="form__row">
@@ -8215,14 +8614,31 @@ function renderTemplateWizardPage(mode) {
     </section>
   `;
 
-  const md = AppState.data.masterData || {};
-  const typeOps = md.templateTypes || ["直降", "折扣", "满减满赠", "满赠券"];
-  const existingType = existing ? existing.templateType || (existing.config && existing.config.basic ? existing.config.basic.type : "") || "" : "";
+  const typeOps = templateTypeOptions();
+  const existingType = existing ? normalizeTemplateType(existing.templateType || (existing.config && existing.config.basic ? existing.config.basic.type : "") || "") : "";
+  const spec = templateTypeSpec(existingType);
   const templateNoText = editing ? (existing ? existing.templateNo || "—" : "—") : "保存时自动生成";
   const statusText = editing ? (existing ? existing.status || "—" : "—") : "草稿";
+  const enableStatusText = String(existing ? (existing.enableStatus || (existing.config && existing.config.basic ? existing.config.basic.enableStatus : "") || "启用") : "启用");
+  const headerActionsHtml = step === 3
+    ? `
+      <button class="btn" type="button" data-act="tplWizBack">返回列表</button>
+      <button class="btn" type="button" data-act="tplWizSaveDraft">保存草稿</button>
+      <button class="btn btn--primary" type="button" data-act="tplWizEnable">保存并启用</button>
+    `
+    : `
+      <button class="btn" type="button" data-act="tplWizBack">返回列表</button>
+      <button class="btn btn--primary" type="button" data-act="tplWizSaveDraft">保存草稿</button>
+    `;
+  const footerActionsHtml = step === 3
+    ? `
+      <button class="btn" type="button" data-act="tplWizPrev">上一步</button>
+    `
+    : `
+      <button class="btn" type="button" data-act="tplWizPrev">上一步</button>
+      <button class="btn btn--primary" type="button" data-act="tplWizNext">下一步</button>
+    `;
 
-  const footerNextAct = step === 3 ? "tplWizSubmit" : "tplWizNext";
-  const footerNextText = step === 3 ? "生成模板&提交审核" : "下一步";
   const basicSection = section("基本属性", "模板编码自动生成，基础信息与截图样式对齐展示。", `
     <div class="tpl-form-grid tpl-form-grid--4">
       <div class="field">
@@ -8234,14 +8650,21 @@ function renderTemplateWizardPage(mode) {
         <input class="input input--disabled" value="${escapeHtml(statusText)}" disabled />
       </div>
       <div class="field">
+        <div class="field__label">状态</div>
+        <div class="checks">
+          <label class="radio"><input type="radio" name="twEnableStatus" value="启用" ${enableStatusText !== "禁用" ? "checked" : ""} />启用</label>
+          <label class="radio"><input type="radio" name="twEnableStatus" value="禁用" ${enableStatusText === "禁用" ? "checked" : ""} />禁用</label>
+        </div>
+      </div>
+      <div class="field">
         <div class="field__label">模板名称*</div>
         <input class="input" id="twName" value="${escapeHtml(existing ? existing.name || "" : "")}" placeholder="请输入" />
       </div>
       <div class="field">
-        <div class="field__label">促销类型*</div>
+        <div class="field__label">模版类型*</div>
         <select class="select" id="twType">
           <option value="">请选择</option>
-          ${typeOps.map((x) => `<option ${String(existingType) === String(x) ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}
+          ${typeOps.map((x) => `<option value="${escapeHtml(x)}" ${String(existingType) === String(x) ? "selected" : ""}>${escapeHtml(displayTemplateType(x))}</option>`).join("")}
         </select>
       </div>
       <div class="field tpl-form-span-full">
@@ -8250,107 +8673,56 @@ function renderTemplateWizardPage(mode) {
       </div>
     </div>
   `);
-  const timeSection = section("周期时间", "", `
-    <div class="tpl-choice-grid tpl-choice-grid--3">
-      ${optionCard({
-        title: "活动时间范围",
-        desc: "创建活动时展示时间日期选择器",
-        control: sw({ id: "twReqTimeRange", checked: true, disabled: true })
-      })}
-      ${optionCard({
-        title: "生效周期",
-        desc: "启用后活动可选择活动周期",
-        control: sw({ id: "twEnableCycle" }),
-        options: `<div id="twCycleOptsBox" style="display:none;">
-          <div class="checks">
-            <label class="check"><input type="checkbox" name="twCycleScope" value="月" />月</label>
-            <label class="check"><input type="checkbox" name="twCycleScope" value="周" />周</label>
-            <label class="check"><input type="checkbox" name="twCycleScope" value="日" />日</label>
-          </div>
-          <div class="hint">月、周可同时选择；月、日可同时选择；周、日不可同时选择。</div>
-        </div>`
-      })}
-      ${optionCard({
-        title: "按时间段促销",
-        desc: "启用后活动可配置时间段",
-        control: sw({ id: "twEnableTimeRange" })
-      })}
-    </div>
-  `);
   const objectSection = section("促销对象", "", `
-    <div id="tplObjectSection" class="tpl-choice-grid tpl-choice-grid--5">
-      ${optionCard({
-        title: "渠道范围",
-        desc: "创建活动可设定促销生效渠道",
-        control: sw({ id: "twReqChannel", checked: true, disabled: true }),
-        options: `<div class="hint">活动创建时配置</div>`
-      })}
-      ${optionCard({
-        title: "门店范围",
-        desc: "创建活动可设定促销生效门店范围",
-        control: sw({ id: "twReqStore", checked: true, disabled: true })
-      })}
-      ${optionCard({
-        title: "顾客范围",
-        desc: "",
-        control: sw({ id: "twReqUser", checked: true, disabled: true }),
-        options: `<div class="hint">活动创建时配置</div>`
-      })}
+    <div id="tplObjectSection" class="tpl-choice-grid tpl-choice-grid--2">
       ${optionCard({
         title: "商品范围",
-        desc: "",
+        desc: "创建活动时配置",
         control: sw({ id: "twReqGoods", checked: true, disabled: true }),
-        options: `<div class="hint">活动创建时配置</div>`
+        id: "twGoodsScopeRow"
       })}
-      ${optionCard({
-        title: "组合关系",
-        desc: "",
-        control: sw({ id: "twGoodsJoinEnable" }),
-        options: ``,
-        id: "twGoodsJoinRow"
-      })}
-    </div>
-  `);
-  const otherSection = section("其它选项", "", `
-    <div class="tpl-choice-grid tpl-choice-grid--2">
       ${optionCard({
         title: "费用承担",
         desc: "启用后创建活动可设定费用分摊规则",
         control: sw({ id: "twCostSharing" }),
-        options: `<div id="twCostSharingBox" style="display:none;"></div>`
+        id: "twCostSharingRow"
       })}
     </div>
   `);
-  const conditionSection = section("限量设置", "", `
-    <div class="tpl-choice-grid tpl-choice-grid--5">
-      ${optionCard({ title: "整单限量", desc: "启用后可按整单设置限量规则", control: sw({ id: "tcUserLimit" }) })}
-      ${optionCard({ title: "会员限量", desc: "启用后可按会员设置限量规则", control: sw({ id: "tcMemberLimit" }) })}
-      ${optionCard({ title: "门店限量", desc: "启用后可按门店设置限量规则", control: sw({ id: "tcStoreLimit" }) })}
-      ${optionCard({ title: "区域限量", desc: "启用后可按区域设置限量规则", control: sw({ id: "tcRegionLimit" }) })}
+  const conditionSection = section(spec.conditionTitle, "", `
+    <div class="tpl-choice-grid tpl-choice-grid--4">
+      ${optionCard({ title: "整单限量", desc: "启用后可按整单设置限量规则", control: sw({ id: "tcUserLimit" }), id: "tcUserLimitRow" })}
+      ${optionCard({ title: "会员限量", desc: "启用后可按会员设置限量规则", control: sw({ id: "tcMemberLimit" }), id: "tcMemberLimitRow" })}
+      ${optionCard({ title: "门店限量", desc: "启用后可按门店设置限量规则", control: sw({ id: "tcStoreLimit" }), id: "tcStoreLimitRow" })}
+      ${optionCard({ title: "区域限量", desc: "启用后可按区域设置限量规则", control: sw({ id: "tcRegionLimit" }), id: "tcRegionLimitRow" })}
     </div>
   `);
-  const ruleSection = section("规则设置", "以下规则只允许选择一项。", `
-    <div class="tpl-choice-grid tpl-choice-grid--2">
+  const ruleSection = section("规则设置", "", `
+    <div class="tpl-choice-grid tpl-choice-grid--4">
       ${optionCard({
-        title: "阶梯",
-        desc: "如：满100减10，满500减40 / 满3件9折，满5件8折",
-        control: sw({ id: "tcLadderEnable" }),
-        options: `<div id="tcLadderBox" style="display:none;"></div>`
-      })}
-      ${optionCard({
-        title: "倍数",
-        desc: "启用后填写数值，活动侧按几倍配置，如：第二件5折",
-        control: sw({ id: "tcMultiple" })
+        title: "满金额",
+        desc: "启用后可按商品金额设置门槛",
+        control: sw({ id: "tcFullAmt" }),
+        id: "tcFullAmtRow"
       })}
       ${optionCard({
         title: "满数量",
         desc: "启用后可按商品件数设置门槛",
-        control: sw({ id: "tcFullQty" })
+        control: sw({ id: "tcFullQty" }),
+        id: "tcFullQtyRow"
       })}
       ${optionCard({
-        title: "满金额",
-        desc: "启用后可按商品金额设置门槛",
-        control: sw({ id: "tcFullAmt" })
+        title: "阶梯",
+        desc: "启用后活动侧可配置阶梯规则",
+        control: sw({ id: "tcLadderEnable" }),
+        options: `<div id="tcLadderBox" style="display:none;"></div>`,
+        id: "tcLadderRow"
+      })}
+      ${optionCard({
+        title: "倍数",
+        desc: "启用后活动侧可按倍数配置",
+        control: sw({ id: "tcMultiple" }),
+        id: "tcMultipleRow"
       })}
     </div>
   `);
@@ -8362,15 +8734,19 @@ function renderTemplateWizardPage(mode) {
         control: sw({ id: "rwDiscountEnable" }),
         options: `<div id="rwDiscountBox" style="display:none;">
           <div class="checks">
-            <label class="radio"><input type="radio" name="rwDiscountType" value="整单优惠" checked />整单优惠</label>
-            <label class="radio"><input type="radio" name="rwDiscountType" value="单品优惠" />单品优惠</label>
-            <label class="radio"><input type="radio" name="rwDiscountType" value="最低免单" />最低免单</label>
+            <label class="check" id="rwDiscountModeSingle"><input type="checkbox" name="rwDiscountModes" value="单品优惠" checked />单品优惠</label>
+            <label class="check" id="rwDiscountModeCombo"><input type="checkbox" name="rwDiscountModes" value="组合优惠" />组合优惠</label>
+            <label class="check" id="rwDiscountModeWhole"><input type="checkbox" name="rwDiscountModes" value="整单优惠" />整单优惠</label>
           </div>
           <div class="divider"></div>
-          <div class="tpl-stacked-group">
-            ${templateWizardBenefitTypeCardHtml({ id: "rwDiscountBenefitTypeEnable", boxId: "rwDiscountBenefitTypeBox", name: "rwDiscountBenefitType" })}
+          <div class="tpl-form-grid tpl-form-grid--4">
+            <div class="field tpl-form-span-full">
+              <div class="field__label">最低免单</div>
+              <div>${sw({ id: "rwDiscountMinFree", on: "开启", off: "关闭" })}</div>
+            </div>
           </div>
-        </div>`
+        </div>`,
+        id: "rwDiscountRow"
       })}
       ${optionCard({
         title: "满减/赠优惠",
@@ -8382,50 +8758,40 @@ function renderTemplateWizardPage(mode) {
             <label class="check"><input type="checkbox" name="twFullReduceGiftOpts" value="比例" />比例</label>
             <label class="check"><input type="checkbox" name="twFullReduceGiftOpts" value="商品" />商品</label>
           </div>
-          <div id="rwFRGItemModeRow" style="display:none;margin-top:10px;"></div>
           <div class="divider"></div>
-          <div class="tpl-stacked-group">
-            ${templateWizardBenefitTypeCardHtml({ id: "rwFullReduceGiftBenefitTypeEnable", boxId: "rwFullReduceGiftBenefitTypeBox", name: "rwFullReduceGiftBenefitType" })}
-            <div id="rwLimitWrap">
-              ${optionCard({
-                title: "上限设置",
-                desc: "金额/比例时仅可选金额；商品时仅可选数量。",
-                control: sw({ id: "rwLimitEnable" }),
-                options: `<div id="rwLimitBox" style="display:none;">
-                  <div class="checks">
-                    <label class="radio"><input type="radio" name="rwLimitType" value="数量" checked />数量</label>
-                    <label class="radio"><input type="radio" name="rwLimitType" value="金额" />金额</label>
-                  </div>
-                </div>`,
-                extraClass: "tpl-option-card--sub"
-              })}
-            </div>
-          </div>
-        </div>`
+          ${templateWizardPurchaseTypeCardHtml({ id: "rwFullReduceGiftPurchaseTypeEnable", boxId: "rwFullReduceGiftPurchaseTypeBox", name: "rwFullReduceGiftPurchaseType" })}
+        </div>`,
+        id: "rwFullReduceGiftRow"
       })}
       ${optionCard({
-        title: "赠券",
-        desc: "启用后允许在活动内设置赠券包",
-        control: sw({ id: "rwVoucherGift" }),
-        options: `<div id="rwVoucherGiftExtraWrap" style="display:none;">
-          <div class="tpl-stacked-group">
-            ${templateWizardBenefitTypeCardHtml({ id: "rwVoucherBenefitTypeEnable", boxId: "rwVoucherBenefitTypeBox", name: "rwVoucherBenefitType" })}
-            ${optionCard({
-              title: "上限出券",
-              desc: "",
-              control: sw({ id: "rwVoucherCap" }),
-              options: `<div id="rwVoucherCapBox" style="display:none;"></div>`,
-              extraClass: "tpl-option-card--sub"
-            })}
-            ${optionCard({
-              title: "用券送券规则",
-              desc: "",
-              control: sw({ id: "rwVoucherRule" }),
-              options: `<div id="rwVoucherRuleBox" style="display:none;"></div>`,
-              extraClass: "tpl-option-card--sub"
-            })}
+        title: "上限设置",
+        desc: "支持数量、金额两种上限口径。",
+        control: sw({ id: "rwLimitEnable" }),
+        options: `<div id="rwLimitBox" style="display:none;">
+          <div class="checks">
+            <label class="radio"><input type="radio" name="rwLimitType" value="数量" checked />数量</label>
+            <label class="radio"><input type="radio" name="rwLimitType" value="金额" />金额</label>
           </div>
-        </div>`
+        </div>`,
+        id: "rwLimitRow"
+      })}
+      ${optionCard({
+        title: "用券出券规则",
+        desc: "",
+        control: sw({ id: "rwVoucherRule" }),
+        options: `<div id="rwVoucherRuleBox" style="display:none;">
+          <div class="hint">创建活动时配置用券出券规则</div>
+          <div class="divider"></div>
+          ${templateWizardPurchaseTypeCardHtml({ id: "rwVoucherRulePurchaseTypeEnable", boxId: "rwVoucherRulePurchaseTypeBox", name: "rwVoucherRulePurchaseType" })}
+        </div>`,
+        id: "rwVoucherRuleRow"
+      })}
+      ${optionCard({
+        title: "上限设置",
+        desc: "",
+        control: sw({ id: "rwVoucherCap" }),
+        options: `<div id="rwVoucherCapBox" style="display:none;"><div class="hint">创建活动时配置出券上限</div></div>`,
+        id: "rwVoucherCapRow"
       })}
     </div>
   `);
@@ -8437,11 +8803,10 @@ function renderTemplateWizardPage(mode) {
         <div class="tpl-page__head">
           <div class="tpl-page__head-main">
             <div class="tpl-page__title">${escapeHtml(title)}</div>
-            <div class="tpl-page__desc">步骤配置统一为截图风格，仅调整促销模板创建页的页面结构与视觉表现。</div>
+            <div class="tpl-page__desc">模板创建与编辑页按所选模版类型动态展示参数。</div>
           </div>
           <div class="tpl-page__actions">
-            <button class="btn" type="button" data-act="tplWizBack">返回列表</button>
-            <button class="btn btn--primary" type="button" data-act="tplWizSaveDraft">保存草稿</button>
+            ${headerActionsHtml}
           </div>
         </div>
         <div id="tplWizard" class="wizard wizard--steps-row tpl-wizard" data-step="${step}">
@@ -8457,14 +8822,12 @@ function renderTemplateWizardPage(mode) {
               <div class="tpl-step-shell">
                 <input type="hidden" id="twEditId" value="${escapeHtml(templateId || "")}" />
                 ${basicSection}
-                ${timeSection}
                 ${objectSection}
-                ${otherSection}
               </div>
             </div>
             <div class="wizard-step" data-step="2">
               <div class="tpl-step-shell">
-                ${conditionSection}
+                <div id="tcSectionWrap">${conditionSection}</div>
                 ${ruleSection}
                 ${rewardSection}
               </div>
@@ -8474,8 +8837,7 @@ function renderTemplateWizardPage(mode) {
                 ${section("模板预览", "生成前确认本次模板配置。", `
                   <div id="tplPreview" class="preview-card"></div>
                   <div class="tpl-preview-tips">
-                    <div class="hint">点击"生成模板&提交审核"后，模板状态为"审核中"；审核生效后为"有效"。有效模板可在活动中心使用。</div>
-                    <div class="hint">审核生效后，会在活动中心创建一个名称为"促销模版名称"的二级菜单。</div>
+                    <div class="hint">点击"保存并启用"后，模板状态为"有效"，并默认处于启用状态。</div>
                   </div>
                 `)}
               </div>
@@ -8484,8 +8846,7 @@ function renderTemplateWizardPage(mode) {
           <div class="tpl-wizard__footer">
             <div class="tpl-wizard__meta">步骤 ${step} / 3</div>
             <div class="tpl-wizard__actions">
-              <button class="btn" type="button" data-act="tplWizPrev">上一步</button>
-              <button class="btn btn--primary" type="button" data-act="${footerNextAct}">${escapeHtml(footerNextText)}</button>
+              ${footerActionsHtml}
             </div>
           </div>
         </div>
@@ -8920,11 +9281,11 @@ function renderPromoGoodsTerminatePage() {
     qCategory: "",
     qBrand: "",
     qCounter: "",
-    qSupplier: ""
+    qSupplier: "",
+    dim: "商品"
   });
 
   const promoTypes = promoGoodsTerminatePromoTypes();
-  const goodsTypes = promoGoodsTerminateGoodsTypeOptions();
   const masterGoods = (AppState.data.masterData && Array.isArray(AppState.data.masterData.goods)) ? AppState.data.masterData.goods : [];
   const gmBrands = Array.isArray(AppState.data.gmBrands) ? AppState.data.gmBrands : [];
   const brandByMajor = (major) => {
@@ -8932,6 +9293,9 @@ function renderPromoGoodsTerminatePage() {
     const hit = gmBrands.find((b) => String(b.brandName || "").includes(String(major || "").slice(0, 2)));
     return hit ? (hit.brandName || "") : "";
   };
+
+  const dims = ["商品", "类别", "品牌", "全场", "单据"];
+  const dim = dims.includes(String(ui.dim || "")) ? String(ui.dim || "") : "商品";
 
   promoGoodsTerminateEnsureTerminatedList();
   const terminatedSet = new Set((AppState.data.promoGoodsTerminated || []).map((x) => promoGoodsTerminateKey(x.activityNo, x.skuCode, x.barcode)));
@@ -8943,7 +9307,82 @@ function renderPromoGoodsTerminatePage() {
     const promoType = c.promoType || "";
     const startAt = String(c.startAt || "");
     const endAt = String(c.endAt || "");
-    const goods = c && c.goodsScope && Array.isArray(c.goodsScope.goods) ? c.goodsScope.goods : [];
+    const gs = c && c.goodsScope ? c.goodsScope : {};
+    const goods = Array.isArray(gs.goods) ? gs.goods : [];
+    const categories = Array.isArray(gs.categories) ? gs.categories : [];
+    const brands = Array.isArray(gs.brands) ? gs.brands : [];
+    const isAll = String(gs.isAll || "否") === "是";
+    const promoInfo = `${promoType}${c.templateName ? " · " + c.templateName : ""}`.trim();
+    const rule = c.templateName || c.templateNo || "";
+
+    if (dim === "单据") {
+      const scopeText = isAll
+        ? "全场"
+        : `商品${goods.length} · 类别${categories.length} · 品牌${brands.length}`;
+      rows.push({
+        actNo,
+        actName,
+        promoType,
+        startAt,
+        endAt,
+        dim: "单据",
+        scopeText,
+        rule,
+        promoInfo
+      });
+      return;
+    }
+    if (dim === "全场") {
+      if (!isAll) return;
+      const discountAll = gs.discountAll != null && String(gs.discountAll).trim() !== "" ? String(gs.discountAll) : "";
+      rows.push({
+        actNo,
+        actName,
+        promoType,
+        startAt,
+        endAt,
+        dim: "全场",
+        discountAll,
+        rule,
+        promoInfo
+      });
+      return;
+    }
+    if (dim === "类别") {
+      categories.forEach((cat) => {
+        rows.push({
+          actNo,
+          actName,
+          promoType,
+          startAt,
+          endAt,
+          dim: "类别",
+          code: cat.catCode || "",
+          name: cat.catName || "",
+          rule,
+          promoInfo
+        });
+      });
+      return;
+    }
+    if (dim === "品牌") {
+      brands.forEach((b) => {
+        rows.push({
+          actNo,
+          actName,
+          promoType,
+          startAt,
+          endAt,
+          dim: "品牌",
+          code: b.brandCode || "",
+          name: b.brandName || "",
+          rule,
+          promoInfo
+        });
+      });
+      return;
+    }
+
     goods.forEach((g) => {
       const skuCode = g.skuCode || "";
       const barcode = g.barcode || "";
@@ -8985,10 +9424,10 @@ function renderPromoGoodsTerminatePage() {
         category: cat,
         brand,
         counter: "",
-        rule: c.templateName || c.templateNo || "",
+        rule,
         supplier,
         discount: discountText,
-        promoInfo: `${promoType}${c.templateName ? " · " + c.templateName : ""}`.trim(),
+        promoInfo,
         key
       });
     });
@@ -9007,75 +9446,171 @@ function renderPromoGoodsTerminatePage() {
       const d = String(r.endAt || "").slice(0, 10);
       if (d && d > ui.qEndTo) return false;
     }
-    if (ui.qGoodsType !== "全部" && String(r.goodsType || "") !== ui.qGoodsType) return false;
-    if (ui.qGoods) {
+    if (dim === "商品" && ui.qGoodsType !== "全部" && String(r.goodsType || "") !== ui.qGoodsType) return false;
+    if (dim === "商品" && ui.qGoods) {
       const q = String(ui.qGoods || "");
       const hit = String(r.skuCode || "").includes(q) || String(r.barcode || "").includes(q) || String(r.goodsName || "").includes(q);
       if (!hit) return false;
     }
-    if (ui.qCategory && !String(r.category || "").includes(ui.qCategory)) return false;
-    if (ui.qBrand && !String(r.brand || "").includes(ui.qBrand)) return false;
+    if (dim === "商品" && ui.qCategory && !String(r.category || "").includes(ui.qCategory)) return false;
+    if (dim === "类别" && ui.qCategory) {
+      const hit = String(r.code || "").includes(ui.qCategory) || String(r.name || "").includes(ui.qCategory);
+      if (!hit) return false;
+    }
+    if (dim === "商品" && ui.qBrand && !String(r.brand || "").includes(ui.qBrand)) return false;
+    if (dim === "品牌" && ui.qBrand) {
+      const hit = String(r.code || "").includes(ui.qBrand) || String(r.name || "").includes(ui.qBrand);
+      if (!hit) return false;
+    }
     if (ui.qCounter && !String(r.counter || "").includes(ui.qCounter)) return false;
     if (ui.qSupplier && !String(r.supplier || "").includes(ui.qSupplier)) return false;
     return true;
   });
 
-  const filtersHtml = `
+  const baseFiltersHtml = `
     <div class="field"><div class="field__label">序号</div><input class="input" id="pgtQIndex" value="${escapeHtml(ui.qIndex)}" placeholder="列表序号" /></div>
     <div class="field"><div class="field__label">活动编号</div><input class="input" id="pgtQActNo" value="${escapeHtml(ui.qActNo)}" placeholder="活动编码" /></div>
     <div class="field"><div class="field__label">活动主题</div><input class="input" id="pgtQActName" value="${escapeHtml(ui.qActName)}" placeholder="活动主题" /></div>
     <div class="field"><div class="field__label">促销类型</div><select class="select" id="pgtQPromoType">${promoTypes.map((x) => `<option ${x === ui.qPromoType ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select></div>
     <div class="field"><div class="field__label">活动开始日期</div><input class="input" id="pgtQStartFrom" type="date" value="${escapeHtml(ui.qStartFrom)}" /></div>
     <div class="field"><div class="field__label">活动结束日期</div><input class="input" id="pgtQEndTo" type="date" value="${escapeHtml(ui.qEndTo)}" /></div>
-    <div class="field"><div class="field__label">商品类型</div><select class="select" id="pgtQGoodsType">${goodsTypes.map((x) => `<option ${x === ui.qGoodsType ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select></div>
-    <div class="field"><div class="field__label">商品</div><input class="input" id="pgtQGoods" value="${escapeHtml(ui.qGoods)}" placeholder="编码/条码/名称" /></div>
-    <div class="field"><div class="field__label">类别</div><input class="input" id="pgtQCategory" value="${escapeHtml(ui.qCategory)}" placeholder="类别" /></div>
-    <div class="field"><div class="field__label">品牌</div><input class="input" id="pgtQBrand" value="${escapeHtml(ui.qBrand)}" placeholder="品牌" /></div>
-    <div class="field"><div class="field__label">柜组</div><input class="input" id="pgtQCounter" value="${escapeHtml(ui.qCounter)}" placeholder="柜组" /></div>
-    <div class="field"><div class="field__label">供货商</div><input class="input" id="pgtQSupplier" value="${escapeHtml(ui.qSupplier)}" placeholder="供货商" /></div>
   `;
+  const extraFiltersHtml =
+    dim === "商品"
+      ? `
+        <div class="field"><div class="field__label">商品</div><input class="input" id="pgtQGoods" value="${escapeHtml(ui.qGoods)}" placeholder="编码/条码/名称" /></div>
+        <div class="field"><div class="field__label">类别</div><input class="input" id="pgtQCategory" value="${escapeHtml(ui.qCategory)}" placeholder="类别" /></div>
+        <div class="field"><div class="field__label">品牌</div><input class="input" id="pgtQBrand" value="${escapeHtml(ui.qBrand)}" placeholder="品牌" /></div>
+        <div class="field"><div class="field__label">柜组</div><input class="input" id="pgtQCounter" value="${escapeHtml(ui.qCounter)}" placeholder="柜组" /></div>
+        <div class="field"><div class="field__label">供货商</div><input class="input" id="pgtQSupplier" value="${escapeHtml(ui.qSupplier)}" placeholder="供货商" /></div>
+      `
+      : dim === "类别"
+        ? `<div class="field"><div class="field__label">类别</div><input class="input" id="pgtQCategory" value="${escapeHtml(ui.qCategory)}" placeholder="类别编码/名称" /></div>`
+        : dim === "品牌"
+          ? `<div class="field"><div class="field__label">品牌</div><input class="input" id="pgtQBrand" value="${escapeHtml(ui.qBrand)}" placeholder="品牌编码/名称" /></div>`
+          : ``;
+  const filtersHtml = baseFiltersHtml + extraFiltersHtml;
 
   const filterActionsHtml = `
     <button class="btn btn--primary" type="button" data-act="pgtQuery">查询</button>
     <button class="btn" type="button" data-act="pgtReset">重置</button>
   `;
 
-  const headers = ["序号", "活动编码", "活动主题", "促销类型", "活动时间", "商品类型", "编码", "条码", "名称", "规格", "单位", "经营方式", "售价", "促销价", "促销扣率", "类别", "品牌", "规则", "供货商", "折扣", "促销信息"];
-  const rowsHtml = list.map((r, idx) => {
-    return `
-      <tr data-row="pgt" data-id="${escapeHtml(r.key)}">
+  const tablePack = (() => {
+    if (dim === "商品") {
+      const headers = ["序号", "活动编码", "活动主题", "促销类型", "活动时间", "商品类型", "编码", "条码", "名称", "规格", "单位", "经营方式", "售价", "促销价", "促销扣率", "类别", "品牌", "规则", "供货商", "折扣", "促销信息"];
+      const rowsHtml = list.map((r, idx) => `
+        <tr data-row="pgt" data-id="${escapeHtml(r.key)}">
+          <td>${idx + 1}</td>
+          <td class="mono">${escapeHtml(r.actNo)}</td>
+          <td>${escapeHtml(r.actName)}</td>
+          <td>${escapeHtml(r.promoType)}</td>
+          <td class="mono">${escapeHtml((r.startAt || "—") + " ~ " + (r.endAt || "—"))}</td>
+          <td>${escapeHtml(r.goodsType)}</td>
+          <td class="mono">${escapeHtml(r.skuCode)}</td>
+          <td class="mono">${escapeHtml(r.barcode)}</td>
+          <td>${escapeHtml(r.goodsName)}</td>
+          <td>${escapeHtml(r.spec)}</td>
+          <td>${escapeHtml(r.unit)}</td>
+          <td>${escapeHtml(r.bizMode)}</td>
+          <td class="mono">${escapeHtml(r.salePrice)}</td>
+          <td class="mono">${escapeHtml(r.promoPrice)}</td>
+          <td class="mono">${escapeHtml(r.deductRate)}</td>
+          <td>${escapeHtml(r.category)}</td>
+          <td>${escapeHtml(r.brand)}</td>
+          <td>${escapeHtml(r.rule)}</td>
+          <td>${escapeHtml(r.supplier)}</td>
+          <td class="mono">${escapeHtml(r.discount)}</td>
+          <td>${escapeHtml(r.promoInfo)}</td>
+        </tr>
+      `).join("");
+      return { headers, rowsHtml };
+    }
+    if (dim === "类别") {
+      const headers = ["序号", "活动编码", "活动主题", "促销类型", "活动时间", "类别编码", "类别名称", "规则", "促销信息"];
+      const rowsHtml = list.map((r, idx) => `
+        <tr>
+          <td>${idx + 1}</td>
+          <td class="mono">${escapeHtml(r.actNo)}</td>
+          <td>${escapeHtml(r.actName)}</td>
+          <td>${escapeHtml(r.promoType)}</td>
+          <td class="mono">${escapeHtml((r.startAt || "—") + " ~ " + (r.endAt || "—"))}</td>
+          <td class="mono">${escapeHtml(r.code)}</td>
+          <td>${escapeHtml(r.name)}</td>
+          <td>${escapeHtml(r.rule)}</td>
+          <td>${escapeHtml(r.promoInfo)}</td>
+        </tr>
+      `).join("");
+      return { headers, rowsHtml };
+    }
+    if (dim === "品牌") {
+      const headers = ["序号", "活动编码", "活动主题", "促销类型", "活动时间", "品牌编码", "品牌名称", "规则", "促销信息"];
+      const rowsHtml = list.map((r, idx) => `
+        <tr>
+          <td>${idx + 1}</td>
+          <td class="mono">${escapeHtml(r.actNo)}</td>
+          <td>${escapeHtml(r.actName)}</td>
+          <td>${escapeHtml(r.promoType)}</td>
+          <td class="mono">${escapeHtml((r.startAt || "—") + " ~ " + (r.endAt || "—"))}</td>
+          <td class="mono">${escapeHtml(r.code)}</td>
+          <td>${escapeHtml(r.name)}</td>
+          <td>${escapeHtml(r.rule)}</td>
+          <td>${escapeHtml(r.promoInfo)}</td>
+        </tr>
+      `).join("");
+      return { headers, rowsHtml };
+    }
+    if (dim === "全场") {
+      const headers = ["序号", "活动编码", "活动主题", "促销类型", "活动时间", "全场折扣", "规则", "促销信息"];
+      const rowsHtml = list.map((r, idx) => `
+        <tr>
+          <td>${idx + 1}</td>
+          <td class="mono">${escapeHtml(r.actNo)}</td>
+          <td>${escapeHtml(r.actName)}</td>
+          <td>${escapeHtml(r.promoType)}</td>
+          <td class="mono">${escapeHtml((r.startAt || "—") + " ~ " + (r.endAt || "—"))}</td>
+          <td class="mono">${escapeHtml(r.discountAll || "—")}</td>
+          <td>${escapeHtml(r.rule)}</td>
+          <td>${escapeHtml(r.promoInfo)}</td>
+        </tr>
+      `).join("");
+      return { headers, rowsHtml };
+    }
+    const headers = ["序号", "活动编码", "活动主题", "促销类型", "活动时间", "商品范围", "规则", "促销信息"];
+    const rowsHtml = list.map((r, idx) => `
+      <tr>
         <td>${idx + 1}</td>
         <td class="mono">${escapeHtml(r.actNo)}</td>
         <td>${escapeHtml(r.actName)}</td>
         <td>${escapeHtml(r.promoType)}</td>
         <td class="mono">${escapeHtml((r.startAt || "—") + " ~ " + (r.endAt || "—"))}</td>
-        <td>${escapeHtml(r.goodsType)}</td>
-        <td class="mono">${escapeHtml(r.skuCode)}</td>
-        <td class="mono">${escapeHtml(r.barcode)}</td>
-        <td>${escapeHtml(r.goodsName)}</td>
-        <td>${escapeHtml(r.spec)}</td>
-        <td>${escapeHtml(r.unit)}</td>
-        <td>${escapeHtml(r.bizMode)}</td>
-        <td class="mono">${escapeHtml(r.salePrice)}</td>
-        <td class="mono">${escapeHtml(r.promoPrice)}</td>
-        <td class="mono">${escapeHtml(r.deductRate)}</td>
-        <td>${escapeHtml(r.category)}</td>
-        <td>${escapeHtml(r.brand)}</td>
+        <td>${escapeHtml(r.scopeText || "—")}</td>
         <td>${escapeHtml(r.rule)}</td>
-        <td>${escapeHtml(r.supplier)}</td>
-        <td class="mono">${escapeHtml(r.discount)}</td>
         <td>${escapeHtml(r.promoInfo)}</td>
       </tr>
-    `;
-  }).join("");
+    `).join("");
+    return { headers, rowsHtml };
+  })();
 
-  return listPageLayout({
-    filtersHtml,
-    filterActionsHtml,
-    listTitle: "生效商品",
-    tableHtml: table(headers, rowsHtml || `<tr><td colspan="${headers.length}"><div class="empty">暂无数据</div></td></tr>`),
-    footerHtml: footerbar(`共 ${list.length} 条`, "第 1 页")
-  });
+  return `
+    <div class="tpl-list-layout">
+      <div class="tpl-type-shell">
+        <div class="tpl-type-title">查看维度</div>
+        <div class="tpl-type-group">
+          ${dims.map((x) => `<button class="tpl-type-item ${x === dim ? "is-active" : ""}" type="button" data-act="pgtDimPick" data-dim="${escapeHtml(x)}">${escapeHtml(x)}</button>`).join("")}
+        </div>
+      </div>
+      <div>
+        ${listPageLayout({
+          filtersHtml,
+          filterActionsHtml,
+          listTitle: "生效商品",
+          tableHtml: table(tablePack.headers, tablePack.rowsHtml || `<tr><td colspan="${tablePack.headers.length}"><div class="empty">暂无数据</div></td></tr>`),
+          footerHtml: footerbar(`共 ${list.length} 条`, "第 1 页")
+        })}
+      </div>
+    </div>
+  `;
 }
 
 function promoTerminateOrderWayOptions() {
@@ -9146,6 +9681,22 @@ function promoTerminateOrderEnsureQuery() {
 
 function promoTerminateOrderNowLocal() {
   return nowIsoMinutes().replace(" ", "T");
+}
+
+function promoTerminateOrderTimestamp(text) {
+  const raw = String(text || "").trim();
+  if (!raw) return NaN;
+  const normalized = raw.includes("T") ? raw : raw.replace(" ", "T");
+  const ts = new Date(normalized).getTime();
+  return Number.isFinite(ts) ? ts : NaN;
+}
+
+function promoTerminateOrderCanCancelEffective(order) {
+  const row = order || {};
+  if (String(row.effectiveStatus || "") !== "已生效") return false;
+  const terminateTs = promoTerminateOrderTimestamp(row.terminateAt || "");
+  if (!Number.isFinite(terminateTs)) return false;
+  return Date.now() < terminateTs;
 }
 
 function promoTerminateOrderDefaultDraft() {
@@ -9276,13 +9827,15 @@ function promoTerminateOrderEnsureList() {
         id: "PTO-20260509-0001",
         orderNo: "26050904000391",
         terminateWay: "按单据",
-        terminateAt: "2026-05-09 18:03:11",
+        terminateAt: "2026-07-09 18:03:11",
         docStatus: "已审核",
         effectiveStatus: "已生效",
         creator: "[004]官建",
         createAt: "2026-05-09 18:03:11",
         auditor: "[004]官建",
         auditAt: "2026-05-09 18:03:14",
+        effectiveBy: "[004]官建",
+        effectiveAt: "2026-05-09 18:03:15",
         remark: "618家清活动按单据终止",
         terminateStore: "[1002001]自营门店1",
         terminateCategory: "",
@@ -9303,6 +9856,8 @@ function promoTerminateOrderEnsureList() {
         createAt: "2025-12-23 15:27:06",
         auditor: "[006]陈杨",
         auditAt: "2025-12-23 15:27:09",
+        effectiveBy: "[006]陈杨",
+        effectiveAt: "2025-12-23 15:27:10",
         remark: "纸品促销按商品终止",
         terminateStore: "[1002002]自营门店2",
         terminateCategory: "",
@@ -9323,6 +9878,8 @@ function promoTerminateOrderEnsureList() {
         createAt: "2025-12-23 15:02:22",
         auditor: "[006]陈杨",
         auditAt: "2025-12-23 15:02:26",
+        effectiveBy: "[006]陈杨",
+        effectiveAt: "2025-12-23 15:02:27",
         remark: "饮料类促销按类别终止",
         terminateStore: "[1002001]自营门店1",
         terminateCategory: "饮料",
@@ -9343,6 +9900,8 @@ function promoTerminateOrderEnsureList() {
         createAt: "2025-11-26 10:08:38",
         auditor: "[004]官建",
         auditAt: "2025-11-26 10:08:42",
+        effectiveBy: "[004]官建",
+        effectiveAt: "2025-11-26 10:08:43",
         remark: "品牌活动终止",
         terminateStore: "[1002003]会员店3",
         terminateCategory: "",
@@ -9456,6 +10015,7 @@ function renderPromoTerminateOrdersPage() {
   const effectiveAtText = String(actionFirstRow.terminateAt || "").slice(0, 16).replace("T", " ");
   const auditAtText = String(actionFirstRow.auditAt || "").slice(0, 16).replace("T", " ");
   const createAtText = String(actionFirstRow.createAt || "").slice(0, 16).replace("T", " ");
+  const canCancelEffective = promoTerminateOrderCanCancelEffective(actionFirstRow);
 
   const tableRows = Array.from({ length: 8 }).map((_, idx) => {
     const isFirst = idx === 0;
@@ -9465,7 +10025,7 @@ function renderPromoTerminateOrdersPage() {
         <td>${idx + 1}</td>
         <td class="mono">${isFirst ? escapeHtml(String(actionFirstRow.orderNo || "")) : ""}</td>
         <td>${isFirst ? escapeHtml(`终止-${String(actionFirstRow.goodsText || "")}`.replace(/^终止-$/, "")) : ""}</td>
-        <td>${isFirst ? escapeHtml(String(actionFirstRow.docStatus || "草稿")) : ""}</td>
+        <td>${isFirst ? escapeHtml(String(actionFirstRow.effectiveStatus || "未生效")) : ""}</td>
         <td class="mono">${isFirst ? escapeHtml(effectiveAtText) : ""}</td>
         <td>${isFirst ? escapeHtml(String(actionFirstRow.docStatus || "待审核")) : ""}</td>
         <td>${isFirst ? escapeHtml(String(actionFirstRow.remark || "")) : ""}</td>
@@ -9475,14 +10035,17 @@ function renderPromoTerminateOrdersPage() {
         <td class="mono">${isFirst ? escapeHtml(createAtText) : ""}</td>
         <td>${isFirst ? escapeHtml(String(actionFirstRow.auditor || "")) : ""}</td>
         <td class="mono">${isFirst ? escapeHtml(auditAtText) : ""}</td>
-        <td>${isFirst ? escapeHtml(String(actionFirstRow.auditor || "")) : ""}</td>
-        <td class="mono">${isFirst ? escapeHtml(effectiveAtText) : ""}</td>
+        <td>${isFirst ? escapeHtml(String(actionFirstRow.effectiveBy || actionFirstRow.auditor || "")) : ""}</td>
+        <td class="mono">${isFirst ? escapeHtml(String(actionFirstRow.effectiveAt || effectiveAtText).slice(0, 16).replace("T", " ")) : ""}</td>
         <td>
           ${isFirst ? `
             <button class="linkbtn" type="button" data-act="ptoEdit" data-id="${escapeHtml(String(actionFirstRow.id || ""))}">编辑</button>
             <button class="linkbtn" type="button" data-act="ptoSubmit" data-id="${escapeHtml(String(actionFirstRow.id || ""))}">提交</button>
             <button class="linkbtn" type="button" data-act="ptoAudit" data-id="${escapeHtml(String(actionFirstRow.id || ""))}">审核</button>
             <button class="linkbtn" type="button" data-act="ptoEffectiveRow" data-id="${escapeHtml(String(actionFirstRow.id || ""))}">生效</button>
+            ${canCancelEffective
+              ? `<button class="linkbtn" type="button" data-act="ptoCancelEffective" data-id="${escapeHtml(String(actionFirstRow.id || ""))}">取消生效</button>`
+              : `<span class="cell-muted">取消生效</span>`}
             <button class="linkbtn" type="button" data-act="ptoView" data-id="${escapeHtml(String(actionFirstRow.id || ""))}">详情</button>
           ` : ""}
         </td>
@@ -9752,7 +10315,7 @@ function renderPromoTerminateOrderFormPage(mode, orderId) {
                 <input class="input" id="ptoSubject" value="${escapeHtml(draft.terminateSubject || "")}" placeholder="文本框" />
               </div>
               <div class="field">
-                <div class="field__label"><span class="req">*</span>终止方式</div>
+                <div class="field__label"><span class="req">*</span>终止范围</div>
                 <select class="select" id="ptoTerminateWay">
                   ${["单据", "商品", "类别", "品牌"].map((x) => {
                     const map = { "单据": "按单据", "商品": "按商品", "类别": "按类别", "品牌": "按品牌" };
@@ -9847,13 +10410,13 @@ function renderPromoTerminateOrderFormPage(mode, orderId) {
         <div class="card__title">${pageTitle}</div>
         <div class="card__actions">${actionHtml}</div>
       </div>
-      <div class="card__body"><div class="hint">${readonly ? "查看终止单基础信息与关联促销信息。" : "维护终止方式、基础信息并保存终止单原型数据。"}</div></div>
+      <div class="card__body"><div class="hint">${readonly ? "查看终止单基础信息与关联促销信息。" : "维护终止范围、基础信息并保存终止单原型数据。"}</div></div>
     `)}
     ${layoutCard(`
       <div class="card__header"><div class="card__title">基础信息</div></div>
       <div class="card__body">
         <div class="field" style="margin-bottom:14px;">
-          <div class="field__label">终止方式</div>
+          <div class="field__label">终止范围</div>
           <div class="checks">
             ${promoTerminateOrderWayOptions().map((x) => `
               <label class="radio">
@@ -9995,64 +10558,250 @@ function campaignCycleInlineText(values, suffix) {
 
 function campaignVoucherGiftRowText(vg, giftCondition) {
   if (!vg) return "";
-  const threshold = vg.threshold;
-  const qty = vg.qty;
-  const voucherCode = vg.voucherCode || vg.voucherNo || "";
-  const voucherName = vg.voucherName || "";
+  const conditions = Array.isArray(vg.conditions) ? vg.conditions.filter((x) => x && typeof x === "object") : [];
+  const vouchers = Array.isArray(vg.vouchers) ? vg.vouchers.filter((x) => x && typeof x === "object") : [];
+  const firstCondition = conditions[0] || {};
+  const firstVoucher = vouchers[0] || {};
+  const threshold = firstCondition.threshold ?? vg.threshold;
+  const qty = firstVoucher.qty ?? vg.qty;
+  const voucherCode = firstVoucher.voucherCode || vg.voucherCode || vg.voucherNo || "";
+  const voucherName = firstVoucher.voucherName || vg.voucherName || "";
   if (!voucherCode && !voucherName && (threshold === "" || threshold == null) && (qty === "" || qty == null)) return "";
   const shown = voucherCode || voucherName;
   return `满${threshold ?? ""}赠【${shown}】${qty ?? 0}张`;
 }
 
-function campaignOpenVoucherGiftRowModal(idx) {
+function campaignVoucherGiftConditionLabel(giftCondition) {
+  return String(giftCondition || "") === "数量" ? "满数量" : "满金额";
+}
+
+function campaignVoucherGiftEmptyCondition(giftCondition, threshold = "") {
+  return {
+    conditionType: campaignVoucherGiftConditionLabel(giftCondition),
+    threshold: threshold ?? "",
+    note: "当前商品达到条件后触发赠券"
+  };
+}
+
+function campaignVoucherGiftEmptyVoucher() {
+  return {
+    voucherCode: "",
+    voucherName: "",
+    voucherType: "",
+    qty: "",
+    remark: ""
+  };
+}
+
+function campaignVoucherGiftThemeByNo(voucherNo) {
+  return (AppState.data.voucherThemes || []).find((v) => String(v.voucherNo || "") === String(voucherNo || "")) || null;
+}
+
+function campaignNormalizeVoucherGiftRowConfig(vg, giftCondition) {
+  const conditions = Array.isArray(vg && vg.conditions)
+    ? vg.conditions.filter((x) => x && typeof x === "object").map((x) => ({
+        conditionType: x.conditionType || campaignVoucherGiftConditionLabel(giftCondition),
+        threshold: x.threshold ?? "",
+        note: x.note || "当前商品达到条件后触发赠券"
+      }))
+    : [];
+  const vouchers = Array.isArray(vg && vg.vouchers)
+    ? vg.vouchers.filter((x) => x && typeof x === "object").map((x) => ({
+        voucherCode: x.voucherCode || x.voucherNo || "",
+        voucherName: x.voucherName || "",
+        voucherType: x.voucherType || "",
+        qty: x.qty ?? "",
+        remark: x.remark || ""
+      }))
+    : [];
+  if (!conditions.length) conditions.push(campaignVoucherGiftEmptyCondition(giftCondition, vg && vg.threshold));
+  if (!vouchers.length) {
+    vouchers.push({
+      voucherCode: (vg && (vg.voucherCode || vg.voucherNo)) || "",
+      voucherName: (vg && vg.voucherName) || "",
+      voucherType: (vg && vg.voucherType) || "",
+      qty: (vg && vg.qty) ?? "",
+      remark: (vg && vg.remark) || ""
+    });
+  }
+  return { conditions, vouchers };
+}
+
+function campaignVoucherGiftModalState() {
+  return AppState.ui.campaignVoucherGiftModal || null;
+}
+
+function campaignVoucherGiftModalVoucherOptionsHtml(selectedCode) {
+  const list = (AppState.data.voucherThemes || []).filter((v) => String(v.status || "") === "生效");
+  return [`<option value="">请选择礼券</option>`]
+    .concat(list.map((v) => `<option value="${escapeHtml(v.voucherNo)}" data-name="${escapeHtml(v.voucherName || "")}" data-type="${escapeHtml(v.voucherType || "")}" ${String(selectedCode || "") === String(v.voucherNo || "") ? "selected" : ""}>${escapeHtml(v.voucherNo)} | ${escapeHtml(v.voucherName || "")}</option>`))
+    .join("");
+}
+
+function campaignVoucherGiftModalBodyHtml() {
+  const state = campaignVoucherGiftModalState();
+  if (!state) return `<div class="empty">暂无数据</div>`;
+  const readonly = !!state.readonly;
+  const conditionRows = (state.conditions || []).map((row, idx) => `<tr data-vgs-kind="condition">
+      <td>${idx + 1}</td>
+      <td><input class="input" value="${escapeHtml(String(row.conditionType || campaignVoucherGiftConditionLabel(state.giftCondition)))}" ${readonly ? "disabled" : "readonly"} /></td>
+      <td><input class="input mono" data-vgs-field="condition-threshold" type="number" min="0" step="${state.giftCondition === "数量" ? "1" : "0.01"}" value="${escapeHtml(String(row.threshold ?? ""))}" placeholder="${escapeHtml(campaignVoucherGiftConditionLabel(state.giftCondition))}" ${readonly ? "disabled" : ""} /></td>
+      <td><input class="input" data-vgs-field="condition-note" value="${escapeHtml(String(row.note || "当前商品达到条件后触发赠券"))}" placeholder="条件说明" ${readonly ? "disabled" : ""} /></td>
+      <td class="vgs-table__op">${readonly ? `<span class="cell-muted">-</span>` : `<button class="btn-link" type="button" data-act="campVoucherGiftModalConditionRemove" data-idx="${idx}">移除</button>`}</td>
+    </tr>`).join("");
+  const voucherRows = (state.vouchers || []).map((row, idx) => {
+    const theme = campaignVoucherGiftThemeByNo(row.voucherCode);
+    const voucherName = row.voucherName || (theme && theme.voucherName) || "";
+    const voucherType = row.voucherType || (theme && theme.voucherType) || "";
+    return `<tr data-vgs-kind="voucher">
+      <td>${idx + 1}</td>
+      <td><select class="select" data-vgs-field="voucher-code" ${readonly ? "disabled" : ""}>${campaignVoucherGiftModalVoucherOptionsHtml(row.voucherCode)}</select></td>
+      <td><input class="input" data-vgs-field="voucher-name" value="${escapeHtml(String(voucherName || ""))}" placeholder="礼券名称" readonly /></td>
+      <td><input class="input" data-vgs-field="voucher-type" value="${escapeHtml(String(voucherType || ""))}" placeholder="礼券类型" readonly /></td>
+      <td><input class="input mono" data-vgs-field="voucher-qty" type="number" min="1" step="1" value="${escapeHtml(String(row.qty ?? ""))}" placeholder="赠券张数" ${readonly ? "disabled" : ""} /></td>
+      <td><input class="input" data-vgs-field="voucher-remark" value="${escapeHtml(String(row.remark || ""))}" placeholder="备注" ${readonly ? "disabled" : ""} /></td>
+      <td class="vgs-table__op">${readonly ? `<span class="cell-muted">-</span>` : `<button class="btn-link" type="button" data-act="campVoucherGiftModalVoucherRemove" data-idx="${idx}">移除</button>`}</td>
+    </tr>`;
+  }).join("");
+  return `
+    <div class="vgs-shell">
+      <div class="vgs-summary">
+        <div class="vgs-summary__item"><span>商品：</span>${escapeHtml(String(state.goodsName || state.goodsCode || "当前商品"))}</div>
+        <div class="vgs-summary__item"><span>条件类型：</span>${escapeHtml(campaignVoucherGiftConditionLabel(state.giftCondition))}</div>
+        <div class="vgs-summary__item"><span>模式：</span>${readonly ? "查看" : "设置"}</div>
+      </div>
+      <section class="vgs-panel">
+        <div class="vgs-panel__head">
+          <div>
+            <div class="vgs-panel__title">条件设置</div>
+            <div class="vgs-panel__desc">维护当前商品的满赠触发条件。</div>
+          </div>
+          ${readonly ? "" : `<button class="btn btn--primary" type="button" data-act="campVoucherGiftModalConditionAdd">新增条件</button>`}
+        </div>
+        <div class="vgs-tablewrap">
+          ${table(["序号", "条件类型", campaignVoucherGiftConditionLabel(state.giftCondition), "条件说明", "操作"], conditionRows || `<tr><td colspan="5"><div class="empty">暂无条件，请新增</div></td></tr>`)}
+        </div>
+      </section>
+      <section class="vgs-panel">
+        <div class="vgs-panel__head">
+          <div>
+            <div class="vgs-panel__title">礼券设置</div>
+            <div class="vgs-panel__desc">选择生效中的礼券并维护赠送张数。</div>
+          </div>
+          ${readonly ? "" : `<button class="btn btn--primary" type="button" data-act="campVoucherGiftModalVoucherAdd">新增礼券</button>`}
+        </div>
+        <div class="vgs-tablewrap">
+          ${table(["序号", "礼券编码", "礼券名称", "礼券类型", "赠券张数", "备注", "操作"], voucherRows || `<tr><td colspan="7"><div class="empty">暂无礼券，请新增</div></td></tr>`)}
+        </div>
+      </section>
+    </div>
+  `;
+}
+
+function campaignVoucherGiftModalRender() {
+  if (!els.modalBody) return;
+  els.modalBody.innerHTML = campaignVoucherGiftModalBodyHtml();
+}
+
+function campaignVoucherGiftModalSyncFromDom() {
+  const state = campaignVoucherGiftModalState();
+  if (!state || !els.modalBody) return state;
+  const conditionRows = Array.from(els.modalBody.querySelectorAll('tr[data-vgs-kind="condition"]'));
+  const voucherRows = Array.from(els.modalBody.querySelectorAll('tr[data-vgs-kind="voucher"]'));
+  state.conditions = conditionRows.map((row) => ({
+    conditionType: campaignVoucherGiftConditionLabel(state.giftCondition),
+    threshold: (row.querySelector('[data-vgs-field="condition-threshold"]') || {}).value ?? "",
+    note: (row.querySelector('[data-vgs-field="condition-note"]') || {}).value ?? ""
+  }));
+  state.vouchers = voucherRows.map((row) => {
+    const codeEl = row.querySelector('[data-vgs-field="voucher-code"]');
+    const voucherCode = codeEl ? codeEl.value : "";
+    const theme = campaignVoucherGiftThemeByNo(voucherCode);
+    return {
+      voucherCode,
+      voucherName: (theme && theme.voucherName) || ((row.querySelector('[data-vgs-field="voucher-name"]') || {}).value ?? ""),
+      voucherType: (theme && theme.voucherType) || ((row.querySelector('[data-vgs-field="voucher-type"]') || {}).value ?? ""),
+      qty: (row.querySelector('[data-vgs-field="voucher-qty"]') || {}).value ?? "",
+      remark: (row.querySelector('[data-vgs-field="voucher-remark"]') || {}).value ?? ""
+    };
+  });
+  return state;
+}
+
+function campaignOpenVoucherGiftRowModal(idx, mode = "edit") {
   const d = AppState._tmpCampaign || {};
   const vgs = d.voucherGiftScope || {};
   const giftCondition = String(vgs.giftCondition || "金额");
-  const isQty = giftCondition === "数量";
   const goods = (d.goodsScope && Array.isArray(d.goodsScope.goods)) ? d.goodsScope.goods : [];
   const row = goods[idx] || (goods[idx] = {});
-  const vg = row.voucherGift || { threshold: "", voucherCode: "", voucherName: "", qty: "" };
-  const list = (AppState.data.voucherThemes || []).filter((v) => String(v.status || "") === "生效");
-  const voucherOptions = [`<option value="">请选择</option>`]
-    .concat(list.map((v) => `<option value="${escapeHtml(v.voucherNo)}" data-name="${escapeHtml(v.voucherName || "")}" ${String(vg.voucherCode || "") === String(v.voucherNo) ? "selected" : ""}>${escapeHtml(v.voucherNo)} | ${escapeHtml(v.voucherName || "")}</option>`))
-    .join("");
-  const bodyHtml = `
-    <div class="form">
-      <div class="combo-camp-form__row combo-camp-form__row--2">
-        <div class="field">
-          <div class="field__label"><span class="req">*</span>${isQty ? "满数量" : "满金额"}</div>
-          <input class="input" id="vgRowThreshold" type="number" min="0" step="${isQty ? "1" : "0.01"}" value="${escapeHtml(String(vg.threshold ?? ""))}" placeholder="${isQty ? "如 3" : "如 300"}" />
-        </div>
-        <div class="field">
-          <div class="field__label"><span class="req">*</span>赠券（券码/券名）</div>
-          <select class="select" id="vgRowVoucher">${voucherOptions}</select>
-        </div>
-      </div>
-      <div class="field">
-        <div class="field__label"><span class="req">*</span>张数</div>
-        <input class="input" id="vgRowQty" type="number" min="1" step="1" value="${escapeHtml(String(vg.qty ?? ""))}" placeholder="如 1" />
-      </div>
-    </div>
-  `;
+  const cfg = campaignNormalizeVoucherGiftRowConfig(row.voucherGift || {}, giftCondition);
+  AppState.ui.campaignVoucherGiftModal = {
+    idx,
+    readonly: mode === "view",
+    giftCondition,
+    goodsCode: row.skuCode || "",
+    goodsName: row.skuName || "",
+    conditions: cfg.conditions,
+    vouchers: cfg.vouchers
+  };
   openModal({
-    title: "设置赠券",
-    subtitle: `当前满赠条件：${giftCondition}`,
-    bodyHtml,
-    primaryText: "保存",
-    secondaryText: "取消",
+    title: "满赠券设置",
+    subtitle: `当前商品：${row.skuName || row.skuCode || "未命名商品"}`,
+    bodyHtml: campaignVoucherGiftModalBodyHtml(),
+    primaryText: mode === "view" ? "关闭" : "保存",
+    secondaryText: mode === "view" ? "返回" : "取消",
+    size: "xl",
+    className: "vgs-modal",
     onPrimary: () => {
-      const threshold = document.getElementById("vgRowThreshold").value;
-      const sel = document.getElementById("vgRowVoucher");
-      const voucherCode = sel.value;
-      const voucherName = sel.selectedOptions[0] ? (sel.selectedOptions[0].getAttribute("data-name") || "") : "";
-      const qty = document.getElementById("vgRowQty").value;
-      if (threshold === "") { toast("请输入满" + (isQty ? "数量" : "金额")); return; }
-      if (!voucherCode) { toast("请选择赠券"); return; }
-      if (qty === "") { toast("请输入张数"); return; }
-      row.voucherGift = { threshold: Number(threshold), voucherCode, voucherName, qty: Number(qty) };
+      if (mode === "view") {
+        closeModal();
+        return;
+      }
+      const modalState = campaignVoucherGiftModalSyncFromDom();
+      const isQty = giftCondition === "数量";
+      const conditionLabel = campaignVoucherGiftConditionLabel(giftCondition);
+      const conditions = (modalState.conditions || []).filter((x) => String(x.threshold || "").trim() !== "" || String(x.note || "").trim() !== "");
+      const vouchers = (modalState.vouchers || []).filter((x) => String(x.voucherCode || "").trim() || String(x.qty || "").trim() || String(x.remark || "").trim());
+      if (!conditions.length) { toast(`请至少新增一条${conditionLabel}条件`); return; }
+      for (let i = 0; i < conditions.length; i++) {
+        const threshold = Number(conditions[i].threshold);
+        if (!Number.isFinite(threshold) || threshold <= 0) return toast(`条件${i + 1}：${conditionLabel}需大于0`);
+        if (isQty && !Number.isInteger(threshold)) return toast(`条件${i + 1}：${conditionLabel}需为正整数`);
+      }
+      if (!vouchers.length) { toast("请至少新增一条礼券信息"); return; }
+      for (let i = 0; i < vouchers.length; i++) {
+        const item = vouchers[i] || {};
+        const qty = Number(item.qty);
+        if (!String(item.voucherCode || "").trim()) return toast(`礼券${i + 1}：请选择礼券编码`);
+        if (!Number.isFinite(qty) || qty <= 0) return toast(`礼券${i + 1}：赠券张数需大于0`);
+        if (!Number.isInteger(qty)) return toast(`礼券${i + 1}：赠券张数需为正整数`);
+      }
+      const firstCondition = conditions[0] || {};
+      const firstVoucher = vouchers[0] || {};
+      row.voucherGift = {
+        threshold: Number(firstCondition.threshold),
+        voucherCode: firstVoucher.voucherCode || "",
+        voucherName: firstVoucher.voucherName || "",
+        voucherType: firstVoucher.voucherType || "",
+        qty: Number(firstVoucher.qty),
+        remark: firstVoucher.remark || "",
+        conditions: conditions.map((x) => ({
+          conditionType: campaignVoucherGiftConditionLabel(giftCondition),
+          threshold: Number(x.threshold),
+          note: x.note || "当前商品达到条件后触发赠券"
+        })),
+        vouchers: vouchers.map((x) => ({
+          voucherCode: x.voucherCode || "",
+          voucherName: x.voucherName || "",
+          voucherType: x.voucherType || "",
+          qty: Number(x.qty),
+          remark: x.remark || ""
+        }))
+      };
       closeModal();
+      delete AppState.ui.campaignVoucherGiftModal;
       campaignWizardRenderGoodsTable();
-      toast("已保存赠券配置（原型演示）");
+      toast("已保存满赠券配置（原型演示）");
     }
   });
 }
@@ -10165,6 +10914,7 @@ function campaignWizardEnsureDraft(mode) {
         cycle: [],
         cycleDayMonth: 1,
         activityMode: "集团",
+        salesTarget: "",
         scope: { channel: "全渠道", userScope: "全部用户", memberGrades: [], memberTags: [] },
         storeScope: { storeType: "门店", stores: [], priceGroups: [], regions: [], excludeStores: [] },
         goodsScope: { isAll: "否", discountAll: "", keyword: "", tab: "goods", goods: [], categories: [], brands: [], excludeGoods: [], excludeCategories: [] },
@@ -10201,6 +10951,7 @@ function campaignWizardEnsureDraft(mode) {
   if (!base.scope) base.scope = { channel: "全渠道", userScope: "全部", memberGrades: [], memberTags: [] };
   base.scope.userScope = campaignScopeUserDisplayValue(base.scope.userScope || "全部");
   if (!base.activityMode) base.activityMode = "集团";
+  if (base.salesTarget == null) base.salesTarget = "";
   if (!Number.isFinite(Number(base.cycleDayMonth))) base.cycleDayMonth = 1;
   if (!base.storeScope) base.storeScope = { storeType: "门店", stores: [], priceGroups: [], regions: [], excludeStores: [] };
   if (!base.goodsScope) base.goodsScope = { isAll: "否", discountAll: "", keyword: "", tab: "goods", goods: [], categories: [], brands: [], excludeGoods: [], excludeCategories: [] };
@@ -10582,17 +11333,11 @@ function campaignWizardValidateStep(step) {
       }
     }
   }
-  if ((campaignIsAmountVoucherGiftTemplate(tpl) || campaignIsQtyVoucherGiftTemplate(tpl)) && Number(step) === 4) {
-    const rs = d.reduceScope || {};
-    const mode = String(rs.mode || "");
-    if (mode !== "倍数" && mode !== "阶梯") return "请选择赠券方式（倍数/阶梯）";
-  }
-  if ((campaignIsAmountVoucherGiftTemplate(tpl) || campaignIsQtyVoucherGiftTemplate(tpl)) && Number(step) === 6) {
+  if ((campaignIsAmountVoucherGiftTemplate(tpl) || campaignIsQtyVoucherGiftTemplate(tpl)) && Number(step) === 5) {
     const isQtyVG = campaignIsQtyVoucherGiftTemplate(tpl);
     const label = isQtyVG ? "满数量" : "满金额";
     const combos = campaignNormalizeVGVoucherCombos((d.voucherGiftScope && d.voucherGiftScope.vouchers) || [], tpl);
-    const mode = String((d.reduceScope && d.reduceScope.mode) || "");
-    const list = mode === "倍数" ? combos.slice(0, 1) : combos;
+    const list = combos;
     if (!list.length) return `请至少新增一组${label}`;
     for (let i = 0; i < list.length; i++) {
       const it = list[i] || {};
@@ -13779,9 +14524,6 @@ function campaignWizardRenderGoodsTable() {
   if (isTime && tab === "goods") {
     headers = ["商品编码", "商品条码", "商品名称", "商品规格", "商品单位", "商品进价", "商品售价", "限购数量"];
   }
-  if (isVoucherGift && tab === "goods") {
-    headers = ["序号", "商品编码", "商品条码", "商品名称", "规格", "单位", "促销进价", "售价", "满赠券信息", "操作"];
-  }
   if ((isReduce || isAddOn) && tab === "goods") {
     headers = ["商品编码", "商品条码", "商品名称", "商品规格", "商品单位", "商品售价"];
   }
@@ -13807,6 +14549,22 @@ function campaignWizardRenderGoodsTable() {
           .map((x, i) => ({ x, i }))
           .filter(({ x }) => [x.skuCode, x.barcode, x.skuName, x.spec].some((v) => String(v || "").toLowerCase().includes(q)))
       : srcArr.map((x, i) => ({ x, i }));
+  if (isVoucherGift && tab === "goods") {
+    const allPicked = srcArr.length > 0 && viewArr.length > 0 && viewArr.every(({ x }) => Boolean(x && x.__picked));
+    headers = [
+      `<input type="checkbox" data-act="campGoodsPickAll" ${allPicked ? "checked" : ""} />`,
+      "序号",
+      "商品编码",
+      "商品条码",
+      "商品名称",
+      "规格",
+      "单位",
+      "促销进价",
+      "售价",
+      "满赠券信息",
+      "操作"
+    ];
+  }
   const rows = viewArr
     .map(({ x, i: idx }, pos) => {
       const no = pos + 1;
@@ -13930,18 +14688,20 @@ function campaignWizardRenderGoodsTable() {
       if (isVoucherGift && tab === "goods") {
         const vgs0 = d.voucherGiftScope || {};
         const giftCondition0 = String(vgs0.giftCondition || "金额");
+        const picked = Boolean(x && x.__picked);
         const vgInfo = campaignVoucherGiftRowText(x.voucherGift, giftCondition0);
         return `<tr>
-          <td style="text-align:center"><input type="checkbox" data-act="campGoodsRowPick" data-idx="${idx}" /><div style="margin-top:4px">${no}</div></td>
-          <td><input class="input mono" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="skuCode" value="${escapeHtml(x.skuCode || "")}" placeholder="商品编码" /></td>
-          <td><input class="input mono" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="barcode" value="${escapeHtml(x.barcode || "")}" placeholder="商品条码" /></td>
-          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="skuName" value="${escapeHtml(x.skuName || "")}" placeholder="商品名称" /></td>
-          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="spec" value="${escapeHtml(x.spec || "")}" placeholder="规格" /></td>
-          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="unit" value="${escapeHtml(x.unit || "")}" placeholder="单位" /></td>
-          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="costPrice" type="number" min="0" step="0.01" value="${escapeHtml(String(x.costPrice ?? ""))}" placeholder="促销进价" /></td>
-          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="price" type="number" min="0" step="0.01" value="${escapeHtml(String(x.price ?? ""))}" placeholder="售价" /></td>
+          <td class="vg-table-check"><input type="checkbox" data-act="campGoodsRowPick" data-idx="${idx}" data-tab="${escapeHtml(tab)}" ${picked ? "checked" : ""} /></td>
+          <td class="vg-table-no">${no}</td>
+          <td><input class="input mono vg-table-input" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="skuCode" value="${escapeHtml(x.skuCode || "")}" placeholder="" /></td>
+          <td><input class="input mono vg-table-input" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="barcode" value="${escapeHtml(x.barcode || "")}" placeholder="" /></td>
+          <td><input class="input vg-table-input" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="skuName" value="${escapeHtml(x.skuName || "")}" placeholder="" /></td>
+          <td><input class="input vg-table-input" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="spec" value="${escapeHtml(x.spec || "")}" placeholder="" /></td>
+          <td><input class="input vg-table-input" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="unit" value="${escapeHtml(x.unit || "")}" placeholder="" /></td>
+          <td><input class="input vg-table-input" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="costPrice" type="number" min="0" step="0.01" value="${escapeHtml(String(x.costPrice ?? ""))}" placeholder="" /></td>
+          <td><input class="input vg-table-input" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="price" type="number" min="0" step="0.01" value="${escapeHtml(String(x.price ?? ""))}" placeholder="" /></td>
           <td class="vg-cell">${vgInfo ? escapeHtml(vgInfo) : `<span class="muted">未设置</span>`}</td>
-          <td style="text-align:center"><button class="btn-link" type="button" data-act="campVoucherGiftRowSetting" data-idx="${idx}">设置</button></td>
+          <td class="vg-opcell"><button class="btn-link" type="button" data-act="campVoucherGiftRowSetting" data-idx="${idx}">设置</button><button class="btn-link" type="button" data-act="campVoucherGiftRowView" data-idx="${idx}">查看</button></td>
         </tr>`;
       }
       if ((isReduce || isAddOn) && tab === "goods") {
@@ -13995,7 +14755,20 @@ function campaignWizardRenderGoodsTable() {
       </tr>`;
     })
     .join("");
-  box.innerHTML = campaignWizardRenderTable(headers, rows, "暂无数据，请新增或导入");
+  if (isVoucherGift && tab === "goods") {
+    const maxRows = 6;
+    const emptyRows = Array.from({ length: Math.max(0, maxRows - Math.min(maxRows, viewArr.length)) }).map((_, k) => {
+      const n = Math.min(maxRows, viewArr.length) + k + 1;
+      return `<tr>
+        <td class="vg-table-check"><input type="checkbox" disabled /></td>
+        <td class="vg-table-no">${n}</td>
+        <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+      </tr>`;
+    }).join("");
+    box.innerHTML = `<div class="voucher-goods-table">${campaignWizardRenderTable(headers, rows + emptyRows, "暂无数据，请新增或导入")}${campaignListPaginationHtml(10)}</div>`;
+  } else {
+    box.innerHTML = campaignWizardRenderTable(headers, rows, "暂无数据，请新增或导入");
+  }
   const tabbar = document.getElementById("campGoodsTabs");
   if (tabbar) {
     Array.from(tabbar.querySelectorAll(".tabbtn")).forEach((btn) => btn.classList.toggle("is-active", btn.getAttribute("data-id") === tab));
@@ -15360,7 +16133,7 @@ function campaignWizardRenderQueryBar({ tabsHtml = "", inputHtml = "", actionsHt
 }
 
 function campaignWizardMainTabsForTemplate(tplSelected, promoType = "") {
-  const hasConditionTab = campaignIsVoucherGiftTemplate(tplSelected);
+  const hasConditionTab = false;
   return [
     { k: "basic", t: "基础信息" },
     { k: "scope", t: "用户范围" },
@@ -15440,6 +16213,14 @@ function campaignAmountGiftBasicPanelHtml({
         ${scheduleDisplay}
       </div>
     </div>
+    ${(!readonly && mode === "create") ? `
+      <div class="combo-camp-form__row combo-camp-form__row--1">
+        <div class="field">
+          <div class="field__label">销售目标（元）</div>
+          <input class="input" data-cw="root" data-field="salesTarget" value="${escapeHtml(String(d.salesTarget || ""))}" placeholder="请输入" />
+        </div>
+      </div>
+    ` : ``}
     <div class="field">
       <div class="field__label">活动说明</div>
       <input class="input" ${readonly ? "disabled" : 'data-cw="root" data-field="desc"'} value="${escapeHtml(d.desc || "")}" placeholder="请输入" />
@@ -16779,6 +17560,14 @@ function comboCampaignBasicPanelHtml({
         ${readonly ? `<input class="input" value="${escapeHtml(scheduleValue || "")}" disabled />` : scheduleDisplay}
       </div>
     </div>
+    ${(!readonly && mode === "create") ? `
+      <div class="combo-camp-form__row combo-camp-form__row--1">
+        <div class="field">
+          <div class="field__label">销售目标（元）</div>
+          <input class="input" data-cw="root" data-field="salesTarget" value="${escapeHtml(String(d.salesTarget || ""))}" placeholder="请输入" />
+        </div>
+      </div>
+    ` : ``}
     <div class="field">
       <div class="field__label">活动说明</div>
       <textarea class="textarea" ${readonly ? "disabled" : 'data-cw="root" data-field="desc"'} rows="3" placeholder="请输入活动名称">${escapeHtml(d.desc || "")}</textarea>
@@ -16869,7 +17658,7 @@ function renderCampaignWizardPage(mode) {
   const isDirectDrop = tplSelected && String(tplSelected.templateType || "") === "直降";
   const isMinFree = campaignIsMinFreeTemplate(tplSelected);
   const isOnePrice = campaignIsOnePriceTemplate(tplSelected);
-  const useSixSteps = isTime || campaignIsVoucherGiftTemplate(tplSelected);
+  const useSixSteps = isTime;
   const useAmountSteps = isAmount;
   const maxStep = useSixSteps ? 6 : useAmountSteps ? 5 : 5;
 
@@ -16931,9 +17720,8 @@ function renderCampaignWizardPage(mode) {
             { n: 1, label: "1 基础信息" },
             { n: 2, label: "2 用户范围" },
             { n: 3, label: "3 门店范围" },
-            { n: 4, label: "4 条件范围" },
-            { n: 5, label: "5 商品范围" },
-            { n: 6, label: "6 奖励券信息" }
+            { n: 4, label: "4 商品范围" },
+            { n: 5, label: "5 奖励券信息" }
           ]
       : [
           { n: 1, label: "1 基础信息" },
@@ -17069,77 +17857,9 @@ function renderCampaignWizardPage(mode) {
       : campaignIsQtyAddOnTemplate(tplSelected)
         ? ``
       : campaignIsAmountVoucherGiftTemplate(tplSelected)
-        ? `
-            <div class="wizard-step" data-step="4">
-              <div class="form">
-                <div class="section__title">条件范围</div>
-                <div class="form__row">
-                  <div class="field">
-                    <div class="field__label">活动互斥</div>
-                    <div class="checks">
-                      <label class="check"><input type="radio" name="cwVGMutex" data-cw="reduceScope" data-field="mutex" value="否" ${String((d.reduceScope && d.reduceScope.mutex) || "否") === "否" ? "checked" : ""} />否</label>
-                      <label class="check"><input type="radio" name="cwVGMutex" data-cw="reduceScope" data-field="mutex" value="是" ${String((d.reduceScope && d.reduceScope.mutex) || "否") === "是" ? "checked" : ""} />是</label>
-                    </div>
-                    <div class="hint">选择是：直降和折扣商品不参与此类活动。</div>
-                  </div>
-                  <div class="field">
-                    <div class="field__label">赠券方式<span class="req">*</span></div>
-                    <div class="checks">
-                      <label class="check"><input type="radio" name="cwVGMode" data-cw="reduceScope" data-field="mode" value="倍数" ${String((d.reduceScope && d.reduceScope.mode) || "") === "倍数" ? "checked" : ""} />倍数</label>
-                      <label class="check"><input type="radio" name="cwVGMode" data-cw="reduceScope" data-field="mode" value="阶梯" ${String((d.reduceScope && d.reduceScope.mode) || "") === "阶梯" ? "checked" : ""} />阶梯</label>
-                    </div>
-                    <div class="hint">倍数仅允许一条记录；阶梯允许添加多条记录。</div>
-                  </div>
-                  <div class="field">
-                    <div class="field__label">上限数量</div>
-                    <input class="input" data-cw="voucherGiftScope" data-field="capQty" type="number" min="0" step="1" value="${escapeHtml(String((d.voucherGiftScope && d.voucherGiftScope.capQty) ?? ""))}" placeholder="不限制可留空" />
-                  </div>
-                </div>
-                <div class="divider"></div>
-                <div class="section__title">参与支付方式</div>
-                <div class="toolbar__actions" style="margin: 10px 0 12px 0;">
-                  <button class="btn" type="button" data-act="campVGPayAdd">新增一行</button>
-                </div>
-                <div id="campVGPayTable"></div>
-              </div>
-            </div>
-          `
+        ? ``
       : campaignIsQtyVoucherGiftTemplate(tplSelected)
-        ? `
-            <div class="wizard-step" data-step="4">
-              <div class="form">
-                <div class="section__title">条件范围</div>
-                <div class="form__row">
-                  <div class="field">
-                    <div class="field__label">活动互斥</div>
-                    <div class="checks">
-                      <label class="check"><input type="radio" name="cwVGMutex" data-cw="reduceScope" data-field="mutex" value="否" ${String((d.reduceScope && d.reduceScope.mutex) || "否") === "否" ? "checked" : ""} />否</label>
-                      <label class="check"><input type="radio" name="cwVGMutex" data-cw="reduceScope" data-field="mutex" value="是" ${String((d.reduceScope && d.reduceScope.mutex) || "否") === "是" ? "checked" : ""} />是</label>
-                    </div>
-                    <div class="hint">选择是：直降和折扣商品不参与此类活动。</div>
-                  </div>
-                  <div class="field">
-                    <div class="field__label">赠券方式<span class="req">*</span></div>
-                    <div class="checks">
-                      <label class="check"><input type="radio" name="cwVGMode" data-cw="reduceScope" data-field="mode" value="倍数" ${String((d.reduceScope && d.reduceScope.mode) || "") === "倍数" ? "checked" : ""} />倍数</label>
-                      <label class="check"><input type="radio" name="cwVGMode" data-cw="reduceScope" data-field="mode" value="阶梯" ${String((d.reduceScope && d.reduceScope.mode) || "") === "阶梯" ? "checked" : ""} />阶梯</label>
-                    </div>
-                    <div class="hint">倍数仅允许一条记录；阶梯允许添加多条记录。</div>
-                  </div>
-                  <div class="field">
-                    <div class="field__label">上限数量</div>
-                    <input class="input" data-cw="voucherGiftScope" data-field="capQty" type="number" min="0" step="1" value="${escapeHtml(String((d.voucherGiftScope && d.voucherGiftScope.capQty) ?? ""))}" placeholder="不限制可留空" />
-                  </div>
-                </div>
-                <div class="divider"></div>
-                <div class="section__title">参与支付方式</div>
-                <div class="toolbar__actions" style="margin: 10px 0 12px 0;">
-                  <button class="btn" type="button" data-act="campVGPayAdd">新增一行</button>
-                </div>
-                <div id="campVGPayTable"></div>
-              </div>
-            </div>
-          `
+        ? ``
       : "";
 
   const goodsStepNo = useSixSteps ? 5 : useAmountSteps ? 4 : 4;
@@ -17149,7 +17869,6 @@ function renderCampaignWizardPage(mode) {
   const showGoodsDetail = isDiscount || isReduce || isQtyReduce;
   const goodsRange = AppState.ui.campaignWizard.goodsRange || "participate";
 
-  const hasConditionTab = campaignIsVoucherGiftTemplate(tplSelected);
   const isComboSpecial = campaignIsComboSpecialTemplate(tplSelected, d);
   const isManZeng = isAmountGift && !campaignIsVoucherGiftTemplate(tplSelected);
   const useComboSkin = true;
@@ -17230,6 +17949,14 @@ function renderCampaignWizardPage(mode) {
                 </select>
               </div>
             </div>
+            ${mode === "create" ? `
+              <div class="form__row">
+                <div class="field">
+                  <div class="field__label">销售目标（元）</div>
+                  <input class="input" data-cw="root" data-field="salesTarget" value="${escapeHtml(String(d.salesTarget || ""))}" placeholder="请输入" />
+                </div>
+              </div>
+            ` : ``}
             <div class="field">
               <div class="field__label">活动说明</div>
               <textarea class="textarea" data-cw="root" data-field="desc" rows="3" placeholder="非必填">${escapeHtml(d.desc || "")}</textarea>
@@ -17385,7 +18112,7 @@ function renderCampaignWizardPage(mode) {
           `}
       </div>
 
-      ${hasConditionTab ? `<div class="detail-tab-panel ${campMainTab === "condition" ? "is-active" : ""}" data-tab="condition">
+      ${midStepHtml ? `<div class="detail-tab-panel ${campMainTab === "condition" ? "is-active" : ""}" data-tab="condition">
         ${midStepHtml}
         ${campStepActionsHtml}
       </div>` : ""}
@@ -17800,7 +18527,7 @@ function renderCampaignWizardPage(mode) {
             const purchaseType = String(vgs.purchaseType || "单品");
             const purchaseScope = String(vgs.purchaseScope || "商品");
             const vgConditionHtml = `
-              <div class="combo-camp-form__row combo-camp-form__row--4">
+              <div class="voucher-goods-scope">
                 <div class="field">
                   <div class="field__label"><span class="req">*</span>促销商品是否参与</div>
                   <select class="select" data-cw="voucherGiftScope" data-field="promoGoodsJoin">${opt(["是", "否"], promoGoodsJoin)}</select>
@@ -17819,20 +18546,23 @@ function renderCampaignWizardPage(mode) {
                 </div>
               </div>
             `;
-            const vgQueryBarHtml = campaignWizardRenderQueryBar({
-              tabsHtml: "",
-              inputHtml: `<input class="input" data-cw="goodsScope" data-field="keyword" value="${goodsKeywordValue}" placeholder="请输入商品编码、条码、名称" />`,
-              actionsHtml: `
-                <button class="btn btn--primary" type="button" data-act="campKeywordQuery" data-cw="goodsScope" data-field="keyword">查询</button>
-                <button class="btn btn--primary" type="button" data-act="campSelectGoodsTab">选商品</button>
-                <button class="btn" type="button" data-act="campGoodsImport">导入</button>
-                <button class="btn" type="button" data-act="campGoodsAdd">增加行</button>
-                <button class="btn" type="button" data-act="campGoodsRemoveChecked">移除行</button>
-              `
-            });
+            const vgQueryBarHtml = `
+              <div class="voucher-goods-toolbar">
+                <div class="voucher-goods-toolbar__search">
+                  <input class="input" data-cw="goodsScope" data-field="keyword" value="${goodsKeywordValue}" placeholder="请输入商品编码、条码、名称" />
+                </div>
+                <div class="voucher-goods-toolbar__actions">
+                  <button class="btn btn--primary" type="button" data-act="campKeywordQuery" data-cw="goodsScope" data-field="keyword">查询</button>
+                  <button class="btn" type="button" data-act="campSelectGoodsTab">选商品</button>
+                  <button class="btn" type="button" data-act="campGoodsImport">导入</button>
+                  <button class="btn" type="button" data-act="campGoodsAdd">增加行</button>
+                  <button class="btn" type="button" data-act="campGoodsRemoveChecked">移除商品</button>
+                </div>
+              </div>
+            `;
             return `
               <div class="wizard-step" data-step="${goodsStepNo}">
-                <div class="form">
+                <div class="form voucher-goods-page">
                   ${vgConditionHtml}
                   <div class="section__title">满赠券信息</div>
                   ${vgQueryBarHtml}
@@ -17982,11 +18712,11 @@ function renderCampaignDetailPage(activityNo) {
   const isOnePrice = campaignIsOnePriceTemplate(tpl);
   const isComboStyled = campaignIsComboSpecialTemplate(tpl, c);
   const useComboSkin = isComboStyled || isAmountGift;
-  const useSixSteps = isTime || campaignIsVoucherGiftTemplate(tpl);
+  const useSixSteps = isTime;
   const useAmountSteps = isAmount;
   const goodsFlags = campaignGoodsFlagsFromTemplate(tpl);
   const noDiscount = !goodsFlags.includeDiscount;
-  const showGoodsDetail = isDiscount || isReduce || isQtyReduce || isDirectDrop;
+  const showGoodsDetail = isDiscount || isReduce || isQtyReduce || isDirectDrop || campaignIsVoucherGiftTemplate(tpl);
   const gs = c.goodsScope || {};
   const reducePurchaseTypeRaw = campaignReducePurchaseTypeNorm(gs.purchaseType || "");
   const reduceIsWholeOrder = reducePurchaseTypeRaw === "整单";
@@ -18230,6 +18960,9 @@ function renderCampaignDetailPage(activityNo) {
   if ((isGoodsDiscount || isTime) && detailTab === "goods") {
     goodsHeaders = ["商品编码", "商品条码", "商品名称", "商品规格", "商品单位", "商品进价", "商品售价", "折扣", "限购数量"];
   }
+  if (campaignIsVoucherGiftTemplate(tpl) && detailTab === "goods") {
+    goodsHeaders = ["序号", "商品编码", "商品条码", "商品名称", "规格", "单位", "促销进价", "售价", "满赠券信息"];
+  }
   const reduceCondition = String(gs.reduceCondition || "");
   const reduceIsQtyCond = reduceCondition === "数量";
   const reduceFullHead = reduceIsQtyCond ? "满数量" : "满金额/数量";
@@ -18393,6 +19126,14 @@ function renderCampaignDetailPage(activityNo) {
       return `<tr>${cells.join("")}</tr>`;
     })
     .join("");
+  if (campaignIsVoucherGiftTemplate(tpl) && detailTab === "goods") {
+    const giftCondition = String(((c.voucherGiftScope || {}).giftCondition) || "金额");
+    const arr = Array.isArray(gs.goods) ? gs.goods : [];
+    goodsRows = arr.map((x, idx) => {
+      const td = (v) => `<td>${escapeHtml(String(v ?? ""))}</td>`;
+      return `<tr>${td(idx + 1)}${td(x.skuCode)}${td(x.barcode)}${td(x.skuName)}${td(x.spec)}${td(x.unit)}${td(x.costPrice)}${td(x.price)}${td(campaignVoucherGiftRowText(x.voucherGift, giftCondition) || "未设置")}</tr>`;
+    }).join("");
+  }
 
   if (reduceSingleGoodsLadder) {
     goodsHeaders = [
@@ -19422,12 +20163,12 @@ function renderCampaignDetailPage(activityNo) {
         ["采购承担", escapeHtml(String((c.burden && c.burden.purchase) || ""))]
       ])}
     `;
-  const mainTab = ((isTime || isAmount || isQty || isMultiple || isGoodsDiscount || isComboStyled || isReduce || isQtyReduce) && AppState.ui.campaignDetail.mainTab === "condition") ? "basic" : (AppState.ui.campaignDetail.mainTab || "basic");
+  const mainTab = ((isTime || isAmount || isQty || isMultiple || isGoodsDiscount || isComboStyled || isReduce || isQtyReduce || campaignIsVoucherGiftTemplate(tpl)) && AppState.ui.campaignDetail.mainTab === "condition") ? "basic" : (AppState.ui.campaignDetail.mainTab || "basic");
   const mainTabs = [
     { k: "basic", t: "基础信息" },
     { k: "scope", t: "用户范围" },
     { k: "store", t: "门店范围" },
-    ...(!(isTime || isAmount || isQty || isGift || isAmountAddOn || isQtyAddOn || isDirectDrop || isMultiple || isGoodsDiscount || isComboStyled || isReduce || isQtyReduce) ? [{ k: "condition", t: "条件范围" }] : []),
+    ...(!(isTime || isAmount || isQty || isGift || isAmountAddOn || isQtyAddOn || isDirectDrop || isMultiple || isGoodsDiscount || isComboStyled || isReduce || isQtyReduce || campaignIsVoucherGiftTemplate(tpl)) ? [{ k: "condition", t: "条件范围" }] : []),
     { k: "goods", t: "商品范围" },
     { k: "burden", t: campaignIsVoucherGiftTemplate(tpl) ? "奖励券信息" : "承担规则" }
   ];
@@ -19561,7 +20302,6 @@ function renderCampaignDetailPage(activityNo) {
     ${isQtyReduce ? `` : ""}
     ${isAmountAddOn ? `` : ""}
     ${isQtyAddOn ? `` : ""}
-    ${(campaignIsAmountVoucherGiftTemplate(tpl) || campaignIsQtyVoucherGiftTemplate(tpl)) ? `${detailSectionHtml("步骤四：条件范围", kvHtml([["活动互斥", escapeHtml(String(rs.mutex || "否"))], ["赠券方式", escapeHtml(String(rs.mode || "—"))], ["上限数量", escapeHtml(String((c.voucherGiftScope && c.voucherGiftScope.capQty) ?? "—"))]]))}${detailSectionHtml("参与支付方式", table(["序号", "支付方式编码", "支付方式名称"], ((c.voucherGiftScope && c.voucherGiftScope.payMethods) || []).map((x, idx) => `<tr><td>${idx + 1}</td><td class="mono">${escapeHtml(x.code)}</td><td>${escapeHtml(x.name)}</td></tr>`).join("") || `<tr><td colspan="3"><div class="empty">暂无数据</div></td></tr>`))}` : ""}
     ${!isTime && !isMultiple && !isAmount && !isQty && !isReduce && !isQtyReduce && !isGift && !isAddOn && !campaignIsVoucherGiftTemplate(tpl) ? `<div class="empty">当前活动类型无额外条件范围（原型演示）</div>` : ""}
   `;
 
@@ -20068,7 +20808,14 @@ function renderCampaignDetailPage(activityNo) {
     : `
       ${detailSectionHtml(useSixSteps ? "步骤五：商品范围" : useAmountSteps ? "步骤四：商品范围" : "步骤四：商品范围", `
         ${kvHtml(
-          noDiscount
+          campaignIsVoucherGiftTemplate(tpl)
+            ? [
+                ["促销商品是否参与", escapeHtml(String((c.voucherGiftScope && c.voucherGiftScope.promoGoodsJoin) || "是"))],
+                ["满赠条件", escapeHtml(String((c.voucherGiftScope && c.voucherGiftScope.giftCondition) || "金额"))],
+                ["购买类型", escapeHtml(String((c.voucherGiftScope && c.voucherGiftScope.purchaseType) || "单品"))],
+                ["购买范围", escapeHtml(String((c.voucherGiftScope && c.voucherGiftScope.purchaseScope) || "商品"))]
+              ]
+            : noDiscount
             ? [["是否全场", escapeHtml((c.goodsScope && c.goodsScope.isAll) || "—")], ["名称", escapeHtml(String((c.goodsScope && c.goodsScope.keyword) || ""))]]
             : [["是否全场", escapeHtml((c.goodsScope && c.goodsScope.isAll) || "—")], ["折扣", escapeHtml(String((c.goodsScope && c.goodsScope.discountAll) ?? ""))], ["名称", escapeHtml(String((c.goodsScope && c.goodsScope.keyword) || ""))]]
         )}
@@ -20091,7 +20838,7 @@ function renderCampaignDetailPage(activityNo) {
     return detailSectionHtml(`组合 ${gi + 1}`, `${kvHtml([[vgThresholdLabel, `<span class="mono">${escapeHtml(String(threshold ?? ""))}</span>`]])}${table(vgHeaders, rows || `<tr><td colspan="${vgHeaders.length}"><div class="empty">暂无数据</div></td></tr>`)}`);
   }).join("");
   const burdenPanel = (campaignIsAmountVoucherGiftTemplate(tpl) || campaignIsQtyVoucherGiftTemplate(tpl))
-    ? `${detailSectionHtml("步骤六：奖励券信息", vgCombosHtml || `<div class="empty">暂无数据</div>`)}`
+    ? `${detailSectionHtml("步骤五：奖励券信息", vgCombosHtml || `<div class="empty">暂无数据</div>`)}`
     : `
     ${detailSectionHtml((isGift || isAmountAddOn || isQtyAddOn) ? "步骤五：承担规则" : "承担规则", kvHtml([
       ["承担方式", escapeHtml((c.burden && c.burden.method) || "—")],
@@ -20266,7 +21013,6 @@ function renderPricingPage() {
           <div class="pricing-goods-bar__actions">
             <button class="btn" type="button" data-act="pricingAddGoods">+商品</button>
             <button class="btn" type="button" data-act="pricingImportGoods">导入商品</button>
-            <button class="btn" type="button" data-act="pricingExportAnomaly">导出异常商品报表</button>
             <button class="btn" type="button" data-act="pricingClearRow">行清</button>
             <button class="btn" type="button" data-act="pricingClearAll">清空</button>
           </div>
@@ -20313,6 +21059,7 @@ function renderPricingPage() {
         <input class="input" id="pricingBottomSearch" placeholder="请输入商品编码、条码、名称" />
       </div>
       <button class="btn btn--primary" type="button" data-act="pricingQuery">查询</button>
+      <button class="btn" type="button" data-act="pricingExportAnomaly">导出异常商品报表</button>
       <button class="btn-settle" type="button" data-act="pricingSettle">结算 <span class="settle-amount">¥ ${st.settlementAmount.toFixed(2)}</span></button>
       <button class="btn-preview" type="button" data-act="pricingPreview">小票预览</button>
     </div>
@@ -23703,6 +24450,774 @@ function rptExportCsv(filename, headers, rows) {
   downloadTextFile(filename, csv, "text/csv;charset=utf-8");
 }
 
+function renderRptAnalysisPage() {
+  const ui = (AppState.ui.rpt && AppState.ui.rpt.analysis) ? AppState.ui.rpt.analysis : { schedule: "全部6档", storeLevel: "门店层级", store: "所有门店", view: "商品·顾客·效率", unit: "万元 / 人次" };
+  const pill = (t, active = false) => `<span class="rpa-pill ${active ? "is-active" : ""}">${escapeHtml(t)}</span>`;
+  const filterItem = (label, value) => `
+    <div class="rpa-filter">
+      <span class="rpa-filter__label">${escapeHtml(label)}</span>
+      ${pill(value, true)}
+    </div>
+  `;
+  const kpiCard = (opt) => `
+    <div class="rpa-kpi rpa-kpi--${escapeHtml(opt.color)}">
+      <div class="rpa-kpi__head">
+        <div class="rpa-kpi__title">${escapeHtml(opt.title)}</div>
+        <div class="rpa-kpi__delta ${opt.deltaUp ? "is-up" : "is-down"}">${escapeHtml(opt.delta)}</div>
+      </div>
+      <div class="rpa-kpi__value">
+        <span class="rpa-kpi__num">${escapeHtml(opt.value)}</span>
+      </div>
+      <div class="rpa-kpi__sub">${escapeHtml(opt.sub)}</div>
+      ${opt.sub2 ? `<div class="rpa-kpi__sub2">${escapeHtml(opt.sub2)}</div>` : ``}
+    </div>
+  `;
+  const card = (title, meta, body, extra = "") => `
+    <div class="rpa-card ${extra}">
+      <div class="rpa-card__head">
+        <div class="rpa-card__head-left">
+          <span class="rpa-card__bar"></span>
+          <div class="rpa-card__texts">
+            <div class="rpa-card__title">${escapeHtml(title)}</div>
+            ${meta ? `<div class="rpa-card__meta">${escapeHtml(meta)}</div>` : ``}
+          </div>
+        </div>
+      </div>
+      <div class="rpa-card__body">${body}</div>
+    </div>
+  `;
+
+  const salesBarsSvg = `
+    <svg class="rpa-svg" viewBox="0 0 980 280" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="rpaBarA" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#1f4f6a" stop-opacity="0.95"></stop>
+          <stop offset="1" stop-color="#1f4f6a" stop-opacity="0.95"></stop>
+        </linearGradient>
+        <linearGradient id="rpaBarB" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#cfe0ef"></stop>
+          <stop offset="1" stop-color="#cfe0ef"></stop>
+        </linearGradient>
+      </defs>
+
+      <line x1="58" y1="30" x2="58" y2="238" stroke="#e5e7eb" stroke-width="1"></line>
+      <line x1="58" y1="238" x2="950" y2="238" stroke="#e5e7eb" stroke-width="1"></line>
+      ${[0,100,200,300,400,500,600,700].map((v,i)=>`<line x1="58" y1="${238 - (i*26)}" x2="950" y2="${238 - (i*26)}" stroke="#eef2f7" stroke-width="1"></line><text x="22" y="${242 - (i*26)}" font-size="10" fill="#9ca3af">${v}</text>`).join("")}
+      ${[70,80,90,100,110,120,130,140].map((v,i)=>`<text x="956" y="${242 - (i*26)}" font-size="10" fill="#9ca3af">${v}</text>`).join("")}
+
+      ${(() => {
+        const groups = [
+          { x: 120, a: 612, b: 580, p: 105.6, label: "爆款大促" },
+          { x: 270, a: 501, b: 495, p: 101.2, label: "会员日" },
+          { x: 420, a: 476, b: 490, p: 97.1, label: "尖货节" },
+          { x: 570, a: 432, b: 451, p: 95.9, label: "清凉节" },
+          { x: 720, a: 394, b: 380, p: 103.7, label: "陈列酒促" },
+          { x: 870, a: 424, b: 320, p: 132.5, label: "年中囤货" }
+        ];
+        const scale = (v) => 238 - (v/700)*208;
+        const scaleP = (p) => 238 - ((p-70)/70)*208;
+        const pts = groups.map(g => `${g.x},${scaleP(g.p)}`).join(" ");
+        return `
+          ${groups.map(g => `
+            <rect x="${g.x-32}" y="${scale(g.b)}" width="26" height="${238-scale(g.b)}" fill="url(#rpaBarB)"></rect>
+            <rect x="${g.x-2}" y="${scale(g.a)}" width="26" height="${238-scale(g.a)}" fill="url(#rpaBarA)"></rect>
+            <text x="${g.x-20}" y="${scale(g.a)-8}" font-size="10" fill="#374151">${g.a}万</text>
+            <text x="${g.x-26}" y="268" font-size="10" fill="#6b7280" transform="rotate(-18 ${g.x-26} 268)">${g.label}</text>
+          `).join("")}
+          <polyline points="${pts}" fill="none" stroke="#f97316" stroke-width="2"></polyline>
+          ${groups.map(g => `<circle cx="${g.x}" cy="${scaleP(g.p)}" r="3" fill="#f97316"></circle><text x="${g.x-18}" y="${scaleP(g.p)-10}" font-size="10" fill="#111827">${g.p}%</text>`).join("")}
+        `;
+      })()}
+
+      <g transform="translate(395 250)">
+        <circle cx="0" cy="0" r="4" fill="#1f4f6a"></circle><text x="10" y="4" font-size="10" fill="#6b7280">实际销售额</text>
+        <circle cx="90" cy="0" r="4" fill="#cfe0ef"></circle><text x="100" y="4" font-size="10" fill="#6b7280">目标销售额</text>
+        <line x1="190" y1="0" x2="210" y2="0" stroke="#f97316" stroke-width="2"></line><circle cx="200" cy="0" r="3" fill="#f97316"></circle><text x="220" y="4" font-size="10" fill="#6b7280">达成率</text>
+      </g>
+    </svg>
+  `;
+
+  const donutSvg = (segments, cx = 120, cy = 120, r = 68, stroke = 18) => {
+    const C = 2 * Math.PI * r;
+    let acc = 0;
+    const rings = segments.map((s) => {
+      const len = (s.pct / 100) * C;
+      const dash = `${len} ${C - len}`;
+      const off = -acc;
+      acc += len;
+      return `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${s.color}" stroke-width="${stroke}" stroke-dasharray="${dash}" stroke-dashoffset="${off}" stroke-linecap="butt"></circle>`;
+    }).join("");
+    return `
+      <svg class="rpa-svg" viewBox="0 0 260 240" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+        <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#eef2f7" stroke-width="${stroke}"></circle>
+        <g transform="rotate(-90 ${cx} ${cy})">${rings}</g>
+      </svg>
+    `;
+  };
+
+  const catDonut = donutSvg([
+    { pct: 32.21, color: "#4f6bdc" },
+    { pct: 21.21, color: "#86d07b" },
+    { pct: 14.92, color: "#f6c050" },
+    { pct: 12.18, color: "#ee6b6b" },
+    { pct: 11.59, color: "#5cc7e6" },
+    { pct: 8.09, color: "#2aa56b" }
+  ]);
+  const channelDonut = donutSvg([
+    { pct: 63.95, color: "#4f6bdc" },
+    { pct: 23.89, color: "#86d07b" },
+    { pct: 12.16, color: "#f6c050" }
+  ]);
+
+  const flowLineSvg = `
+    <svg class="rpa-svg" viewBox="0 0 980 240" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="rpaArea" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#0f4c65" stop-opacity="0.18"></stop>
+          <stop offset="1" stop-color="#0f4c65" stop-opacity="0.02"></stop>
+        </linearGradient>
+      </defs>
+      <line x1="44" y1="18" x2="44" y2="206" stroke="#e5e7eb"></line>
+      <line x1="44" y1="206" x2="960" y2="206" stroke="#e5e7eb"></line>
+      ${[0,500,1000,1500,2000,2500].map((v,i)=>`<line x1="44" y1="${206-(i*38)}" x2="960" y2="${206-(i*38)}" stroke="#eef2f7"></line><text x="10" y="${210-(i*38)}" font-size="10" fill="#9ca3af">${v.toLocaleString()}</text>`).join("")}
+      <line x1="44" y1="${206-3*38}" x2="960" y2="${206-3*38}" stroke="#f59e0b" stroke-dasharray="4 4"></line>
+      <text x="966" y="${206-3*38+4}" font-size="10" fill="#6b7280">峰值 1500</text>
+      ${(() => {
+        const hours = ["6h","7h","8h","9h","10h","11h","12h","13h","14h","15h","16h","17h","18h","19h","20h","21h","22h"];
+        const vals = [120,380,620,780,860,980,1120,1350,1200,1180,1300,1480,1650,2050,1980,1720,920];
+        const x0 = 70;
+        const step = 52;
+        const scale = (v) => 206 - (v/2500)*188;
+        const pts = vals.map((v,i)=>`${x0+i*step},${scale(v)}`).join(" ");
+        const area = `${pts}  ${x0+(vals.length-1)*step},206  ${x0},206`;
+        return `
+          <polygon points="${area}" fill="url(#rpaArea)"></polygon>
+          <polyline points="${pts}" fill="none" stroke="#0f4c65" stroke-width="2"></polyline>
+          ${vals.map((v,i)=>`<circle cx="${x0+i*step}" cy="${scale(v)}" r="2.5" fill="#0f4c65"></circle>`).join("")}
+          ${hours.map((h,i)=>`<text x="${x0+i*step-10}" y="230" font-size="10" fill="#6b7280">${h}</text>`).join("")}
+        `;
+      })()}
+    </svg>
+  `;
+
+  const priceBandSvg = `
+    <svg class="rpa-svg" viewBox="0 0 980 260" preserveAspectRatio="none" aria-hidden="true">
+      <line x1="44" y1="18" x2="44" y2="218" stroke="#e5e7eb"></line>
+      <line x1="44" y1="218" x2="960" y2="218" stroke="#e5e7eb"></line>
+      ${[0,100,200,300,400,500,600].map((v,i)=>`<line x1="44" y1="${218-(i*33)}" x2="960" y2="${218-(i*33)}" stroke="#eef2f7"></line><text x="10" y="${222-(i*33)}" font-size="10" fill="#9ca3af">${v}</text>`).join("")}
+      ${(() => {
+        const bands = ["0-20元","20-40元","40-60元","60-80元","80-100元","100+元"];
+        const dis = [120,280,340,260,180,90];
+        const full = [80,160,210,190,140,110];
+        const x0 = 130;
+        const step = 130;
+        const w = 56;
+        const scale = (v) => 218 - (v/600)*200;
+        return `
+          ${bands.map((b,i)=> {
+            const y1 = scale(dis[i] + full[i]);
+            const y2 = scale(full[i]);
+            return `
+              <rect x="${x0+i*step-w/2}" y="${y2}" width="${w}" height="${218-y2}" fill="#3b82f6" opacity="0.75"></rect>
+              <rect x="${x0+i*step-w/2}" y="${y1}" width="${w}" height="${y2-y1}" fill="#f59e0b" opacity="0.95"></rect>
+              <text x="${x0+i*step-18}" y="${y1+14}" font-size="10" fill="#111827">${dis[i]}万</text>
+              <text x="${x0+i*step-18}" y="${y2-6}" font-size="10" fill="#111827">${full[i]}万</text>
+              <text x="${x0+i*step-22}" y="246" font-size="10" fill="#6b7280">${b}</text>
+            `;
+          }).join("")}
+        `;
+      })()}
+      <g transform="translate(356 246)">
+        <circle cx="0" cy="0" r="4" fill="#f59e0b"></circle><text x="10" y="4" font-size="10" fill="#6b7280">折扣商品</text>
+        <circle cx="88" cy="0" r="4" fill="#3b82f6" opacity="0.75"></circle><text x="98" y="4" font-size="10" fill="#6b7280">正价商品</text>
+      </g>
+    </svg>
+  `;
+
+  const top10Svg = `
+    <svg class="rpa-svg" viewBox="0 0 980 260" preserveAspectRatio="none" aria-hidden="true">
+      <line x1="44" y1="18" x2="44" y2="218" stroke="#e5e7eb"></line>
+      <line x1="44" y1="218" x2="960" y2="218" stroke="#e5e7eb"></line>
+      ${[0,10,20,30,40,50].map((v,i)=>`<line x1="44" y1="${218-(i*40)}" x2="960" y2="${218-(i*40)}" stroke="#eef2f7"></line><text x="18" y="${222-(i*40)}" font-size="10" fill="#9ca3af">${v}</text>`).join("")}
+      ${(() => {
+        const items = ["爆款牛奶","纸巾","啤酒","矿泉水","薯片","牙刷","坚果礼盒","洗衣液","鸡蛋","香蕉"];
+        const sales = [45,38,32,28,24,20,17,14,11,8];
+        const turns = [6.2,5.6,4.5,3.9,3.2,4.8,5.1,3.5,2.9,4.0];
+        const x0 = 110;
+        const step = 86;
+        const w = 36;
+        const scale = (v) => 218 - (v/50)*200;
+        const scaleR = (v) => 218 - (v/8)*200;
+        const pts = turns.map((v,i)=>`${x0+i*step},${scaleR(v)}`).join(" ");
+        return `
+          ${items.map((t,i)=>`
+            <rect x="${x0+i*step-w/2}" y="${scale(sales[i])}" width="${w}" height="${218-scale(sales[i])}" fill="#3b82f6"></rect>
+            <text x="${x0+i*step-14}" y="${scale(sales[i])-6}" font-size="10" fill="#111827">${sales[i]}</text>
+            <text x="${x0+i*step-22}" y="246" font-size="10" fill="#6b7280" transform="rotate(-25 ${x0+i*step-22} 246)">${t}</text>
+          `).join("")}
+          <polyline points="${pts}" fill="none" stroke="#ef4444" stroke-width="2"></polyline>
+          ${turns.map((v,i)=>`<circle cx="${x0+i*step}" cy="${scaleR(v)}" r="2.8" fill="#ef4444"></circle><text x="${x0+i*step-10}" y="${scaleR(v)-10}" font-size="10" fill="#111827">${v}</text>`).join("")}
+          ${[0,2,4,6,8].map((v,i)=>`<text x="966" y="${222-(i*50)}" font-size="10" fill="#9ca3af">${v}</text>`).join("")}
+        `;
+      })()}
+      <g transform="translate(410 246)">
+        <circle cx="0" cy="0" r="4" fill="#3b82f6"></circle><text x="10" y="4" font-size="10" fill="#6b7280">销售额(万)</text>
+        <line x1="90" y1="0" x2="110" y2="0" stroke="#ef4444" stroke-width="2"></line><circle cx="100" cy="0" r="3" fill="#ef4444"></circle><text x="120" y="4" font-size="10" fill="#6b7280">周转率</text>
+      </g>
+    </svg>
+  `;
+
+  const memberSvg = `
+    <svg class="rpa-svg" viewBox="0 0 980 260" preserveAspectRatio="none" aria-hidden="true">
+      <line x1="44" y1="18" x2="44" y2="218" stroke="#e5e7eb"></line>
+      <line x1="44" y1="218" x2="960" y2="218" stroke="#e5e7eb"></line>
+      ${[0,300,600,900,1200].map((v,i)=>`<line x1="44" y1="${218-(i*50)}" x2="960" y2="${218-(i*50)}" stroke="#eef2f7"></line><text x="10" y="${222-(i*50)}" font-size="10" fill="#9ca3af">${v.toLocaleString()}</text>`).join("")}
+      ${(() => {
+        const groups = ["会员","新会员","非会员"];
+        const sales = [1120,540,1186];
+        const rep = [34.2,18.8,6.5];
+        const x0 = 240;
+        const step = 260;
+        const w = 60;
+        const scale = (v) => 218 - (v/1200)*200;
+        const scaleR = (v) => 218 - (v/40)*200;
+        const pts = rep.map((v,i)=>`${x0+i*step},${scaleR(v)}`).join(" ");
+        return `
+          ${groups.map((g,i)=>`
+            <rect x="${x0+i*step-w/2}" y="${scale(sales[i])}" width="${w}" height="${218-scale(sales[i])}" fill="#7c3aed" opacity="0.85"></rect>
+            <text x="${x0+i*step-18}" y="${scale(sales[i])-6}" font-size="10" fill="#111827">${sales[i]}万</text>
+            <text x="${x0+i*step-14}" y="246" font-size="10" fill="#6b7280">${g}</text>
+          `).join("")}
+          <polyline points="${pts}" fill="none" stroke="#22c55e" stroke-width="2"></polyline>
+          ${rep.map((v,i)=>`<circle cx="${x0+i*step}" cy="${scaleR(v)}" r="2.8" fill="#22c55e"></circle><text x="${x0+i*step-14}" y="${scaleR(v)-10}" font-size="10" fill="#111827">${v}%</text>`).join("")}
+          ${[0,10,20,30,40].map((v,i)=>`<text x="966" y="${222-(i*50)}" font-size="10" fill="#9ca3af">${v}</text>`).join("")}
+        `;
+      })()}
+      <g transform="translate(430 246)">
+        <circle cx="0" cy="0" r="4" fill="#7c3aed" opacity="0.85"></circle><text x="10" y="4" font-size="10" fill="#6b7280">销售额(万)</text>
+        <line x1="90" y1="0" x2="110" y2="0" stroke="#22c55e" stroke-width="2"></line><circle cx="100" cy="0" r="3" fill="#22c55e"></circle><text x="120" y="4" font-size="10" fill="#6b7280">复购率(%)</text>
+      </g>
+    </svg>
+  `;
+
+  const catLegend = `
+    <div class="rpa-legend">
+      <div class="rpa-legend__row"><span class="rpa-dot" style="background:#4f6bdc"></span><span>生鲜</span></div>
+      <div class="rpa-legend__row"><span class="rpa-dot" style="background:#86d07b"></span><span>粮油副食</span></div>
+      <div class="rpa-legend__row"><span class="rpa-dot" style="background:#f6c050"></span><span>零食饮料</span></div>
+      <div class="rpa-legend__row"><span class="rpa-dot" style="background:#ee6b6b"></span><span>冲泡乳品</span></div>
+      <div class="rpa-legend__row"><span class="rpa-dot" style="background:#5cc7e6"></span><span>冷藏烘焙</span></div>
+      <div class="rpa-legend__row"><span class="rpa-dot" style="background:#2aa56b"></span><span>母婴用品</span></div>
+    </div>
+  `;
+  const channelLegend = `
+    <div class="rpa-legend">
+      <div class="rpa-legend__row"><span class="rpa-dot" style="background:#4f6bdc"></span><span>线下门店</span></div>
+      <div class="rpa-legend__row"><span class="rpa-dot" style="background:#86d07b"></span><span>APP/小程序</span></div>
+      <div class="rpa-legend__row"><span class="rpa-dot" style="background:#f6c050"></span><span>社群团购</span></div>
+    </div>
+  `;
+
+  return `
+    <div class="rpa-page">
+      <div class="rpa-topbar">
+        <div class="rpa-topbar__left">
+          ${filterItem("活动档期", ui.schedule)}
+          ${filterItem("门店层级", ui.storeLevel)}
+          ${filterItem("", ui.store)}
+          ${filterItem("分析视角", ui.view)}
+        </div>
+        <div class="rpa-topbar__right">
+          <span class="rpa-flag">单位</span>
+          ${pill(ui.unit, true)}
+        </div>
+      </div>
+
+      <div class="rpa-kpis">
+        ${kpiCard({ color: "blue", title: "总销售额", value: "2,846万", delta: "+12.4%", deltaUp: true, sub: "目标 2,650 万 · 达成 107.4%" })}
+        ${kpiCard({ color: "orange", title: "总订单量", value: "36.2万单", delta: "+8.1%", deltaUp: true, sub: "同比 +6.2% · 客单 79.2元" })}
+        ${kpiCard({ color: "green", title: "总毛利", value: "398.5万", delta: "-5.2%", deltaUp: false, sub: "毛利率 14.0% · 目标 15.2%" })}
+        ${kpiCard({ color: "purple", title: "平均ROI", value: "2.8x", delta: "+0.6x", deltaUp: true, sub: "最大 4.1x（会员日）· 最低 1.9x" })}
+        ${kpiCard({ color: "teal", title: "活动客流", value: "40.8万人次", delta: "+9.3%", deltaUp: true, sub: "转化率 16.7% · 同比 +1.2pp" })}
+        ${kpiCard({ color: "indigo", title: "连带率", value: "2.5件/单", delta: "+0.3", deltaUp: true, sub: "客品数提升 · 最高 3.2（会员日）" })}
+      </div>
+
+      ${card("各档期活动销售表现", "实际 vs 目标 · 达成率折线", salesBarsSvg, "rpa-card--wide")}
+
+      <div class="rpa-grid2">
+        ${card("品类销售占比", "活动期间销售", `<div class="rpa-split">${catDonut}${catLegend}</div>`)}
+        ${card("爆品TOP10 · 周转率", "销售额 · 周转次数", top10Svg)}
+      </div>
+
+      ${card("客流时段分布", "活动期间日均客流（按小时）", flowLineSvg, "rpa-card--wide")}
+
+      <div class="rpa-grid2">
+        ${card("价格带销售分布", "折扣商品 vs 正价商品", priceBandSvg)}
+        ${card("渠道销售贡献", "线下 · 线上 · 社群", `<div class="rpa-split">${channelDonut}${channelLegend}</div>`)}
+      </div>
+
+      ${card("会员复购分析", "活动期间非会员贡献 & 复购率", memberSvg, "rpa-card--wide")}
+    </div>
+  `;
+}
+
+function renderRptAchievementPage() {
+  const ui = (AppState.ui.rpt && AppState.ui.rpt.achievement) ? AppState.ui.rpt.achievement : { schedule: "全部6档", store: "全部12家", compare: "达成率·ROI", unit: "万元" };
+  const pill = (t, active = false) => `<span class="rpa-pill ${active ? "is-active" : ""}">${escapeHtml(t)}</span>`;
+  const filterItem = (labelHtml, value) => `
+    <div class="rpa-filter">
+      <span class="rpa-filter__label">${labelHtml}</span>
+      ${pill(value, true)}
+    </div>
+  `;
+  const kpiCard = (opt) => `
+    <div class="rpa-kpi rpa-kpi--${escapeHtml(opt.color)}">
+      <div class="rpa-kpi__head">
+        <div class="rpa-kpi__title">${opt.titleHtml != null ? opt.titleHtml : escapeHtml(opt.title)}</div>
+        <div class="rpa-kpi__delta ${opt.deltaUp ? "is-up" : "is-down"}">${escapeHtml(opt.delta)}</div>
+      </div>
+      <div class="rpa-kpi__value">
+        <span class="rpa-kpi__num">${escapeHtml(opt.value)}</span>
+      </div>
+      <div class="rpa-kpi__sub">${escapeHtml(opt.sub)}</div>
+      ${opt.sub2 ? `<div class="rpa-kpi__sub2">${escapeHtml(opt.sub2)}</div>` : ``}
+    </div>
+  `;
+  const card = (title, meta, body, extra = "") => `
+    <div class="rpa-card ${extra}">
+      <div class="rpa-card__head">
+        <div class="rpa-card__head-left">
+          <span class="rpa-card__bar"></span>
+          <div class="rpa-card__texts">
+            <div class="rpa-card__title">${escapeHtml(title)}</div>
+            ${meta ? `<div class="rpa-card__meta">${escapeHtml(meta)}</div>` : ``}
+          </div>
+        </div>
+      </div>
+      <div class="rpa-card__body">${body}</div>
+    </div>
+  `;
+
+  const salesAchSvg = `
+    <svg class="rpa-svg" viewBox="0 0 980 300" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="rpaAchBarA" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#1f4f6a" stop-opacity="0.95"></stop>
+          <stop offset="1" stop-color="#1f4f6a" stop-opacity="0.95"></stop>
+        </linearGradient>
+        <linearGradient id="rpaAchBarB" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#cfe0ef"></stop>
+          <stop offset="1" stop-color="#cfe0ef"></stop>
+        </linearGradient>
+      </defs>
+
+      <text x="18" y="22" font-size="10" fill="#6b7280">销售额(万元)</text>
+      <text x="914" y="22" font-size="10" fill="#6b7280">达成率 %</text>
+      <line x1="58" y1="34" x2="58" y2="248" stroke="#e5e7eb" stroke-width="1"></line>
+      <line x1="58" y1="248" x2="950" y2="248" stroke="#e5e7eb" stroke-width="1"></line>
+      ${[0,100,200,300,400,500,600,700].map((v,i)=>`<line x1="58" y1="${248 - (i*27)}" x2="950" y2="${248 - (i*27)}" stroke="#eef2f7" stroke-width="1"></line><text x="22" y="${252 - (i*27)}" font-size="10" fill="#9ca3af">${v}</text>`).join("")}
+      ${[70,80,90,100,110,120,130,140].map((v,i)=>`<text x="956" y="${252 - (i*27)}" font-size="10" fill="#9ca3af">${v}</text>`).join("")}
+
+      ${(() => {
+        const groups = [
+          { x: 120, a: 612, b: 580, p: 105.5, label: "端午大促" },
+          { x: 270, a: 508, b: 420, p: 121.0, label: "会员日" },
+          { x: 420, a: 476, b: 490, p: 97.1, label: "生活节" },
+          { x: 570, a: 432, b: 481, p: 89.8, label: "清凉购" },
+          { x: 720, a: 394, b: 380, p: 103.7, label: "周末闪购" },
+          { x: 870, a: 424, b: 320, p: 132.5, label: "年中年促" }
+        ];
+        const scale = (v) => 248 - (v/700)*214;
+        const scaleP = (p) => 248 - ((p-70)/70)*214;
+        const pts = groups.map(g => `${g.x},${scaleP(g.p)}`).join(" ");
+        return `
+          ${groups.map(g => `
+            <rect x="${g.x-32}" y="${scale(g.b)}" width="26" height="${248-scale(g.b)}" fill="url(#rpaAchBarB)"></rect>
+            <rect x="${g.x-2}" y="${scale(g.a)}" width="26" height="${248-scale(g.a)}" fill="url(#rpaAchBarA)"></rect>
+            <text x="${g.x-20}" y="${scale(g.a)-8}" font-size="10" fill="#374151">${g.a}万</text>
+            <text x="${g.x-28}" y="278" font-size="10" fill="#6b7280" transform="rotate(-18 ${g.x-28} 278)">${g.label}</text>
+          `).join("")}
+          <polyline points="${pts}" fill="none" stroke="#f97316" stroke-width="2"></polyline>
+          ${groups.map(g => `<circle cx="${g.x}" cy="${scaleP(g.p)}" r="3" fill="#2563eb"></circle><text x="${g.x-18}" y="${scaleP(g.p)-10}" font-size="10" fill="#111827">${g.p}%</text>`).join("")}
+        `;
+      })()}
+
+      <g transform="translate(375 286)">
+        <circle cx="0" cy="0" r="4" fill="#1f4f6a"></circle><text x="10" y="4" font-size="10" fill="#6b7280">实际销售额</text>
+        <circle cx="90" cy="0" r="4" fill="#cfe0ef"></circle><text x="100" y="4" font-size="10" fill="#6b7280">目标销售额</text>
+        <line x1="190" y1="0" x2="210" y2="0" stroke="#f97316" stroke-width="2"></line><circle cx="200" cy="0" r="3" fill="#2563eb"></circle><text x="220" y="4" font-size="10" fill="#6b7280">达成率</text>
+      </g>
+    </svg>
+  `;
+
+  const roiMarginSvg = `
+    <svg class="rpa-svg" viewBox="0 0 480 250" preserveAspectRatio="none" aria-hidden="true">
+      <text x="14" y="20" font-size="10" fill="#6b7280">毛利率 %</text>
+      <text x="432" y="20" font-size="10" fill="#6b7280">ROI(x)</text>
+      <line x1="44" y1="30" x2="44" y2="206" stroke="#e5e7eb"></line>
+      <line x1="44" y1="206" x2="460" y2="206" stroke="#e5e7eb"></line>
+      ${[0,3,6,9,12,15,18].map((v,i)=>`<line x1="44" y1="${206-(i*29)}" x2="460" y2="${206-(i*29)}" stroke="#eef2f7"></line><text x="16" y="${210-(i*29)}" font-size="10" fill="#9ca3af">${v}</text>`).join("")}
+      ${[0,1,2,3,4,5].map((v,i)=>`<text x="464" y="${210-(i*35.2)}" font-size="10" fill="#9ca3af">${v}</text>`).join("")}
+      ${(() => {
+        const labels = ["端午大促","会员日","生活节","清凉购","周末闪购","年中年促"];
+        const margins = [15.2,17.8,12.4,10.9,14.3,16.0];
+        const rois = [3.2,4.1,2.4,1.9,2.7,3.6];
+        const x0 = 84;
+        const step = 62;
+        const w = 18;
+        const scaleM = (v) => 206 - (v/18)*176;
+        const scaleR = (v) => 206 - (v/5)*176;
+        return `
+          ${labels.map((t,i)=>`
+            <rect x="${x0+i*step-12}" y="${scaleR(rois[i])}" width="${w}" height="${206-scaleR(rois[i])}" fill="#3b82f6" opacity="0.8"></rect>
+            <rect x="${x0+i*step+10}" y="${scaleM(margins[i])}" width="${w}" height="${206-scaleM(margins[i])}" fill="#22c55e" opacity="0.9"></rect>
+            <text x="${x0+i*step-16}" y="${scaleR(rois[i])-6}" font-size="10" fill="#111827">${rois[i]}x</text>
+            <text x="${x0+i*step+4}" y="${scaleM(margins[i])-6}" font-size="10" fill="#111827">${margins[i]}%</text>
+            <text x="${x0+i*step-22}" y="238" font-size="10" fill="#6b7280" transform="rotate(-18 ${x0+i*step-22} 238)">${t}</text>
+          `).join("")}
+        `;
+      })()}
+      <g transform="translate(150 226)">
+        <circle cx="0" cy="0" r="4" fill="#3b82f6" opacity="0.8"></circle><text x="10" y="4" font-size="10" fill="#6b7280">ROI(x)</text>
+        <circle cx="78" cy="0" r="4" fill="#22c55e" opacity="0.9"></circle><text x="88" y="4" font-size="10" fill="#6b7280">毛利率(%)</text>
+      </g>
+    </svg>
+  `;
+
+  const basketSvg = `
+    <svg class="rpa-svg" viewBox="0 0 480 250" preserveAspectRatio="none" aria-hidden="true">
+      <text x="14" y="20" font-size="10" fill="#6b7280">客单价(元)</text>
+      <text x="432" y="20" font-size="10" fill="#6b7280">连带率</text>
+      <line x1="44" y1="30" x2="44" y2="206" stroke="#e5e7eb"></line>
+      <line x1="44" y1="206" x2="460" y2="206" stroke="#e5e7eb"></line>
+      ${[50,60,70,80,90,100].map((v,i)=>`<line x1="44" y1="${206-(i*35.2)}" x2="460" y2="${206-(i*35.2)}" stroke="#eef2f7"></line><text x="14" y="${210-(i*35.2)}" font-size="10" fill="#9ca3af">${v}</text>`).join("")}
+      ${[0,1,2,3,4].map((v,i)=>`<text x="464" y="${210-(i*44)}" font-size="10" fill="#9ca3af">${v}</text>`).join("")}
+      ${(() => {
+        const labels = ["端午大促","会员日","生活节","清凉购","周末闪购","年中年促"];
+        const basket = [89.5,96.2,72.8,65.8,82.5,87.5];
+        const attach = [2.8,3.2,2.1,1.9,2.5,2.9];
+        const x0 = 84;
+        const step = 62;
+        const w = 22;
+        const scaleB = (v) => 206 - ((v-50)/50)*176;
+        const scaleA = (v) => 206 - (v/4)*176;
+        const pts = attach.map((v,i)=>`${x0+i*step},${scaleA(v)}`).join(" ");
+        return `
+          ${labels.map((t,i)=>`
+            <rect x="${x0+i*step-w/2}" y="${scaleB(basket[i])}" width="${w}" height="${206-scaleB(basket[i])}" fill="#7c3aed" opacity="0.85"></rect>
+            <text x="${x0+i*step-18}" y="${scaleB(basket[i])-6}" font-size="10" fill="#111827">${basket[i]}元</text>
+            <text x="${x0+i*step-22}" y="238" font-size="10" fill="#6b7280" transform="rotate(-18 ${x0+i*step-22} 238)">${t}</text>
+          `).join("")}
+          <polyline points="${pts}" fill="none" stroke="#ef4444" stroke-width="2"></polyline>
+          ${attach.map((v,i)=>`<circle cx="${x0+i*step}" cy="${scaleA(v)}" r="2.8" fill="#ef4444"></circle><text x="${x0+i*step-10}" y="${scaleA(v)-10}" font-size="10" fill="#111827">${v}</text>`).join("")}
+        `;
+      })()}
+      <g transform="translate(142 226)">
+        <circle cx="0" cy="0" r="4" fill="#7c3aed" opacity="0.85"></circle><text x="10" y="4" font-size="10" fill="#6b7280">客单价(元)</text>
+        <line x1="110" y1="0" x2="130" y2="0" stroke="#ef4444" stroke-width="2"></line><circle cx="120" cy="0" r="3" fill="#ef4444"></circle><text x="140" y="4" font-size="10" fill="#6b7280">连带率(件/单)</text>
+      </g>
+    </svg>
+  `;
+
+  const flowConvSvg = `
+    <svg class="rpa-svg" viewBox="0 0 980 240" preserveAspectRatio="none" aria-hidden="true">
+      <text x="18" y="20" font-size="10" fill="#6b7280">人次(万人)</text>
+      <text x="920" y="20" font-size="10" fill="#6b7280">转化率 %</text>
+      <line x1="58" y1="28" x2="58" y2="200" stroke="#e5e7eb"></line>
+      <line x1="58" y1="200" x2="950" y2="200" stroke="#e5e7eb"></line>
+      ${[0,2,4,6,8,10].map((v,i)=>`<line x1="58" y1="${200-(i*34.4)}" x2="950" y2="${200-(i*34.4)}" stroke="#eef2f7"></line><text x="22" y="${204-(i*34.4)}" font-size="10" fill="#9ca3af">${v}</text>`).join("")}
+      ${[0,5,10,15,20,25,30].map((v,i)=>`<text x="956" y="${204-(i*28.6)}" font-size="10" fill="#9ca3af">${v}</text>`).join("")}
+      ${(() => {
+        const labels = ["端午大促","会员日","生活节","清凉购","周末闪购","年中年促"];
+        const people = [8.2,6.8,7.5,6.2,5.4,5.9];
+        const conv = [18.5,24.0,15.2,13.8,17.2,20.5];
+        const x0 = 140;
+        const step = 150;
+        const w = 32;
+        const scaleP = (v) => 200 - (v/10)*172;
+        const scaleC = (v) => 200 - (v/30)*172;
+        const pts = conv.map((v,i)=>`${x0+i*step},${scaleC(v)}`).join(" ");
+        return `
+          ${labels.map((t,i)=>`
+            <rect x="${x0+i*step-w/2}" y="${scaleP(people[i])}" width="${w}" height="${200-scaleP(people[i])}" fill="#f59e0b" opacity="0.95"></rect>
+            <text x="${x0+i*step-18}" y="${scaleP(people[i])-6}" font-size="10" fill="#111827">${people[i]}万</text>
+            <text x="${x0+i*step-26}" y="228" font-size="10" fill="#6b7280">${t}</text>
+          `).join("")}
+          <polyline points="${pts}" fill="none" stroke="#ef4444" stroke-width="2"></polyline>
+          ${conv.map((v,i)=>`<circle cx="${x0+i*step}" cy="${scaleC(v)}" r="2.8" fill="#ef4444"></circle><text x="${x0+i*step-14}" y="${scaleC(v)-10}" font-size="10" fill="#111827">${v}%</text>`).join("")}
+        `;
+      })()}
+      <g transform="translate(420 214)">
+        <circle cx="0" cy="0" r="4" fill="#f59e0b" opacity="0.95"></circle><text x="10" y="4" font-size="10" fill="#6b7280">参与人次(万人)</text>
+        <line x1="120" y1="0" x2="140" y2="0" stroke="#ef4444" stroke-width="2"></line><circle cx="130" cy="0" r="3" fill="#ef4444"></circle><text x="150" y="4" font-size="10" fill="#6b7280">转化率(%)</text>
+      </g>
+    </svg>
+  `;
+
+  const pulseSvg = `
+    <svg class="rpa-svg" viewBox="0 0 980 240" preserveAspectRatio="none" aria-hidden="true">
+      <text x="18" y="20" font-size="10" fill="#6b7280">日均销售(万元)</text>
+      <line x1="58" y1="28" x2="58" y2="200" stroke="#e5e7eb"></line>
+      <line x1="58" y1="200" x2="950" y2="200" stroke="#e5e7eb"></line>
+      ${[0,20,40,60,80,100].map((v,i)=>`<line x1="58" y1="${200-(i*34.4)}" x2="950" y2="${200-(i*34.4)}" stroke="#eef2f7"></line><text x="18" y="${204-(i*34.4)}" font-size="10" fill="#9ca3af">${v}</text>`).join("")}
+      ${(() => {
+        const labels = ["端午大促","会员日","生活节","清凉购","周末闪购","年中年促"];
+        const pre = [52,60,48,50,44,38];
+        const during = [86,72,68,62,58,74];
+        const post = [58,55,46,44,40,42];
+        const x0 = 120;
+        const step = 140;
+        const w = 18;
+        const scale = (v) => 200 - (v/100)*172;
+        return `
+          ${labels.map((t,i)=>`
+            <rect x="${x0+i*step-24}" y="${scale(pre[i])}" width="${w}" height="${200-scale(pre[i])}" fill="#9ca3af" opacity="0.75"></rect>
+            <rect x="${x0+i*step-2}" y="${scale(during[i])}" width="${w}" height="${200-scale(during[i])}" fill="#22c55e" opacity="0.9"></rect>
+            <rect x="${x0+i*step+20}" y="${scale(post[i])}" width="${w}" height="${200-scale(post[i])}" fill="#f59e0b" opacity="0.9"></rect>
+            <text x="${x0+i*step-30}" y="228" font-size="10" fill="#6b7280" transform="rotate(-18 ${x0+i*step-30} 228)">${t}</text>
+          `).join("")}
+        `;
+      })()}
+      <g transform="translate(380 214)">
+        <circle cx="0" cy="0" r="4" fill="#9ca3af" opacity="0.75"></circle><text x="10" y="4" font-size="10" fill="#6b7280">活动前</text>
+        <circle cx="68" cy="0" r="4" fill="#22c55e" opacity="0.9"></circle><text x="78" y="4" font-size="10" fill="#6b7280">活动期</text>
+        <circle cx="136" cy="0" r="4" fill="#f59e0b" opacity="0.9"></circle><text x="146" y="4" font-size="10" fill="#6b7280">活动后</text>
+      </g>
+    </svg>
+  `;
+
+  return `
+    <div class="rpa-page">
+      <div class="rpa-topbar">
+        <div class="rpa-topbar__left">
+          ${filterItem(`<span class="rpa-miniicon rpa-miniicon--red"></span>活动档期`, ui.schedule)}
+          ${filterItem(`<span class="rpa-miniicon rpa-miniicon--blue"></span>门店`, ui.store)}
+          ${filterItem(`<span class="rpa-miniicon rpa-miniicon--green"></span>对比维度`, ui.compare)}
+        </div>
+        <div class="rpa-topbar__right">
+          <span class="rpa-flag">单位</span>
+          ${pill(ui.unit, true)}
+        </div>
+      </div>
+
+      <div class="rpa-kpis rpa-kpis--4">
+        ${kpiCard({ color: "blue", titleHtml: `<span class="rpa-miniicon rpa-miniicon--red"></span>总销售额（含券合计）`, value: "2,846万", delta: "+12.4%", deltaUp: true, sub: "目标 2,650 万 · 达成率 107.4%" })}
+        ${kpiCard({ color: "orange", titleHtml: `<span class="rpa-miniicon rpa-miniicon--orange"></span>平均单档销售额`, value: "474.3万", delta: "-0.8%", deltaUp: false, sub: "最高档 612 万（端午） · 最低档 356 万" })}
+        ${kpiCard({ color: "green", titleHtml: `<span class="rpa-miniicon rpa-miniicon--green"></span>总毛利额`, value: "398.5万", delta: "+5.2%", deltaUp: true, sub: "综合毛利率 14.0% · 目标 15.2%" })}
+        ${kpiCard({ color: "purple", titleHtml: `<span class="rpa-miniicon rpa-miniicon--purple"></span>平均ROI`, value: "2.8x", delta: "+0.6x", deltaUp: true, sub: "投入产出比 · 最高档 4.1x（会员日）" })}
+      </div>
+
+      ${card("各档活动销售表现", "柱状：实际/目标销售额；折线：达成率", salesAchSvg, "rpa-card--wide")}
+
+      <div class="rpa-grid2">
+        ${card("投入产出 & 毛利率", "按活动档期对比", roiMarginSvg)}
+        ${card("客单价 · 连带率", "按活动对比", basketSvg)}
+      </div>
+
+      ${card("活动客流与转化效率", "参与人次 vs 转化率", flowConvSvg, "rpa-card--wide")}
+      ${card("活动前后销售脉冲", "每档活动前/活动期/活动后日均销售对比", pulseSvg, "rpa-card--wide")}
+    </div>
+  `;
+}
+
+function renderRptWarningPage() {
+  const ui = AppState.ui.rpt.warning;
+  const catOps = ["请选择类别", "生鲜", "饮料", "纸品", "家清"];
+  const promoTypeOps = ["全部", "直降", "折扣", "满减满赠/满赠", "赠券"];
+  const storeOps = ["请选择促销门店", "[1002001]自营门店1", "[1002002]自营门店2", "[1002003]会员店3"];
+  const scheduleOps = ["请选择档期名称", "端午大促", "会员日", "生活节", "清凉购", "周末闪购", "年中年促"];
+
+  const headers = ["序号", "促销门店", "档期", "商品编码", "商品条码", "商品名称", "规格", "单位", "原价", "促销价", "毛利", "直降活动", "折扣活动", "满减满赠/满赠活动", "赠券活动"];
+  const actCell = (a, b) => `
+    <div class="rpw-actcell">
+      <div class="rpw-actline"><span class="mono">${escapeHtml(a)}</span> <span class="rpw-acttag">[单品]</span> <a class="link" href="javascript:;" data-act="rpwRun" data-no-row-open>执行</a></div>
+      <div class="rpw-actline"><span class="mono">${escapeHtml(b)}</span> <span class="rpw-acttag">[组合]</span> <a class="link" href="javascript:;" data-act="rpwRun" data-no-row-open>执行</a></div>
+    </div>
+  `;
+
+  const demoRow = {
+    store: "[1002001]自营门店1",
+    schedule: "618爆发",
+    goodsCode: "690123400001",
+    barcode: "6901234000010",
+    name: "可口可乐 330ml",
+    spec: "330ml",
+    unit: "瓶",
+    price: "3.50",
+    promoPrice: "3.20",
+    profit: "0.35"
+  };
+  const rowsHtml = `
+    <tr>
+      <td>1</td>
+      <td>${escapeHtml(demoRow.store)}</td>
+      <td>${escapeHtml(demoRow.schedule)}</td>
+      <td class="mono">${escapeHtml(demoRow.goodsCode)}</td>
+      <td class="mono">${escapeHtml(demoRow.barcode)}</td>
+      <td>${escapeHtml(demoRow.name)}</td>
+      <td>${escapeHtml(demoRow.spec)}</td>
+      <td>${escapeHtml(demoRow.unit)}</td>
+      <td class="mono">${escapeHtml(demoRow.price)}</td>
+      <td class="mono">${escapeHtml(demoRow.promoPrice)}</td>
+      <td class="mono">${escapeHtml(demoRow.profit)}</td>
+      <td>${actCell("CXD-2026061500001", "CXD-2026061500002")}</td>
+      <td>${actCell("CXD-2026061500001", "CXD-2026061500002")}</td>
+      <td>${actCell("CXD-2026061500001", "CXD-2026061500002")}</td>
+      <td>${actCell("CXD-2026061500001", "CXD-2026061500002")}</td>
+    </tr>
+    ${Array.from({ length: 7 }).map((_, i) => `<tr><td>${i + 2}</td>${Array.from({ length: headers.length - 1 }).map(() => "<td></td>").join("")}</tr>`).join("")}
+  `;
+
+  return `
+    <div class="rpw-page">
+      <div class="rpw-panel">
+        <div class="rpw-panel__head">
+          <span class="rpw-panel__bar"></span>
+          <div class="rpw-panel__title">促销预警</div>
+        </div>
+        <div class="rpw-panel__body">
+          <div class="rpw-formgrid">
+            <div class="field">
+              <div class="field__label">商品编码</div>
+              <input class="input" id="rpwQGoodsCode" value="${escapeHtml(ui.qGoodsCode)}" placeholder="文本框" />
+            </div>
+            <div class="field">
+              <div class="field__label">商品类别</div>
+              <select class="select" id="rpwQCat">${catOps.map((x) => `<option value="${escapeHtml(x)}" ${String(x) === String(ui.qCat || "") ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select>
+            </div>
+            <div class="field">
+              <div class="field__label">促销类型</div>
+              <select class="select" id="rpwQPromoType">${promoTypeOps.map((x) => `<option value="${escapeHtml(x)}" ${String(x) === String(ui.qPromoType || "全部") ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select>
+            </div>
+            <div class="field">
+              <div class="field__label">促销门店<span class="req">*</span></div>
+              <select class="select" id="rpwQStore">${storeOps.map((x) => `<option value="${escapeHtml(x)}" ${String(x) === String(ui.qStore || "") ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select>
+            </div>
+            <div class="field">
+              <div class="field__label">生效时间<span class="req">*</span></div>
+              <div class="rpw-date">
+                <input class="input" id="rpwQEffectiveAt" value="${escapeHtml(ui.qEffectiveAt)}" placeholder="请选择执行时间" />
+                <span class="rpw-cal" aria-hidden="true"></span>
+              </div>
+            </div>
+
+            <div class="field">
+              <div class="field__label">模板名称</div>
+              <input class="input" id="rpwQTplName" value="${escapeHtml(ui.qTplName)}" placeholder="文本框" />
+            </div>
+            <div class="field">
+              <div class="field__label">档期名称</div>
+              <select class="select" id="rpwQSchedule">${scheduleOps.map((x) => `<option value="${escapeHtml(x)}" ${String(x) === String(ui.qSchedule || "") ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select>
+            </div>
+            <div class="field">
+              <div class="field__label">商品品牌</div>
+              <input class="input" id="rpwQBrand" value="${escapeHtml(ui.qBrand)}" placeholder="文本框" />
+            </div>
+
+            <div class="rpw-actions">
+              <button class="btn btn--primary" type="button" data-act="rpwQuery">查询</button>
+              <button class="btn" type="button" data-act="rpwReset">重置</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rpw-panel rpw-panel--list">
+        <div class="rpw-toolbar">
+          <div class="rpw-toolbar__left">
+            <button class="btn btn--primary" type="button" data-act="rpwExport">导出</button>
+            <button class="btn" type="button" data-act="rpwPrint">打印</button>
+          </div>
+          <div class="rpw-toolbar__note">
+            【互斥规则】1：直降-折扣-满减满赠/满赠-赠券；2：同类型多个活动取最后审核时间维度；3：同类型多个活动按设置优先级权重为准；4：商品优先级以自定义设置为准
+          </div>
+        </div>
+        <div class="campaign-list-table rpw-table">
+          ${table(headers, rowsHtml)}
+        </div>
+        ${campaignListPaginationHtml(10)}
+      </div>
+    </div>
+  `;
+}
+
+function renderRptStoreAbnormalPage() {
+  const ui = AppState.ui.rpt.storeAbnormal;
+  const catOps = ["请选择类别", "生鲜", "饮料", "纸品", "家清"];
+  const promoTypeOps = ["全部", "直降", "折扣", "满减满赠/满赠", "赠券"];
+  const storeOps = ["请选择促销门店", "[1002001]自营门店1", "[1002002]自营门店2", "[1002003]会员店3"];
+  const scheduleOps = ["请选择档期", "端午大促", "会员日", "生活节", "清凉购", "周末闪购", "年中年促"];
+
+  const headers = ["序号", "促销门店", "商品编码", "商品条码", "商品名称", "规格", "单位", "类别", "品牌", "直降活动", "折扣活动", "满减/满赠/换购活动", "赠券活动"];
+  const rowsHtml = Array.from({ length: 8 }).map((_, i) => `<tr><td>${i + 1}</td>${Array.from({ length: headers.length - 1 }).map(() => "<td></td>").join("")}</tr>`).join("");
+
+  return `
+    <div class="rpw-page">
+      <div class="rpw-panel">
+        <div class="rpw-panel__head">
+          <span class="rpw-panel__bar"></span>
+          <div class="rpw-panel__title">门店促销品异常</div>
+        </div>
+        <div class="rpw-panel__body">
+          <div class="rpw-formgrid rpw-formgrid--store-abnormal">
+            <div class="field">
+              <div class="field__label">商品编码</div>
+              <input class="input" id="rpsaQGoodsCode" value="${escapeHtml(ui.qGoodsCode)}" placeholder="文本框" />
+            </div>
+            <div class="field">
+              <div class="field__label">商品类别</div>
+              <select class="select" id="rpsaQCat">${catOps.map((x) => `<option value="${escapeHtml(x)}" ${String(x) === String(ui.qCat || "") ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select>
+            </div>
+            <div class="field">
+              <div class="field__label">促销类型</div>
+              <select class="select" id="rpsaQPromoType">${promoTypeOps.map((x) => `<option value="${escapeHtml(x)}" ${String(x) === String(ui.qPromoType || "全部") ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select>
+            </div>
+            <div class="field">
+              <div class="field__label">促销门店</div>
+              <select class="select" id="rpsaQStore">${storeOps.map((x) => `<option value="${escapeHtml(x)}" ${String(x) === String(ui.qStore || "") ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select>
+            </div>
+            <div class="field">
+              <div class="field__label">活动生效时间<span class="req">*</span></div>
+              <div class="rpw-date">
+                <input class="input" id="rpsaQEffectiveRange" value="${escapeHtml(ui.qEffectiveRange)}" placeholder="请选择活动生效开始结束时间" />
+                <span class="rpw-cal" aria-hidden="true"></span>
+              </div>
+            </div>
+
+            <div class="field">
+              <div class="field__label">商品品牌</div>
+              <input class="input" id="rpsaQBrand" value="${escapeHtml(ui.qBrand)}" placeholder="文本框" />
+            </div>
+            <div class="field">
+              <div class="field__label">档期名称</div>
+              <select class="select" id="rpsaQSchedule">${scheduleOps.map((x) => `<option value="${escapeHtml(x)}" ${String(x) === String(ui.qSchedule || "") ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select>
+            </div>
+
+            <div class="rpw-actions">
+              <button class="btn btn--primary" type="button" data-act="rpsaQuery">查询</button>
+              <button class="btn" type="button" data-act="rpsaReset">重置</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rpw-panel rpw-panel--list">
+        <div class="rpw-toolbar">
+          <div class="rpw-toolbar__left">
+            <button class="btn btn--primary" type="button" data-act="rpsaExport">导出</button>
+            <button class="btn" type="button" data-act="rpsaPrint">打印</button>
+          </div>
+          <div class="rpw-toolbar__note">备注：参与促销商品在对应门店不存在</div>
+        </div>
+        <div class="campaign-list-table rpw-table">
+          ${table(headers, rowsHtml)}
+        </div>
+        ${campaignListPaginationHtml(10)}
+      </div>
+    </div>
+  `;
+}
+
 /* ---------- Report 1: rptVoucher (出券明细) ---------- */
 
 function renderRptVoucherPage() {
@@ -24445,6 +25960,10 @@ function render() {
   else if (r === "/sys-params") html = renderSysParamsPage();
   else if (r === "/sys-approval") html = renderSysApprovalPage();
   else if (r === "/sys-approval-edit") html = renderSysApprovalEditPage();
+  else if (r === "/rpt-analysis") html = renderRptAnalysisPage();
+  else if (r === "/rpt-achievement") html = renderRptAchievementPage();
+  else if (r === "/rpt-warning") html = renderRptWarningPage();
+  else if (r === "/rpt-store-abnormal") html = renderRptStoreAbnormalPage();
   else if (r === "/rpt-voucher") html = renderRptVoucherPage();
   else if (r === "/rpt-activity") html = renderRptActivityPage();
   else if (r === "/rpt-goods") html = renderRptGoodsPage();
@@ -24657,19 +26176,14 @@ function bindPageEvents(r) {
   }
 
   if (r === "/promo-goods-priority") {
-    const bindEnter = (sel, assign) => {
-      const el = root.querySelector(sel);
-      if (!el) return;
-      el.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") {
-          assign(el.value || "");
-          toast("查询完成（原型演示）");
-          render();
-        }
+    const el = root.querySelector("#pgpQScope");
+    if (el) {
+      el.addEventListener("change", () => {
+        const ui = AppState.ui.promoGoodsPriority || (AppState.ui.promoGoodsPriority = { qScope: "全部" });
+        ui.qScope = String(el.value || "全部");
+        render();
       });
-    };
-    bindEnter("#pgpQRuleNo", (v) => ((AppState.ui.promoGoodsPriority || (AppState.ui.promoGoodsPriority = { qType: "全部", qRuleNo: "", qScopeText: "" })).qRuleNo = v));
-    bindEnter("#pgpQScopeText", (v) => ((AppState.ui.promoGoodsPriority || (AppState.ui.promoGoodsPriority = { qType: "全部", qRuleNo: "", qScopeText: "" })).qScopeText = v));
+    }
   }
 
   if (r === "/template-priority-schedule-import-create" || r === "/template-priority-schedule-import-edit") {
@@ -25990,6 +27504,54 @@ function handleAction(r, act, btn) {
   }
 
   /* ---------- Report event handlers ---------- */
+  if (r === "/rpt-store-abnormal") {
+    if (act === "rpsaQuery") {
+      const ui = AppState.ui.rpt.storeAbnormal;
+      ui.qGoodsCode = document.getElementById("rpsaQGoodsCode") ? document.getElementById("rpsaQGoodsCode").value : "";
+      ui.qCat = document.getElementById("rpsaQCat") ? document.getElementById("rpsaQCat").value : "";
+      ui.qPromoType = document.getElementById("rpsaQPromoType") ? document.getElementById("rpsaQPromoType").value : "全部";
+      ui.qStore = document.getElementById("rpsaQStore") ? document.getElementById("rpsaQStore").value : "";
+      ui.qEffectiveRange = document.getElementById("rpsaQEffectiveRange") ? document.getElementById("rpsaQEffectiveRange").value : "";
+      ui.qBrand = document.getElementById("rpsaQBrand") ? document.getElementById("rpsaQBrand").value : "";
+      ui.qSchedule = document.getElementById("rpsaQSchedule") ? document.getElementById("rpsaQSchedule").value : "";
+      render();
+      toast("查询完成（原型演示）");
+      return;
+    }
+    if (act === "rpsaReset") {
+      AppState.ui.rpt.storeAbnormal = { qGoodsCode: "", qCat: "", qPromoType: "全部", qStore: "", qEffectiveRange: "", qBrand: "", qSchedule: "" };
+      render();
+      return;
+    }
+    if (act === "rpsaExport") return toast("导出成功（原型演示）");
+    if (act === "rpsaPrint") return toast("打印成功（原型演示）");
+  }
+
+  if (r === "/rpt-warning") {
+    if (act === "rpwQuery") {
+      const ui = AppState.ui.rpt.warning;
+      ui.qGoodsCode = document.getElementById("rpwQGoodsCode") ? document.getElementById("rpwQGoodsCode").value : "";
+      ui.qCat = document.getElementById("rpwQCat") ? document.getElementById("rpwQCat").value : "";
+      ui.qPromoType = document.getElementById("rpwQPromoType") ? document.getElementById("rpwQPromoType").value : "全部";
+      ui.qStore = document.getElementById("rpwQStore") ? document.getElementById("rpwQStore").value : "";
+      ui.qEffectiveAt = document.getElementById("rpwQEffectiveAt") ? document.getElementById("rpwQEffectiveAt").value : "";
+      ui.qTplName = document.getElementById("rpwQTplName") ? document.getElementById("rpwQTplName").value : "";
+      ui.qSchedule = document.getElementById("rpwQSchedule") ? document.getElementById("rpwQSchedule").value : "";
+      ui.qBrand = document.getElementById("rpwQBrand") ? document.getElementById("rpwQBrand").value : "";
+      render();
+      toast("查询完成（原型演示）");
+      return;
+    }
+    if (act === "rpwReset") {
+      AppState.ui.rpt.warning = { qGoodsCode: "", qCat: "", qPromoType: "全部", qStore: "", qEffectiveAt: "", qTplName: "", qSchedule: "", qBrand: "" };
+      render();
+      return;
+    }
+    if (act === "rpwExport") return toast("导出成功（原型演示）");
+    if (act === "rpwPrint") return toast("打印成功（原型演示）");
+    if (act === "rpwRun") return toast("已执行（原型演示）");
+  }
+
   if (r === "/rpt-voucher") {
     if (act === "rptVoucherQuery") {
       const ui = AppState.ui.rpt.voucher;
@@ -27037,6 +28599,12 @@ function handleAction(r, act, btn) {
     }
   }
   if (r === "/assortment") {
+    if (act === "asListTab") {
+      const k = btn.getAttribute("data-id") || "schedule";
+      AppState.ui.assortment.listTab = (k === "goods" ? "goods" : "schedule");
+      render();
+      return;
+    }
     if (act === "asView") {
       const id = btn.getAttribute("data-id") || "";
       AppState.ui.assortment.summaryActualId = id;
@@ -27505,7 +29073,7 @@ function handleAction(r, act, btn) {
         const dup = list.find((x) => String(x.templateId) === String(templateId) && String(x.id) !== String(d.id || ""));
         if (dup) return toast("该模版已配置优先级");
         const cur = list.find((x) => String(x.id) === String(d.id || ""));
-        if (!cur) return toast("未找到模版规则设置（原型演示）");
+        if (!cur) return toast("未找到模版优先级（原型演示）");
         cur.templateType = type;
         cur.templateId = templateId;
         cur.templateNo = tpl.templateNo || "";
@@ -27564,21 +29132,17 @@ function handleAction(r, act, btn) {
       return;
     }
     if (act === "pgpQuery") {
-      const ui = AppState.ui.promoGoodsPriority || (AppState.ui.promoGoodsPriority = { qType: "全部", qRuleNo: "", qScopeText: "" });
-      ui.qRuleNo = document.getElementById("pgpQRuleNo") ? document.getElementById("pgpQRuleNo").value.trim() : "";
-      ui.qScopeText = document.getElementById("pgpQScopeText") ? document.getElementById("pgpQScopeText").value.trim() : "";
+      const ui = AppState.ui.promoGoodsPriority || (AppState.ui.promoGoodsPriority = { qScope: "全部" });
+      ui.qScope = document.getElementById("pgpQScope") ? document.getElementById("pgpQScope").value : "全部";
       toast("查询完成（原型演示）");
       return render();
     }
     if (act === "pgpReset") {
-      AppState.ui.promoGoodsPriority = { qType: "全部", qRuleNo: "", qScopeText: "" };
+      AppState.ui.promoGoodsPriority = { qScope: "全部" };
       toast("已重置（原型演示）");
       return render();
     }
     if (act === "pgpTypePick") {
-      const type = btn.getAttribute("data-type") || "";
-      const ui = AppState.ui.promoGoodsPriority || (AppState.ui.promoGoodsPriority = { qType: "全部", qRuleNo: "", qScopeText: "" });
-      ui.qType = type || "全部";
       render();
       return;
     }
@@ -27589,7 +29153,7 @@ function handleAction(r, act, btn) {
       const scope = btn.getAttribute("data-scope") || "";
       const all = AppState.data.promoGoodsPriorities || (AppState.data.promoGoodsPriorities = []);
       const scoped = all
-        .filter((x) => String(x.productScope || "单品") === String(scope || "单品"))
+        .filter((x) => promoGoodsPriorityScopeNorm(String(x.productScope || "单品")) === promoGoodsPriorityScopeNorm(String(scope || "单品")))
         .sort((a, b) => Number(a.priority || 0) - Number(b.priority || 0));
       const idx = scoped.findIndex((x) => String(x.id || "") === String(id));
       if (idx < 0) return;
@@ -28092,7 +29656,7 @@ function handleAction(r, act, btn) {
       return templateWizardSetStep(cur + 1);
     }
     if (act === "tplWizSaveDraft") return templateWizardSave("草稿");
-    if (act === "tplWizSubmit") return templateWizardSave("审核中");
+    if (act === "tplWizEnable") return templateWizardSave("有效");
   }
   if (r === "/promo-goods-terminate") {
     const ui = AppState.ui.promoGoodsTerminate || (AppState.ui.promoGoodsTerminate = {
@@ -28107,8 +29671,14 @@ function handleAction(r, act, btn) {
       qCategory: "",
       qBrand: "",
       qCounter: "",
-      qSupplier: ""
+      qSupplier: "",
+      dim: "商品"
     });
+    if (act === "pgtDimPick") {
+      ui.dim = btn.getAttribute("data-dim") || "商品";
+      render();
+      return;
+    }
     if (act === "pgtQuery") {
       ui.qIndex = document.getElementById("pgtQIndex") ? document.getElementById("pgtQIndex").value.trim() : "";
       ui.qActNo = document.getElementById("pgtQActNo") ? document.getElementById("pgtQActNo").value.trim() : "";
@@ -28127,6 +29697,7 @@ function handleAction(r, act, btn) {
       return;
     }
     if (act === "pgtReset") {
+      const dim = ui.dim || "商品";
       AppState.ui.promoGoodsTerminate = {
         qIndex: "",
         qActNo: "",
@@ -28139,7 +29710,8 @@ function handleAction(r, act, btn) {
         qCategory: "",
         qBrand: "",
         qCounter: "",
-        qSupplier: ""
+        qSupplier: "",
+        dim
       };
       render();
       return;
@@ -28240,6 +29812,33 @@ function handleAction(r, act, btn) {
       const id = btn.getAttribute("data-id") || "";
       if (!id) return;
       location.hash = `#/promo-terminate-orders-detail/${encodeURIComponent(String(id))}`;
+      return;
+    }
+    if (act === "ptoCancelEffective") {
+      const id = btn.getAttribute("data-id") || "";
+      const order = promoTerminateOrderFind(id);
+      if (!order) return toast("未找到终止单（原型演示）");
+      if (!promoTerminateOrderCanCancelEffective(order)) {
+        toast("未到终止时间的已生效终止单才允许取消生效");
+        return;
+      }
+      openModal({
+        title: "提示",
+        subtitle: "",
+        className: "modal--confirm",
+        bodyHtml: '<div class="confirm-modal__body">确认取消生效该终止单？</div>',
+        primaryText: "确认",
+        secondaryText: "取消",
+        onPrimary: () => {
+          order.effectiveStatus = "未生效";
+          order.effectiveBy = "";
+          order.effectiveAt = "";
+          order.remark = `${order.remark ? `${order.remark}；` : ""}已取消生效`;
+          closeModal();
+          render();
+          toast("已取消生效（原型演示）");
+        }
+      });
       return;
     }
     if (act === "ptoEdit") return toast("编辑（原型演示）");
@@ -30331,10 +31930,32 @@ function handleAction(r, act, btn) {
       const box = document.getElementById("campGoodsTable");
       const checks = box ? box.querySelectorAll('input[data-act="campGoodsRowPick"]:checked') : [];
       const drop = new Set(Array.from(checks).map((c) => Number(c.getAttribute("data-idx"))).filter(Number.isFinite));
-      if (!drop.size) { toast("请勾选要移除的行"); return; }
+      if (!drop.size) { toast("请勾选要移除的商品"); return; }
       d.goodsScope.goods = d.goodsScope.goods.filter((_, i) => !drop.has(i));
       campaignWizardRenderGoodsTable();
-      toast("已移除选中行（原型演示）");
+      toast("已移除选中商品（原型演示）");
+      return;
+    }
+    if (act === "campGoodsPickAll") {
+      const d = AppState._tmpCampaign;
+      if (!d) return;
+      d.goodsScope = d.goodsScope || {};
+      if (!Array.isArray(d.goodsScope.goods)) d.goodsScope.goods = [];
+      const on = Boolean(btn && btn.checked);
+      d.goodsScope.goods.forEach((x) => { if (x) x.__picked = on; });
+      campaignWizardRenderGoodsTable();
+      return;
+    }
+    if (act === "campGoodsRowPick") {
+      const d = AppState._tmpCampaign;
+      if (!d) return;
+      const idx = Number(btn.getAttribute("data-idx"));
+      if (!Number.isFinite(idx)) return;
+      d.goodsScope = d.goodsScope || {};
+      if (!Array.isArray(d.goodsScope.goods)) d.goodsScope.goods = [];
+      if (!d.goodsScope.goods[idx]) d.goodsScope.goods[idx] = {};
+      d.goodsScope.goods[idx].__picked = Boolean(btn && btn.checked);
+      campaignWizardRenderGoodsTable();
       return;
     }
     if (act === "campVoucherGiftRowSetting") {
@@ -30344,6 +31965,49 @@ function handleAction(r, act, btn) {
       if (!Array.isArray(d.goodsScope && d.goodsScope.goods)) return;
       if (!Number.isFinite(idx) || !d.goodsScope.goods[idx]) return;
       campaignOpenVoucherGiftRowModal(idx);
+      return;
+    }
+    if (act === "campVoucherGiftRowView") {
+      const d = AppState._tmpCampaign;
+      if (!d) return;
+      const idx = Number(btn.getAttribute("data-idx"));
+      if (!Array.isArray(d.goodsScope && d.goodsScope.goods)) return;
+      if (!Number.isFinite(idx) || !d.goodsScope.goods[idx]) return;
+      campaignOpenVoucherGiftRowModal(idx, "view");
+      return;
+    }
+    if (act === "campVoucherGiftModalConditionAdd") {
+      const modalState = campaignVoucherGiftModalSyncFromDom();
+      if (!modalState || modalState.readonly) return;
+      modalState.conditions.push(campaignVoucherGiftEmptyCondition(modalState.giftCondition));
+      campaignVoucherGiftModalRender();
+      return;
+    }
+    if (act === "campVoucherGiftModalConditionRemove") {
+      const modalState = campaignVoucherGiftModalSyncFromDom();
+      if (!modalState || modalState.readonly) return;
+      const idx = Number(btn.getAttribute("data-idx"));
+      if (!Number.isFinite(idx)) return;
+      modalState.conditions.splice(idx, 1);
+      if (!modalState.conditions.length) modalState.conditions.push(campaignVoucherGiftEmptyCondition(modalState.giftCondition));
+      campaignVoucherGiftModalRender();
+      return;
+    }
+    if (act === "campVoucherGiftModalVoucherAdd") {
+      const modalState = campaignVoucherGiftModalSyncFromDom();
+      if (!modalState || modalState.readonly) return;
+      modalState.vouchers.push(campaignVoucherGiftEmptyVoucher());
+      campaignVoucherGiftModalRender();
+      return;
+    }
+    if (act === "campVoucherGiftModalVoucherRemove") {
+      const modalState = campaignVoucherGiftModalSyncFromDom();
+      if (!modalState || modalState.readonly) return;
+      const idx = Number(btn.getAttribute("data-idx"));
+      if (!Number.isFinite(idx)) return;
+      modalState.vouchers.splice(idx, 1);
+      if (!modalState.vouchers.length) modalState.vouchers.push(campaignVoucherGiftEmptyVoucher());
+      campaignVoucherGiftModalRender();
       return;
     }
     if (act === "campComboGoodsAdd") {
@@ -32818,6 +34482,14 @@ function openTemplateDetail(id) {
         const ct = cond.types || {};
         const rt = reward.types || {};
         const dp = (disp.print || {});
+        const discountModesRaw = rt.discount && Array.isArray(rt.discount.modes) ? rt.discount.modes : [];
+        const discountModeRaw = String(rt.discount && rt.discount.mode ? rt.discount.mode : "");
+        const discountModeMap = { "整单": "整单优惠", "单品": "单品优惠", "最低免单": "整单优惠", "整单优惠": "整单优惠", "单品优惠": "单品优惠", "组合优惠": "组合优惠" };
+        const discountModes = (discountModesRaw.length ? discountModesRaw : (discountModeRaw ? discountModeRaw.split("/").map((x) => x.trim()).filter(Boolean) : []))
+          .map((x) => discountModeMap[String(x || "")] || String(x || ""))
+          .filter(Boolean);
+        const discountModeText = (discountModes.length ? discountModes.join("/") : (discountModeMap[discountModeRaw] || (discountModeRaw || "单品优惠")));
+        const discountMinFreeEnabled = Boolean(rt.discount && (rt.discount.minFreeEnabled || discountModeRaw === "最低免单"));
 
         const timeBits = [
           "活动时间范围（必选）",
@@ -32829,8 +34501,7 @@ function openTemplateDetail(id) {
           `门店范围：${obj.storeRadio || "门店"}`,
           obj.storeExcludeEnabled ? "门店排除：启用" : "",
           `顾客范围：${obj.userRange || (obj.userOptions || []).join("/") || "—"}`,
-          `商品范围：${(obj.goodsScopeOptions || []).join("/") || "—"}`,
-          (String(basic.type || "") === "直降") ? `组合关系：${(obj.goodsJoinEnabled || obj.goodsScopeJoin) ? "启用" : "关闭"}` : ""
+          `商品范围：${(obj.goodsScopeOptions || []).join("/") || "—"}`
         ].filter(Boolean);
         const otherBits = [
           other.enableCostSharing ? `费用承担：已启用（${other.costShareRatio || "未填写比例"}）` : "费用承担：不启用"
@@ -32847,12 +34518,12 @@ function openTemplateDetail(id) {
           cond.multipleEnabled ? `倍数(${cond.multipleValue || "—"})` : "倍数：不启用"
         ];
         const rewardBits = [
-          rt.discount && rt.discount.enabled ? `直降/折扣(${rt.discount.mode || "整单优惠"}${rt.discount.benefitTypeEnabled ? `；优惠类型：${templateWizardBenefitTypeText(rt.discount.benefitTypes)}` : ""})` : "",
-          rt.fullReduceGift && rt.fullReduceGift.enabled ? `满减/赠优惠(${(rt.fullReduceGift.options || []).join("/") || "—"}${rt.fullReduceGift.benefitTypeEnabled ? `；优惠类型：${templateWizardBenefitTypeText(rt.fullReduceGift.benefitTypes)}` : ""})` : "",
+          rt.discount && rt.discount.enabled ? `直降/折扣(${discountModeText}${discountMinFreeEnabled ? "；最低免单：开启" : ""}${rt.discount.benefitTypeEnabled ? `；优惠类型：${templateWizardBenefitTypeText(rt.discount.benefitTypes)}` : ""})` : "",
+          rt.fullReduceGift && rt.fullReduceGift.enabled ? `满减/赠优惠(${(rt.fullReduceGift.options || []).join("/") || "—"}${rt.fullReduceGift.purchaseTypeEnabled ? `；购买类型：${templateWizardPurchaseTypeText(rt.fullReduceGift.purchaseTypes)}` : ""}${rt.fullReduceGift.benefitTypeEnabled ? `；优惠类型：${templateWizardBenefitTypeText(rt.fullReduceGift.benefitTypes)}` : ""})` : "",
           rt.limit && rt.limit.enabled ? `是否限量(${rt.limit.type || "数量"})` : "",
           rt.voucherGift && rt.voucherGift.enabled ? `赠券${rt.voucherGift.benefitTypeEnabled ? `(优惠类型：${templateWizardBenefitTypeText(rt.voucherGift.benefitTypes)})` : ""}` : "",
           rt.voucherGift && rt.voucherGift.enabled && rt.voucherCap && rt.voucherCap.enabled ? `上限出券(${rt.voucherCap.value || "不限制"})` : "",
-          rt.voucherGift && rt.voucherGift.enabled && rt.voucherRule && rt.voucherRule.enabled ? "用券送券规则(启用)" : ""
+          rt.voucherRule && rt.voucherRule.enabled ? `用券出券规则(启用${rt.voucherRule.purchaseTypeEnabled ? `；购买类型：${templateWizardPurchaseTypeText(rt.voucherRule.purchaseTypes)}` : ""})` : ""
         ].filter(Boolean);
         const displayBits = [
           dp.labelEnabled ? `优惠标签(${dp.labelText || "—"})` : "优惠标签：不启用",
@@ -32865,7 +34536,7 @@ function openTemplateDetail(id) {
             <div class="wizard__steps">
               <div class="steps" id="tplDetailSteps">
                 ${stepHtml(1, "1 基本策略")}
-                ${stepHtml(2, "2 促销条件")}
+                ${stepHtml(2, "2 限量设置")}
                 ${stepHtml(3, "3 优惠规则")}
                 ${stepHtml(4, "4 设置优惠")}
                 ${stepHtml(5, "5 预览")}
@@ -32877,6 +34548,7 @@ function openTemplateDetail(id) {
                 ${detailSectionHtml("基本策略-基本属性", kvHtml([
                   ["模板编号", `<span class="mono">${escapeHtml(t.templateNo || "—")}</span>`],
                   ["模板状态", badge(t.status || "—")],
+                  ["状态", escapeHtml(String(t.enableStatus || (basic.enableStatus || "启用")))],
                   ["模板名称", escapeHtml(t.name || "—")],
                   ["促销类型", escapeHtml(basic.type || "—")],
                   ["模板说明", escapeHtml(basic.desc || "—")]
@@ -32894,8 +34566,7 @@ function openTemplateDetail(id) {
                   ["门店范围", escapeHtml(obj.storeRadio || "门店")],
                   ["门店排除", escapeHtml(obj.storeExcludeEnabled ? "启用" : "关闭")],
                   ["顾客范围", escapeHtml(obj.userRange || (obj.userOptions || []).join("·") || "—")],
-                  ["商品范围", escapeHtml((obj.goodsScopeOptions || []).join("·") || "—")],
-                  ...(String(basic.type || "") === "直降" ? [["组合关系", (obj.goodsJoinEnabled || obj.goodsScopeJoin) ? "启用" : "关闭"]] : [])
+                  ["商品范围", escapeHtml((obj.goodsScopeOptions || []).join("·") || "—")]
                 ]))}
                 <div class="divider"></div>
                 ${detailSectionHtml("基本策略-其它选项", kvHtml([
@@ -32904,7 +34575,7 @@ function openTemplateDetail(id) {
               </div>
 
               <div class="wizard-step" data-step="2">
-                ${detailSectionHtml("促销条件", kvHtml([
+                ${detailSectionHtml("限量设置", kvHtml([
                   ["整单限量", ct.userLimit && ct.userLimit.enabled ? escapeHtml(ct.userLimit.value || "启用") : "关闭"],
                   ["会员限量", ct.memberLimit && ct.memberLimit.enabled ? escapeHtml(ct.memberLimit.value || "启用") : "关闭"],
                   ["门店限量", ct.storeLimit && ct.storeLimit.enabled ? escapeHtml(ct.storeLimit.value || "启用") : "关闭"],
@@ -32919,15 +34590,17 @@ function openTemplateDetail(id) {
 
               <div class="wizard-step" data-step="3">
                 ${detailSectionHtml("优惠规则", kvHtml([
-                  ["直降/折扣", rt.discount && rt.discount.enabled ? `启用 · ${escapeHtml(rt.discount.mode || "整单优惠")}` : "关闭"],
+                  ["直降/折扣", rt.discount && rt.discount.enabled ? `启用 · ${escapeHtml(discountModeText)}${discountMinFreeEnabled ? " · 最低免单：开启" : ""}` : "关闭"],
                   ["直降/折扣-优惠类型", rt.discount && rt.discount.enabled && rt.discount.benefitTypeEnabled ? escapeHtml(templateWizardBenefitTypeText(rt.discount.benefitTypes)) : "关闭"],
                   ["满减/赠优惠", rt.fullReduceGift && rt.fullReduceGift.enabled ? "启用 · " + escapeHtml((rt.fullReduceGift.options || []).join("/") || "—") : "关闭"],
                   ["满减/赠优惠-优惠类型", rt.fullReduceGift && rt.fullReduceGift.enabled && rt.fullReduceGift.benefitTypeEnabled ? escapeHtml(templateWizardBenefitTypeText(rt.fullReduceGift.benefitTypes)) : "关闭"],
+                  ["满减/赠优惠-购买类型", rt.fullReduceGift && rt.fullReduceGift.enabled && rt.fullReduceGift.purchaseTypeEnabled ? escapeHtml(templateWizardPurchaseTypeText(rt.fullReduceGift.purchaseTypes)) : "关闭"],
                   ["上限设置", rt.limit && rt.limit.enabled ? escapeHtml(rt.limit.type || "数量") : "关闭"],
                   ["赠券", rt.voucherGift && rt.voucherGift.enabled ? "启用" : "关闭"],
                   ["赠券-优惠类型", rt.voucherGift && rt.voucherGift.enabled && rt.voucherGift.benefitTypeEnabled ? escapeHtml(templateWizardBenefitTypeText(rt.voucherGift.benefitTypes)) : "关闭"],
                   ["上限出券", rt.voucherGift && rt.voucherGift.enabled && rt.voucherCap && rt.voucherCap.enabled ? escapeHtml(rt.voucherCap.value || "不限制") : "关闭"],
-                  ["用券送券规则", rt.voucherGift && rt.voucherGift.enabled && rt.voucherRule && rt.voucherRule.enabled ? "启用" : "关闭"]
+                  ["用券出券规则", rt.voucherRule && rt.voucherRule.enabled ? "启用" : "关闭"],
+                  ["用券出券规则-购买类型", rt.voucherRule && rt.voucherRule.enabled && rt.voucherRule.purchaseTypeEnabled ? escapeHtml(templateWizardPurchaseTypeText(rt.voucherRule.purchaseTypes)) : "关闭"]
                 ]))}
               </div>
 
@@ -32955,7 +34628,7 @@ function openTemplateDetail(id) {
                     <div class="preview-item"><div class="preview-item__k">周期时间</div><div class="preview-item__v">${escapeHtml(timeBits.join("；"))}</div></div>
                     <div class="preview-item"><div class="preview-item__k">促销对象</div><div class="preview-item__v">${escapeHtml(objBits.join("；"))}</div></div>
                     <div class="preview-item"><div class="preview-item__k">其它选项</div><div class="preview-item__v">${escapeHtml(otherBits.join("；"))}</div></div>
-                    <div class="preview-item"><div class="preview-item__k">促销条件</div><div class="preview-item__v">${escapeHtml(condBits.join("；"))}</div></div>
+                  <div class="preview-item"><div class="preview-item__k">限量设置</div><div class="preview-item__v">${escapeHtml(condBits.join("；"))}</div></div>
                     <div class="preview-item"><div class="preview-item__k">优惠规则</div><div class="preview-item__v">${escapeHtml(rewardBits.join("；") || "—")}</div></div>
                     <div class="preview-item"><div class="preview-item__k">设置优惠</div><div class="preview-item__v">${escapeHtml(displayBits.join("；"))}</div></div>
                   </div>
@@ -33001,9 +34674,9 @@ function openTemplateDetail(id) {
 
 function openTemplatePriorityDetail(id) {
   const x = (AppState.data.templatePriorities || []).find((t) => String(t.id) === String(id));
-  if (!x) return toast("未找到模版规则设置（原型演示）");
+  if (!x) return toast("未找到模版优先级（原型演示）");
   openDrawer({
-    title: x.templateName || "模版规则设置详情",
+    title: x.templateName || "模版优先级详情",
     subtitle: `规则编号：${x.id || "—"} · 模版类型：${x.templateType || "—"}`,
     primaryText: "修改",
     secondaryText: "关闭",
