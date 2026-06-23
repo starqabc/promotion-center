@@ -172,6 +172,7 @@ const AppState = {
       effectiveTimeStart: "2024-04-01T08:00",
       effectiveTimeEnd: "2024-04-24",
       memberNo: "3938767898989",
+      phone: "13800138000",
       cartItems: [
         { id: 1, code: "000000004", barcode: "6908946288664", name: "百事可乐无糖300ml", originalPrice: 3.50, promoPrice: 3.00, qty: 2, amount: 6.00, profit: 0.4, promoInfo: "直降促销" },
         { id: 2, code: "", barcode: "", name: "", originalPrice: 0, promoPrice: 0, qty: 0, amount: 0, profit: 0, promoInfo: "" },
@@ -4077,7 +4078,8 @@ function templateTypeSpec(type) {
     conditionTitle: "限量设置",
     rules: { fullAmt: true, fullQty: true, ladder: true, multiple: true },
     rewards: { discount: false, fullReduceGift: false, limit: false, voucherRule: false, voucherCap: false },
-    discountModes: []
+    discountModes: [],
+    discountMinFree: false
   };
   if (t === "直降") {
     return {
@@ -4086,7 +4088,8 @@ function templateTypeSpec(type) {
       conditionTitle: "限量设置",
       rules: { fullAmt: true, fullQty: true, ladder: true, multiple: false },
       rewards: { discount: true, fullReduceGift: false, limit: false, voucherRule: false, voucherCap: false },
-      discountModes: ["单品优惠", "组合优惠", "整单优惠"]
+      discountModes: ["单品优惠", "组合优惠", "整单优惠"],
+      discountMinFree: true
     };
   }
   if (t === "折扣") {
@@ -4145,8 +4148,18 @@ function templateWizardRefreshVisibility() {
 
   const discountEnable = document.getElementById("rwDiscountEnable") ? document.getElementById("rwDiscountEnable").checked : false;
   setShow("rwDiscountBox", discountEnable);
+  setShow("rwDiscountMinFreeWrap", discountEnable && !!spec.discountMinFree);
 
   setShow("tcLadderBox", false);
+  const cycleEnable = document.getElementById("twEnableCycle") ? document.getElementById("twEnableCycle").checked : false;
+  setShow("twCycleBox", cycleEnable);
+  const unitWeek = document.querySelector('input[name="twCycleUnits"][value="周"]');
+  const unitDay = document.querySelector('input[name="twCycleUnits"][value="日"]');
+  if (unitWeek && unitDay) {
+    if (unitWeek.checked && unitDay.checked) unitDay.checked = false;
+    unitWeek.disabled = unitDay.checked;
+    unitDay.disabled = unitWeek.checked;
+  }
 
   const fullReduceGift = document.getElementById("rwFullReduceGift") ? document.getElementById("rwFullReduceGift").checked : false;
   setShow("rwFullReduceGiftBox", fullReduceGift);
@@ -4189,8 +4202,9 @@ function templateWizardRefreshVisibility() {
   const minFreeEl = document.getElementById("rwDiscountMinFree");
   const canMinFree = discountModes.includes("组合优惠") || discountModes.includes("整单优惠");
   if (minFreeEl) {
-    minFreeEl.disabled = !canMinFree;
-    if (!canMinFree) minFreeEl.checked = false;
+    const allowMinFree = !!spec.discountMinFree;
+    minFreeEl.disabled = !allowMinFree || !canMinFree;
+    if (!allowMinFree || !canMinFree) minFreeEl.checked = false;
   }
 }
 
@@ -4214,11 +4228,11 @@ function templateWizardCollectPayload() {
   const desc = document.getElementById("twDesc") ? document.getElementById("twDesc").value : "";
   const spec = templateTypeSpec(type);
   const time = {
-    startEnabled: false,
-    endEnabled: false,
-    enableCycle: false,
-    enableTimeRange: false,
-    cycleOptions: [],
+    startEnabled: document.getElementById("twReqStartAt") ? document.getElementById("twReqStartAt").checked : true,
+    endEnabled: document.getElementById("twReqEndAt") ? document.getElementById("twReqEndAt").checked : true,
+    enableCycle: document.getElementById("twEnableCycle") ? document.getElementById("twEnableCycle").checked : false,
+    enableTimeRange: document.getElementById("twEnableTimeRange") ? document.getElementById("twEnableTimeRange").checked : false,
+    cycleOptions: pickCheckedValues("twCycleUnits"),
     weekdays: [],
     timeRanges: ""
   };
@@ -4272,7 +4286,7 @@ function templateWizardCollectPayload() {
       discount: {
         enabled: document.getElementById("rwDiscountEnable") ? document.getElementById("rwDiscountEnable").checked : false,
         modes: pickCheckedValues("rwDiscountModes"),
-        minFreeEnabled: document.getElementById("rwDiscountMinFree") ? document.getElementById("rwDiscountMinFree").checked : false,
+        minFreeEnabled: spec.discountMinFree && document.getElementById("rwDiscountMinFree") ? document.getElementById("rwDiscountMinFree").checked : false,
         benefitTypeEnabled: false,
         benefitTypes: []
       },
@@ -4321,6 +4335,7 @@ function templateWizardRenderPreview() {
 
   const cfg = p.config || {};
   const b = cfg.basic || {};
+  const time = b.time || {};
   const obj = b.object || {};
   const other = b.other || {};
   const cond = cfg.conditions || {};
@@ -4341,6 +4356,12 @@ function templateWizardRenderPreview() {
     "商品范围：活动创建时配置",
     `费用承担：${other.enableCostSharing ? "已启用" : "不启用"}`
   ].filter(Boolean);
+  const timeBits = [
+    "开始时间：必须开启",
+    "结束时间：必须开启",
+    time.enableCycle ? `生效周期：启用${(time.cycleOptions || []).length ? "（" + (time.cycleOptions || []).join("/") + "）" : ""}` : "生效周期：关闭",
+    time.enableTimeRange ? "按时间段促销：启用" : "按时间段促销：关闭"
+  ].filter(Boolean);
 
   const ct = cond.types || {};
   const condBits = [
@@ -4359,7 +4380,7 @@ function templateWizardRenderPreview() {
   const discountModeText = discountModes.length ? discountModes.join("/") : ((rt.discount && rt.discount.mode) ? String(rt.discount.mode) : "单品优惠");
   const rewardBits = [
     spec.rewards.discount && rt.discount && rt.discount.enabled
-      ? `直降/折扣(${discountModeText}${rt.discount.minFreeEnabled ? "；最低免单：开启" : ""})`
+      ? `直降/折扣(${discountModeText}${spec.discountMinFree && rt.discount.minFreeEnabled ? "；最低免单：开启" : ""})`
       : "",
     spec.rewards.fullReduceGift && rt.fullReduceGift && rt.fullReduceGift.enabled
       ? `满减/赠优惠(${(rt.fullReduceGift.options || []).join("/") || "—"}${rt.fullReduceGift.purchaseTypeEnabled ? `；购买类型：${templateWizardPurchaseTypeText(rt.fullReduceGift.purchaseTypes)}` : ""})`
@@ -4383,6 +4404,7 @@ function templateWizardRenderPreview() {
             <div class="tpl-preview__kv"><div class="k">模板名称</div><div class="v">${escapeHtml(p.name || "未填写")}</div></div>
             <div class="tpl-preview__kv"><div class="k">模版类型</div><div class="v">${escapeHtml(displayTemplateType(b.type || "—"))}</div></div>
             <div class="tpl-preview__kv"><div class="k">模板说明</div><div class="v">${escapeHtml(p.desc || "—")}</div></div>
+            <div class="tpl-preview__kv tpl-form-span-full"><div class="k">周期时间</div><div class="v">${escapeHtml(timeBits.join("；"))}</div></div>
             <div class="tpl-preview__kv"><div class="k">创建人</div><div class="v">${escapeHtml(meta.creator || "—")}</div></div>
             <div class="tpl-preview__kv"><div class="k">创建时间</div><div class="v mono">${escapeHtml(meta.createAt || "—")}</div></div>
             <div class="tpl-preview__kv"><div class="k">修改人</div><div class="v">${escapeHtml(meta.modifier || "—")}</div></div>
@@ -4495,6 +4517,23 @@ function templateWizardLoadExisting(existing) {
   Array.from(document.querySelectorAll('input[name="twEnableStatus"]')).forEach((x) => {
     x.checked = String(x.value || "") === enableStatus;
   });
+  const time = b.time || {};
+  if (document.getElementById("twEnableCycle")) document.getElementById("twEnableCycle").checked = Boolean(time.enableCycle);
+  const unitPicked = (() => {
+    const picked = new Set();
+    const legacy = Array.isArray(time.cycleOptions) ? time.cycleOptions : [];
+    legacy.forEach((v) => {
+      const s = String(v || "");
+      if (s === "月" || s === "周" || s === "日") picked.add(s);
+      else if (s.startsWith("周")) picked.add("周");
+    });
+    if (Array.isArray(time.weekdays) && time.weekdays.length) picked.add("周");
+    return picked;
+  })();
+  Array.from(document.querySelectorAll('input[name="twCycleUnits"]')).forEach((x) => {
+    x.checked = unitPicked.has(String(x.value || ""));
+  });
+  if (document.getElementById("twEnableTimeRange")) document.getElementById("twEnableTimeRange").checked = Boolean(time.enableTimeRange);
 
   const promoType = existing.templateType || b.type || "";
   if (promoType === "直降" && document.getElementById("twGoodsJoinEnable")) document.getElementById("twGoodsJoinEnable").checked = Boolean(obj.goodsJoinEnabled) || Boolean(obj.goodsScopeJoin);
@@ -7262,6 +7301,7 @@ function renderTemplatePriorityPage() {
 
   const headers = ["序号", "规则编码", "模版编码", "模板名称", "优先级", "修改人", "修改时间", "操作"];
   const rows = list.map((x, idx) => {
+    const canOperate = String(ui.qType || "全部") !== "全部";
     const canUp = idx > 0;
     const canDown = idx < list.length - 1;
     return `
@@ -7273,7 +7313,7 @@ function renderTemplatePriorityPage() {
         <td class="mono">${escapeHtml(String(x.priority ?? ""))}</td>
         <td>${escapeHtml(x.modifier || "—")}</td>
         <td class="mono">${escapeHtml(x.modifyAt || "—")}</td>
-        <td><div class="campaign-list-ops">${canUp ? `<a class="link" href="javascript:;" data-act="tpMoveUp" data-id="${escapeHtml(x.id || "")}" data-type="${escapeHtml(x.templateType || "")}">上移</a>` : `<span class="cell-muted">上移</span>`}${canDown ? `<a class="link" href="javascript:;" data-act="tpMoveDown" data-id="${escapeHtml(x.id || "")}" data-type="${escapeHtml(x.templateType || "")}">下移</a>` : `<span class="cell-muted">下移</span>`}</div></td>
+        <td>${canOperate ? `<div class="campaign-list-ops">${canUp ? `<a class="link" href="javascript:;" data-act="tpMoveUp" data-id="${escapeHtml(x.id || "")}" data-type="${escapeHtml(x.templateType || "")}">上移</a>` : `<span class="cell-muted">上移</span>`}${canDown ? `<a class="link" href="javascript:;" data-act="tpMoveDown" data-id="${escapeHtml(x.id || "")}" data-type="${escapeHtml(x.templateType || "")}">下移</a>` : `<span class="cell-muted">下移</span>`}</div>` : ""}</td>
       </tr>
     `;
   }).join("");
@@ -8673,6 +8713,53 @@ function renderTemplateWizardPage(mode) {
       </div>
     </div>
   `);
+  const timeCfg = existing && existing.config && existing.config.basic ? (existing.config.basic.time || {}) : {};
+  const cycleUnitsPicked = (() => {
+    const picked = new Set();
+    const legacy = Array.isArray(timeCfg.cycleOptions) ? timeCfg.cycleOptions : [];
+    legacy.forEach((x) => {
+      const v = String(x || "");
+      if (v === "月" || v === "周" || v === "日") picked.add(v);
+      else if (v.startsWith("周")) picked.add("周");
+    });
+    const legacyWeekdays = Array.isArray(timeCfg.weekdays) ? timeCfg.weekdays : [];
+    if (legacyWeekdays.length) picked.add("周");
+    return Array.from(picked);
+  })();
+  const timeSection = section("周期时间", "", `
+    <div class="tpl-choice-grid tpl-choice-grid--2">
+      ${optionCard({
+        title: "开始时间",
+        desc: "默认开启，不可关闭",
+        control: sw({ id: "twReqStartAt", checked: true, disabled: true }),
+        id: "twStartRequiredRow"
+      })}
+      ${optionCard({
+        title: "结束时间",
+        desc: "默认开启，不可关闭",
+        control: sw({ id: "twReqEndAt", checked: true, disabled: true }),
+        id: "twEndRequiredRow"
+      })}
+      ${optionCard({
+        title: "生效周期范围",
+        desc: "支持月/周/日多选；周与日互斥。",
+        control: sw({ id: "twEnableCycle", checked: Boolean(timeCfg.enableCycle), on: "开启", off: "关闭" }),
+        options: `<div id="twCycleBox" style="display:none;">
+          <div class="checks">
+            ${["月", "周", "日"].map((x) => `<label class="check"><input type="checkbox" name="twCycleUnits" value="${escapeHtml(x)}" ${cycleUnitsPicked.includes(x) ? "checked" : ""} />${escapeHtml(x)}</label>`).join("")}
+          </div>
+        </div>`,
+        id: "twCycleRow"
+      })}
+      ${optionCard({
+        title: "按时间段促销",
+        desc: "开启后活动侧可配置时间段（原型演示）。",
+        control: sw({ id: "twEnableTimeRange", checked: Boolean(timeCfg.enableTimeRange), on: "开启", off: "关闭" }),
+        options: "",
+        id: "twTimeRangeRow"
+      })}
+    </div>
+  `);
   const objectSection = section("促销对象", "", `
     <div id="tplObjectSection" class="tpl-choice-grid tpl-choice-grid--2">
       ${optionCard({
@@ -8740,7 +8827,7 @@ function renderTemplateWizardPage(mode) {
           </div>
           <div class="divider"></div>
           <div class="tpl-form-grid tpl-form-grid--4">
-            <div class="field tpl-form-span-full">
+            <div class="field tpl-form-span-full" id="rwDiscountMinFreeWrap">
               <div class="field__label">最低免单</div>
               <div>${sw({ id: "rwDiscountMinFree", on: "开启", off: "关闭" })}</div>
             </div>
@@ -8822,6 +8909,7 @@ function renderTemplateWizardPage(mode) {
               <div class="tpl-step-shell">
                 <input type="hidden" id="twEditId" value="${escapeHtml(templateId || "")}" />
                 ${basicSection}
+                ${timeSection}
                 ${objectSection}
               </div>
             </div>
@@ -16783,7 +16871,11 @@ function comboCampaignGoodsSettingTableHtml(draft = {}, readonly = false) {
     && String(gs.comboScope || "商品") === "类别"
     && allRows.length > 0
     && allRows.every((x) => String((x && x.discountWay) || "倍数") === "阶梯");
-  const showCap = isAnyCategoryLadderScene ? false : (String(gs.comboScope || "商品") === "类别" ? true : (firstWay !== "阶梯"));
+  const scope = String(gs.comboScope || "商品");
+  const isFixedCategoryLadderScene = !showPickQty && scope === "类别" && firstWay === "阶梯";
+  const showCap = scope === "类别"
+    ? (!isAnyCategoryLadderScene && !isFixedCategoryLadderScene)
+    : (firstWay !== "阶梯");
   const allChecked = !readonly && visibleRows.length > 0 && visibleRows.every((_, idx) => pickedSet.has(idx));
   const rowHtml = visibleRows.map((x, idx) => {
     const cells = [];
@@ -20975,27 +21067,27 @@ function renderPricingPage() {
 
   const body = `
     <div class="pricing-top-bar">
-      <div class="field pricing-top-bar__search">
-        <div class="field__label">商品搜索</div>
-        <input class="input" id="pricingSearch" placeholder="请输入商品编码、条码、名称" value="${escapeHtml(st.searchKey)}" />
-      </div>
       <div class="field pricing-top-bar__time">
-        <div class="field__label">开始时间</div>
+        <div class="field__label">活动时间</div>
         <input class="input" type="datetime-local" id="pricingTimeStart" value="${escapeHtml(st.effectiveTimeStart)}" />
       </div>
       <div class="field pricing-top-bar__member-no">
         <div class="field__label">会员号</div>
         <input class="input" id="pricingMemberNo" placeholder="会员号" value="${escapeHtml(st.memberNo)}" />
       </div>
+      <div class="field pricing-top-bar__actions">
+        <div class="field__label">&nbsp;</div>
+        <div class="pricing-top-bar__btns">
+          <button class="btn btn--primary" type="button" data-act="pricingTopQuery">查询</button>
+          <button class="btn" type="button" data-act="pricingTopReset">重置</button>
+        </div>
+      </div>
       <div class="pricing-member-info">
         <div class="pricing-member-avatar">张</div>
         <div class="pricing-member-detail">
           <div class="pricing-member-name">张女士 <span class="pricing-member-level">普通</span></div>
           <div class="pricing-member-no">会员号：${escapeHtml(st.memberNo || "—")}</div>
-          <div class="pricing-member-stats">
-            <span><span class="stat-label">积分：</span><span class="stat-value">300.00</span></span>
-            <span><span class="stat-label">余额：</span><span class="stat-value">20.00</span></span>
-          </div>
+          <div class="pricing-member-phone">手机号：${escapeHtml(st.phone || "—")}</div>
         </div>
       </div>
     </div>
@@ -21061,7 +21153,6 @@ function renderPricingPage() {
       <button class="btn btn--primary" type="button" data-act="pricingQuery">查询</button>
       <button class="btn" type="button" data-act="pricingExportAnomaly">导出异常商品报表</button>
       <button class="btn-settle" type="button" data-act="pricingSettle">结算 <span class="settle-amount">¥ ${st.settlementAmount.toFixed(2)}</span></button>
-      <button class="btn-preview" type="button" data-act="pricingPreview">小票预览</button>
     </div>
   `;
 
@@ -26380,9 +26471,9 @@ function bindPageEvents(r) {
     root.addEventListener("input", () => templateWizardRenderDynamic());
     root.addEventListener("change", (e) => {
       const t = e && e.target ? e.target : null;
-      if (t && t.name === "twCycleScope" && t.checked) {
-        const weekEl = document.querySelector('input[name="twCycleScope"][value="周"]');
-        const dayEl = document.querySelector('input[name="twCycleScope"][value="日"]');
+      if (t && t.name === "twCycleUnits" && t.checked) {
+        const weekEl = document.querySelector('input[name="twCycleUnits"][value="周"]');
+        const dayEl = document.querySelector('input[name="twCycleUnits"][value="日"]');
         if (t.value === "周" && dayEl) dayEl.checked = false;
         if (t.value === "日" && weekEl) weekEl.checked = false;
       }
@@ -29023,6 +29114,10 @@ function handleAction(r, act, btn) {
       return;
     }
     if (act === "tpMoveUp" || act === "tpMoveDown") {
+      if (String((AppState.ui.templatePriority && AppState.ui.templatePriority.qType) || "全部") === "全部") {
+        toast("选择具体模版类型后才允许设置优先级");
+        return;
+      }
       const id = btn.getAttribute("data-id") || "";
       const type = btn.getAttribute("data-type") || "";
       const all = AppState.data.templatePriorities || (AppState.data.templatePriorities = []);
@@ -30441,6 +30536,8 @@ function handleAction(r, act, btn) {
     if (act === "pricingExportAnomaly") return pricingExportAnomalyReport();
     if (act === "pricingClearRow") return pricingClearRow(btn);
     if (act === "pricingClearAll") return pricingClearAll();
+    if (act === "pricingTopQuery") return runPricingFromForm();
+    if (act === "pricingTopReset") return pricingResetFilters();
     if (act === "pricingQuery") return pricingQuery();
     if (act === "pricingSettle") return toast("结算金额：¥ " + AppState.ui.pricing.settlementAmount.toFixed(2) + "（原型演示）");
     if (act === "pricingPreview") return pricingPreview();
@@ -34489,7 +34586,7 @@ function openTemplateDetail(id) {
           .map((x) => discountModeMap[String(x || "")] || String(x || ""))
           .filter(Boolean);
         const discountModeText = (discountModes.length ? discountModes.join("/") : (discountModeMap[discountModeRaw] || (discountModeRaw || "单品优惠")));
-        const discountMinFreeEnabled = Boolean(rt.discount && (rt.discount.minFreeEnabled || discountModeRaw === "最低免单"));
+        const discountMinFreeEnabled = normalizeTemplateType(basic.type || "") === "直降" && Boolean(rt.discount && (rt.discount.minFreeEnabled || discountModeRaw === "最低免单"));
 
         const timeBits = [
           "活动时间范围（必选）",
@@ -34555,7 +34652,8 @@ function openTemplateDetail(id) {
                 ]))}
                 <div class="divider"></div>
                 ${detailSectionHtml("基本策略-周期时间", kvHtml([
-                  ["活动时间范围", escapeHtml("必须开启")],
+                  ["开始时间", escapeHtml("必须开启")],
+                  ["结束时间", escapeHtml("必须开启")],
                   ["生效周期", escapeHtml(time.enableCycle ? "启用" : "关闭")],
                   ["生效周期范围", time.enableCycle ? escapeHtml((time.cycleOptions || []).join("·") || "—") : "—"],
                   ["按时间段促销", escapeHtml(time.enableTimeRange ? "启用" : "关闭")]
@@ -36356,6 +36454,15 @@ function pricingQuery() {
   }
   pricingRecalc();
   toast("已添加商品：" + found.name);
+  render();
+}
+
+function pricingResetFilters() {
+  AppState.ui.pricing.searchKey = "";
+  AppState.ui.pricing.effectiveTimeStart = "";
+  AppState.ui.pricing.effectiveTimeEnd = "";
+  AppState.ui.pricing.memberNo = "";
+  toast("已重置查询条件（原型演示）");
   render();
 }
 

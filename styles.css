@@ -2681,6 +2681,8 @@ tbody tr:last-child td{border-bottom:none}
 .pricing-top-bar__search{flex:2.2;min-width:260px}
 .pricing-top-bar__time{flex:1.2;min-width:210px}
 .pricing-top-bar__member-no{flex:1.1;min-width:180px}
+.pricing-top-bar__actions{flex:0 0 auto;min-width:190px}
+.pricing-top-bar__btns{display:flex;gap:10px;align-items:center}
 .pricing-member-info{
   display:flex;
   align-items:center;
@@ -2701,6 +2703,7 @@ tbody tr:last-child td{border-bottom:none}
 .pricing-member-detail{display:flex;flex-direction:column;gap:2px;font-size:13px}
 .pricing-member-name{font-weight:700;color:var(--text)}
 .pricing-member-no{color:var(--muted);font-size:12px}
+.pricing-member-phone{color:var(--muted);font-size:12px}
 .pricing-member-stats{display:flex;gap:14px;margin-top:2px;font-size:12px}
 .pricing-member-stats span{display:flex;gap:2px;align-items:baseline}
 .pricing-member-stats .stat-label{color:var(--muted)}
