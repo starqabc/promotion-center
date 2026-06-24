@@ -9044,9 +9044,11 @@ function fromDatetimeLocalValue(text) {
 }
 
 function campaignTimeText(c) {
-  const a = c.startAt || "—";
-  const b = c.endAt || "—";
-  return `${a} ~ ${b}`;
+  const f = (s) => String(s || "").trim().slice(0, 10).replace(/-/g, "/");
+  const a = f(c.startAt), b = f(c.endAt);
+  if (!a && !b) return "—";
+  if (a && b) return `${a}-${b}`;
+  return a || b;
 }
 
 function campaignCycleText(c) {
@@ -9305,7 +9307,7 @@ function renderCampaignsListPage(presetPromoType = "", presetTemplateId = "") {
           <td class="mono"><button class="linkbtn" type="button" data-act="campDetail" data-id="${escapeHtml(c.activityNo)}">${escapeHtml(c.activityNo || "—")}</button></td>
           <td>${escapeHtml(c.activitySubject || "—")}</td>
           <td>${badge(c.status || "—")}</td>
-          <td class="mono">${escapeHtml(c.startAt || "—")}</td>
+          <td class="mono">${escapeHtml(campaignTimeText(c))}</td>
           <td>${escapeHtml(campaignCycleText(c))}</td>
           <td class="mono">${escapeHtml(c.templateNo || c.templateId || "—")}</td>
           <td>${escapeHtml(auditStatus)}</td>
