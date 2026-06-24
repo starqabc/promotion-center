@@ -7043,11 +7043,11 @@ function renderTemplatesPage() {
 
             <div class="campaign-list-title"><span class="campaign-list-title__mark"></span>促销模版列表</div>
             <div class="campaign-list-toolbar">
-              <button class="btn btn--primary" type="button" data-act="tplCreate">创建模板</button>
-              <button class="btn btn--info" type="button" data-act="tplExport">导出</button>
-              <button class="btn btn--success" type="button" data-act="tplPrint">打印</button>
-              <button class="btn btn--danger" type="button" data-act="tplBulkDelete">删除</button>
-              <button class="btn btn--warning" type="button" data-act="tplBulkCopy">复制</button>
+              <button class="btn tb-btn tb-btn--violet" type="button" data-act="tplCreate">创建模板</button>
+              <button class="btn tb-btn tb-btn--teal" type="button" data-act="tplExport">导出</button>
+              <button class="btn tb-btn tb-btn--cyan" type="button" data-act="tplPrint">打印</button>
+              <button class="btn tb-btn tb-btn--rose" type="button" data-act="tplBulkDelete">删除</button>
+              <button class="btn tb-btn tb-btn--amber" type="button" data-act="tplBulkCopy">复制</button>
             </div>
             <div class="campaign-list-table">
               ${table(headers, (rowsHtml + emptyRows) || `<tr><td colspan="${headers.length}"><div class="empty">暂无数据</div></td></tr>`)}
