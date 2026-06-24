@@ -4654,18 +4654,31 @@ tbody tr:last-child td{border-bottom:none}
 
 /* 模板周期时间：下级生效配置层级缩进 */
 .tpl-time-sub{
-  margin-top:10px;
-  padding:10px 14px 4px 18px;
-  border-left:2px solid #c7d2fe;
-  background:#f8faff;
-  border-radius:0 8px 8px 0;
+  margin-top:14px;
+  margin-left:6px;
+  padding:0 0 14px 0;
+  border-left:4px solid #6366f1;
+  background:#f5f3ff;
+  border-radius:0 12px 12px 0;
+  box-shadow:0 1px 0 rgba(99,102,241,.08);
 }
 .tpl-time-sub__label{
-  font-size:12px;
-  color:#6366f1;
-  font-weight:600;
-  margin-bottom:6px;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  margin:0 0 10px 0;
+  padding:8px 14px;
+  background:linear-gradient(90deg,#6366f1,#818cf8);
+  color:#fff;
+  font-size:13px;
+  font-weight:700;
+  border-radius:0 12px 0 0;
+  letter-spacing:.3px;
 }
+.tpl-time-sub__label::before{content:"▾";font-size:14px;}
+.tpl-time-sub .tpl-choice-grid{padding:0 14px;}
+.tpl-time-sub .tpl-option-card{border-color:#c7d2fe;}
+.tpl-time-sub .tpl-option-card__title::before{content:"↳ ";color:#6366f1;font-weight:700;}
 
 /* 多选下拉框（门店范围-选择门店-价格组 等） */
 .pg-multi{position:relative;width:100%;}
