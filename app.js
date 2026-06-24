@@ -30741,16 +30741,14 @@ function handleAction(r, act, btn) {
       location.hash = "#/campaigns";
       return;
     }
-    if (act === "campComboCategoryTab") {
-      if (!r.startsWith("/campaigns-detail/")) return;
+    if (act === "campComboCategoryTab" && r.startsWith("/campaigns-detail/")) {
       const tab = btn.getAttribute("data-id") || "categories";
       if (!["categories", "excludeCategories", "excludeGoods"].includes(String(tab))) return;
       AppState.ui.campaignDetail.comboCategoryTab = tab;
       render();
       return;
     }
-    if (act === "campComboBrandTab") {
-      if (!r.startsWith("/campaigns-detail/")) return;
+    if (act === "campComboBrandTab" && r.startsWith("/campaigns-detail/")) {
       const tab = btn.getAttribute("data-id") || "brands";
       if (!["brands", "excludeGoods"].includes(String(tab))) return;
       AppState.ui.campaignDetail.comboBrandTab = tab;
@@ -32506,7 +32504,7 @@ function handleAction(r, act, btn) {
       const tab = btn.getAttribute("data-id") || "categories";
       if (!["categories", "excludeCategories", "excludeGoods"].includes(String(tab))) return;
       AppState.ui.campaignWizard.comboCategoryTab = tab;
-      campaignWizardRenderGoodsTable();
+      render();
       return;
     }
     if (act === "campComboScopeSelect") {
@@ -32602,7 +32600,7 @@ function handleAction(r, act, btn) {
       const tab = btn.getAttribute("data-id") || "brands";
       if (!["brands", "excludeGoods"].includes(String(tab))) return;
       AppState.ui.campaignWizard.comboBrandTab = tab;
-      campaignWizardRenderGoodsTable();
+      render();
       return;
     }
     if (act === "campComboBrandSelect") {
