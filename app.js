@@ -9376,7 +9376,7 @@ function renderCampaignsListPage(presetPromoType = "", presetTemplateId = "") {
           <button class="btn" type="button" data-act="campExport">导出</button>
           <button class="btn" type="button" data-act="campPrint">打印</button>
           <button class="btn btn--danger" type="button" data-act="campBulkVoid">作废</button>
-          <button class="btn" type="button" data-act="campBulkCopy">复制</button>
+          <button class="btn btn--warning" type="button" data-act="campBulkCopy">复制</button>
           <button class="btn btn--danger" type="button" data-act="campBulkCancelEffective">取消生效</button>
           <button class="btn btn--danger" type="button" data-act="campBulkTerminate">终止</button>
           <button class="btn btn--info" type="button" data-act="campBulkDelay">延期</button>

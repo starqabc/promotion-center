@@ -760,34 +760,12 @@ tbody tr:last-child td{border-bottom:none}
   justify-content:center;
   text-align:center;
 }
-.campaign-list-toolbar .btn--primary{
-  background:linear-gradient(135deg,#6366f1,#818cf8);
-  color:#fff;
-  border:none;
-  box-shadow:0 2px 8px rgba(99,102,241,.25);
+.campaign-list-toolbar .btn{
+  font-weight:600;
+  font-size:13px;
+  padding:8px 14px;
+  border-radius:8px;
 }
-.campaign-list-toolbar .btn--primary:hover{background:linear-gradient(135deg,#4f46e5,#6366f1);box-shadow:0 4px 12px rgba(99,102,241,.35)}
-.campaign-list-toolbar .btn--info{
-  border:1px solid #c7d2fe;
-  background:#eef2ff;
-  color:#4338ca;
-  box-shadow:none;
-}
-.campaign-list-toolbar .btn--info:hover{background:#e0e7ff;border-color:#a5b4fc}
-.campaign-list-toolbar .btn--success{
-  border-color:rgba(16,185,129,.25);
-  background:rgba(16,185,129,.1);
-  color:#059669;
-  box-shadow:none;
-}
-.campaign-list-toolbar .btn--success:hover{background:rgba(16,185,129,.18)}
-.campaign-list-toolbar .btn--danger{
-  border:1px solid #fecaca;
-  background:#fef2f2;
-  color:#b91c1c;
-  box-shadow:none;
-}
-.campaign-list-toolbar .btn--danger:hover{background:#fee2e2;border-color:#fca5a5}
 .campaign-list-toolbar .btn--warning{
   border-color:rgba(245,158,11,.25);
   background:rgba(245,158,11,.1);
