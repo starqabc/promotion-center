@@ -8816,24 +8816,29 @@ function renderTemplateWizardPage(mode) {
         control: sw({ id: "twReqEndAt", checked: true, disabled: true }),
         id: "twEndRequiredRow"
       })}
-      ${optionCard({
-        title: "生效周期范围",
-        desc: "支持月/周/日多选；周与日互斥。",
-        control: sw({ id: "twEnableCycle", checked: Boolean(timeCfg.enableCycle), on: "开启", off: "关闭" }),
-        options: `<div id="twCycleBox" style="display:none;">
-          <div class="checks">
-            ${["月", "周", "日"].map((x) => `<label class="check"><input type="checkbox" name="twCycleUnits" value="${escapeHtml(x)}" ${cycleUnitsPicked.includes(x) ? "checked" : ""} />${escapeHtml(x)}</label>`).join("")}
-          </div>
-        </div>`,
-        id: "twCycleRow"
-      })}
-      ${optionCard({
-        title: "按时间段促销",
-        desc: "开启后活动侧可配置时间段（原型演示）。",
-        control: sw({ id: "twEnableTimeRange", checked: Boolean(timeCfg.enableTimeRange), on: "开启", off: "关闭" }),
-        options: "",
-        id: "twTimeRangeRow"
-      })}
+    </div>
+    <div class="tpl-time-sub">
+      <div class="tpl-time-sub__label">以下为开始/结束日期的生效配置</div>
+      <div class="tpl-choice-grid tpl-choice-grid--2">
+        ${optionCard({
+          title: "生效周期范围",
+          desc: "支持月/周/日多选；周与日互斥。",
+          control: sw({ id: "twEnableCycle", checked: Boolean(timeCfg.enableCycle), on: "开启", off: "关闭" }),
+          options: `<div id="twCycleBox" style="display:none;">
+            <div class="checks">
+              ${["月", "周", "日"].map((x) => `<label class="check"><input type="checkbox" name="twCycleUnits" value="${escapeHtml(x)}" ${cycleUnitsPicked.includes(x) ? "checked" : ""} />${escapeHtml(x)}</label>`).join("")}
+            </div>
+          </div>`,
+          id: "twCycleRow"
+        })}
+        ${optionCard({
+          title: "按时间段促销",
+          desc: "开启后活动侧可配置时间段（原型演示）。",
+          control: sw({ id: "twEnableTimeRange", checked: Boolean(timeCfg.enableTimeRange), on: "开启", off: "关闭" }),
+          options: "",
+          id: "twTimeRangeRow"
+        })}
+      </div>
     </div>
   `);
   const objectSection = section("促销对象", "", `
@@ -35043,11 +35048,16 @@ function openTemplateDetail(id) {
                 <div class="divider"></div>
                 ${detailSectionHtml("基本策略-周期时间", kvHtml([
                   ["开始日期", escapeHtml("必须开启")],
-                  ["结束日期", escapeHtml("必须开启")],
-                  ["生效周期", escapeHtml(time.enableCycle ? "启用" : "关闭")],
-                  ["生效周期范围", time.enableCycle ? escapeHtml((time.cycleOptions || []).join("·") || "—") : "—"],
-                  ["按时间段促销", escapeHtml(time.enableTimeRange ? "启用" : "关闭")]
+                  ["结束日期", escapeHtml("必须开启")]
                 ]))}
+                <div class="tpl-time-sub">
+                  <div class="tpl-time-sub__label">以下为开始/结束日期的生效配置</div>
+                  ${kvHtml([
+                    ["生效周期", escapeHtml(time.enableCycle ? "启用" : "关闭")],
+                    ["生效周期范围", time.enableCycle ? escapeHtml((time.cycleOptions || []).join("·") || "—") : "—"],
+                    ["按时间段促销", escapeHtml(time.enableTimeRange ? "启用" : "关闭")]
+                  ])}
+                </div>
                 <div class="divider"></div>
                 ${detailSectionHtml("基本策略-促销对象", kvHtml([
                   ["渠道范围", escapeHtml(obj.channelRadio || "全部")],
