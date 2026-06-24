@@ -4607,6 +4607,17 @@ tbody tr:last-child td{border-bottom:none}
   .rpa-legend{min-width:0}
 }
 
+/* 档期商品：查询日期范围 + 分页 */
+.as-range{display:flex;align-items:center;gap:6px;}
+.as-range .input{flex:1;min-width:0;}
+.as-range__dash{color:var(--muted);}
+.as-footer{margin-top:10px;}
+.as-pagebtn{min-width:34px;padding:6px 8px;font-size:12px;text-align:center;}
+.as-pagebtn.is-active{background:var(--primary);color:#fff;border-color:var(--primary);}
+.as-pagebtn--split{border:none;background:none;cursor:default;color:var(--muted);padding:6px 4px;}
+.as-jump{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;}
+.as-jump .input{width:48px;text-align:center;}
+
 /* 多选下拉框（门店范围-选择门店-价格组 等） */
 .pg-multi{position:relative;width:100%;}
 .pg-multi__trigger{display:flex;align-items:center;justify-content:space-between;gap:8px;border:1px solid var(--border);background:#fff;border-radius:10px;padding:9px 10px;font-size:14px;cursor:pointer;min-height:38px;user-select:none;}

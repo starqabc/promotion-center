@@ -30,7 +30,7 @@ const AppState = {
     assortment: {
       creatingActualId: "",
       summaryActualId: "",
-      listTab: "schedule",
+      listTab: "goods",
       filterActualId: "",
       filterStatus: "",
       editingDocNo: "",
@@ -6311,95 +6311,124 @@ function renderSchedulePage() {
 }
 
 function renderAssortmentPage() {
-  const actualOps = AppState.data.actualSchedules.map((a) => `<option value="${escapeHtml(a.actualId)}">${escapeHtml(a.actualId)}</option>`).join("");
-  const tab = String(AppState.ui.assortment.listTab || "schedule");
+  const ui = AppState.ui.assortment || (AppState.ui.assortment = {});
+  const tab = String(ui.listTab || "goods");
+  const f = (k) => String(ui[k] || "");
+  const opt = (arr, cur, ph) => `<option value="">${escapeHtml(ph || "全部")}</option>` + arr.map((x) => `<option ${x === cur ? "selected" : ""}>${escapeHtml(x)}</option>`).join("");
+
   const filtersHtml = `
     <div class="field">
-      <div class="field__label">实际档期ID</div>
-      <select class="select" id="asActualFilter">
-        <option value="">全部</option>
-        ${actualOps}
-      </select>
+      <div class="field__label">档期名称</div>
+      <input class="input" id="asQSched" value="${escapeHtml(f("qSched"))}" placeholder="请输入档期名称/id查询" />
     </div>
     <div class="field">
-      <div class="field__label">选品状态</div>
-      <select class="select" id="asStatusFilter">
-        <option value="">全部</option>
-        <option>1-进行中</option>
-        <option>2-已完成</option>
-      </select>
+      <div class="field__label">子主题名称</div>
+      <input class="input" id="asQSub" value="${escapeHtml(f("qSub"))}" placeholder="请输入部门联合名称/id查询" />
+    </div>
+    <div class="field">
+      <div class="field__label">促销类型</div>
+      <select class="select" id="asQPromoType">${opt(["满减", "折扣", "赠品", "一口价", "满赠券"], f("qPromoType"), "促销类型")}</select>
+    </div>
+    <div class="field">
+      <div class="field__label">重点商品标识</div>
+      <select class="select" id="asQKey">${opt(["是", "否"], f("qKey"), "重点商品标识")}</select>
+    </div>
+    <div class="field">
+      <div class="field__label">DM标识</div>
+      <select class="select" id="asQDm">${opt(["是", "否"], f("qDm"), "DM标识")}</select>
+    </div>
+    <div class="field">
+      <div class="field__label">品牌</div>
+      <select class="select" id="asQBrand">${opt(["品牌A", "品牌B", "品牌C"], f("qBrand"), "请输入品牌")}</select>
+    </div>
+    <div class="field">
+      <div class="field__label">供货商</div>
+      <select class="select" id="asQSupplier">${opt(["供货商A", "供货商B"], f("qSupplier"), "请输入供货商")}</select>
+    </div>
+    <div class="field">
+      <div class="field__label">类别</div>
+      <select class="select" id="asQCat">${opt(["服装", "鞋类", "配饰", "食品"], f("qCat"), "请输入类别")}</select>
+    </div>
+    <div class="field">
+      <div class="field__label">档期时间</div>
+      <div class="as-range">
+        <input class="input" id="asQFrom" value="${escapeHtml(f("qFrom"))}" placeholder="请选择开始时间" />
+        <span class="as-range__dash">-</span>
+        <input class="input" id="asQTo" value="${escapeHtml(f("qTo"))}" placeholder="请选择结束时间" />
+      </div>
+    </div>
+    <div class="field">
+      <div class="field__label">商品信息</div>
+      <input class="input" id="asQGoods" value="${escapeHtml(f("qGoods"))}" placeholder="请输入商品名称、编码、条码、规格" />
     </div>
   `;
 
-  const fActual = (AppState.ui.assortment.filterActualId || "").trim();
-  const fStatus = (AppState.ui.assortment.filterStatus || "").trim();
+  const filterActionsHtml = `
+    <button class="btn btn--primary" type="button" data-act="asQuery">查询</button>
+    <button class="btn" type="button" data-act="asReset">重置</button>
+    <button class="btn" type="button" data-act="asExport">导出</button>
+  `;
+
+  const tabsHtml = `
+    <div class="tabbar as-list-tabs">
+      <button class="tabbtn ${tab === "goods" ? "is-active" : ""}" type="button" data-act="asListTab" data-id="goods">商品维度</button>
+      <button class="tabbtn ${tab === "schedule" ? "is-active" : ""}" type="button" data-act="asListTab" data-id="schedule">档期维度</button>
+    </div>
+  `;
+
+  const goodsHeaders = ["序号", "档期ID", "档期名称", "子主题名称", "商品编码", "商品名称", "商品规格", "箱包数", "备注", "补差方式", "原进价", "促销进价", "促销进价单位", "原售价", "促销售价", "促销方式", "供应商承担金额", "采购承担金额", "重点商品标识", "DM标识", "A1-DM店群促销等级", "B-DM店群促销等级", "C-DM店群促销等级", "活动方案", "商品数量", "营销区域"];
+  const goodsRows = Array.from({ length: 6 }).map((_, i) => `<tr><td>${i + 1}</td>${"<td></td>".repeat(goodsHeaders.length - 1)}</tr>`).join("");
+
+  const fActual = (ui.filterActualId || "").trim();
+  const fStatus = (ui.filterStatus || "").trim();
   const scheduleList = (AppState.data.assortmentSummary || [])
     .filter((d) => (!fActual ? true : d.actualId === fActual))
     .filter((d) => (!fStatus ? true : d.pickStatus === fStatus));
-
-  const tabsHtml = `
-    <div class="tabbar">
-      <button class="tabbtn ${tab === "schedule" ? "is-active" : ""}" type="button" data-act="asListTab" data-id="schedule">档期维度</button>
-      <button class="tabbtn ${tab === "goods" ? "is-active" : ""}" type="button" data-act="asListTab" data-id="goods">商品维度</button>
-    </div>
-  `;
-
+  const scheduleHeaders = ["序号", "实际档期ID", "选品状态", "档期分类", "档期重要性", "档期起始日期", "档期结束日期", "档期主题", "操作"];
   const scheduleRows = scheduleList
     .map((d, idx) => {
       const actual = AppState.data.actualSchedules.find((x) => x.actualId === d.actualId);
-      return `
-        <tr>
-          <td>${idx + 1}</td>
-          <td class="mono">${escapeHtml(d.actualId)}</td>
-          <td>${escapeHtml(d.pickStatus || "—")}</td>
-          <td>${escapeHtml(actual ? actual.category : "—")}</td>
-          <td>${escapeHtml(actual ? actual.importance : "—")}</td>
-          <td class="mono">${escapeHtml(actual ? actual.startDate : "—")}</td>
-          <td class="mono">${escapeHtml(actual ? actual.endDate : "—")}</td>
-          <td>${escapeHtml(actual ? actual.theme : "—")}</td>
-          <td><button class="linkbtn" type="button" data-act="asView" data-id="${escapeHtml(d.actualId)}">详情</button></td>
-        </tr>
-      `;
+      return `<tr>
+        <td>${idx + 1}</td>
+        <td class="mono">${escapeHtml(d.actualId)}</td>
+        <td>${escapeHtml(d.pickStatus || "—")}</td>
+        <td>${escapeHtml(actual ? actual.category : "—")}</td>
+        <td>${escapeHtml(actual ? actual.importance : "—")}</td>
+        <td class="mono">${escapeHtml(actual ? actual.startDate : "—")}</td>
+        <td class="mono">${escapeHtml(actual ? actual.endDate : "—")}</td>
+        <td>${escapeHtml(actual ? actual.theme : "—")}</td>
+        <td><button class="linkbtn" type="button" data-act="asView" data-id="${escapeHtml(d.actualId)}">详情</button></td>
+      </tr>`;
     })
     .join("");
-  const scheduleHeaders = ["序号", "实际档期ID", "选品状态", "档期分类", "档期重要性", "档期起始日期", "档期结束日期", "档期主题", "操作"];
-
-  const goodsLines = scheduleList.flatMap((sum) => {
-    const docs = (AppState.data.assortmentDocs || []).filter((d) => d.actualId === sum.actualId);
-    return docs.flatMap((d) => (d.lines || []).map((ln) => ({ ...ln, docNo: d.docNo, majorCategory: d.majorCategory, actualId: d.actualId })));
-  });
-  const goodsRows = goodsLines
-    .map((ln, idx) => {
-      const actual = AppState.data.actualSchedules.find((x) => x.actualId === ln.actualId);
-      return `
-        <tr>
-          <td>${idx + 1}</td>
-          <td class="mono">${escapeHtml(ln.actualId || "")}</td>
-          <td>${escapeHtml(actual ? actual.theme : "—")}</td>
-          <td class="mono">${escapeHtml(ln.docNo || "")}</td>
-          <td>${escapeHtml(ln.majorCategory || "")}</td>
-          <td class="mono">${escapeHtml(ln.productCode || "")}</td>
-          <td class="mono">${escapeHtml(ln.barcode || "")}</td>
-          <td>${escapeHtml(ln.productName || "")}</td>
-          <td class="mono">${escapeHtml(String(ln.promoPrice ?? ""))}</td>
-          <td class="mono">${escapeHtml(String(ln.priceCutPct ?? ""))}</td>
-          <td>${escapeHtml(ln.source || "")}</td>
-          <td><button class="linkbtn" type="button" data-act="asView" data-id="${escapeHtml(ln.actualId || "")}">详情</button></td>
-        </tr>
-      `;
-    })
-    .join("");
-  const goodsHeaders = ["序号", "实际档期ID", "档期主题", "档期选品单号", "大类", "商品编码", "条形码", "商品名称", "促销售价", "降价幅度(%)", "选品来源", "操作"];
 
   const tableHtml = tab === "goods"
-    ? table(goodsHeaders, goodsRows || `<tr><td colspan="${goodsHeaders.length}"><div class="empty">暂无数据</div></td></tr>`)
+    ? table(goodsHeaders, goodsRows)
     : table(scheduleHeaders, scheduleRows || `<tr><td colspan="${scheduleHeaders.length}"><div class="empty">暂无数据</div></td></tr>`);
-  const total = tab === "goods" ? goodsLines.length : scheduleList.length;
+
+  const pagerHtml = `
+    <div class="footerbar as-footer">
+      <div class="pager__meta">共10页/100条数据</div>
+      <div class="pager">
+        <button class="btn as-pagebtn is-active" type="button">1</button>
+        <button class="btn as-pagebtn" type="button">2</button>
+        <button class="btn as-pagebtn" type="button">3</button>
+        <button class="btn as-pagebtn" type="button">4</button>
+        <button class="btn as-pagebtn" type="button">5</button>
+        <span class="as-pagebtn as-pagebtn--split">...</span>
+        <button class="btn as-pagebtn" type="button">50</button>
+      </div>
+      <div class="as-jump">跳至 <input class="input" value="1" /> 页</div>
+    </div>
+  `;
+
   return listPageLayout({
     filtersHtml,
+    filterActionsHtml,
     listTitle: "档期商品列表",
-    tableHtml: `<div class="as-list-tabs">${tabsHtml}</div>${tableHtml}`,
-    footerHtml: footerbar(`共 ${total} 条`, "第 1 页")
+    listActionsHtml: tabsHtml,
+    tableHtml: `${tableHtml}${pagerHtml}`,
+    footerHtml: ""
   });
 }
 
@@ -28896,6 +28925,27 @@ function handleAction(r, act, btn) {
       const id = btn.getAttribute("data-id") || "";
       AppState.ui.assortment.summaryActualId = id;
       location.hash = "#/assortment-summary";
+      return;
+    }
+    if (act === "asQuery") {
+      const uiq = AppState.ui.assortment || (AppState.ui.assortment = {});
+      const rd = (id) => { const el = document.getElementById(id); return el ? String(el.value || "") : ""; };
+      uiq.qSched = rd("asQSched"); uiq.qSub = rd("asQSub"); uiq.qPromoType = rd("asQPromoType");
+      uiq.qKey = rd("asQKey"); uiq.qDm = rd("asQDm"); uiq.qBrand = rd("asQBrand");
+      uiq.qSupplier = rd("asQSupplier"); uiq.qCat = rd("asQCat");
+      uiq.qFrom = rd("asQFrom"); uiq.qTo = rd("asQTo"); uiq.qGoods = rd("asQGoods");
+      toast("查询完成（原型演示）");
+      render();
+      return;
+    }
+    if (act === "asReset") {
+      const uiq = AppState.ui.assortment || (AppState.ui.assortment = {});
+      ["qSched", "qSub", "qPromoType", "qKey", "qDm", "qBrand", "qSupplier", "qCat", "qFrom", "qTo", "qGoods"].forEach((k) => { uiq[k] = ""; });
+      render();
+      return;
+    }
+    if (act === "asExport") {
+      toast("导出成功（原型演示）");
       return;
     }
     if (act === "asNew") {
