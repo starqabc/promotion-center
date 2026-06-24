@@ -760,12 +760,36 @@ tbody tr:last-child td{border-bottom:none}
   justify-content:center;
   text-align:center;
 }
-.campaign-list-toolbar .btn{
+.campaign-list-toolbar .tb-btn{
   font-weight:600;
   font-size:13px;
-  padding:8px 14px;
+  padding:8px 16px;
   border-radius:8px;
+  border:none;
+  color:#fff;
+  box-shadow:0 2px 6px rgba(0,0,0,.1);
+  transition:all .2s ease;
 }
+.campaign-list-toolbar .tb-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.15)}
+.campaign-list-toolbar .tb-btn:active{transform:translateY(0)}
+.campaign-list-toolbar .tb-btn--violet{background:linear-gradient(135deg,#7c3aed,#a78bfa)}
+.campaign-list-toolbar .tb-btn--violet:hover{background:linear-gradient(135deg,#6d28d9,#8b5cf6)}
+.campaign-list-toolbar .tb-btn--blue{background:linear-gradient(135deg,#2563eb,#60a5fa)}
+.campaign-list-toolbar .tb-btn--blue:hover{background:linear-gradient(135deg,#1d4ed8,#3b82f6)}
+.campaign-list-toolbar .tb-btn--teal{background:linear-gradient(135deg,#0d9488,#2dd4bf)}
+.campaign-list-toolbar .tb-btn--teal:hover{background:linear-gradient(135deg,#0f766e,#14b8a6)}
+.campaign-list-toolbar .tb-btn--cyan{background:linear-gradient(135deg,#0891b2,#22d3ee)}
+.campaign-list-toolbar .tb-btn--cyan:hover{background:linear-gradient(135deg,#0e7490,#06b6d4)}
+.campaign-list-toolbar .tb-btn--rose{background:linear-gradient(135deg,#e11d48,#fb7185)}
+.campaign-list-toolbar .tb-btn--rose:hover{background:linear-gradient(135deg,#be123c,#f43f5e)}
+.campaign-list-toolbar .tb-btn--amber{background:linear-gradient(135deg,#d97706,#fbbf24)}
+.campaign-list-toolbar .tb-btn--amber:hover{background:linear-gradient(135deg,#b45309,#f59e0b)}
+.campaign-list-toolbar .tb-btn--orange{background:linear-gradient(135deg,#ea580c,#fb923c)}
+.campaign-list-toolbar .tb-btn--orange:hover{background:linear-gradient(135deg,#c2410c,#f97316)}
+.campaign-list-toolbar .tb-btn--red{background:linear-gradient(135deg,#dc2626,#f87171)}
+.campaign-list-toolbar .tb-btn--red:hover{background:linear-gradient(135deg,#b91c1c,#ef4444)}
+.campaign-list-toolbar .tb-btn--indigo{background:linear-gradient(135deg,#4f46e5,#818cf8)}
+.campaign-list-toolbar .tb-btn--indigo:hover{background:linear-gradient(135deg,#4338ca,#6366f1)}
 .campaign-list-toolbar .btn--warning{
   border-color:rgba(245,158,11,.25);
   background:rgba(245,158,11,.1);

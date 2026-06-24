@@ -9371,15 +9371,15 @@ function renderCampaignsListPage(presetPromoType = "", presetTemplateId = "") {
           </div>
         </div>
         <div class="campaign-list-toolbar">
-          <button class="btn btn--primary" type="button" data-act="campNew">创建活动</button>
-          <button class="btn btn--info" type="button" data-act="campImport" data-promo-type="${escapeHtml(presetPromoType || "")}" data-template-id="${escapeHtml(presetTemplateId || "")}">导入</button>
-          <button class="btn" type="button" data-act="campExport">导出</button>
-          <button class="btn" type="button" data-act="campPrint">打印</button>
-          <button class="btn btn--danger" type="button" data-act="campBulkVoid">作废</button>
-          <button class="btn btn--warning" type="button" data-act="campBulkCopy">复制</button>
-          <button class="btn btn--danger" type="button" data-act="campBulkCancelEffective">取消生效</button>
-          <button class="btn btn--danger" type="button" data-act="campBulkTerminate">终止</button>
-          <button class="btn btn--info" type="button" data-act="campBulkDelay">延期</button>
+          <button class="btn tb-btn tb-btn--violet" type="button" data-act="campNew">创建活动</button>
+          <button class="btn tb-btn tb-btn--blue" type="button" data-act="campImport" data-promo-type="${escapeHtml(presetPromoType || "")}" data-template-id="${escapeHtml(presetTemplateId || "")}">导入</button>
+          <button class="btn tb-btn tb-btn--teal" type="button" data-act="campExport">导出</button>
+          <button class="btn tb-btn tb-btn--cyan" type="button" data-act="campPrint">打印</button>
+          <button class="btn tb-btn tb-btn--rose" type="button" data-act="campBulkVoid">作废</button>
+          <button class="btn tb-btn tb-btn--amber" type="button" data-act="campBulkCopy">复制</button>
+          <button class="btn tb-btn tb-btn--orange" type="button" data-act="campBulkCancelEffective">取消生效</button>
+          <button class="btn tb-btn tb-btn--red" type="button" data-act="campBulkTerminate">终止</button>
+          <button class="btn tb-btn tb-btn--indigo" type="button" data-act="campBulkDelay">延期</button>
         </div>
         <div class="campaign-list-table">
           ${table(headers, rowsHtml || `<tr><td colspan="${headers.length}"><div class="empty">暂无数据</div></td></tr>`)}
