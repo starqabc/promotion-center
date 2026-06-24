@@ -22112,7 +22112,6 @@ function renderGmBrandsPage() {
           <td class="mono"><a class="link" href="javascript:void(0)">${escapeHtml(x.brandCode)}</a></td>
           <td>${escapeHtml(x.brandName)}</td>
           <td>${escapeHtml(x.brandEn || "")}</td>
-          <td>${escapeHtml(x.format || "—")}</td>
           <td class="mono">${escapeHtml(x.createdAt || "—")}</td>
           <td>${badge(x.status || "—")}</td>
           <td>${escapeHtml(x.remark || "")}</td>
@@ -22120,7 +22119,7 @@ function renderGmBrandsPage() {
       `;
     })
     .join("");
-  const headers = ["序号", "品牌编码", "品牌名称", "英文名", "业态", "创建时间", "状态", "备注"];
+  const headers = ["序号", "品牌编码", "品牌名称", "英文名", "创建时间", "状态", "备注"];
   return listPageLayout({
     filtersHtml,
     filterActionsHtml: actionsHtml,
