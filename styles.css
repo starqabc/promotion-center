@@ -2919,10 +2919,10 @@ tbody tr:last-child td{border-bottom:none}
 }
 
 /* ── badge color variants ── */
-.badge--muted{background:#e2e8f0;color:#475569;border-color:#cbd5e1;font-weight:600}
-.badge--warn{background:#fef3c7;color:#92400e;border-color:#f59e0b;font-weight:600}
-.badge--ok{background:#dcfce7;color:#15803d;border-color:#22c55e;font-weight:600}
-.badge--danger{background:#fee2e2;color:#b91c1c;border-color:#ef4444;font-weight:600}
+.badge--muted{background:#f8fafc;color:#64748b;border-color:#e2e8f0;font-weight:600}
+.badge--warn{background:#fefce8;color:#a16207;border-color:#fef08a;font-weight:600}
+.badge--ok{background:#f0fdf4;color:#15803d;border-color:#bbf7d0;font-weight:600}
+.badge--danger{background:#fef2f2;color:#dc2626;border-color:#fecaca;font-weight:600}
 
 /* ── preview panel ── */
 .preview-card{
