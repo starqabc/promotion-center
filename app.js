@@ -22267,13 +22267,11 @@ function renderGmStoresPage() {
           <td>${escapeHtml(x.storeType || "—")}</td>
           <td>${escapeHtml(x.regionCode || "—")}<div class="cell-muted">${escapeHtml(regionDescByCode0(x.regionCode))}</div></td>
           <td>${badge(x.status || "—")}</td>
-          <td>${escapeHtml(x.manager || "—")}</td>
-          <td class="mono">${escapeHtml(x.phone || "—")}</td>
         </tr>
       `;
     })
     .join("");
-  const headers = ["序号", "门店编码", "门店名称", "门店类型", "大区", "状态", "店长", "联系电话"];
+  const headers = ["序号", "门店编码", "门店名称", "门店类型", "大区", "状态"];
   return listPageLayout({
     filtersHtml,
     filterActionsHtml: actionsHtml,
@@ -22349,7 +22347,7 @@ function renderStoreMgmtPage(kind) {
       queryAct: "smStoresQuery",
       resetAct: "smStoresReset",
       listTitle: "门店信息列表",
-      headers: ["序号", "门店编码", "门店名称", "门店类型", "区域编码", "价格组编码", "联系人", "电话", "地址", "业态", "状态", "创建时间"],
+      headers: ["序号", "门店编码", "门店名称", "门店类型", "区域编码", "价格组编码", "地址", "业态", "状态", "创建时间"],
       rowHtml: (x, idx) => `<tr>
         <td>${idx + 1}</td>
         <td class="mono">${escapeHtml(x.storeCode || "")}</td>
@@ -22357,8 +22355,6 @@ function renderStoreMgmtPage(kind) {
         <td>${escapeHtml(x.storeType || "—")}</td>
         <td class="mono">${escapeHtml(x.regionCode || "—")}</td>
         <td class="mono">${escapeHtml(x.priceGroupCode || "—")}</td>
-        <td>${escapeHtml(x.contact || x.manager || "—")}</td>
-        <td class="mono">${escapeHtml(x.phone || "—")}</td>
         <td>${escapeHtml(x.address || "—")}</td>
         <td>${escapeHtml(x.format || "—")}</td>
         <td>${badge(x.status || "—")}</td>
