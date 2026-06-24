@@ -220,7 +220,7 @@ const AppState = {
     "/schedule-plan": { title: "计划档期", sub: "年度档期 · 档期选择 · 档期计划 · 档期推广" },
     "/schedule-plan-create": { title: "新建年度档期", sub: "档期年度/分类/年度档期数 · 导入 · 保存校验" },
     "/schedule-plan-edit": { title: "维护年度档期", sub: "档期选择 → 档期计划 → 档期推广 → 提交审批 → 审批通过生成实际档期" },
-    "/schedule-actual": { title: "促销档期", sub: "档期列表 · 关联部门MD（原型演示）" },
+    "/schedule-actual": { title: "促销档期", sub: "档期列表 · 部门联合MD（原型演示）" },
     "/schedule-actual-detail": { title: "促销档期详情", sub: "抬头 + 明细：档期数据/进度/DM版别/版块/门店" },
     "/assortment": { title: "档期商品", sub: "按实际档期汇总全部选品 · 汇总列表只读展示" },
     "/assortment-create": { title: "创建档期选品", sub: "选择实际档期与大类 · 选择商品/导入明细 · 提交审批" },
@@ -6002,7 +6002,7 @@ function renderScheduleActualListPage() {
 
       <div class="psa-block">
         <div class="psa-block__head">
-          <div class="psa-block__title">关联部门MD</div>
+          <div class="psa-block__title">部门联合MD</div>
           <div class="psa-block__actions">
             <button class="btn psa-export-btn" type="button" data-act="psaExport">导出</button>
           </div>
@@ -6017,7 +6017,7 @@ function renderScheduleActualListPage() {
 
       <div class="psa-block">
         <div class="psa-block__head">
-          <div class="psa-block__title">查看部门MD</div>
+          <div class="psa-block__title">部门MD</div>
         </div>
         <div class="psa-table-wrap">
           <table class="psa-table">
@@ -28846,7 +28846,7 @@ function handleAction(r, act, btn) {
         </tr>
       `).join("");
       openModal({
-        title: "查看部门MD",
+        title: "部门MD",
         subtitle: "",
         primaryText: "关闭",
         secondaryText: "取消",
