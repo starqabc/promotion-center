@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>商品促销平台原型</title>
-    <link rel="stylesheet" href="./styles.css?v=202606112200" />
+    <link rel="stylesheet" href="./styles.css?v=202606241830" />
   </head>
   <body>
     <div id="app" class="app-shell">
@@ -24,20 +24,15 @@
 
         <nav class="nav">
           <div class="nav__section">
-            <a class="nav__item" href="#/dashboard" data-route="/dashboard">
-              <span class="nav__icon">📊</span>
-              <span class="nav__text">数据看板</span>
-            </a>
+            <a class="nav__labelbtn" href="#/dashboard" data-route="/dashboard" style="text-decoration:none">数据看板</a>
           </div>
           <div class="nav__section" data-section="planning">
             <button class="nav__labelbtn" type="button" data-act="navSection" data-section="planning" aria-expanded="true">促销规划</button>
             <div class="nav__panel" data-section-panel="planning">
               <a class="nav__item" href="#/schedule-actual" data-route="/schedule-actual">
-                <span class="nav__icon">🗓</span>
                 <span class="nav__text">促销档期</span>
               </a>
               <a class="nav__item" href="#/assortment" data-route="/assortment">
-                <span class="nav__icon">🧺</span>
                 <span class="nav__text">档期商品</span>
               </a>
             </div>
@@ -47,15 +42,12 @@
             <button class="nav__labelbtn" type="button" data-act="navSection" data-section="template" aria-expanded="false">促销模版</button>
             <div class="nav__panel" data-section-panel="template">
               <a class="nav__item" href="#/templates" data-route="/templates">
-                <span class="nav__icon">🧩</span>
                 <span class="nav__text">促销模板</span>
               </a>
               <a class="nav__item" href="#/template-priority" data-route="/template-priority">
-                <span class="nav__icon">🥇</span>
                 <span class="nav__text">模版优先级</span>
               </a>
               <a class="nav__item" href="#/promo-goods-priority" data-route="/promo-goods-priority">
-                <span class="nav__icon">🧷</span>
                 <span class="nav__text">促销商品优先级</span>
               </a>
             </div>
@@ -64,7 +56,7 @@
           <div class="nav__section" data-section="campaign">
             <button class="nav__labelbtn" type="button" data-act="navSection" data-section="campaign" aria-expanded="false">促销活动</button>
             <div class="nav__panel" data-section-panel="campaign">
-              <div class="nav__sub" id="campaignsSubNav"></div>
+              <div class="nav__campaign-nav" id="campaignsSubNav"></div>
             </div>
           </div>
 
@@ -72,11 +64,9 @@
             <button class="nav__labelbtn" type="button" data-act="navSection" data-section="dispatch" aria-expanded="false">促销调度</button>
             <div class="nav__panel" data-section-panel="dispatch">
               <a class="nav__item" href="#/promo-goods-terminate" data-route="/promo-goods-terminate">
-                <span class="nav__icon">⛔</span>
                 <span class="nav__text">生效商品</span>
               </a>
               <a class="nav__item" href="#/promo-terminate-orders" data-route="/promo-terminate-orders">
-                <span class="nav__icon">🧾</span>
                 <span class="nav__text">促销终止单</span>
               </a>
             </div>
@@ -86,38 +76,25 @@
             <button class="nav__labelbtn" type="button" data-act="navSection" data-section="calc" aria-expanded="false">促销计算</button>
             <div class="nav__panel" data-section-panel="calc">
               <a class="nav__item" href="#/pricing" data-route="/pricing">
-                <span class="nav__icon">🧮</span>
                 <span class="nav__text">模拟算价</span>
               </a>
             </div>
           </div>
 
-          <div class="nav__section" data-section="master">
-            <button class="nav__labelbtn" type="button" data-act="navSection" data-section="master" aria-expanded="false">主档信息</button>
-            <div class="nav__panel" data-section-panel="master">
-              <a class="nav__item" href="#/gm-goods" data-route="/gm-goods">
-                <span class="nav__icon">📦</span>
-                <span class="nav__text">商品信息</span>
+          <div class="nav__section" data-section="rpt">
+            <button class="nav__labelbtn" type="button" data-act="navSection" data-section="rpt" aria-expanded="false">促销监控</button>
+            <div class="nav__panel" data-section-panel="rpt">
+              <a class="nav__item" href="#/rpt-analysis" data-route="/rpt-analysis">
+                <span class="nav__text">促销分析</span>
               </a>
-              <a class="nav__item" href="#/gm-pay" data-route="/gm-pay">
-                <span class="nav__icon">💳</span>
-                <span class="nav__text">支付方式</span>
+              <a class="nav__item" href="#/rpt-achievement" data-route="/rpt-achievement">
+                <span class="nav__text">促销达成</span>
               </a>
-              <a class="nav__item" href="#/gm-offline-cat" data-route="/gm-offline-cat">
-                <span class="nav__icon">🏬</span>
-                <span class="nav__text">类别信息</span>
+              <a class="nav__item" href="#/rpt-warning" data-route="/rpt-warning">
+                <span class="nav__text">促销预警</span>
               </a>
-              <a class="nav__item" href="#/gm-brands" data-route="/gm-brands">
-                <span class="nav__icon">🏷</span>
-                <span class="nav__text">商品品牌</span>
-              </a>
-              <a class="nav__item" href="#/gm-suppliers" data-route="/gm-suppliers">
-                <span class="nav__icon">🚚</span>
-                <span class="nav__text">供应商信息</span>
-              </a>
-              <a class="nav__item" href="#/sm-stores" data-route="/sm-stores">
-                <span class="nav__icon">🏪</span>
-                <span class="nav__text">门店信息</span>
+              <a class="nav__item" href="#/rpt-store-abnormal" data-route="/rpt-store-abnormal">
+                <span class="nav__text">门店促销品异常</span>
               </a>
             </div>
           </div>
@@ -126,16 +103,37 @@
             <button class="nav__labelbtn" type="button" data-act="navSection" data-section="voucher" aria-expanded="false">礼券主题</button>
             <div class="nav__panel" data-section-panel="voucher">
               <a class="nav__item" href="#/voucher-themes" data-route="/voucher-themes">
-                <span class="nav__icon">🎫</span>
                 <span class="nav__text">礼券主题</span>
               </a>
               <a class="nav__item" href="#/voucher-categories" data-route="/voucher-categories">
-                <span class="nav__icon">🗂</span>
                 <span class="nav__text">礼券分类</span>
               </a>
               <a class="nav__item" href="#/voucher-packs" data-route="/voucher-packs">
-                <span class="nav__icon">🎁</span>
                 <span class="nav__text">券包管理</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="nav__section" data-section="master">
+            <button class="nav__labelbtn" type="button" data-act="navSection" data-section="master" aria-expanded="false">主档信息</button>
+            <div class="nav__panel" data-section-panel="master">
+              <a class="nav__item" href="#/gm-goods" data-route="/gm-goods">
+                <span class="nav__text">商品信息</span>
+              </a>
+              <a class="nav__item" href="#/gm-pay" data-route="/gm-pay">
+                <span class="nav__text">支付方式</span>
+              </a>
+              <a class="nav__item" href="#/gm-offline-cat" data-route="/gm-offline-cat">
+                <span class="nav__text">类别信息</span>
+              </a>
+              <a class="nav__item" href="#/gm-brands" data-route="/gm-brands">
+                <span class="nav__text">商品品牌</span>
+              </a>
+              <a class="nav__item" href="#/gm-suppliers" data-route="/gm-suppliers">
+                <span class="nav__text">供应商信息</span>
+              </a>
+              <a class="nav__item" href="#/sm-stores" data-route="/sm-stores">
+                <span class="nav__text">门店信息</span>
               </a>
             </div>
           </div>
@@ -144,37 +142,10 @@
             <button class="nav__labelbtn" type="button" data-act="navSection" data-section="sys" aria-expanded="false">系统管理</button>
             <div class="nav__panel" data-section-panel="sys">
               <a class="nav__item" href="#/sys-dict" data-route="/sys-dict">
-                <span class="nav__icon">🧾</span>
                 <span class="nav__text">数据字典</span>
               </a>
               <a class="nav__item" href="#/sys-params" data-route="/sys-params">
-                <span class="nav__icon">🧩</span>
                 <span class="nav__text">系统参数</span>
-              </a>
-              <a class="nav__item" href="#/sys-approval" data-route="/sys-approval">
-                <span class="nav__icon">✅</span>
-                <span class="nav__text">审批配置</span>
-              </a>
-            </div>
-          </div>
-          <div class="nav__section" data-section="rpt">
-            <button class="nav__labelbtn" type="button" data-act="navSection" data-section="rpt" aria-expanded="false">促销监控</button>
-            <div class="nav__panel" data-section-panel="rpt">
-              <a class="nav__item" href="#/rpt-analysis" data-route="/rpt-analysis">
-                <span class="nav__icon">📈</span>
-                <span class="nav__text">促销分析</span>
-              </a>
-              <a class="nav__item" href="#/rpt-achievement" data-route="/rpt-achievement">
-                <span class="nav__icon">🎯</span>
-                <span class="nav__text">促销达成</span>
-              </a>
-              <a class="nav__item" href="#/rpt-warning" data-route="/rpt-warning">
-                <span class="nav__icon">🚨</span>
-                <span class="nav__text">促销预警</span>
-              </a>
-              <a class="nav__item" href="#/rpt-store-abnormal" data-route="/rpt-store-abnormal">
-                <span class="nav__icon">🏬</span>
-                <span class="nav__text">门店促销品异常</span>
               </a>
             </div>
           </div>
@@ -271,6 +242,6 @@
         return true;
       };
     </script>
-    <script src="./app.js?v=202606112200"></script>
+    <script src="./app.js?v=202606241830"></script>
   </body>
 </html>
