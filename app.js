@@ -8977,14 +8977,8 @@ function renderTemplateWizardPage(mode) {
     <div class="crumbs"><span class="crumbs__muted">促销中心</span> / <a class="link" href="#/templates">促销模板</a> / <span>${escapeHtml(title)}</span></div>
     ${layoutCard(`
       <div class="tpl-page">
-        <div class="tpl-page__head">
-          <div class="tpl-page__head-main">
-            <div class="tpl-page__title">${escapeHtml(title)}</div>
-            <div class="tpl-page__desc">模板创建与编辑页按所选模版类型动态展示参数。</div>
-          </div>
-          <div class="tpl-page__actions">
-            ${headerActionsHtml}
-          </div>
+        <div class="tpl-page__actions">
+          ${headerActionsHtml}
         </div>
         <div id="tplWizard" class="wizard wizard--steps-row tpl-wizard" data-step="${step}">
           <div class="wizard__steps">
