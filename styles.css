@@ -2280,10 +2280,10 @@ tbody tr:last-child td{border-bottom:none}
   font-weight:700;
 }
 #tplWizard .step.is-done .step__dot{
-  background:linear-gradient(135deg,#16a34a,#22c55e);
-  border-color:#16a34a;
+  background:#2563eb;
+  border-color:#2563eb;
   color:#fff;
-  box-shadow:0 2px 8px rgba(22,163,74,.2);
+  box-shadow:none;
 }
 #tplWizard .step.is-done .step__label{
   color:#16a34a;
