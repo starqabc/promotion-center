@@ -263,6 +263,7 @@ const AppState = {
     "/sm-regions": { title: "区域信息", sub: "只读：查询区域基础信息（原型演示）" },
     "/sm-price-groups": { title: "价格组信息", sub: "只读：查询价格组基础信息（原型演示）" },
     "/sm-stores": { title: "门店信息", sub: "只读：查询门店基础信息（原型演示）" },
+    "/sm-store-goods": { title: "门店商品信息", sub: "查询门店商品关联信息（原型演示）" },
     "/voucher-themes": { title: "礼券主题", sub: "礼券主题配置与投放口径（原型演示）" },
     "/voucher-themes-create": { title: "新增礼券主题", sub: "按步骤配置：基本信息/参与对象/参与范围/计费规则" },
     "/voucher-themes-edit": { title: "修改礼券主题", sub: "输入状态可修改；生效/作废不可修改" },
@@ -21852,6 +21853,92 @@ function renderGmGoodsPage() {
   });
 }
 
+function renderSmStoreGoodsPage() {
+  const ui = AppState.ui.smStoreGoods || (AppState.ui.smStoreGoods = { qStoreCode: "", qStoreName: "", qGoods: "", qCategory: "全部" });
+  const stores = AppState.data.gmStores || [];
+  const goods = (AppState.data.masterData && AppState.data.masterData.goods) || [];
+  const categories = ["全部"].concat((AppState.data.masterData && AppState.data.masterData.majorCategories) || []);
+  const storeNames = { "ST-001": "华东旗舰店", "ST-002": "华南中心店", "ST-003": "华北社区店" };
+  const sourceRows = [];
+  stores.slice(0, 3).forEach((s) => {
+    goods.slice(0, 4).forEach((g) => {
+      sourceRows.push({
+        storeCode: s.storeCode || "ST-001",
+        storeName: s.storeName || storeNames[s.storeCode] || "—",
+        skuCode: g.sku || "",
+        skuName: g.name || "",
+        unit: g.goodsUnit || g.unit || "—",
+        counter: g.counterCode || "CT-01",
+        spec: g.spec || "—",
+        dept: g.department || "食品部",
+        barcode: g.barcode || ""
+      });
+    });
+  });
+  const list = sourceRows.filter((x) => {
+    const sc = String(ui.qStoreCode || "").trim();
+    const sn = String(ui.qStoreName || "").trim();
+    const gq = String(ui.qGoods || "").trim().toLowerCase();
+    if (sc && !String(x.storeCode).includes(sc)) return false;
+    if (sn && !String(x.storeName).includes(sn)) return false;
+    if (gq && ![x.skuCode, x.skuName, x.barcode].some((v) => String(v || "").toLowerCase().includes(gq))) return false;
+    if (ui.qCategory !== "全部" && String(x.category || "") !== String(ui.qCategory)) return false;
+    return true;
+  });
+  const filtersHtml = `
+    <div class="field">
+      <div class="field__label">门店编码</div>
+      <input class="input" id="smStoreGoodsQCode" value="${escapeHtml(ui.qStoreCode)}" placeholder="请输入门店编码查询" />
+    </div>
+    <div class="field">
+      <div class="field__label">门店名称</div>
+      <input class="input" id="smStoreGoodsQName" value="${escapeHtml(ui.qStoreName)}" placeholder="请输入门店名称查询" />
+    </div>
+    <div class="field">
+      <div class="field__label">商品信息</div>
+      <input class="input" id="smStoreGoodsQGoods" value="${escapeHtml(ui.qGoods)}" placeholder="请输入商品编码/条码/名称查询" />
+    </div>
+    <div class="field">
+      <div class="field__label">类目</div>
+      <select class="select" id="smStoreGoodsQCategory">${categories.map((x) => `<option ${x === ui.qCategory ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select>
+    </div>
+  `;
+  const actionsHtml = `
+    <button class="btn btn--primary" type="button" data-act="smStoreGoodsQuery">查询</button>
+    <button class="btn" type="button" data-act="smStoreGoodsReset">重置</button>
+  `;
+  const headers = ["", "序号", "门店编码", "门店名称", "商品编码", "商品名称", "单位", "所属柜组", "商品规格", "所属部门", "条形码"];
+  const rows = list.map((x, idx) => `
+    <tr>
+      <td><input type="checkbox" /></td>
+      <td>${idx + 1}</td>
+      <td class="mono">${escapeHtml(x.storeCode)}</td>
+      <td>${escapeHtml(x.storeName)}</td>
+      <td class="mono">${escapeHtml(x.skuCode)}</td>
+      <td>${escapeHtml(x.skuName)}</td>
+      <td>${escapeHtml(x.unit)}</td>
+      <td class="mono">${escapeHtml(x.counter)}</td>
+      <td>${escapeHtml(x.spec)}</td>
+      <td>${escapeHtml(x.dept)}</td>
+      <td class="mono">${escapeHtml(x.barcode)}</td>
+    </tr>
+  `).join("");
+  const emptyRows = Array.from({ length: Math.max(0, 8 - list.length) }).map((_, idx) => `
+    <tr>
+      <td><input type="checkbox" disabled /></td>
+      <td>${list.length + idx + 1}</td>
+      ${Array.from({ length: headers.length - 2 }).map(() => "<td></td>").join("")}
+    </tr>
+  `).join("");
+  return listPageLayout({
+    filtersHtml,
+    filterActionsHtml: actionsHtml,
+    listTitle: "门店商品信息列表",
+    tableHtml: table(headers, rows + emptyRows),
+    footerHtml: footerbar(`共 ${list.length} 条`, "第 1 页")
+  });
+}
+
 function openGmGoodsDetail(sku) {
   const md = AppState.data.masterData || {};
   const g = (md.goods || []).find((x) => String(x.sku) === String(sku));
@@ -26348,6 +26435,7 @@ function render() {
   else if (r === "/sm-regions") html = renderStoreMgmtPage("regions");
   else if (r === "/sm-price-groups") html = renderStoreMgmtPage("priceGroups");
   else if (r === "/sm-stores") html = renderStoreMgmtPage("stores");
+  else if (r === "/sm-store-goods") html = renderSmStoreGoodsPage();
   else if (r === "/voucher-themes") html = renderVoucherThemesPage();
   else if (r === "/voucher-themes-create") html = renderVoucherThemeWizardPage("create");
   else if (r === "/voucher-themes-edit") html = renderVoucherThemeWizardPage("edit");
@@ -27207,6 +27295,24 @@ function handleAction(r, act, btn) {
     }
     if (cfg && act === cfg.resetAct) {
       AppState.ui.storeMgmt[cfg.key] = { qCode: "", qName: "" };
+      render();
+      return;
+    }
+  }
+  if (r === "/sm-store-goods") {
+    if (act === "smStoreGoodsQuery") {
+      const rd = (id) => document.getElementById(id) ? document.getElementById(id).value : "";
+      AppState.ui.smStoreGoods = AppState.ui.smStoreGoods || {};
+      AppState.ui.smStoreGoods.qStoreCode = rd("smStoreGoodsQCode").trim();
+      AppState.ui.smStoreGoods.qStoreName = rd("smStoreGoodsQName").trim();
+      AppState.ui.smStoreGoods.qGoods = rd("smStoreGoodsQGoods").trim();
+      AppState.ui.smStoreGoods.qCategory = rd("smStoreGoodsQCategory") || "全部";
+      render();
+      toast("查询完成（原型演示）");
+      return;
+    }
+    if (act === "smStoreGoodsReset") {
+      AppState.ui.smStoreGoods = { qStoreCode: "", qStoreName: "", qGoods: "", qCategory: "全部" };
       render();
       return;
     }
