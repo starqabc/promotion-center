@@ -2424,7 +2424,7 @@ tbody tr:last-child td{border-bottom:none}
   box-shadow:none;
 }
 .tpl-wizard .step.is-done .step__dot{
-  background:#22c55e;
+  background:#2563eb;
   color:#fff;
 }
 .tpl-wizard .step.is-active .step__label{color:#fff;font-weight:600}
