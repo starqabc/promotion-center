@@ -21389,14 +21389,6 @@ function renderPricingPage() {
           <button class="btn" type="button" data-act="pricingTopReset">重置</button>
         </div>
       </div>
-      <div class="pricing-member-info">
-        <div class="pricing-member-avatar">张</div>
-        <div class="pricing-member-detail">
-          <div class="pricing-member-name">张女士 <span class="pricing-member-level">普通</span></div>
-          <div class="pricing-member-no">会员号：${escapeHtml(st.memberNo || "—")}</div>
-          <div class="pricing-member-phone">手机号：${escapeHtml(st.phone || "—")}</div>
-        </div>
-      </div>
     </div>
 
     <div class="pricing-layout">
