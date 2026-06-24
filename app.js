@@ -9297,11 +9297,11 @@ function renderCampaignsListPage(presetPromoType = "", presetTemplateId = "") {
       const auditStatus = campaignAuditStatusLabel(c);
       const checked = selectedNos.includes(String(c.activityNo || ""));
       const ops = [
-        canEdit ? `<button class="btn btn--primary" type="button" data-act="campEdit" data-id="${escapeHtml(c.activityNo)}">编辑</button>` : `<span class="cell-muted">编辑</span>`,
-        canSubmit ? `<button class="btn" type="button" data-act="campSubmit" data-id="${escapeHtml(c.activityNo)}">提交</button>` : `<span class="cell-muted">提交</span>`,
-        `<button class="btn btn--danger" type="button" data-act="campApprove" data-id="${escapeHtml(c.activityNo)}">审核</button>`,
-        canEffective ? `<button class="btn btn--primary" type="button" data-act="campEffective" data-id="${escapeHtml(c.activityNo)}">生效</button>` : `<span class="cell-muted">生效</span>`,
-        `<button class="btn" type="button" data-act="campDetail" data-id="${escapeHtml(c.activityNo)}">详情</button>`
+        canEdit ? `<button class="linkbtn" type="button" data-act="campEdit" data-id="${escapeHtml(c.activityNo)}">编辑</button>` : `<span class="cell-muted">编辑</span>`,
+        canSubmit ? `<button class="linkbtn" type="button" data-act="campSubmit" data-id="${escapeHtml(c.activityNo)}">提交</button>` : `<span class="cell-muted">提交</span>`,
+        `<button class="linkbtn" type="button" data-act="campApprove" data-id="${escapeHtml(c.activityNo)}">审核</button>`,
+        canEffective ? `<button class="linkbtn" type="button" data-act="campEffective" data-id="${escapeHtml(c.activityNo)}">生效</button>` : `<span class="cell-muted">生效</span>`,
+        `<button class="linkbtn" type="button" data-act="campDetail" data-id="${escapeHtml(c.activityNo)}">详情</button>`
       ].join("");
       return `
         <tr data-row="campaign" data-id="${escapeHtml(c.activityNo)}">
@@ -9372,13 +9372,13 @@ function renderCampaignsListPage(presetPromoType = "", presetTemplateId = "") {
         </div>
         <div class="campaign-list-toolbar">
           <button class="btn btn--primary" type="button" data-act="campNew">创建活动</button>
-          <button class="btn" type="button" data-act="campImport" data-promo-type="${escapeHtml(presetPromoType || "")}" data-template-id="${escapeHtml(presetTemplateId || "")}">导入</button>
+          <button class="btn btn--primary" type="button" data-act="campImport" data-promo-type="${escapeHtml(presetPromoType || "")}" data-template-id="${escapeHtml(presetTemplateId || "")}">导入</button>
           <button class="btn" type="button" data-act="campExport">导出</button>
           <button class="btn" type="button" data-act="campPrint">打印</button>
-          <button class="btn" type="button" data-act="campBulkVoid">作废</button>
-          <button class="btn" type="button" data-act="campBulkCopy">复制</button>
-          <button class="btn" type="button" data-act="campBulkCancelEffective">取消生效</button>
-          <button class="btn" type="button" data-act="campBulkTerminate">终止</button>
+          <button class="btn btn--danger" type="button" data-act="campBulkVoid">作废</button>
+          <button class="btn btn--primary" type="button" data-act="campBulkCopy">复制</button>
+          <button class="btn btn--danger" type="button" data-act="campBulkCancelEffective">取消生效</button>
+          <button class="btn btn--danger" type="button" data-act="campBulkTerminate">终止</button>
           <button class="btn" type="button" data-act="campBulkDelay">延期</button>
         </div>
         <div class="campaign-list-table">
