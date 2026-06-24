@@ -17005,16 +17005,10 @@ function comboCampaignBrandInfoTableHtml(draft = {}, readonly = false) {
         <td>${readonly
           ? `<span class="combo-goods-cell-text">${escapeHtml(String(x.brandName || ""))}</span>`
           : `<input class="combo-goods-cell-input" data-cw="comboBrandRows" data-tab="${activeTab}" data-idx="${dataIdx}" data-field="brandName" value="${escapeHtml(String(x.brandName || ""))}" />`}</td>
-        <td>${readonly
-          ? `<span class="combo-goods-cell-text">${escapeHtml(String(x.promoPrice ?? ""))}</span>`
-          : `<input class="combo-goods-cell-input" data-cw="comboBrandRows" data-tab="${activeTab}" data-idx="${dataIdx}" data-field="promoPrice" type="number" min="0" step="0.01" value="${escapeHtml(String(x.promoPrice ?? ""))}" />`}</td>
-        <td>${readonly
-          ? `<span class="combo-goods-cell-text">${escapeHtml(String(x.limitQty ?? ""))}</span>`
-          : `<input class="combo-goods-cell-input" data-cw="comboBrandRows" data-tab="${activeTab}" data-idx="${dataIdx}" data-field="limitQty" type="number" min="0" step="1" value="${escapeHtml(String(x.limitQty ?? ""))}" />`}</td>
       </tr>
     `;
   }).join("");
-  const emptyCols = activeTab === "excludeGoods" ? 9 : 7;
+  const emptyCols = activeTab === "excludeGoods" ? 9 : 5;
   const minRows = activeTab === "excludeGoods" ? 6 : 2;
   const emptyRows = Array.from({ length: Math.max(0, minRows - visibleRows.length) }).map((_, idx) => `
     <tr>
@@ -17044,8 +17038,6 @@ function comboCampaignBrandInfoTableHtml(draft = {}, readonly = false) {
         <th>组合编码</th>
         <th>品牌编码</th>
         <th>品牌名称</th>
-        <th>促销价</th>
-        <th>限购数量</th>
       </tr>
     `;
   return `
