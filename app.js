@@ -11340,7 +11340,7 @@ function campaignWizardValidateStep(step) {
   if (Number(step) === 1) {
     if (!String(d.activitySubject || "").trim()) return "请填写活动主题";
     if (!String(d.templateId || "").trim()) return "请选择促销模版";
-    if (!String(d.scheduleId || "").trim()) return "请选择活动档期";
+    if (String(d.tempPriceAdjust || "否") !== "是" && !String(d.scheduleId || "").trim()) return "请选择活动档期";
     if (!String(d.startAt || "").trim()) return "请选择开始时间";
     if (!String(d.endAt || "").trim()) return "请选择结束时间";
   }
@@ -15450,6 +15450,7 @@ function campaignWizardUpdateDraftFromEvent(e) {
   if (!cw) return;
 
   if (cw === "root" && field) {
+    if (field === "tempPriceAdjust") { d[field] = t.value; render(); return; }
     if (field === "startAt" || field === "endAt") d[field] = fromDatetimeLocalValue(t.value);
     else d[field] = t.value;
     return;
@@ -18256,9 +18257,18 @@ function renderCampaignWizardPage(mode) {
             </div>
             <div class="form__row">
               <div class="field">
-                <div class="field__label">活动档期<span class="req">*</span></div>
+                <div class="field__label">是否临时调价</div>
+                <div class="checks">
+                  <label class="check"><input type="radio" name="cwTempAdjust" data-cw="root" data-field="tempPriceAdjust" value="否" ${String(d.tempPriceAdjust || "否") !== "是" ? "checked" : ""} />否</label>
+                  <label class="check"><input type="radio" name="cwTempAdjust" data-cw="root" data-field="tempPriceAdjust" value="是" ${String(d.tempPriceAdjust || "否") === "是" ? "checked" : ""} />是</label>
+                </div>
+              </div>
+              <div class="field">
+                <div class="field__label">活动档期${String(d.tempPriceAdjust || "否") !== "是" ? '<span class="req">*</span>' : ''}</div>
                 <select class="select" data-cw="root" data-field="scheduleId">${actualOps}</select>
               </div>
+            </div>
+            <div class="form__row">
               <div class="field">
                 <div class="field__label">活动模式</div>
                 <select class="select" data-cw="root" data-field="activityMode">
@@ -20564,6 +20574,7 @@ function renderCampaignDetailPage(activityNo) {
           ["活动主题", escapeHtml(c.activitySubject || "—")],
           ["促销模版", `<span class="mono">${escapeHtml(c.templateNo || "—")}</span> ${escapeHtml(c.templateName || "")}`.trim()],
           ["促销类型", escapeHtml(c.activityType || "—")],
+          ["是否临时调价", escapeHtml(String(c.tempPriceAdjust || "否"))],
           ["活动档期", `<span class="mono">${escapeHtml(c.scheduleId || "—")}</span>`],
           ["活动说明", escapeHtml(c.desc || "")],
           ["开始时间", `<span class="mono">${escapeHtml(c.startAt || "—")}</span>`],
