@@ -16524,14 +16524,7 @@ function campaignAmountGiftBasicPanelHtml({
         ${scheduleDisplay}
       </div>
     </div>
-    ${(!readonly && mode === "create") ? `
-      <div class="combo-camp-form__row combo-camp-form__row--1">
-        <div class="field">
-          <div class="field__label">销售目标（元）</div>
-          <input class="input" data-cw="root" data-field="salesTarget" value="${escapeHtml(String(d.salesTarget || ""))}" placeholder="请输入" />
-        </div>
-      </div>
-    ` : ``}
+    ${(!readonly && mode === "create") ? `` : ``}
     <div class="field">
       <div class="field__label">活动说明</div>
       <input class="input" ${readonly ? "disabled" : 'data-cw="root" data-field="desc"'} value="${escapeHtml(d.desc || "")}" placeholder="请输入" />
@@ -17876,14 +17869,7 @@ function comboCampaignBasicPanelHtml({
         ${readonly ? `<input class="input" value="${escapeHtml(scheduleValue || "")}" disabled />` : scheduleDisplay}
       </div>
     </div>
-    ${(!readonly && mode === "create") ? `
-      <div class="combo-camp-form__row combo-camp-form__row--1">
-        <div class="field">
-          <div class="field__label">销售目标（元）</div>
-          <input class="input" data-cw="root" data-field="salesTarget" value="${escapeHtml(String(d.salesTarget || ""))}" placeholder="请输入" />
-        </div>
-      </div>
-    ` : ``}
+    ${(!readonly && mode === "create") ? `` : ``}
     <div class="field">
       <div class="field__label">活动说明</div>
       <textarea class="textarea" ${readonly ? "disabled" : 'data-cw="root" data-field="desc"'} rows="3" placeholder="请输入活动名称">${escapeHtml(d.desc || "")}</textarea>
@@ -18276,14 +18262,6 @@ function renderCampaignWizardPage(mode) {
                 </select>
               </div>
             </div>
-            ${mode === "create" ? `
-              <div class="form__row">
-                <div class="field">
-                  <div class="field__label">销售目标（元）</div>
-                  <input class="input" data-cw="root" data-field="salesTarget" value="${escapeHtml(String(d.salesTarget || ""))}" placeholder="请输入" />
-                </div>
-              </div>
-            ` : ``}
             <div class="field">
               <div class="field__label">活动说明</div>
               <textarea class="textarea" data-cw="root" data-field="desc" rows="3" placeholder="非必填">${escapeHtml(d.desc || "")}</textarea>
