@@ -3590,6 +3590,35 @@ tbody tr:last-child td{border-bottom:none}
   font-weight:600;
   color:#111827;
 }
+.psa-card__top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:6px;
+}
+.psa-status{
+  flex-shrink:0;
+  font-size:11px;
+  line-height:1;
+  padding:3px 8px;
+  border-radius:999px;
+  border:1px solid #d1d5db;
+  background:#fff;
+  color:#6b7280;
+  white-space:nowrap;
+}
+.psa-status--doing{border-color:#2563eb;color:#2563eb;background:#eff6ff;}
+.psa-status--done{border-color:#dc2626;color:#dc2626;background:#fef2f2;}
+.psa-status--todo{border-color:#d1d5db;color:#6b7280;background:#fff;}
+.psa-card__hot{
+  display:flex;
+  align-items:center;
+  gap:4px;
+  font-size:11px;
+  color:#374151;
+  font-weight:600;
+}
+.psa-card__hot .psa-tri{color:#16a34a;font-size:10px;line-height:1;}
 .psa-card__id{
   font-size:11px;
   color:#6b7280;

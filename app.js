@@ -5868,66 +5868,89 @@ function renderScheduleActualListPage() {
   const ui = AppState.ui.scheduleActual || (AppState.ui.scheduleActual = {});
   const qYear = String(ui.qYear || "2026年度");
   const qName = String(ui.qName || "");
-  const qTimeType = String(ui.qTimeType || "创建时间");
   const qFrom = String(ui.qFrom || "");
   const qTo = String(ui.qTo || "");
   const sortKey = String(ui.sortKey || "start");
   const sourceCards = [
-    { key: "DG-1", id: "DG00000001", name: "双11狂欢季", start: "2026-05-01", end: "2026-07-31" },
-    { key: "DG-2", id: "DG00000001", name: "秋季上新节", start: "2026-05-01", end: "2026-07-31" },
-    { key: "DG-3", id: "DG00000001", name: "618年终大促", start: "2026-05-01", end: "2026-07-31" },
-    { key: "DG-4", id: "DG00000001", name: "春季焕新季", start: "2026-05-01", end: "2026-07-31" },
-    { key: "DG-5", id: "DG00000001", name: "春节大促", start: "2026-05-01", end: "2026-07-31" },
-    { key: "DG-6", id: "DG00000001", name: "春季焕新季", start: "2026-05-01", end: "2026-07-31" },
-    { key: "DG-7", id: "DG00000001", name: "双11狂欢季", start: "2026-05-01", end: "2026-07-31" },
-    { key: "DG-8", id: "DG00000001", name: "秋季上新节", start: "2026-05-01", end: "2026-07-31" },
-    { key: "DG-9", id: "DG00000001", name: "618年终大促", start: "2026-05-01", end: "2026-07-31" },
-    { key: "DG-10", id: "DG00000001", name: "春季焕新季", start: "2026-05-01", end: "2026-07-31" },
-    { key: "DG-11", id: "DG00000001", name: "春节大促", start: "2026-05-01", end: "2026-07-31" },
-    { key: "DG-12", id: "DG00000001", name: "春季焕新季", start: "2026-05-01", end: "2026-07-31" }
+    { key: "DG-1", id: "DQ0000001", name: "双11狂欢季", start: "2026-05-01", end: "2026-07-31", status: "待开始", hot: "50/100" },
+    { key: "DG-2", id: "DQ0000001", name: "秋季上新节", start: "2026-05-01", end: "2026-07-31", status: "进行中", hot: "50/100" },
+    { key: "DG-3", id: "DQ0000001", name: "618年终大促", start: "2026-05-01", end: "2026-07-31", status: "已结束", hot: "50/100" },
+    { key: "DG-4", id: "DQ0000001", name: "春季焕新季", start: "2026-05-01", end: "2026-07-31", status: "待开始", hot: "50/100" },
+    { key: "DG-5", id: "DQ0000001", name: "春节大促", start: "2026-05-01", end: "2026-07-31", status: "进行中", hot: "50/100" },
+    { key: "DG-6", id: "DQ0000001", name: "春季焕新季", start: "2026-05-01", end: "2026-07-31", status: "已结束", hot: "50/100" },
+    { key: "DG-7", id: "DQ0000001", name: "双11狂欢季", start: "2026-05-01", end: "2026-07-31", status: "待开始", hot: "50/100" },
+    { key: "DG-8", id: "DQ0000001", name: "秋季上新节", start: "2026-05-01", end: "2026-07-31", status: "进行中", hot: "50/100" },
+    { key: "DG-9", id: "DQ0000001", name: "618年终大促", start: "2026-05-01", end: "2026-07-31", status: "已结束", hot: "50/100" },
+    { key: "DG-10", id: "DQ0000001", name: "春季焕新季", start: "2026-05-01", end: "2026-07-31", status: "待开始", hot: "50/100" },
+    { key: "DG-11", id: "DQ0000001", name: "春节大促", start: "2026-05-01", end: "2026-07-31", status: "进行中", hot: "50/100" },
+    { key: "DG-12", id: "DQ0000001", name: "春季焕新季", start: "2026-05-01", end: "2026-07-31", status: "已结束", hot: "50/100" }
   ];
   const nameKey = qName.trim().toLowerCase();
   let cards = sourceCards.filter((x) => (!nameKey ? true : String(x.name || "").toLowerCase().includes(nameKey)));
-  const sortOrder = sortKey === "create" ? 3 : (sortKey === "id" ? 2 : 1);
-  cards = cards.map((x, idx) => ({ ...x, __sortIdx: idx })).sort((a, b) => (a.__sortIdx - b.__sortIdx) * sortOrder);
+  cards = cards.filter((x) => {
+    if (qFrom && String(x.end || "") < qFrom) return false;
+    if (qTo && String(x.start || "") > qTo) return false;
+    return true;
+  });
+  const sortWeight = sortKey === "create" ? 3 : (sortKey === "id" ? 2 : 1);
+  cards = cards.map((x, idx) => ({ ...x, __sortIdx: idx })).sort((a, b) => (a.__sortIdx - b.__sortIdx) * sortWeight);
   const fallbackSelected = cards[0] ? String(cards[0].key || "") : "";
   const selectedKey = cards.some((x) => String(x.key || "") === String(ui.selectedId || "")) ? String(ui.selectedId || "") : fallbackSelected;
   ui.selectedId = selectedKey;
 
   const sortBtns = [
-    { k: "start", t: "#按效开始时间" },
-    { k: "id", t: "#按效档期ID" },
-    { k: "create", t: "#按效创建时间" }
+    { k: "start", t: "按开始时间" },
+    { k: "id", t: "按档期ID" },
+    { k: "create", t: "按创建时间" }
   ];
+
+  const statusClass = (s) => String(s) === "进行中" ? "psa-status--doing" : (String(s) === "已结束" ? "psa-status--done" : "psa-status--todo");
 
   const cardHtml = cards.map((x) => {
     const isActive = String(x.key || "") === selectedKey;
     return `
       <button class="psa-card ${isActive ? "is-active" : ""}" type="button" data-act="psaPickSchedule" data-id="${escapeHtml(String(x.key || ""))}">
-        <div class="psa-card__name">${escapeHtml(String(x.name || ""))}</div>
+        <div class="psa-card__top">
+          <div class="psa-card__name">${escapeHtml(String(x.name || ""))}</div>
+          <span class="psa-status ${statusClass(x.status)}">${escapeHtml(String(x.status || ""))}</span>
+        </div>
         <div class="psa-card__id mono">${escapeHtml(String(x.id || ""))}</div>
         <div class="psa-card__date mono">${escapeHtml(String(x.start || ""))} ~ ${escapeHtml(String(x.end || ""))}</div>
+        <div class="psa-card__hot"><span class="psa-tri">▲</span>${escapeHtml(String(x.hot || ""))}</div>
       </button>
     `;
   }).join("");
 
   const selectedCard = cards.find((x) => String(x.key || "") === selectedKey) || cards[0] || {};
-  const tableRows = Array.from({ length: 6 }).map((_, idx) => {
-    const isFirst = idx === 0;
-    return `
-      <tr>
-        <td>${idx + 1}</td>
-        <td class="mono">${isFirst ? escapeHtml(String(selectedCard.id || "")) : ""}</td>
-        <td>${isFirst ? escapeHtml(String(selectedCard.name || "")) : ""}</td>
-        <td>${isFirst ? escapeHtml(String(selectedCard.name || "")) : ""}</td>
-        <td class="mono">${isFirst ? escapeHtml(String(selectedCard.start || "")) : ""}</td>
-        <td class="mono">${isFirst ? escapeHtml(String(selectedCard.end || "")) : ""}</td>
-        <td>${isFirst ? "—" : ""}</td>
-        <td>${isFirst ? "—" : ""}</td>
-        <td>${isFirst ? "" : ""}</td>
-        <td>${isFirst ? `<button class="linkbtn" type="button" data-act="psaViewJmd">查看部门MD</button>` : ""}</td>
-      </tr>
-    `;
+
+  const mdHeaders = ["序号", "主题编码", "主题名称", "档期开始时间", "档期结束时间", "负责人", "主题营销策略", "引流品类", "利润品类", "辅助品类", "选品方向", "促销机制", "陈列方案", "备注", "是否控制中心主力"];
+  const mdRows = Array.from({ length: 6 }).map((_, idx) => {
+    const f = idx === 0;
+    return `<tr>
+      <td>${idx + 1}</td>
+      <td class="mono">${f ? escapeHtml(String(selectedCard.id || "")) : ""}</td>
+      <td>${f ? escapeHtml(String(selectedCard.name || "")) : ""}</td>
+      <td class="mono">${f ? escapeHtml(String(selectedCard.start || "")) : ""}</td>
+      <td class="mono">${f ? escapeHtml(String(selectedCard.end || "")) : ""}</td>
+      <td>${f ? "—" : ""}</td>
+      <td>${f ? "—" : ""}</td>
+      <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+    </tr>`;
+  }).join("");
+
+  const vmHeaders = ["序号", "品类", "主题编码", "主题名称", "档期开始时间", "档期结束时间", "负责人", "主题营销策略", "选品方向", "促销机制", "陈列方案", "商品数", "备注"];
+  const vmRows = Array.from({ length: 2 }).map((_, idx) => {
+    const f = idx === 0;
+    return `<tr>
+      <td>${idx + 1}</td>
+      <td>${f ? "—" : ""}</td>
+      <td class="mono">${f ? escapeHtml(String(selectedCard.id || "")) : ""}</td>
+      <td>${f ? escapeHtml(String(selectedCard.name || "")) : ""}</td>
+      <td class="mono">${f ? escapeHtml(String(selectedCard.start || "")) : ""}</td>
+      <td class="mono">${f ? escapeHtml(String(selectedCard.end || "")) : ""}</td>
+      <td>${f ? "—" : ""}</td>
+      <td></td><td></td><td></td><td></td><td></td><td></td>
+    </tr>`;
   }).join("");
 
   return `
@@ -5935,7 +5958,7 @@ function renderScheduleActualListPage() {
       <div class="psa-filterbar">
         <div class="psa-filterbar__fields">
           <div class="field psa-field">
-            <div class="field__label">档期年度</div>
+            <div class="field__label">档期年份</div>
             <select class="select" id="psaYear">
               ${["2026年度", "2025年度", "2024年度"].map((x) => `<option value="${escapeHtml(x)}" ${x === qYear ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}
             </select>
@@ -5945,17 +5968,12 @@ function renderScheduleActualListPage() {
             <input class="input" id="psaName" value="${escapeHtml(qName)}" placeholder="请输入档期名称" />
           </div>
           <div class="field psa-field psa-field--time">
-            <div class="field__label">查询时间</div>
-            <div class="psa-time">
-              <select class="select psa-time__type" id="psaTimeType">
-                ${["创建时间"].map((x) => `<option value="${escapeHtml(x)}" ${x === qTimeType ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}
-              </select>
-              <div class="psa-time__range">
-                <span class="psa-time__icon">📅</span>
-                <input class="input psa-time__input" id="psaFrom" value="${escapeHtml(qFrom)}" placeholder="请选择开始时间" />
-                <span class="psa-time__dash">-</span>
-                <input class="input psa-time__input" id="psaTo" value="${escapeHtml(qTo)}" placeholder="请选择结束时间" />
-              </div>
+            <div class="field__label">档期时间</div>
+            <div class="psa-time__range">
+              <span class="psa-time__icon">📅</span>
+              <input class="input psa-time__input" id="psaFrom" value="${escapeHtml(qFrom)}" placeholder="请选择开始时间" />
+              <span class="psa-time__dash">-</span>
+              <input class="input psa-time__input" id="psaTo" value="${escapeHtml(qTo)}" placeholder="请选择结束时间" />
             </div>
           </div>
         </div>
@@ -5980,42 +5998,25 @@ function renderScheduleActualListPage() {
           <div class="psa-block__title">关联部门MD</div>
           <div class="psa-block__actions">
             <button class="btn psa-export-btn" type="button" data-act="psaExport">导出</button>
-            <span class="psa-export-mark">⚡</span>
           </div>
         </div>
         <div class="psa-table-wrap">
           <table class="psa-table">
-            <thead>
-              <tr>
-                <th>序号</th>
-                <th>档期ID</th>
-                <th>档期名称</th>
-                <th>主题名称</th>
-                <th>档期开始时间</th>
-                <th>档期结束时间</th>
-                <th>负责人</th>
-                <th>主题档期策略</th>
-                <th>备注</th>
-                <th>操作</th>
-              </tr>
-            </thead>
-            <tbody>${tableRows}</tbody>
+            <thead><tr>${mdHeaders.map((h) => `<th>${escapeHtml(h)}</th>`).join("")}</tr></thead>
+            <tbody>${mdRows}</tbody>
           </table>
         </div>
-        <div class="psa-pager">
-          <div class="psa-pager__meta">共<span class="psa-pager__total">10万</span>/<span class="psa-pager__hot">100</span>条数据</div>
-          <div class="psa-pager__pages">
-            <span class="psa-pager__check"></span>
-            <button class="psa-pagebtn is-active" type="button">1</button>
-            <button class="psa-pagebtn" type="button">2</button>
-            <button class="psa-pagebtn" type="button">3</button>
-            <button class="psa-pagebtn" type="button">4</button>
-            <button class="psa-pagebtn" type="button">5</button>
-            <span class="psa-pagebtn psa-pagebtn--split">...</span>
-            <button class="psa-pagebtn" type="button">50</button>
-            <span class="psa-pager__check"></span>
-          </div>
-          <div class="psa-pager__jump">跳至 <input class="input" value="1" disabled /> 页</div>
+      </div>
+
+      <div class="psa-block">
+        <div class="psa-block__head">
+          <div class="psa-block__title">查看部门MD</div>
+        </div>
+        <div class="psa-table-wrap">
+          <table class="psa-table">
+            <thead><tr>${vmHeaders.map((h) => `<th>${escapeHtml(h)}</th>`).join("")}</tr></thead>
+            <tbody>${vmRows}</tbody>
+          </table>
         </div>
       </div>
     </div>
