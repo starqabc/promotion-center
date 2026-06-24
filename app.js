@@ -21907,10 +21907,9 @@ function renderSmStoreGoodsPage() {
     <button class="btn btn--primary" type="button" data-act="smStoreGoodsQuery">查询</button>
     <button class="btn" type="button" data-act="smStoreGoodsReset">重置</button>
   `;
-  const headers = ["", "序号", "门店编码", "门店名称", "商品编码", "商品名称", "单位", "所属柜组", "商品规格", "所属部门", "条形码"];
+  const headers = ["序号", "门店编码", "门店名称", "商品编码", "商品名称", "单位", "所属柜组", "商品规格", "所属部门", "条形码"];
   const rows = list.map((x, idx) => `
     <tr>
-      <td><input type="checkbox" /></td>
       <td>${idx + 1}</td>
       <td class="mono">${escapeHtml(x.storeCode)}</td>
       <td>${escapeHtml(x.storeName)}</td>
@@ -21925,9 +21924,8 @@ function renderSmStoreGoodsPage() {
   `).join("");
   const emptyRows = Array.from({ length: Math.max(0, 8 - list.length) }).map((_, idx) => `
     <tr>
-      <td><input type="checkbox" disabled /></td>
       <td>${list.length + idx + 1}</td>
-      ${Array.from({ length: headers.length - 2 }).map(() => "<td></td>").join("")}
+      ${Array.from({ length: headers.length - 1 }).map(() => "<td></td>").join("")}
     </tr>
   `).join("");
   return listPageLayout({
