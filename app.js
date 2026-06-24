@@ -22039,15 +22039,15 @@ function renderGmCategoryPage(kind) {
           <td>${escapeHtml(x.catName)}</td>
           <td class="mono">${escapeHtml(String(x.level ?? "—"))}</td>
           <td class="mono">${escapeHtml(x.parentCode || "—")}</td>
+          <td>${escapeHtml(x.department || "—")}</td>
           <td>${badge(x.status || "—")}</td>
           <td class="mono">${escapeHtml(x.createdAt || "—")}</td>
-          <td class="mono">${escapeHtml(String(x.sort ?? "—"))}</td>
           <td>${escapeHtml(x.remark || "")}</td>
         </tr>
       `;
     })
     .join("");
-  const headers = ["序号", "类别编码", "类别名称", "层级", "父级编码", "状态", "创建时间", "排序", "备注"];
+  const headers = ["序号", "类别编码", "类别名称", "所属等级", "上级分类", "所属部门", "状态", "创建时间", "备注"];
   return listPageLayout({
     filtersHtml,
     filterActionsHtml: actionsHtml,
