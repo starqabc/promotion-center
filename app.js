@@ -173,6 +173,8 @@ const AppState = {
       effectiveTimeStart: "2024-04-01T08:00",
       effectiveTimeEnd: "2024-04-24",
       memberNo: "3938767898989",
+      memberJoin: "否",
+      memberLevel: "",
       phone: "13800138000",
       cartItems: [
         { id: 1, code: "000000004", barcode: "6908946288664", name: "百事可乐无糖300ml", originalPrice: 3.50, promoPrice: 3.00, qty: 2, amount: 6.00, profit: 0.4, promoInfo: "直降促销" },
@@ -21356,9 +21358,23 @@ function renderPricingPage() {
         <div class="field__label">模拟活动时间</div>
         <input class="input" type="datetime-local" id="pricingTimeStart" value="${escapeHtml(st.effectiveTimeStart)}" />
       </div>
-      <div class="field pricing-top-bar__member-no">
+      <div class="field pricing-top-bar__member-join">
+        <div class="field__label">会员是否参与</div>
+        <select class="select" id="pricingMemberJoin">
+          <option value="否" ${String(st.memberJoin || "否") !== "是" ? "selected" : ""}>否</option>
+          <option value="是" ${String(st.memberJoin || "否") === "是" ? "selected" : ""}>是</option>
+        </select>
+      </div>
+      <div class="field pricing-top-bar__member-no" id="pricingMemberNoField" style="${String(st.memberJoin || "否") === "是" ? "" : "display:none;"}">
         <div class="field__label">会员号</div>
         <input class="input" id="pricingMemberNo" placeholder="会员号" value="${escapeHtml(st.memberNo)}" />
+      </div>
+      <div class="field pricing-top-bar__member-level" id="pricingMemberLevelField" style="${String(st.memberJoin || "否") === "是" ? "" : "display:none;"}">
+        <div class="field__label">会员等级</div>
+        <select class="select" id="pricingMemberLevel">
+          <option value="">请选择</option>
+          ${(Array.isArray(AppState.data.gmMemberGrades) ? AppState.data.gmMemberGrades : []).map((x) => `<option value="${escapeHtml(x.name || "")}" ${String(st.memberLevel || "") === String(x.name || "") ? "selected" : ""}>${escapeHtml(x.name || "")}</option>`).join("")}
+        </select>
       </div>
       <div class="field pricing-top-bar__actions">
         <div class="field__label">&nbsp;</div>
@@ -26843,6 +26859,18 @@ function bindPageEvents(r) {
     if (psc) psc.addEventListener("input", () => { AppState.ui.pricing.storeCode = psc.value; });
     if (pts) pts.addEventListener("change", () => { AppState.ui.pricing.effectiveTimeStart = pts.value; });
     if (pmn) pmn.addEventListener("input", () => { AppState.ui.pricing.memberNo = pmn.value; });
+    const pmj = root.querySelector("#pricingMemberJoin");
+    const pml = root.querySelector("#pricingMemberLevel");
+    if (pmj) pmj.addEventListener("change", () => {
+      const v = pmj.value;
+      AppState.ui.pricing.memberJoin = v;
+      const show = v === "是";
+      const noField = document.getElementById("pricingMemberNoField");
+      const lvField = document.getElementById("pricingMemberLevelField");
+      if (noField) noField.style.display = show ? "" : "none";
+      if (lvField) lvField.style.display = show ? "" : "none";
+    });
+    if (pml) pml.addEventListener("change", () => { AppState.ui.pricing.memberLevel = pml.value; });
   }
 
   if (r === "/schedule-plan") {
