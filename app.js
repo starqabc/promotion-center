@@ -5867,6 +5867,7 @@ function renderSchedulePlanEditPage() {
 function renderScheduleActualListPage() {
   const ui = AppState.ui.scheduleActual || (AppState.ui.scheduleActual = {});
   const qYear = String(ui.qYear || "2026年度");
+  const qId = String(ui.qId || "");
   const qName = String(ui.qName || "");
   const qFrom = String(ui.qFrom || "");
   const qTo = String(ui.qTo || "");
@@ -5886,7 +5887,9 @@ function renderScheduleActualListPage() {
     { key: "DG-12", id: "DQ0000001", name: "春季焕新季", start: "2026-05-01", end: "2026-07-31", status: "已结束", hot: "50/100" }
   ];
   const nameKey = qName.trim().toLowerCase();
+  const idKey = qId.trim().toLowerCase();
   let cards = sourceCards.filter((x) => (!nameKey ? true : String(x.name || "").toLowerCase().includes(nameKey)));
+  cards = cards.filter((x) => (!idKey ? true : String(x.id || "").toLowerCase().includes(idKey)));
   cards = cards.filter((x) => {
     if (qFrom && String(x.end || "") < qFrom) return false;
     if (qTo && String(x.start || "") > qTo) return false;
@@ -5962,6 +5965,10 @@ function renderScheduleActualListPage() {
             <select class="select" id="psaYear">
               ${["2026年度", "2025年度", "2024年度"].map((x) => `<option value="${escapeHtml(x)}" ${x === qYear ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}
             </select>
+          </div>
+          <div class="field psa-field psa-field--id">
+            <div class="field__label">档期ID</div>
+            <input class="input" id="psaQId" value="${escapeHtml(qId)}" placeholder="请输入档期ID" />
           </div>
           <div class="field psa-field psa-field--name">
             <div class="field__label">档期名称</div>
@@ -28800,11 +28807,13 @@ function handleAction(r, act, btn) {
     }
     if (act === "psaQuery") {
       const year = document.getElementById("psaYear");
+      const qid = document.getElementById("psaQId");
       const name = document.getElementById("psaName");
       const tt = document.getElementById("psaTimeType");
       const from = document.getElementById("psaFrom");
       const to = document.getElementById("psaTo");
       ui.qYear = year ? String(year.value || "2026年度") : String(ui.qYear || "2026年度");
+      ui.qId = qid ? String(qid.value || "") : String(ui.qId || "");
       ui.qName = name ? String(name.value || "") : String(ui.qName || "");
       ui.qTimeType = tt ? String(tt.value || "创建时间") : String(ui.qTimeType || "创建时间");
       ui.qFrom = from ? String(from.value || "") : String(ui.qFrom || "");
@@ -28814,6 +28823,7 @@ function handleAction(r, act, btn) {
     }
     if (act === "psaReset") {
       ui.qYear = "2026年度";
+      ui.qId = "";
       ui.qName = "";
       ui.qTimeType = "创建时间";
       ui.qFrom = "";
