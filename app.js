@@ -8852,7 +8852,7 @@ function renderTemplateWizardPage(mode) {
       ${optionCard({
         title: "费用承担",
         desc: "启用后创建活动可设定费用分摊规则",
-        control: sw({ id: "twCostSharing" }),
+        control: sw({ id: "twCostSharing", checked: true }),
         id: "twCostSharingRow"
       })}
     </div>
