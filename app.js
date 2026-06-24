@@ -21811,33 +21811,38 @@ function renderGmGoodsPage() {
   `;
   const rows = list
     .map((g, idx) => {
+      const c = (v) => escapeHtml(String(v ?? "—"));
       return `
         <tr data-row="gmGoods" data-id="${escapeHtml(g.sku)}">
           <td>${idx + 1}</td>
-          <td class="mono"><a class="link" href="javascript:void(0)">${escapeHtml(g.sku)}</a></td>
-          <td class="mono">${escapeHtml(g.barcode || "—")}</td>
-          <td>${escapeHtml(g.name || "")}</td>
-          <td>${escapeHtml(g.goodsUnit || "—")}</td>
-          <td class="mono">${escapeHtml(g.lv1CatCode || "—")}</td>
-          <td class="mono">${escapeHtml(g.lv2CatCode || "—")}</td>
-          <td class="mono">${escapeHtml(g.lv3CatCode || "—")}</td>
-          <td class="mono">¥ ${escapeHtml(g.memberPrice || "—")}</td>
-          <td class="mono">¥ ${escapeHtml(g.purchasePrice || "—")}</td>
-          <td class="mono">${escapeHtml(g.brandCode || "—")}</td>
-          <td class="mono">${escapeHtml(g.counterCode || "—")}</td>
-          <td class="mono">${escapeHtml(g.supplierCode || "—")}</td>
-          <td>${escapeHtml(g.businessMode || "—")}</td>
-          <td class="mono">${escapeHtml(g.deductRate || "—")}</td>
-          <td>${escapeHtml(g.pricingMode || "—")}</td>
-          <td>${escapeHtml(g.goodsType || "—")}</td>
-          <td>${escapeHtml(g.spec || "—")}</td>
-          <td class="mono">${escapeHtml(g.createdAt || "—")}</td>
+          <td class="mono"><a class="link" href="javascript:void(0)">${c(g.sku)}</a></td>
+          <td class="mono">${c(g.barcode)}</td>
+          <td>${c(g.name)}</td>
+          <td>${c(g.goodsUnit)}</td>
+          <td>${c(g.major || g.lv1CatCode)}</td>
+          <td>${c(g.department)}</td>
+          <td class="mono">${c(g.counterCode)}</td>
+          <td class="mono">${c(g.brandCode)}</td>
+          <td>${c(g.goodsType)}</td>
+          <td>${c(g.spec)}</td>
+          <td>${c(g.pricingMode)}</td>
+          <td class="mono">${c(g.createdAt)}</td>
+          <td>${c(g.specType)}</td>
           <td>${badge(g.status)}</td>
+          <td>${c(g.shortName)}</td>
+          <td>${c(g.goodsType)}</td>
+          <td>${c(g.category || g.lv2CatCode)}</td>
+          <td>${c(g.maxPackQty)}</td>
+          <td>${c(g.originDivision)}</td>
+          <td>${c(g.origin)}</td>
+          <td>${c(g.size)}</td>
+          <td>${c(g.color)}</td>
+          <td>${c(g.selfMade)}</td>
         </tr>
       `;
     })
     .join("");
-  const headers = ["序号", "商品编码", "条码", "商品名称", "商品单位", "一级类别编码", "二级类别编码", "三级类别编码", "会员价", "进价", "品牌编码", "柜组编码", "供货商编码", "经营方式", "扣率", "计价方式", "商品类型", "商品规格", "创建时间", "状态"];
+  const headers = ["序号", "商品编码", "条码", "商品名称", "商品单位", "基本分类", "所属部门", "所属柜组", "品牌编码", "商品类型", "商品规格", "计量", "创建时间", "规格类型", "状态", "商品简称", "商品类型", "商品类别", "最大不可拆箱包装数", "产地划分", "产地", "尺码", "颜色", "自制商品"];
   return listPageLayout({
     filtersHtml,
     filterActionsHtml: actionsHtml,
