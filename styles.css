@@ -270,6 +270,7 @@ button,input,select,textarea{font-family:inherit}
 }
 .content > .list-page,
 .content > .card,
+.content > .campaign-list-page,
 .content > .psa-page,
 .content > .combo-camp-page,
 .content > .tpl-page,
