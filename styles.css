@@ -657,8 +657,8 @@ tbody tr:last-child td{border-bottom:none}
 .pager__meta{font-size:12px;color:var(--muted)}
 
 .campaign-list-page{
-  background:#f7f7f7;
-  border:1px solid #e5e7eb;
+  background:#fff;
+  border:none;
   border-radius:0;
   padding:0;
   display:flex;
