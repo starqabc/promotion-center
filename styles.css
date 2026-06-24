@@ -266,6 +266,16 @@ button,input,select,textarea{font-family:inherit}
   overflow:auto;
   min-height:0;
   flex:1;
+  background:#fff;
+}
+.content > .list-page,
+.content > .card,
+.content > .psa-page,
+.content > .combo-camp-page,
+.content > .tpl-page,
+.content > .wizard,
+.content > div{
+  min-height:100%;
 }
 
 .grid{display:grid;grid-template-columns:1fr;gap:14px}
