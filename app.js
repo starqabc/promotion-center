@@ -15447,7 +15447,7 @@ function campaignWizardUpdateDraftFromEvent(e) {
     if (field === "purchaseType") {
       d.goodsScope[field] = campaignReducePurchaseTypeNorm(t.value);
     }
-    if (field === "comboMode" || field === "comboScope") {
+    if (field === "comboMode" || field === "comboScope" || field === "scopeMode") {
       render();
       return;
     }
@@ -18783,6 +18783,25 @@ function renderCampaignWizardPage(mode) {
         : isDirectDrop ? `
           <div class="wizard-step" data-step="${goodsStepNo}">
             <div class="form">
+              ${isOnePrice ? (() => {
+                const sm = String((d.goodsScope && d.goodsScope.scopeMode) || "商品");
+                const cc = String((d.goodsScope && d.goodsScope.comboCode) || "");
+                return `
+                  <div class="form__row" style="margin-bottom:12px;">
+                    <div class="field">
+                      <div class="field__label">商品范围<span class="req">*</span></div>
+                      <select class="select" data-cw="goodsScope" data-field="scopeMode">
+                        ${["商品", "类别", "品牌"].map((x) => `<option ${sm === x ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}
+                      </select>
+                    </div>
+                    ${sm !== "商品" ? `
+                    <div class="field">
+                      <div class="field__label">组合编码<span class="req">*</span></div>
+                      <input class="input mono" data-cw="goodsScope" data-field="comboCode" value="${escapeHtml(cc)}" placeholder="请输入组合编码" />
+                    </div>
+                    ` : ""}
+                  </div>`;
+              })() : ""}
               ${isMinFree ? `
               <div class="form__row">
                 <div class="field">
@@ -20406,7 +20425,15 @@ function renderCampaignDetailPage(activityNo) {
         isDirectDrop
           ? (isMinFree
             ? [["购满数量", escapeHtml(String(cs.qtyThreshold ?? "—"))], ["名称", escapeHtml(String((c.goodsScope && c.goodsScope.keyword) || ""))]]
-            : [["名称", escapeHtml(String((c.goodsScope && c.goodsScope.keyword) || ""))]]
+            : (isOnePrice
+              ? [
+                  ["商品范围", escapeHtml(String((c.goodsScope && c.goodsScope.scopeMode) || "商品"))],
+                  ["名称", escapeHtml(String((c.goodsScope && c.goodsScope.keyword) || ""))],
+                  ...(String((c.goodsScope && c.goodsScope.scopeMode) || "商品") !== "商品"
+                    ? [["组合编码", escapeHtml(String((c.goodsScope && c.goodsScope.comboCode) || "—"))]]
+                    : [])
+                ]
+              : [["名称", escapeHtml(String((c.goodsScope && c.goodsScope.keyword) || ""))]])
           )
           : (isGoodsDiscount
             ? [["折扣", escapeHtml(String((c.goodsScope && c.goodsScope.discountAll) ?? ""))], ["名称", escapeHtml(String((c.goodsScope && c.goodsScope.keyword) || ""))]]
