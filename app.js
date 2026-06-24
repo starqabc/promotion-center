@@ -4162,6 +4162,7 @@ function templateWizardRefreshVisibility() {
   const hasThresholdCondition = fullAmtEnabled || fullQtyEnabled;
   setShow("tcLadderRow", !!spec.rules.ladder && hasThresholdCondition);
   setShow("tcMultipleRow", !!spec.rules.multiple && hasThresholdCondition);
+  setShow("tcThresholdSubBox", (!!spec.rules.ladder || !!spec.rules.multiple) && hasThresholdCondition);
   if (!hasThresholdCondition) {
     if (document.getElementById("tcLadderEnable")) document.getElementById("tcLadderEnable").checked = false;
     if (document.getElementById("tcMultiple")) document.getElementById("tcMultiple").checked = false;
@@ -8866,7 +8867,7 @@ function renderTemplateWizardPage(mode) {
     </div>
   `);
   const ruleSection = section("购满设置", "", `
-    <div class="tpl-choice-grid tpl-choice-grid--4">
+    <div class="tpl-choice-grid tpl-choice-grid--2">
       ${optionCard({
         title: "满金额",
         desc: "启用后可按商品金额设置门槛",
@@ -8879,19 +8880,24 @@ function renderTemplateWizardPage(mode) {
         control: sw({ id: "tcFullQty" }),
         id: "tcFullQtyRow"
       })}
-      ${optionCard({
-        title: "阶梯",
-        desc: "启用后活动侧可配置阶梯规则",
-        control: sw({ id: "tcLadderEnable" }),
-        options: `<div id="tcLadderBox" style="display:none;"></div>`,
-        id: "tcLadderRow"
-      })}
-      ${optionCard({
-        title: "倍数",
-        desc: "启用后活动侧可按倍数配置",
-        control: sw({ id: "tcMultiple" }),
-        id: "tcMultipleRow"
-      })}
+    </div>
+    <div class="tpl-time-sub" id="tcThresholdSubBox">
+      <div class="tpl-time-sub__label">以下为启用满金额/满数量后的阶梯/倍数配置</div>
+      <div class="tpl-choice-grid tpl-choice-grid--2">
+        ${optionCard({
+          title: "阶梯",
+          desc: "启用后活动侧可配置阶梯规则",
+          control: sw({ id: "tcLadderEnable" }),
+          options: `<div id="tcLadderBox" style="display:none;"></div>`,
+          id: "tcLadderRow"
+        })}
+        ${optionCard({
+          title: "倍数",
+          desc: "启用后活动侧可按倍数配置",
+          control: sw({ id: "tcMultiple" }),
+          id: "tcMultipleRow"
+        })}
+      </div>
     </div>
   `);
   const rewardSection = section("优惠规则", "", `
