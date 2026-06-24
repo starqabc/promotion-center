@@ -16522,7 +16522,16 @@ function campaignAmountGiftBasicPanelHtml({
             </select>`}
       </div>
       <div class="field">
-        <div class="field__label">活动档期</div>
+        <div class="field__label">是否临时调价</div>
+        ${readonly
+          ? `<input class="input" value="${escapeHtml(String(d.tempPriceAdjust || "否"))}" disabled />`
+          : `<div class="checks">
+              <label class="check"><input type="radio" name="cwTempAdjust" data-cw="root" data-field="tempPriceAdjust" value="否" ${String(d.tempPriceAdjust || "否") !== "是" ? "checked" : ""} />否</label>
+              <label class="check"><input type="radio" name="cwTempAdjust" data-cw="root" data-field="tempPriceAdjust" value="是" ${String(d.tempPriceAdjust || "否") === "是" ? "checked" : ""} />是</label>
+            </div>`}
+      </div>
+      <div class="field">
+        <div class="field__label">${(!readonly && String(d.tempPriceAdjust || "否") !== "是") ? '<span class="req">*</span>' : ''}活动档期</div>
         ${scheduleDisplay}
       </div>
     </div>
@@ -17867,7 +17876,16 @@ function comboCampaignBasicPanelHtml({
             </select>`}
       </div>
       <div class="field">
-        <div class="field__label">活动档期</div>
+        <div class="field__label">是否临时调价</div>
+        ${readonly
+          ? `<input class="input" value="${escapeHtml(String(d.tempPriceAdjust || "否"))}" disabled />`
+          : `<div class="checks">
+              <label class="check"><input type="radio" name="cwTempAdjust" data-cw="root" data-field="tempPriceAdjust" value="否" ${String(d.tempPriceAdjust || "否") !== "是" ? "checked" : ""} />否</label>
+              <label class="check"><input type="radio" name="cwTempAdjust" data-cw="root" data-field="tempPriceAdjust" value="是" ${String(d.tempPriceAdjust || "否") === "是" ? "checked" : ""} />是</label>
+            </div>`}
+      </div>
+      <div class="field">
+        <div class="field__label">${(!readonly && String(d.tempPriceAdjust || "否") !== "是") ? '<span class="req">*</span>' : ''}活动档期</div>
         ${readonly ? `<input class="input" value="${escapeHtml(scheduleValue || "")}" disabled />` : scheduleDisplay}
       </div>
     </div>
