@@ -4655,14 +4655,14 @@ function badge(status) {
     "审核中": "badge badge--warn",
     "审核": "badge badge--warn",
     "进行中": "badge badge--ok",
-    "已结束": "badge badge--muted",
+    "已结束": "badge badge--danger",
     "停用": "badge badge--muted",
     "启用": "badge badge--ok",
     "有效": "badge badge--ok",
     "输入": "badge badge--muted",
     "生效": "badge badge--ok",
     "延期": "badge badge--warn",
-    "终止": "badge badge--muted",
+    "终止": "badge badge--danger",
     "禁用": "badge badge--warn",
     "作废": "badge badge--danger"
   };
@@ -9297,11 +9297,11 @@ function renderCampaignsListPage(presetPromoType = "", presetTemplateId = "") {
       const auditStatus = campaignAuditStatusLabel(c);
       const checked = selectedNos.includes(String(c.activityNo || ""));
       const ops = [
-        canEdit ? `<button class="linkbtn" type="button" data-act="campEdit" data-id="${escapeHtml(c.activityNo)}">编辑</button>` : `<span class="cell-muted">编辑</span>`,
-        canSubmit ? `<button class="linkbtn" type="button" data-act="campSubmit" data-id="${escapeHtml(c.activityNo)}">提交</button>` : `<span class="cell-muted">提交</span>`,
-        `<button class="linkbtn" type="button" data-act="campApprove" data-id="${escapeHtml(c.activityNo)}">审核</button>`,
-        canEffective ? `<button class="linkbtn" type="button" data-act="campEffective" data-id="${escapeHtml(c.activityNo)}">生效</button>` : `<span class="cell-muted">生效</span>`,
-        `<button class="linkbtn" type="button" data-act="campDetail" data-id="${escapeHtml(c.activityNo)}">详情</button>`
+        canEdit ? `<button class="btn btn--primary" type="button" data-act="campEdit" data-id="${escapeHtml(c.activityNo)}">编辑</button>` : `<span class="cell-muted">编辑</span>`,
+        canSubmit ? `<button class="btn" type="button" data-act="campSubmit" data-id="${escapeHtml(c.activityNo)}">提交</button>` : `<span class="cell-muted">提交</span>`,
+        `<button class="btn btn--danger" type="button" data-act="campApprove" data-id="${escapeHtml(c.activityNo)}">审核</button>`,
+        canEffective ? `<button class="btn btn--primary" type="button" data-act="campEffective" data-id="${escapeHtml(c.activityNo)}">生效</button>` : `<span class="cell-muted">生效</span>`,
+        `<button class="btn" type="button" data-act="campDetail" data-id="${escapeHtml(c.activityNo)}">详情</button>`
       ].join("");
       return `
         <tr data-row="campaign" data-id="${escapeHtml(c.activityNo)}">
