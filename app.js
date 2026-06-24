@@ -22180,21 +22180,16 @@ function renderGmSuppliersPage() {
           <td>${idx + 1}</td>
           <td class="mono"><a class="link" href="javascript:void(0)">${escapeHtml(x.supplierCode)}</a></td>
           <td>${escapeHtml(x.supplierName)}</td>
-          <td>${escapeHtml(x.businessMode || "—")}</td>
-          <td class="mono">${escapeHtml(x.deductRate || "—")}</td>
           <td>${escapeHtml(x.contact || "—")}</td>
           <td class="mono">${escapeHtml(x.phone || "—")}</td>
-          <td>${escapeHtml(x.settleType || "—")}</td>
-          <td>${escapeHtml(x.taxRate || "—")}</td>
           <td>${escapeHtml(x.address || "—")}</td>
-          <td>${escapeHtml(x.format || "—")}</td>
           <td class="mono">${escapeHtml(x.createdAt || "—")}</td>
           <td>${badge(x.status || "—")}</td>
         </tr>
       `;
     })
     .join("");
-  const headers = ["序号", "供应商编码", "供应商名称", "经营方式", "扣率", "联系人", "联系电话", "结算方式", "税率", "地址", "业态", "创建时间", "状态"];
+  const headers = ["序号", "供应商编码", "供应商名称", "联系人", "联系电话", "地址", "创建时间", "状态"];
   return listPageLayout({
     filtersHtml,
     filterActionsHtml: actionsHtml,
