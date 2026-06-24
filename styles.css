@@ -808,6 +808,40 @@ tbody tr:last-child td{border-bottom:none}
   background:#fff;
   padding:14px;
   border-radius:0;
+  position:relative;
+}
+.tpl-type-toggle{
+  position:absolute;
+  top:10px;
+  right:8px;
+  width:22px;
+  height:22px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid #e5e7eb;
+  background:#f8fafc;
+  border-radius:4px;
+  cursor:pointer;
+  color:#6b7280;
+  font-size:14px;
+  line-height:1;
+  padding:0;
+  z-index:2;
+}
+.tpl-type-toggle:hover{background:#eef2ff;color:#4f46e5;border-color:#c7d2fe;}
+.tpl-type-toggle__icon{font-size:15px;font-weight:700;}
+.tpl-type-toggle__vt{display:none;}
+.tpl-type-shell.is-collapsed{padding:0;width:36px;display:flex;flex-direction:column;align-items:center;}
+.tpl-type-shell.is-collapsed .tpl-type-toggle{position:static;top:auto;right:auto;width:36px;height:36px;border:none;border-radius:0;background:#f1f5f9;}
+.tpl-type-shell.is-collapsed .tpl-type-toggle__vt{
+  display:block;
+  writing-mode:vertical-rl;
+  text-orientation:upright;
+  font-size:12px;
+  color:#6b7280;
+  margin-top:8px;
+  letter-spacing:2px;
 }
 .tpl-type-shell .input{
   height:32px;
