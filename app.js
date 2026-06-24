@@ -16815,6 +16815,7 @@ function comboCampaignBrandToolbarHtml(goodsScope = {}, readonly = false) {
 
 function comboCampaignGoodsInfoTableHtml(draft = {}, readonly = false) {
   const gs = comboCampaignEnsureGoodsScope(draft);
+  const isFixedCombo = String(gs.comboMode || "固定组合") === "固定组合";
   const ui = AppState.ui.campaignWizard || {};
   const meta = comboCampaignGoodsQueryMeta(gs);
   const pickedSet = new Set((Array.isArray(ui.comboGoodsPicked) ? ui.comboGoodsPicked : []).map((x) => Number(x)).filter(Number.isFinite));
@@ -16844,6 +16845,9 @@ function comboCampaignGoodsInfoTableHtml(draft = {}, readonly = false) {
         <td>${readonly
           ? `<span class="combo-goods-cell-text">${escapeHtml(String(x.costPrice ?? ""))}</span>`
           : `<input class="combo-goods-cell-input" data-cw="comboGoods" data-idx="${dataIdx}" data-field="costPrice" type="number" min="0" step="0.01" value="${escapeHtml(String(x.costPrice ?? ""))}" />`}</td>
+        ${isFixedCombo ? `<td>${readonly
+          ? `<span class="combo-goods-cell-text">${escapeHtml(String(x.qty ?? ""))}</span>`
+          : `<input class="combo-goods-cell-input" data-cw="comboGoods" data-idx="${dataIdx}" data-field="qty" type="number" min="0" step="1" value="${escapeHtml(String(x.qty ?? ""))}" />`}</td>` : ""}
       </tr>
     `;
   }).join("");
@@ -16851,12 +16855,7 @@ function comboCampaignGoodsInfoTableHtml(draft = {}, readonly = false) {
     <tr>
       <td class="combo-goods-table__check"><input type="checkbox" disabled /></td>
       <td>${visibleRows.length + idx + 1}</td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
+      ${Array.from({ length: 6 + (isFixedCombo ? 1 : 0) }).map(() => "<td></td>").join("")}
     </tr>
   `).join("");
   return `
@@ -16872,6 +16871,7 @@ function comboCampaignGoodsInfoTableHtml(draft = {}, readonly = false) {
             <th>商品规格</th>
             <th>商品单位</th>
             <th>商品进价</th>
+            ${isFixedCombo ? `<th>商品数量</th>` : ""}
           </tr>
         </thead>
         <tbody>${rowHtml}${emptyRows}</tbody>
