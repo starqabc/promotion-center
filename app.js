@@ -21915,6 +21915,8 @@ function renderGmPayPage() {
           <td>${idx + 1}</td>
           <td class="mono"><a class="link" href="javascript:void(0)">${escapeHtml(x.code)}</a></td>
           <td>${escapeHtml(x.name)}</td>
+          <td>${escapeHtml(x.payCategory || "—")}</td>
+          <td>${escapeHtml(x.currencyName || "—")}</td>
           <td>${escapeHtml(x.type || "—")}</td>
           <td>${badge(x.enabled || "—")}</td>
           <td class="mono">${escapeHtml(String(x.sort ?? "—"))}</td>
@@ -21923,7 +21925,7 @@ function renderGmPayPage() {
       `;
     })
     .join("");
-  const headers = ["序号", "编码", "名称", "适用范围", "状态", "排序", "备注"];
+  const headers = ["序号", "编码", "名称", "付款分类", "币种名称", "适用范围", "状态", "排序", "备注"];
   return listPageLayout({
     filtersHtml,
     filterActionsHtml: actionsHtml,
