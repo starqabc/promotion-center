@@ -21931,46 +21931,46 @@ function renderGmGoodsPage() {
 }
 
 function renderSmStoreGoodsPage() {
-  const ui = AppState.ui.smStoreGoods || (AppState.ui.smStoreGoods = { qStoreCode: "", qStoreName: "", qGoods: "", qCategory: "全部" });
+  const ui = AppState.ui.smStoreGoods || (AppState.ui.smStoreGoods = { selectedStore: "", qGoods: "", qCategory: "全部" });
   const stores = AppState.data.gmStores || [];
   const goods = (AppState.data.masterData && AppState.data.masterData.goods) || [];
   const categories = ["全部"].concat((AppState.data.masterData && AppState.data.masterData.majorCategories) || []);
   const storeNames = { "ST-001": "华东旗舰店", "ST-002": "华南中心店", "ST-003": "华北社区店" };
-  const sourceRows = [];
-  stores.slice(0, 3).forEach((s) => {
-    goods.slice(0, 4).forEach((g) => {
-      sourceRows.push({
-        storeCode: s.storeCode || "ST-001",
-        storeName: s.storeName || storeNames[s.storeCode] || "—",
-        skuCode: g.sku || "",
-        skuName: g.name || "",
-        unit: g.goodsUnit || g.unit || "—",
-        counter: g.counterCode || "CT-01",
-        spec: g.spec || "—",
-        dept: g.department || "食品部",
-        barcode: g.barcode || ""
-      });
-    });
-  });
+  const storeList = stores.map((s) => ({
+    code: s.storeCode || "",
+    name: s.storeName || storeNames[s.storeCode] || "—",
+    region: s.regionDesc || s.regionCode || ""
+  }));
+  const selectedStore = ui.selectedStore || (storeList[0] ? storeList[0].code : "");
+  ui.selectedStore = selectedStore;
+  const selStoreObj = storeList.find((s) => s.code === selectedStore) || {};
+
+  const sourceRows = goods.map((g) => ({
+    storeCode: selectedStore,
+    storeName: selStoreObj.name || "—",
+    skuCode: g.sku || "",
+    skuName: g.name || "",
+    unit: g.goodsUnit || g.unit || "—",
+    counter: g.counterCode || "CT-01",
+    spec: g.spec || "—",
+    dept: g.department || "食品部",
+    barcode: g.barcode || ""
+  }));
   const list = sourceRows.filter((x) => {
-    const sc = String(ui.qStoreCode || "").trim();
-    const sn = String(ui.qStoreName || "").trim();
     const gq = String(ui.qGoods || "").trim().toLowerCase();
-    if (sc && !String(x.storeCode).includes(sc)) return false;
-    if (sn && !String(x.storeName).includes(sn)) return false;
     if (gq && ![x.skuCode, x.skuName, x.barcode].some((v) => String(v || "").toLowerCase().includes(gq))) return false;
     if (ui.qCategory !== "全部" && String(x.category || "") !== String(ui.qCategory)) return false;
     return true;
   });
+
+  const storeTreeHtml = storeList.map((s) => `
+    <button class="sg-store-item ${s.code === selectedStore ? "is-active" : ""}" type="button" data-act="sgPickStore" data-id="${escapeHtml(s.code)}">
+      <div class="sg-store-item__name">${escapeHtml(s.name)}</div>
+      <div class="sg-store-item__code mono">${escapeHtml(s.code)} · ${escapeHtml(s.region || "—")}</div>
+    </button>
+  `).join("");
+
   const filtersHtml = `
-    <div class="field">
-      <div class="field__label">门店编码</div>
-      <input class="input" id="smStoreGoodsQCode" value="${escapeHtml(ui.qStoreCode)}" placeholder="请输入门店编码查询" />
-    </div>
-    <div class="field">
-      <div class="field__label">门店名称</div>
-      <input class="input" id="smStoreGoodsQName" value="${escapeHtml(ui.qStoreName)}" placeholder="请输入门店名称查询" />
-    </div>
     <div class="field">
       <div class="field__label">商品信息</div>
       <input class="input" id="smStoreGoodsQGoods" value="${escapeHtml(ui.qGoods)}" placeholder="请输入商品编码/条码/名称查询" />
@@ -21984,12 +21984,10 @@ function renderSmStoreGoodsPage() {
     <button class="btn btn--primary" type="button" data-act="smStoreGoodsQuery">查询</button>
     <button class="btn" type="button" data-act="smStoreGoodsReset">重置</button>
   `;
-  const headers = ["序号", "门店编码", "门店名称", "商品编码", "商品名称", "单位", "所属柜组", "商品规格", "所属部门", "条形码"];
+  const headers = ["序号", "商品编码", "商品名称", "单位", "所属柜组", "商品规格", "所属部门", "条形码"];
   const rows = list.map((x, idx) => `
     <tr>
       <td>${idx + 1}</td>
-      <td class="mono">${escapeHtml(x.storeCode)}</td>
-      <td>${escapeHtml(x.storeName)}</td>
       <td class="mono">${escapeHtml(x.skuCode)}</td>
       <td>${escapeHtml(x.skuName)}</td>
       <td>${escapeHtml(x.unit)}</td>
@@ -22005,13 +22003,29 @@ function renderSmStoreGoodsPage() {
       ${Array.from({ length: headers.length - 1 }).map(() => "<td></td>").join("")}
     </tr>
   `).join("");
-  return listPageLayout({
-    filtersHtml,
-    filterActionsHtml: actionsHtml,
-    listTitle: "门店商品信息列表",
-    tableHtml: table(headers, rows + emptyRows),
-    footerHtml: footerbar(`共 ${list.length} 条`, "第 1 页")
-  });
+
+  return `
+    <div class="tpl-list-layout sg-layout">
+      <div class="sg-store-panel">
+        <div class="sg-store-panel__title">门店列表</div>
+        <div class="sg-store-panel__list">${storeTreeHtml}</div>
+      </div>
+      <div class="campaign-list-page">
+        <div class="campaign-list-shell">
+          <div class="campaign-list-filters">
+            <div class="campaign-list-filters__grid">
+              ${filtersHtml}
+              <div class="campaign-list-filters__actions">${actionsHtml}</div>
+            </div>
+          </div>
+          <div class="campaign-list-title"><span class="campaign-list-title__mark"></span>${escapeHtml(selStoreObj.name || "门店")}商品信息</div>
+          <div class="campaign-list-table">
+            ${table(headers, rows + emptyRows)}
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
 }
 
 function openGmGoodsDetail(sku) {
@@ -27438,11 +27452,15 @@ function handleAction(r, act, btn) {
     }
   }
   if (r === "/sm-store-goods") {
+    if (act === "sgPickStore") {
+      AppState.ui.smStoreGoods = AppState.ui.smStoreGoods || {};
+      AppState.ui.smStoreGoods.selectedStore = btn.getAttribute("data-id") || "";
+      render();
+      return;
+    }
     if (act === "smStoreGoodsQuery") {
       const rd = (id) => document.getElementById(id) ? document.getElementById(id).value : "";
       AppState.ui.smStoreGoods = AppState.ui.smStoreGoods || {};
-      AppState.ui.smStoreGoods.qStoreCode = rd("smStoreGoodsQCode").trim();
-      AppState.ui.smStoreGoods.qStoreName = rd("smStoreGoodsQName").trim();
       AppState.ui.smStoreGoods.qGoods = rd("smStoreGoodsQGoods").trim();
       AppState.ui.smStoreGoods.qCategory = rd("smStoreGoodsQCategory") || "全部";
       render();
@@ -27450,7 +27468,8 @@ function handleAction(r, act, btn) {
       return;
     }
     if (act === "smStoreGoodsReset") {
-      AppState.ui.smStoreGoods = { qStoreCode: "", qStoreName: "", qGoods: "", qCategory: "全部" };
+      const cur = AppState.ui.smStoreGoods ? AppState.ui.smStoreGoods.selectedStore : "";
+      AppState.ui.smStoreGoods = { selectedStore: cur, qGoods: "", qCategory: "全部" };
       render();
       return;
     }

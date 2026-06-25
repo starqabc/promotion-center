@@ -869,6 +869,58 @@ tbody tr:last-child td{border-bottom:none}
 .campaign-list-toolbar .tb-btn--red:hover{background:#fee2e2}
 .campaign-list-toolbar .tb-btn--indigo{background:#eef2ff;color:#4f46e5;border-color:#c7d2fe}
 .campaign-list-toolbar .tb-btn--indigo:hover{background:#e0e7ff}
+
+/* 门店商品信息：左侧门店树 */
+.sg-store-panel{
+  border-right:1px solid #e5e7eb;
+  background:#fff;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+.sg-store-panel__title{
+  font-size:13px;
+  font-weight:700;
+  color:#1e293b;
+  padding:14px 14px 10px;
+  border-bottom:1px solid #f0f0f0;
+}
+.sg-store-panel__list{
+  flex:1;
+  overflow-y:auto;
+  padding:8px;
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+.sg-store-item{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+  padding:10px 12px;
+  border-radius:6px;
+  border:1px solid transparent;
+  background:transparent;
+  cursor:pointer;
+  text-align:left;
+  transition:all .15s ease;
+  width:100%;
+}
+.sg-store-item:hover{background:#f8fafc}
+.sg-store-item.is-active{
+  background:#eff6ff;
+  border-color:#bfdbfe;
+}
+.sg-store-item__name{
+  font-size:13px;
+  font-weight:600;
+  color:#1e293b;
+}
+.sg-store-item.is-active .sg-store-item__name{color:#2563eb}
+.sg-store-item__code{
+  font-size:11px;
+  color:#94a3b8;
+}
 .campaign-list-toolbar .btn--warning{
   border-color:rgba(245,158,11,.25);
   background:rgba(245,158,11,.1);
