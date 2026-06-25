@@ -299,6 +299,10 @@ button,input,select,textarea{font-family:inherit}
 .tabs-bar__item.is-active .tabs-bar__close{color:#93c5fd}
 .tabs-bar__item.is-active .tabs-bar__close:hover{background:rgba(37,99,235,.12);color:#2563eb}
 
+/* 面包屑页签已有，隐藏冗余的顶部标题栏和面包屑 */
+.topbar{display:none}
+.crumbs{display:none}
+
 .topbar{
   position:sticky;
   top:0;
