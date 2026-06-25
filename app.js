@@ -227,7 +227,7 @@ const AppState = {
     "/assortment": { title: "档期商品", sub: "按实际档期汇总全部选品 · 汇总列表只读展示" },
     "/assortment-create": { title: "创建档期选品", sub: "选择实际档期与大类 · 选择商品/导入明细 · 提交审批" },
     "/assortment-summary": { title: "档期商品", sub: "按实际档期汇总全部选品 · 选品完成回写" },
-    "/templates": { title: "促销模板", sub: "玩法模板 · 规则组件与参数占位" },
+    "/templates": { title: "促销模板", sub: "" },
     "/templates-create": { title: "创建促销模板", sub: "按步骤配置：基本策略/条件/奖励/展示/预览生成" },
     "/templates-edit": { title: "编辑促销模板", sub: "按步骤配置：基本策略/条件/奖励/展示/预览生成" },
     "/template-priority": { title: "模版优先级", sub: "按模版类型维护模板优先级顺序（原型演示）" },
