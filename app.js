@@ -9469,7 +9469,7 @@ function renderPromoGoodsTerminatePage() {
     return hit ? (hit.brandName || "") : "";
   };
 
-  const dims = ["商品", "类别", "品牌", "单据"];
+  const dims = ["商品", "类别", "品牌"];
   const dim = dims.includes(String(ui.dim || "")) ? String(ui.dim || "") : "商品";
 
   promoGoodsTerminateEnsureTerminatedList();
