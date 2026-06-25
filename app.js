@@ -10288,13 +10288,13 @@ function renderPromoGoodsProfilePage() {
   const promoTypes = ["全部", "直降", "折扣", "满减满赠", "满赠券"];
   const brands = ["全部", "品牌A", "品牌B", "品牌C"];
   const cats = ["全部", "日百", "食品", "饮料", "纺织"];
-  const statuses = ["全部", "促销中", "已结束", "未开始"];
+  const statuses = ["全部", "已结束", "已终止"];
   const sample = [
-    { skuCode: "SKU-4001", skuName: "纯棉毛巾34*76cm", spec: "34*76cm", unit: "条", barcode: "6900000000701", brand: "品牌A", cat: "纺织", promoType: "直降", actNo: "ACT-2026-0140", actName: "一口价-日百纺织9.9元", promoPrice: 9.90, origPrice: 15.90, startDate: "2026-07-01", endDate: "2026-07-31", status: "未开始" },
     { skuCode: "SKU-2001", skuName: "碳酸饮料330ml", spec: "330ml", unit: "罐", barcode: "6900000000201", brand: "品牌B", cat: "饮料", promoType: "满赠券", actNo: "ACT-2026-0081", actName: "618全场满赠优惠券", promoPrice: 3.00, origPrice: 3.50, startDate: "2026-06-06", endDate: "2026-06-18", status: "已结束" },
-    { skuCode: "SKU-4011", skuName: "收纳盒大号塑料", spec: "大号", unit: "个", barcode: "6900000000801", brand: "品牌C", cat: "日百", promoType: "直降", actNo: "ACT-2026-0141", actName: "618日百一口价19.9元", promoPrice: 19.90, origPrice: 29.90, startDate: "2026-07-05", endDate: "2026-07-20", status: "未开始" },
-    { skuCode: "SKU-1001", skuName: "原味酸奶200g", spec: "200g", unit: "盒", barcode: "6900000000101", brand: "品牌A", cat: "食品", promoType: "折扣", actNo: "ACT-2026-0050", actName: "夏日酸奶8折", promoPrice: 4.80, origPrice: 6.00, startDate: "2026-06-15", endDate: "2026-06-30", status: "促销中" },
-    { skuCode: "SKU-3001", skuName: "洗衣液3kg", spec: "3kg", unit: "瓶", barcode: "6900000000301", brand: "品牌B", cat: "日百", promoType: "满减满赠", actNo: "ACT-2026-0060", actName: "满50减10", promoPrice: 45.00, origPrice: 49.90, startDate: "2026-06-20", endDate: "2026-07-10", status: "促销中" }
+    { skuCode: "SKU-1002", skuName: "全脂牛奶1L", spec: "1L", unit: "盒", barcode: "6900000000102", brand: "品牌A", cat: "食品", promoType: "折扣", actNo: "ACT-2026-0051", actName: "端午鲜奶8.5折", promoPrice: 8.50, origPrice: 10.00, startDate: "2026-06-01", endDate: "2026-06-10", status: "已结束" },
+    { skuCode: "SKU-3001", skuName: "洗衣液3kg", spec: "3kg", unit: "瓶", barcode: "6900000000301", brand: "品牌B", cat: "日百", promoType: "满减满赠", actNo: "ACT-2026-0060", actName: "满50减10", promoPrice: 45.00, origPrice: 49.90, startDate: "2026-06-01", endDate: "2026-06-15", status: "已终止" },
+    { skuCode: "SKU-4003", skuName: "压缩毛巾一次性装10片", spec: "10片", unit: "包", barcode: "6900000000703", brand: "品牌C", cat: "纺织", promoType: "直降", actNo: "ACT-2026-0140", actName: "一口价-日百纺织9.9元", promoPrice: 9.90, origPrice: 12.50, startDate: "2026-05-20", endDate: "2026-06-05", status: "已结束" },
+    { skuCode: "SKU-2002", skuName: "矿泉水550ml", spec: "550ml", unit: "瓶", barcode: "6900000000202", brand: "品牌A", cat: "饮料", promoType: "折扣", actNo: "ACT-2026-0052", actName: "夏季水饮满减", promoPrice: 1.80, origPrice: 2.00, startDate: "2026-06-08", endDate: "2026-06-20", status: "已终止" }
   ];
   const list = sample.filter((x) => {
     const sc = String(ui.qSkuCode || "").trim().toLowerCase();
