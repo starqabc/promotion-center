@@ -26348,6 +26348,28 @@ function renderUnknownPage() {
   `);
 }
 
+function updateTabsBar(r, title) {
+  if (!AppState.openTabs) AppState.openTabs = [];
+  const existing = AppState.openTabs.find((t) => t.route === r);
+  if (existing) {
+    existing.title = title;
+  } else {
+    if (title && title !== "—") {
+      AppState.openTabs.push({ route: r, title });
+    }
+  }
+  const bar = document.getElementById("tabsBar");
+  if (!bar) return;
+  bar.innerHTML = AppState.openTabs.map((t) => {
+    const isActive = t.route === r;
+    const canClose = AppState.openTabs.length > 1;
+    return `<div class="tabs-bar__item ${isActive ? "is-active" : ""}" data-tab-route="${escapeHtml(t.route)}">
+      <span>${escapeHtml(t.title)}</span>
+      ${canClose ? `<button class="tabs-bar__close" type="button" data-tab-close="${escapeHtml(t.route)}" aria-label="关闭">✕</button>` : ""}
+    </div>`;
+  }).join("");
+}
+
 function render() {
   try {
   const r = route();
@@ -26375,6 +26397,7 @@ function render() {
   renderCampaignSubNav();
   navApplyOpenState();
   setActiveNav(r);
+  updateTabsBar(r, meta.title);
 
   let html = "";
   if (r === "/dashboard") html = renderDashboardPage();
@@ -26457,9 +26480,47 @@ function render() {
 
   els.content.innerHTML = html;
   bindPageEvents(r);
+  bindTabsBarEvents();
   } catch (err) {
     els.content.innerHTML = '<pre style="color:red;padding:20px;white-space:pre-wrap;">Render Error: ' + err.message + '\n' + (err.stack || '') + '</pre>';
   }
+}
+
+function bindTabsBarEvents() {
+  const bar = document.getElementById("tabsBar");
+  if (!bar) return;
+  bar.querySelectorAll(".tabs-bar__item").forEach((item) => {
+    item.addEventListener("click", (e) => {
+      if (e.target.classList.contains("tabs-bar__close")) return;
+      const r = item.getAttribute("data-tab-route");
+      if (r && r !== route()) location.hash = "#" + r;
+    });
+  });
+  bar.querySelectorAll(".tabs-bar__close").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const r = btn.getAttribute("data-tab-close");
+      if (!AppState.openTabs || AppState.openTabs.length <= 1) return;
+      const idx = AppState.openTabs.findIndex((t) => t.route === r);
+      if (idx < 0) return;
+      AppState.openTabs.splice(idx, 1);
+      if (r === route()) {
+        const next = AppState.openTabs[Math.min(idx, AppState.openTabs.length - 1)];
+        location.hash = "#" + next.route;
+      } else {
+        const bar = document.getElementById("tabsBar");
+        if (bar) bar.innerHTML = AppState.openTabs.map((t) => {
+          const isActive = t.route === route();
+          const canClose = AppState.openTabs.length > 1;
+          return `<div class="tabs-bar__item ${isActive ? "is-active" : ""}" data-tab-route="${escapeHtml(t.route)}">
+            <span>${escapeHtml(t.title)}</span>
+            ${canClose ? `<button class="tabs-bar__close" type="button" data-tab-close="${escapeHtml(t.route)}" aria-label="关闭">✕</button>` : ""}
+          </div>`;
+        }).join("");
+        bindTabsBarEvents();
+      }
+    });
+  });
 }
 
 function bindPageEvents(r) {
