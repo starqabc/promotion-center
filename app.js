@@ -245,6 +245,8 @@ const AppState = {
     "/campaigns-edit": { title: "修改促销活动", sub: "输入状态可修改；生效/作废不可修改" },
     "/promo-goods-terminate": { title: "生效商品", sub: "商品级维护：查看活动商品范围中的已生效商品（原型演示）" },
     "/promo-terminate-orders": { title: "促销终止单", sub: "终止单列表 · 查询 / 新增 / 查看（原型演示）" },
+    "/promo-pending-goods": { title: "待生效商品", sub: "查询待生效的促销商品（原型演示）" },
+    "/promo-goods-profile": { title: "促销商品档案", sub: "查询促销商品档案信息（原型演示）" },
     "/promo-terminate-orders-create": { title: "促销终止单", sub: "创建终止单（原型演示）" },
     "/pricing": { title: "模拟算价", sub: "解释型算价 · 命中链路与分摊明细" },
     "/engine": { title: "促销计算", sub: "计算顺序 · 互斥叠加 · 价保与预算" },
@@ -10239,6 +10241,88 @@ function promoTerminateOrderBuildSavedRecord(draft) {
     },
     linkedCampaignNos
   };
+}
+
+function renderPromoPendingGoodsPage() {
+  const ui = AppState.ui.promoPendingGoods || (AppState.ui.promoPendingGoods = { qActNo: "", qGoods: "", qPromoType: "全部", qStore: "", qStatus: "全部" });
+  const promoTypes = ["全部", "直降", "折扣", "满减满赠", "满赠券"];
+  const statuses = ["全部", "待生效", "已排期", "审核中"];
+  const sample = [
+    { actNo: "ACT-2026-0140", actName: "一口价-日百纺织9.9元", promoType: "直降", skuCode: "SKU-4001", skuName: "纯棉毛巾34*76cm", spec: "34*76cm", unit: "条", storeCode: "ST-001", storeName: "华东旗舰店", promoPrice: 9.90, origPrice: 15.90, startDate: "2026-07-01", endDate: "2026-07-31", status: "待生效" },
+    { actNo: "ACT-2026-0141", actName: "618日百一口价19.9元", promoType: "直降", skuCode: "SKU-4011", skuName: "收纳盒大号塑料", spec: "大号", unit: "个", storeCode: "ST-002", storeName: "华南中心店", promoPrice: 19.90, origPrice: 29.90, startDate: "2026-07-05", endDate: "2026-07-20", status: "已排期" },
+    { actNo: "ACT-2026-0081", actName: "618全场满赠优惠券", promoType: "满赠券", skuCode: "SKU-2001", skuName: "碳酸饮料330ml", spec: "330ml", unit: "罐", storeCode: "ST-001", storeName: "华东旗舰店", promoPrice: 3.00, origPrice: 3.50, startDate: "2026-07-10", endDate: "2026-07-25", status: "审核中" },
+    { actNo: "ACT-2026-0140", actName: "一口价-日百纺织9.9元", promoType: "直降", skuCode: "SKU-4002", skuName: "竹纤维方巾30*30cm", spec: "30*30cm", unit: "条", storeCode: "ST-001", storeName: "华东旗舰店", promoPrice: 9.90, origPrice: 8.90, startDate: "2026-07-01", endDate: "2026-07-31", status: "待生效" },
+    { actNo: "ACT-2026-0141", actName: "618日百一口价19.9元", promoType: "直降", skuCode: "SKU-4012", skuName: "不锈钢脸盆", spec: "标准", unit: "个", storeCode: "ST-002", storeName: "华南中心店", promoPrice: 19.90, origPrice: 25.00, startDate: "2026-07-05", endDate: "2026-07-20", status: "已排期" }
+  ];
+  const list = sample.filter((x) => {
+    const an = String(ui.qActNo || "").trim();
+    const gq = String(ui.qGoods || "").trim().toLowerCase();
+    const sc = String(ui.qStore || "").trim();
+    if (an && !String(x.actNo).includes(an) && !String(x.actName).includes(an)) return false;
+    if (gq && ![x.skuCode, x.skuName].some((v) => String(v).toLowerCase().includes(gq))) return false;
+    if (sc && !String(x.storeCode).includes(sc) && !String(x.storeName).includes(sc)) return false;
+    if (ui.qPromoType !== "全部" && x.promoType !== ui.qPromoType) return false;
+    if (ui.qStatus !== "全部" && x.status !== ui.qStatus) return false;
+    return true;
+  });
+  const filtersHtml = `
+    <div class="field"><div class="field__label">活动编号/名称</div><input class="input" id="ppgQActNo" value="${escapeHtml(ui.qActNo)}" placeholder="请输入活动编号或名称" /></div>
+    <div class="field"><div class="field__label">商品信息</div><input class="input" id="ppgQGoods" value="${escapeHtml(ui.qGoods)}" placeholder="商品编码/名称" /></div>
+    <div class="field"><div class="field__label">促销类型</div><select class="select" id="ppgQPromoType">${promoTypes.map((x) => `<option ${x === ui.qPromoType ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select></div>
+    <div class="field"><div class="field__label">门店编码/名称</div><input class="input" id="ppgQStore" value="${escapeHtml(ui.qStore)}" placeholder="门店编码/名称" /></div>
+    <div class="field"><div class="field__label">状态</div><select class="select" id="ppgQStatus">${statuses.map((x) => `<option ${x === ui.qStatus ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select></div>
+  `;
+  const actionsHtml = `<button class="btn btn--primary" type="button" data-act="ppgQuery">查询</button><button class="btn" type="button" data-act="ppgReset">重置</button>`;
+  const headers = ["序号", "活动编号", "活动名称", "促销类型", "商品编码", "商品名称", "规格", "单位", "门店编码", "门店名称", "促销价", "原价", "生效日期", "结束日期", "状态"];
+  const rows = list.map((x, idx) => `<tr>
+    <td>${idx + 1}</td><td class="mono">${escapeHtml(x.actNo)}</td><td>${escapeHtml(x.actName)}</td><td>${escapeHtml(x.promoType)}</td>
+    <td class="mono">${escapeHtml(x.skuCode)}</td><td>${escapeHtml(x.skuName)}</td><td>${escapeHtml(x.spec)}</td><td>${escapeHtml(x.unit)}</td>
+    <td class="mono">${escapeHtml(x.storeCode)}</td><td>${escapeHtml(x.storeName)}</td><td class="mono">${escapeHtml(String(x.promoPrice))}</td><td class="mono">${escapeHtml(String(x.origPrice))}</td>
+    <td class="mono">${escapeHtml(x.startDate)}</td><td class="mono">${escapeHtml(x.endDate)}</td><td>${badge(x.status)}</td>
+  </tr>`).join("");
+  return listPageLayout({ filtersHtml, filterActionsHtml: actionsHtml, listTitle: "待生效商品列表", tableHtml: table(headers, rows || `<tr><td colspan="${headers.length}"><div class="empty">暂无数据</div></td></tr>`), footerHtml: footerbar(`共 ${list.length} 条`, "第 1 页") });
+}
+
+function renderPromoGoodsProfilePage() {
+  const ui = AppState.ui.promoGoodsProfile || (AppState.ui.promoGoodsProfile = { qSkuCode: "", qSkuName: "", qPromoType: "全部", qBrand: "全部", qCat: "全部", qStatus: "全部" });
+  const promoTypes = ["全部", "直降", "折扣", "满减满赠", "满赠券"];
+  const brands = ["全部", "品牌A", "品牌B", "品牌C"];
+  const cats = ["全部", "日百", "食品", "饮料", "纺织"];
+  const statuses = ["全部", "促销中", "已结束", "未开始"];
+  const sample = [
+    { skuCode: "SKU-4001", skuName: "纯棉毛巾34*76cm", spec: "34*76cm", unit: "条", barcode: "6900000000701", brand: "品牌A", cat: "纺织", promoType: "直降", actNo: "ACT-2026-0140", actName: "一口价-日百纺织9.9元", promoPrice: 9.90, origPrice: 15.90, startDate: "2026-07-01", endDate: "2026-07-31", status: "未开始" },
+    { skuCode: "SKU-2001", skuName: "碳酸饮料330ml", spec: "330ml", unit: "罐", barcode: "6900000000201", brand: "品牌B", cat: "饮料", promoType: "满赠券", actNo: "ACT-2026-0081", actName: "618全场满赠优惠券", promoPrice: 3.00, origPrice: 3.50, startDate: "2026-06-06", endDate: "2026-06-18", status: "已结束" },
+    { skuCode: "SKU-4011", skuName: "收纳盒大号塑料", spec: "大号", unit: "个", barcode: "6900000000801", brand: "品牌C", cat: "日百", promoType: "直降", actNo: "ACT-2026-0141", actName: "618日百一口价19.9元", promoPrice: 19.90, origPrice: 29.90, startDate: "2026-07-05", endDate: "2026-07-20", status: "未开始" },
+    { skuCode: "SKU-1001", skuName: "原味酸奶200g", spec: "200g", unit: "盒", barcode: "6900000000101", brand: "品牌A", cat: "食品", promoType: "折扣", actNo: "ACT-2026-0050", actName: "夏日酸奶8折", promoPrice: 4.80, origPrice: 6.00, startDate: "2026-06-15", endDate: "2026-06-30", status: "促销中" },
+    { skuCode: "SKU-3001", skuName: "洗衣液3kg", spec: "3kg", unit: "瓶", barcode: "6900000000301", brand: "品牌B", cat: "日百", promoType: "满减满赠", actNo: "ACT-2026-0060", actName: "满50减10", promoPrice: 45.00, origPrice: 49.90, startDate: "2026-06-20", endDate: "2026-07-10", status: "促销中" }
+  ];
+  const list = sample.filter((x) => {
+    const sc = String(ui.qSkuCode || "").trim().toLowerCase();
+    const sn = String(ui.qSkuName || "").trim().toLowerCase();
+    if (sc && !String(x.skuCode).toLowerCase().includes(sc) && !String(x.barcode).includes(sc)) return false;
+    if (sn && !String(x.skuName).toLowerCase().includes(sn)) return false;
+    if (ui.qPromoType !== "全部" && x.promoType !== ui.qPromoType) return false;
+    if (ui.qBrand !== "全部" && x.brand !== ui.qBrand) return false;
+    if (ui.qCat !== "全部" && x.cat !== ui.qCat) return false;
+    if (ui.qStatus !== "全部" && x.status !== ui.qStatus) return false;
+    return true;
+  });
+  const filtersHtml = `
+    <div class="field"><div class="field__label">商品编码/条码</div><input class="input" id="pgfQSkuCode" value="${escapeHtml(ui.qSkuCode)}" placeholder="商品编码/条码" /></div>
+    <div class="field"><div class="field__label">商品名称</div><input class="input" id="pgfQSkuName" value="${escapeHtml(ui.qSkuName)}" placeholder="商品名称" /></div>
+    <div class="field"><div class="field__label">促销类型</div><select class="select" id="pgfQPromoType">${promoTypes.map((x) => `<option ${x === ui.qPromoType ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select></div>
+    <div class="field"><div class="field__label">品牌</div><select class="select" id="pgfQBrand">${brands.map((x) => `<option ${x === ui.qBrand ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select></div>
+    <div class="field"><div class="field__label">分类</div><select class="select" id="pgfQCat">${cats.map((x) => `<option ${x === ui.qCat ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select></div>
+    <div class="field"><div class="field__label">状态</div><select class="select" id="pgfQStatus">${statuses.map((x) => `<option ${x === ui.qStatus ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select></div>
+  `;
+  const actionsHtml = `<button class="btn btn--primary" type="button" data-act="pgfQuery">查询</button><button class="btn" type="button" data-act="pgfReset">重置</button>`;
+  const headers = ["序号", "商品编码", "商品名称", "条码", "规格", "单位", "品牌", "分类", "促销类型", "活动编号", "活动名称", "促销价", "原价", "开始日期", "结束日期", "状态"];
+  const rows = list.map((x, idx) => `<tr>
+    <td>${idx + 1}</td><td class="mono">${escapeHtml(x.skuCode)}</td><td>${escapeHtml(x.skuName)}</td><td class="mono">${escapeHtml(x.barcode)}</td><td>${escapeHtml(x.spec)}</td><td>${escapeHtml(x.unit)}</td>
+    <td>${escapeHtml(x.brand)}</td><td>${escapeHtml(x.cat)}</td><td>${escapeHtml(x.promoType)}</td><td class="mono">${escapeHtml(x.actNo)}</td><td>${escapeHtml(x.actName)}</td>
+    <td class="mono">${escapeHtml(String(x.promoPrice))}</td><td class="mono">${escapeHtml(String(x.origPrice))}</td><td class="mono">${escapeHtml(x.startDate)}</td><td class="mono">${escapeHtml(x.endDate)}</td><td>${badge(x.status)}</td>
+  </tr>`).join("");
+  return listPageLayout({ filtersHtml, filterActionsHtml: actionsHtml, listTitle: "促销商品档案列表", tableHtml: table(headers, rows || `<tr><td colspan="${headers.length}"><div class="empty">暂无数据</div></td></tr>`), footerHtml: footerbar(`共 ${list.length} 条`, "第 1 页") });
 }
 
 function renderPromoTerminateOrdersPage() {
@@ -26430,6 +26514,8 @@ function render() {
   else if (r.startsWith("/campaigns-detail/")) html = renderCampaignDetailPage(decodeURIComponent(r.split("/").slice(2).join("/") || ""));
   else if (r === "/promo-goods-terminate") html = renderPromoGoodsTerminatePage();
   else if (r === "/promo-terminate-orders") html = renderPromoTerminateOrdersPage();
+  else if (r === "/promo-pending-goods") html = renderPromoPendingGoodsPage();
+  else if (r === "/promo-goods-profile") html = renderPromoGoodsProfilePage();
   else if (r === "/promo-terminate-orders-create") html = renderPromoTerminateOrderFormPage("create");
   else if (r.startsWith("/promo-terminate-orders-detail/")) html = renderPromoTerminateOrderFormPage("detail", decodeURIComponent(r.split("/").slice(2).join("/") || ""));
   else if (r === "/pricing") html = renderPricingPage();
@@ -28113,6 +28199,43 @@ function handleAction(r, act, btn) {
     }
     if (act === "rpsaExport") return toast("导出成功（原型演示）");
     if (act === "rpsaPrint") return toast("打印成功（原型演示）");
+  }
+
+  if (r === "/promo-pending-goods") {
+    const rd = (id) => document.getElementById(id) ? document.getElementById(id).value : "";
+    if (act === "ppgQuery") {
+      AppState.ui.promoPendingGoods.qActNo = rd("ppgQActNo").trim();
+      AppState.ui.promoPendingGoods.qGoods = rd("ppgQGoods").trim();
+      AppState.ui.promoPendingGoods.qPromoType = rd("ppgQPromoType") || "全部";
+      AppState.ui.promoPendingGoods.qStore = rd("ppgQStore").trim();
+      AppState.ui.promoPendingGoods.qStatus = rd("ppgQStatus") || "全部";
+      render();
+      return;
+    }
+    if (act === "ppgReset") {
+      AppState.ui.promoPendingGoods = { qActNo: "", qGoods: "", qPromoType: "全部", qStore: "", qStatus: "全部" };
+      render();
+      return;
+    }
+  }
+
+  if (r === "/promo-goods-profile") {
+    const rd = (id) => document.getElementById(id) ? document.getElementById(id).value : "";
+    if (act === "pgfQuery") {
+      AppState.ui.promoGoodsProfile.qSkuCode = rd("pgfQSkuCode").trim();
+      AppState.ui.promoGoodsProfile.qSkuName = rd("pgfQSkuName").trim();
+      AppState.ui.promoGoodsProfile.qPromoType = rd("pgfQPromoType") || "全部";
+      AppState.ui.promoGoodsProfile.qBrand = rd("pgfQBrand") || "全部";
+      AppState.ui.promoGoodsProfile.qCat = rd("pgfQCat") || "全部";
+      AppState.ui.promoGoodsProfile.qStatus = rd("pgfQStatus") || "全部";
+      render();
+      return;
+    }
+    if (act === "pgfReset") {
+      AppState.ui.promoGoodsProfile = { qSkuCode: "", qSkuName: "", qPromoType: "全部", qBrand: "全部", qCat: "全部", qStatus: "全部" };
+      render();
+      return;
+    }
   }
 
   if (r === "/rpt-warning") {
