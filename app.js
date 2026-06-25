@@ -7019,10 +7019,6 @@ function renderTemplatesPage() {
                   <div class="campaign-list-field__label">模板状态</div>
                   <select class="select" id="tplQStatus">${statusOps.map((x) => `<option value="${escapeHtml(x.v)}" ${String(x.v) === String(ui.qStatus || "全部") ? "selected" : ""}>${escapeHtml(x.t)}</option>`).join("")}</select>
                 </div>
-                <div class="campaign-list-filters__actions">
-                  <button class="btn btn--primary" type="button" data-act="tplQuery">查询</button>
-                  <button class="btn" type="button" data-act="tplReset">重置</button>
-                </div>
                 <div class="campaign-list-field">
                   <div class="campaign-list-field__label">审核状态</div>
                   <select class="select" id="tplQAuditStatus">${auditOps.map((x) => `<option ${String(x) === String(ui.qAuditStatus || "全部") ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select>
@@ -7037,7 +7033,10 @@ function renderTemplatesPage() {
                     <input class="input campaign-list-time__input" id="tplQEndTo" type="datetime-local" value="${escapeHtml(toDatetimeLocalValue(ui.qEndTo))}" placeholder="请选择结束时间" />
                   </div>
                 </div>
-                <div class="tpl-filter-spacer"></div>
+                <div class="campaign-list-filters__actions">
+                  <button class="btn btn--primary" type="button" data-act="tplQuery">查询</button>
+                  <button class="btn" type="button" data-act="tplReset">重置</button>
+                </div>
               </div>
             </div>
 

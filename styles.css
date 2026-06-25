@@ -955,6 +955,13 @@ tbody tr:last-child td{border-bottom:none}
   grid-template-columns:repeat(3,minmax(0,1fr));
   gap:14px 20px;
 }
+.tpl-list-filters .campaign-list-filters__actions{
+  grid-column:span 3;
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  padding-top:4px;
+}
 .tpl-list-filters .campaign-list-time .select{
   width:110px;
   min-width:110px;
@@ -965,7 +972,6 @@ tbody tr:last-child td{border-bottom:none}
   min-width:0;
 }
 .tpl-list-field--time{grid-column:span 2}
-.tpl-filter-spacer{display:none}
 .tpl-list-filters .campaign-list-time{
   display:flex;
   gap:8px;
