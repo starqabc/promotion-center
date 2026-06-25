@@ -266,12 +266,12 @@ const AppState = {
     "/sm-price-groups": { title: "价格组信息", sub: "只读：查询价格组基础信息（原型演示）" },
     "/sm-stores": { title: "门店信息", sub: "只读：查询门店基础信息（原型演示）" },
     "/sm-store-goods": { title: "门店商品信息", sub: "查询门店商品关联信息（原型演示）" },
-    "/voucher-themes": { title: "礼券主题", sub: "礼券主题配置与投放口径（原型演示）" },
-    "/voucher-themes-create": { title: "新增礼券主题", sub: "按步骤配置：基本信息/参与对象/参与范围/计费规则" },
-    "/voucher-themes-edit": { title: "修改礼券主题", sub: "输入状态可修改；生效/作废不可修改" },
-    "/voucher-categories": { title: "礼券分类", sub: "礼券分类维护（原型演示）" },
-    "/voucher-categories-create": { title: "新增礼券分类", sub: "维护类别编码/类别名称/备注（原型演示）" },
-    "/voucher-categories-edit": { title: "修改礼券分类", sub: "维护类别名称/备注（原型演示）" },
+    "/voucher-themes": { title: "优惠券主题", sub: "优惠券主题配置与投放口径（原型演示）" },
+    "/voucher-themes-create": { title: "新增优惠券主题", sub: "按步骤配置：基本信息/参与对象/参与范围/计费规则" },
+    "/voucher-themes-edit": { title: "修改优惠券主题", sub: "输入状态可修改；生效/作废不可修改" },
+    "/voucher-categories": { title: "优惠券分类", sub: "优惠券分类维护（原型演示）" },
+    "/voucher-categories-create": { title: "新增优惠券分类", sub: "维护类别编码/类别名称/备注（原型演示）" },
+    "/voucher-categories-edit": { title: "修改优惠券分类", sub: "维护类别名称/备注（原型演示）" },
     "/voucher-packs": { title: "券包管理", sub: "券包列表 · 新增/修改/复制/详情（原型演示）" },
     "/sys-dict": { title: "数据字典", sub: "系统枚举/码表（原型演示）" },
     "/sys-params": { title: "系统参数", sub: "系统开关/阈值/默认值（原型演示）" },
@@ -10984,7 +10984,7 @@ function campaignVoucherGiftModalState() {
 
 function campaignVoucherGiftModalVoucherOptionsHtml(selectedCode) {
   const list = (AppState.data.voucherThemes || []).filter((v) => String(v.status || "") === "生效");
-  return [`<option value="">请选择礼券</option>`]
+  return [`<option value="">请选择优惠券</option>`]
     .concat(list.map((v) => `<option value="${escapeHtml(v.voucherNo)}" data-name="${escapeHtml(v.voucherName || "")}" data-type="${escapeHtml(v.voucherType || "")}" ${String(selectedCode || "") === String(v.voucherNo || "") ? "selected" : ""}>${escapeHtml(v.voucherNo)} | ${escapeHtml(v.voucherName || "")}</option>`))
     .join("");
 }
@@ -11007,8 +11007,8 @@ function campaignVoucherGiftModalBodyHtml() {
     return `<tr data-vgs-kind="voucher">
       <td>${idx + 1}</td>
       <td><select class="select" data-vgs-field="voucher-code" ${readonly ? "disabled" : ""}>${campaignVoucherGiftModalVoucherOptionsHtml(row.voucherCode)}</select></td>
-      <td><input class="input" data-vgs-field="voucher-name" value="${escapeHtml(String(voucherName || ""))}" placeholder="礼券名称" readonly /></td>
-      <td><input class="input" data-vgs-field="voucher-type" value="${escapeHtml(String(voucherType || ""))}" placeholder="礼券类型" readonly /></td>
+      <td><input class="input" data-vgs-field="voucher-name" value="${escapeHtml(String(voucherName || ""))}" placeholder="优惠券名称" readonly /></td>
+      <td><input class="input" data-vgs-field="voucher-type" value="${escapeHtml(String(voucherType || ""))}" placeholder="优惠券类型" readonly /></td>
       <td><input class="input mono" data-vgs-field="voucher-qty" type="number" min="1" step="1" value="${escapeHtml(String(row.qty ?? ""))}" placeholder="赠券张数" ${readonly ? "disabled" : ""} /></td>
       <td><input class="input" data-vgs-field="voucher-remark" value="${escapeHtml(String(row.remark || ""))}" placeholder="备注" ${readonly ? "disabled" : ""} /></td>
       <td class="vgs-table__op">${readonly ? `<span class="cell-muted">-</span>` : `<button class="btn-link" type="button" data-act="campVoucherGiftModalVoucherRemove" data-idx="${idx}">移除</button>`}</td>
@@ -11036,13 +11036,13 @@ function campaignVoucherGiftModalBodyHtml() {
       <section class="vgs-panel">
         <div class="vgs-panel__head">
           <div>
-            <div class="vgs-panel__title">礼券设置</div>
-            <div class="vgs-panel__desc">选择生效中的礼券并维护赠送张数。</div>
+            <div class="vgs-panel__title">优惠券设置</div>
+            <div class="vgs-panel__desc">选择生效中的优惠券并维护赠送张数。</div>
           </div>
-          ${readonly ? "" : `<button class="btn btn--primary" type="button" data-act="campVoucherGiftModalVoucherAdd">新增礼券</button>`}
+          ${readonly ? "" : `<button class="btn btn--primary" type="button" data-act="campVoucherGiftModalVoucherAdd">新增优惠券</button>`}
         </div>
         <div class="vgs-tablewrap">
-          ${table(["序号", "礼券编码", "礼券名称", "礼券类型", "赠券张数", "备注", "操作"], voucherRows || `<tr><td colspan="7"><div class="empty">暂无礼券，请新增</div></td></tr>`)}
+          ${table(["序号", "优惠券编码", "优惠券名称", "优惠券类型", "赠券张数", "备注", "操作"], voucherRows || `<tr><td colspan="7"><div class="empty">暂无优惠券，请新增</div></td></tr>`)}
         </div>
       </section>
     </div>
@@ -11119,13 +11119,13 @@ function campaignOpenVoucherGiftRowModal(idx, mode = "edit") {
         if (!Number.isFinite(threshold) || threshold <= 0) return toast(`条件${i + 1}：${conditionLabel}需大于0`);
         if (isQty && !Number.isInteger(threshold)) return toast(`条件${i + 1}：${conditionLabel}需为正整数`);
       }
-      if (!vouchers.length) { toast("请至少新增一条礼券信息"); return; }
+      if (!vouchers.length) { toast("请至少新增一条优惠券信息"); return; }
       for (let i = 0; i < vouchers.length; i++) {
         const item = vouchers[i] || {};
         const qty = Number(item.qty);
-        if (!String(item.voucherCode || "").trim()) return toast(`礼券${i + 1}：请选择礼券编码`);
-        if (!Number.isFinite(qty) || qty <= 0) return toast(`礼券${i + 1}：赠券张数需大于0`);
-        if (!Number.isInteger(qty)) return toast(`礼券${i + 1}：赠券张数需为正整数`);
+        if (!String(item.voucherCode || "").trim()) return toast(`优惠券${i + 1}：请选择优惠券编码`);
+        if (!Number.isFinite(qty) || qty <= 0) return toast(`优惠券${i + 1}：赠券张数需大于0`);
+        if (!Number.isInteger(qty)) return toast(`优惠券${i + 1}：赠券张数需为正整数`);
       }
       const firstCondition = conditions[0] || {};
       const firstVoucher = vouchers[0] || {};
@@ -11700,7 +11700,7 @@ function campaignWizardValidateStep(step) {
       for (let j = 0; j < vs.length; j++) {
         const v = vs[j] || {};
         const q = Number(v.qty);
-        if (!String(v.voucherCode || "").trim()) return `第${i + 1}组第${j + 1}行：请填写礼券编码`;
+        if (!String(v.voucherCode || "").trim()) return `第${i + 1}组第${j + 1}行：请填写优惠券编码`;
         if (!Number.isFinite(q) || q <= 0) return `第${i + 1}组第${j + 1}行：赠券张数需大于0`;
         if (!Number.isInteger(q)) return `第${i + 1}组第${j + 1}行：赠券张数需为正整数`;
       }
@@ -15413,7 +15413,7 @@ function campaignWizardRenderVGVoucherTable() {
   d.voucherGiftScope = d.voucherGiftScope || {};
   d.voucherGiftScope.vouchers = campaignNormalizeVGVoucherCombos(d.voucherGiftScope.vouchers || [], tpl);
   const groups = d.voucherGiftScope.vouchers;
-  const headers = ["序号", "礼券编码", "礼券名称", "礼券类型", "赠券张数", "备注"];
+  const headers = ["序号", "优惠券编码", "优惠券名称", "优惠券类型", "赠券张数", "备注"];
   const groupsHtml = (groups || [])
     .map((g, gidx) => {
       const vouchers = Array.isArray(g.vouchers) ? g.vouchers : [];
@@ -15421,9 +15421,9 @@ function campaignWizardRenderVGVoucherTable() {
         .map((x, idx) => {
           return `<tr>
             <td>${idx + 1}</td>
-            <td><input class="input mono" style="width:100%" data-cw="vgVoucherRows" data-gidx="${gidx}" data-idx="${idx}" data-field="voucherCode" value="${escapeHtml(x.voucherCode || "")}" placeholder="礼券编码" /></td>
-            <td><input class="input" style="width:100%" data-cw="vgVoucherRows" data-gidx="${gidx}" data-idx="${idx}" data-field="voucherName" value="${escapeHtml(x.voucherName || "")}" placeholder="礼券名称" /></td>
-            <td><input class="input" style="width:100%" data-cw="vgVoucherRows" data-gidx="${gidx}" data-idx="${idx}" data-field="voucherType" value="${escapeHtml(x.voucherType || "")}" placeholder="礼券类型" /></td>
+            <td><input class="input mono" style="width:100%" data-cw="vgVoucherRows" data-gidx="${gidx}" data-idx="${idx}" data-field="voucherCode" value="${escapeHtml(x.voucherCode || "")}" placeholder="优惠券编码" /></td>
+            <td><input class="input" style="width:100%" data-cw="vgVoucherRows" data-gidx="${gidx}" data-idx="${idx}" data-field="voucherName" value="${escapeHtml(x.voucherName || "")}" placeholder="优惠券名称" /></td>
+            <td><input class="input" style="width:100%" data-cw="vgVoucherRows" data-gidx="${gidx}" data-idx="${idx}" data-field="voucherType" value="${escapeHtml(x.voucherType || "")}" placeholder="优惠券类型" /></td>
             <td><input class="input mono" style="width:100%" data-cw="vgVoucherRows" data-gidx="${gidx}" data-idx="${idx}" data-field="qty" type="number" min="1" step="1" value="${escapeHtml(String(x.qty ?? ""))}" placeholder="赠券张数" /></td>
             <td><input class="input" style="width:100%" data-cw="vgVoucherRows" data-gidx="${gidx}" data-idx="${idx}" data-field="remark" value="${escapeHtml(x.remark || "")}" placeholder="备注" /></td>
           </tr>`;
@@ -21296,7 +21296,7 @@ function renderCampaignDetailPage(activityNo) {
       `)}
     `;
 
-  const vgHeaders = ["序号", "礼券编码", "礼券名称", "礼券类型", "赠券张数", "备注"];
+  const vgHeaders = ["序号", "优惠券编码", "优惠券名称", "优惠券类型", "赠券张数", "备注"];
   const vgCombos = campaignNormalizeVGVoucherCombos(((c.voucherGiftScope && c.voucherGiftScope.vouchers) || []), tpl);
   const vgMode = String((rs && rs.mode) || "");
   const vgList = vgMode === "倍数" ? vgCombos.slice(0, 1) : vgCombos;
@@ -21439,7 +21439,7 @@ function renderPricingPage() {
         <div class="pricing-coupon-card__title">${escapeHtml(cp.title)}</div>
         <div class="pricing-coupon-card__scope">使用范围：${escapeHtml(cp.scope)}</div>
         <div class="pricing-coupon-card__time">使用时间：${escapeHtml(cp.validTime)}</div>
-        <div class="pricing-coupon-card__desc">礼券说明：${escapeHtml(cp.desc || "—")}</div>
+        <div class="pricing-coupon-card__desc">优惠券说明：${escapeHtml(cp.desc || "—")}</div>
       </div>
     </div>`;
   }).join("");
@@ -22679,19 +22679,19 @@ function renderVoucherThemesPage() {
 
   const filtersHtml = `
     <div class="field">
-      <div class="field__label">礼券编码</div>
+      <div class="field__label">优惠券编码</div>
       <input class="input" id="vtQNo" value="${escapeHtml(ui.qNo)}" placeholder="如：VC-2026-0001" />
     </div>
     <div class="field">
-      <div class="field__label">礼券名称</div>
+      <div class="field__label">优惠券名称</div>
       <input class="input" id="vtQName" value="${escapeHtml(ui.qName)}" placeholder="支持模糊查询" />
     </div>
     <div class="field">
-      <div class="field__label">礼券类型</div>
+      <div class="field__label">优惠券类型</div>
       <select class="select" id="vtQType">${types.map((x) => `<option ${x === ui.qType ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select>
     </div>
     <div class="field">
-      <div class="field__label">礼券状态</div>
+      <div class="field__label">优惠券状态</div>
       <select class="select" id="vtQStatus">${statuses.map((x) => `<option ${x === ui.qStatus ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select>
     </div>
     <div class="field">
@@ -22780,10 +22780,10 @@ function renderVoucherThemesPage() {
 
   const headers = [
     "序号",
-    "礼券编号",
-    "礼券名称",
-    "礼券类型",
-    "礼券面值",
+    "优惠券编号",
+    "优惠券名称",
+    "优惠券类型",
+    "优惠券面值",
     "状态",
     "使用范围",
     "效期",
@@ -22798,11 +22798,11 @@ function renderVoucherThemesPage() {
     "操作"
   ];
   return `
-    <div class="crumbs"><span class="crumbs__muted">促销中心</span> / <span>礼券主题</span></div>
+    <div class="crumbs"><span class="crumbs__muted">促销中心</span> / <span>优惠券主题</span></div>
     ${listPageLayout({
       filtersHtml,
       filterActionsHtml,
-      listTitle: "礼券主题列表",
+      listTitle: "优惠券主题列表",
       listActionsHtml,
       tableHtml: table(headers, rows || `<tr><td colspan="${headers.length}"><div class="empty">暂无数据</div></td></tr>`),
       footerHtml: footerbar(`共 ${list.length} 条`, "第 1 页")
@@ -22865,7 +22865,7 @@ function renderVoucherCategoriesPage() {
   return listPageLayout({
     filtersHtml,
     filterActionsHtml,
-    listTitle: "礼券分类列表",
+    listTitle: "优惠券分类列表",
     listActionsHtml,
     tableHtml: table(headers, rows || `<tr><td colspan="${headers.length}"><div class="empty">暂无数据</div></td></tr>`),
     footerHtml: footerbar(`共 ${list.length} 条`, "第 1 页")
@@ -22875,7 +22875,7 @@ function renderVoucherCategoriesPage() {
 function renderVoucherCategoryEditPage(mode) {
   const isEdit = mode === "edit";
   const d = AppState._tmpVoucherCategory || (AppState._tmpVoucherCategory = { catCode: "", catName: "", remark: "" });
-  const title = isEdit ? "修改礼券分类" : "新增礼券分类";
+  const title = isEdit ? "修改优惠券分类" : "新增优惠券分类";
   return `
     <div class="card">
       <div class="card__header">
@@ -22909,9 +22909,9 @@ function renderVoucherCategoryEditPage(mode) {
 
 function openVoucherCategoryDetail(catCode) {
   const x = (AppState.data.voucherCategories || []).find((t) => String(t.catCode) === String(catCode));
-  if (!x) return toast("未找到礼券分类（原型演示）");
+  if (!x) return toast("未找到优惠券分类（原型演示）");
   openDrawer({
-    title: x.catName || "礼券分类详情",
+    title: x.catName || "优惠券分类详情",
     subtitle: `类别编码：${x.catCode || "—"} · 状态：${x.status || "—"}`,
     primaryText: "修改",
     secondaryText: "关闭",
@@ -22935,30 +22935,30 @@ function openVoucherCategoryDetail(catCode) {
 
 function openVoucherThemeDetail(voucherNo) {
   const v = (AppState.data.voucherThemes || []).find((t) => String(t.voucherNo) === String(voucherNo));
-  if (!v) return toast("未找到礼券主题（原型演示）");
+  if (!v) return toast("未找到优惠券主题（原型演示）");
   const expired = voucherThemeIsExpired(v) ? "是" : "否";
   const share = voucherThemeIsShare(v) ? "是" : "否";
   const p = v.print || {};
   const pText = (k) => (p[k] === false ? "关闭" : "启用");
   openDrawer({
-    title: v.voucherName || "礼券主题详情",
-    subtitle: `礼券编号：${v.voucherNo || "—"} · 状态：${v.status || "—"}`,
+    title: v.voucherName || "优惠券主题详情",
+    subtitle: `优惠券编号：${v.voucherNo || "—"} · 状态：${v.status || "—"}`,
     primaryText: "关闭",
     secondaryText: "关闭",
     onPrimary: closeDrawer,
     bodyHtml: `
       ${detailSectionHtml("基本信息", kvHtml([
-        ["礼券类型", escapeHtml(v.voucherType || "—")],
-        ["礼券面值", `<span class="mono">${escapeHtml(String(v.faceValue ?? "—"))}</span>`],
+        ["优惠券类型", escapeHtml(v.voucherType || "—")],
+        ["优惠券面值", `<span class="mono">${escapeHtml(String(v.faceValue ?? "—"))}</span>`],
         ["核销渠道", escapeHtml(v.redeemChannel || "—")],
         ["售后退券", escapeHtml(v.afterSaleReturn || "—")],
-        ["礼券效期", `<span class="mono">${escapeHtml(voucherThemePeriodText(v))}</span>`],
+        ["优惠券效期", `<span class="mono">${escapeHtml(voucherThemePeriodText(v))}</span>`],
         ["是否过期", badge(expired)],
         ["购满金额", `<span class="mono">${escapeHtml(String(v.minSpend ?? "不限制"))}</span>`],
         ["使用张数", `<span class="mono">${escapeHtml(String(v.useCount ?? "不限制"))}</span>`],
         ["可发送数量", `<span class="mono">${escapeHtml(String(v.sendQty ?? "不限制"))}</span>`],
         ["共享活动", escapeHtml(voucherThemeShareActivityText(v) || "—")],
-        ["礼券互斥", badge(v.couponMutex ? "是" : "否")],
+        ["优惠券互斥", badge(v.couponMutex ? "是" : "否")],
         ["促销互斥", badge(v.promoMutex ? "是" : "否")],
         ["是否分摊", badge(share)],
         ["是否全场", escapeHtml((v.scope && v.scope.isAll) || "否")],
@@ -22966,14 +22966,14 @@ function openVoucherThemeDetail(voucherNo) {
       ]))}
       <div class="divider"></div>
       ${detailSectionHtml("打印内容", kvHtml([
-        ["礼券主题", escapeHtml(pText("theme"))],
-        ["礼券面值", escapeHtml(pText("faceValue"))],
-        ["礼券条码", escapeHtml(pText("barcode"))],
+        ["优惠券主题", escapeHtml(pText("theme"))],
+        ["优惠券面值", escapeHtml(pText("faceValue"))],
+        ["优惠券条码", escapeHtml(pText("barcode"))],
         ["效期规则", escapeHtml(pText("validity"))],
-        ["礼券说明", escapeHtml(pText("desc"))]
+        ["优惠券说明", escapeHtml(pText("desc"))]
       ]))}
       <div class="divider"></div>
-      ${detailSectionHtml("礼券说明", `<div class="hint">${escapeHtml(v.desc || "") || "—"}</div>`)}
+      ${detailSectionHtml("优惠券说明", `<div class="hint">${escapeHtml(v.desc || "") || "—"}</div>`)}
     `
   });
 }
@@ -23056,7 +23056,7 @@ function voucherPackUseScopeText(d) {
 }
 
 function voucherPackRowsTableHtml(rows, editable) {
-  const headers = ["删除", "序号", "礼券ID", "礼券名称", "券面值", "赠送张数", "券类型", "有效期类型", "有效开始日期/发券N天", "有效终止日期/有效天数"];
+  const headers = ["删除", "序号", "优惠券ID", "优惠券名称", "券面值", "赠送张数", "券类型", "有效期类型", "有效开始日期/发券N天", "有效终止日期/有效天数"];
   const body = (rows || []).map((x, idx) => {
     if (!editable) {
       return `<tr>
@@ -23074,8 +23074,8 @@ function voucherPackRowsTableHtml(rows, editable) {
     return `<tr>
       <td><button class="linkbtn" type="button" data-act="vpRowDel" data-idx="${idx}">删除</button></td>
       <td>${idx + 1}</td>
-      <td><input class="input mono" data-vp-row-field="voucherId" data-idx="${idx}" value="${escapeHtml(x.voucherId || "")}" placeholder="礼券ID" /></td>
-      <td><input class="input" data-vp-row-field="voucherName" data-idx="${idx}" value="${escapeHtml(x.voucherName || "")}" placeholder="礼券名称" /></td>
+      <td><input class="input mono" data-vp-row-field="voucherId" data-idx="${idx}" value="${escapeHtml(x.voucherId || "")}" placeholder="优惠券ID" /></td>
+      <td><input class="input" data-vp-row-field="voucherName" data-idx="${idx}" value="${escapeHtml(x.voucherName || "")}" placeholder="优惠券名称" /></td>
       <td><input class="input" data-vp-row-field="faceValue" data-idx="${idx}" value="${escapeHtml(String(x.faceValue || ""))}" placeholder="券面值" /></td>
       <td><input class="input" data-vp-row-field="giftQty" data-idx="${idx}" value="${escapeHtml(String(x.giftQty || ""))}" placeholder="赠送张数" /></td>
       <td><input class="input" data-vp-row-field="voucherType" data-idx="${idx}" value="${escapeHtml(x.voucherType || "")}" placeholder="券类型" /></td>
@@ -23149,7 +23149,7 @@ function voucherPackModalHtml(mode = "create") {
               </div>
             </div>
             <div class="field">
-              <div class="field__label">礼券售价</div>
+              <div class="field__label">优惠券售价</div>
               <input class="input" data-vp-field="packPrice" value="${escapeHtml(d.packPrice || "")}" placeholder="请输入" />
             </div>
           </div>
@@ -23285,7 +23285,7 @@ function openVoucherPackDetail(packId) {
       <div class="divider"></div>
       ${detailSectionHtml("券包设置", kvHtml([
         ["领取方式", escapeHtml(x.receiveMode || "—")],
-        ["礼券售价", `<span class="mono">${escapeHtml(String(x.packPrice || ""))}</span>`],
+        ["优惠券售价", `<span class="mono">${escapeHtml(String(x.packPrice || ""))}</span>`],
         ["适用人群", escapeHtml(voucherPackUseScopeText(x))]
       ]))}
       <div class="divider"></div>
@@ -23336,7 +23336,7 @@ function renderVoucherPacksPage() {
     </tr>`;
   }).join("");
   return `
-    <div class="crumbs"><span class="crumbs__muted">促销中心</span> / <span>礼券主题</span> / <span>券包管理</span></div>
+    <div class="crumbs"><span class="crumbs__muted">促销中心</span> / <span>优惠券主题</span> / <span>券包管理</span></div>
     ${listPageLayout({
       filtersHtml,
       filterActionsHtml,
@@ -23374,8 +23374,8 @@ function voucherWizardValidateStep(step) {
   if (Number(step) !== 1) return true;
   const name = (document.getElementById("vwName") ? document.getElementById("vwName").value : "").trim();
   const faceValue = (document.getElementById("vwFaceValue") ? document.getElementById("vwFaceValue").value : "").trim();
-  if (!name) return toast("请填写礼券主题"), false;
-  if (!faceValue) return toast("请填写礼券面值"), false;
+  if (!name) return toast("请填写优惠券主题"), false;
+  if (!faceValue) return toast("请填写优惠券面值"), false;
   return true;
 }
 
@@ -23707,7 +23707,7 @@ function renderVoucherThemeWizardPage(mode) {
   const ui = AppState.ui.voucherWizard;
   const existing = isEdit ? (AppState.data.voucherThemes || []).find((x) => String(x.voucherNo) === String(ui.editingNo)) : null;
   if (isEdit && !existing) {
-    toast("未找到礼券主题（原型演示）");
+    toast("未找到优惠券主题（原型演示）");
     location.hash = "#/voucher-themes";
     return "";
   }
@@ -23773,18 +23773,18 @@ function renderVoucherThemeWizardPage(mode) {
           <div class="form">
               <div class="form__row">
                 <div class="field">
-                  <div class="field__label">礼券编号</div>
+                  <div class="field__label">优惠券编号</div>
                   <input class="input" value="${escapeHtml(v.voucherNo || ui.editingNo || "")}" placeholder="保存时自动生成" disabled />
                   <div class="field__help">保存时调用卡券中心的券规则自动生成（原型演示为自动编号）。</div>
                 </div>
                 <div class="field">
-                  <div class="field__label">礼券主题<span class="req">*</span></div>
+                  <div class="field__label">优惠券主题<span class="req">*</span></div>
                   <input class="input" id="vwName" value="${escapeHtml(v.voucherName || "")}" placeholder="必填" />
                 </div>
               </div>
               <div class="form__row">
                 <div class="field">
-                  <div class="field__label">礼券面值<span class="req">*</span></div>
+                  <div class="field__label">优惠券面值<span class="req">*</span></div>
                   <input class="input" id="vwFaceValue" type="number" min="0" step="0.01" value="${escapeHtml(String(v.faceValue ?? ""))}" placeholder="数值" />
                 </div>
                 <div class="field">
@@ -23794,7 +23794,7 @@ function renderVoucherThemeWizardPage(mode) {
               </div>
               <div class="form__row">
                 <div class="field">
-                  <div class="field__label">礼券类型</div>
+                  <div class="field__label">优惠券类型</div>
                   <select class="select" id="vwType">${typeOptions.map((x) => `<option ${String(v.voucherType || "现金券") === x ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select>
                 </div>
                 <div class="field">
@@ -23804,7 +23804,7 @@ function renderVoucherThemeWizardPage(mode) {
               </div>
               <div class="form__row">
                 <div class="field">
-                  <div class="field__label">礼券效期</div>
+                  <div class="field__label">优惠券效期</div>
                   <select class="select" id="vwValidity">${validityOptions.map((x) => `<option ${String(v.validityType || "永久有效") === x ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select>
                 </div>
                 <div class="field">
@@ -23852,14 +23852,14 @@ function renderVoucherThemeWizardPage(mode) {
                 <div class="field">
                   <div class="field__label">互斥开关</div>
                   <div class="inline">
-                    <label class="check"><input type="checkbox" id="vwMutexCoupon" ${v.couponMutex ? "checked" : ""} />礼券互斥</label>
+                    <label class="check"><input type="checkbox" id="vwMutexCoupon" ${v.couponMutex ? "checked" : ""} />优惠券互斥</label>
                     <label class="check"><input type="checkbox" id="vwMutexPromo" ${v.promoMutex ? "checked" : ""} />促销互斥</label>
                   </div>
-                  <div class="field__help">开启礼券互斥后不允许与其它礼券共用；开启促销互斥后不允许核销促销商品。</div>
+                  <div class="field__help">开启优惠券互斥后不允许与其它优惠券共用；开启促销互斥后不允许核销促销商品。</div>
                 </div>
               </div>
               <div class="field">
-                <div class="field__label">礼券说明</div>
+                <div class="field__label">优惠券说明</div>
                 <textarea class="textarea" id="vwDesc" rows="3" placeholder="可填写使用说明/限制条件等">${escapeHtml(v.desc || "")}</textarea>
               </div>
             </div>
@@ -23920,19 +23920,19 @@ function renderVoucherThemeWizardPage(mode) {
           <div class="form">
             <div class="section__title">打印内容</div>
             <div class="field">
-              ${swLabel("礼券主题：默认开启，打印礼券主题内容", { id: "vwPrintTheme", checked: pv.theme !== false })}
+              ${swLabel("优惠券主题：默认开启，打印优惠券主题内容", { id: "vwPrintTheme", checked: pv.theme !== false })}
             </div>
             <div class="field">
-              ${swLabel("礼券面值：默认开启，打印礼券类型和面值", { id: "vwPrintFaceValue", checked: pv.faceValue !== false })}
+              ${swLabel("优惠券面值：默认开启，打印优惠券类型和面值", { id: "vwPrintFaceValue", checked: pv.faceValue !== false })}
             </div>
             <div class="field">
-              ${swLabel("礼券条码：默认开启，打印礼券编码，以一维码模式展示", { id: "vwPrintBarcode", checked: pv.barcode !== false })}
+              ${swLabel("优惠券条码：默认开启，打印优惠券编码，以一维码模式展示", { id: "vwPrintBarcode", checked: pv.barcode !== false })}
             </div>
             <div class="field">
               ${swLabel("效期规则：默认开启，打印时间和订单满多少金额使用，限使用多少张", { id: "vwPrintValidity", checked: pv.validity !== false })}
             </div>
             <div class="field">
-              ${swLabel("礼券说明：默认开启，打印礼券说明", { id: "vwPrintDesc", checked: pv.desc !== false })}
+              ${swLabel("优惠券说明：默认开启，打印优惠券说明", { id: "vwPrintDesc", checked: pv.desc !== false })}
             </div>
           </div>
         </div>
@@ -25807,15 +25807,15 @@ function renderRptVoucherPage() {
     <div class="field"><div class="field__label">开始时间</div><input class="input" id="rptVoucherQStartFrom" value="${escapeHtml(ui.qStartFrom)}" placeholder="yyyy-mm-dd" /></div>
     <div class="field"><div class="field__label">结束时间</div><input class="input" id="rptVoucherQEndTo" value="${escapeHtml(ui.qEndTo)}" placeholder="yyyy-mm-dd" /></div>
     <div class="field"><div class="field__label">活动状态</div><select class="select" id="rptVoucherQStatus">${statuses.map((x) => `<option ${x === ui.qStatus ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select></div>
-    <div class="field"><div class="field__label">礼券编码</div><input class="input" id="rptVoucherQVoucherCode" value="${escapeHtml(ui.qVoucherCode)}" placeholder="礼券编码" /></div>
-    <div class="field"><div class="field__label">礼券名称</div><input class="input" id="rptVoucherQVoucherName" value="${escapeHtml(ui.qVoucherName)}" placeholder="礼券名称" /></div>
+    <div class="field"><div class="field__label">优惠券编码</div><input class="input" id="rptVoucherQVoucherCode" value="${escapeHtml(ui.qVoucherCode)}" placeholder="优惠券编码" /></div>
+    <div class="field"><div class="field__label">优惠券名称</div><input class="input" id="rptVoucherQVoucherName" value="${escapeHtml(ui.qVoucherName)}" placeholder="优惠券名称" /></div>
   `;
   const filterActionsHtml = `
     <button class="btn btn--primary" type="button" data-act="rptVoucherQuery">查询</button>
     <button class="btn" type="button" data-act="rptVoucherReset">重置</button>
   `;
   const listActionsHtml = `<button class="btn" type="button" data-act="rptVoucherExport">导出</button>`;
-  const headers = ["序号", "活动编号", "活动主题", "促销类型", "活动状态", "礼券编码", "礼券名称", "礼券类型", "赠券张数", "满金额/满数量", "赠券类型", "活动开始时间", "活动结束时间"];
+  const headers = ["序号", "活动编号", "活动主题", "促销类型", "活动状态", "优惠券编码", "优惠券名称", "优惠券类型", "赠券张数", "满金额/满数量", "赠券类型", "活动开始时间", "活动结束时间"];
   const rows = list.map((r, idx) => `
     <tr data-row="rptVoucher" data-id="${escapeHtml(r.voucherCode || "")}">
       <td>${idx + 1}</td>
@@ -27508,7 +27508,7 @@ function handleAction(r, act, btn) {
     if (act === "vtEdit") {
       const id = btn.getAttribute("data-id") || "";
       const v = (AppState.data.voucherThemes || []).find((x) => String(x.voucherNo) === String(id));
-      if (!v) return toast("未找到礼券主题（原型演示）");
+      if (!v) return toast("未找到优惠券主题（原型演示）");
       if (v.status !== "输入") return toast("仅输入状态可修改");
       AppState.ui.voucherWizard.editingNo = id;
       AppState.ui.voucherWizard._initKey = "";
@@ -27518,7 +27518,7 @@ function handleAction(r, act, btn) {
     if (act === "vtCopy") {
       const id = btn.getAttribute("data-id") || "";
       const src = (AppState.data.voucherThemes || []).find((x) => String(x.voucherNo) === String(id));
-      if (!src) return toast("未找到礼券主题（原型演示）");
+      if (!src) return toast("未找到优惠券主题（原型演示）");
       const now = nowIsoSeconds();
       const copy = JSON.parse(JSON.stringify(src));
       copy.voucherNo = nextVoucherNo();
@@ -27539,7 +27539,7 @@ function handleAction(r, act, btn) {
     if (act === "vtSubmit") {
       const id = btn.getAttribute("data-id") || "";
       const v = (AppState.data.voucherThemes || []).find((x) => String(x.voucherNo) === String(id));
-      if (!v) return toast("未找到礼券主题（原型演示）");
+      if (!v) return toast("未找到优惠券主题（原型演示）");
       if (v.status !== "输入") return toast("仅输入状态可提交审核");
       v.status = "生效";
       v.effectiveBy = "leader - l...";
@@ -27553,7 +27553,7 @@ function handleAction(r, act, btn) {
     if (act === "vtDisable") {
       const id = btn.getAttribute("data-id") || "";
       const v = (AppState.data.voucherThemes || []).find((x) => String(x.voucherNo) === String(id));
-      if (!v) return toast("未找到礼券主题（原型演示）");
+      if (!v) return toast("未找到优惠券主题（原型演示）");
       if (v.status !== "生效") return toast("仅生效状态可禁用");
       if (isVoucherThemeUsed(id)) return toast("已被促销活动使用，禁止禁用");
       v.status = "禁用";
@@ -27566,7 +27566,7 @@ function handleAction(r, act, btn) {
     if (act === "vtEnable") {
       const id = btn.getAttribute("data-id") || "";
       const v = (AppState.data.voucherThemes || []).find((x) => String(x.voucherNo) === String(id));
-      if (!v) return toast("未找到礼券主题（原型演示）");
+      if (!v) return toast("未找到优惠券主题（原型演示）");
       if (v.status !== "禁用") return toast("仅禁用状态可启用");
       v.status = "生效";
       v.modifier = "manle - m...";
@@ -27578,7 +27578,7 @@ function handleAction(r, act, btn) {
     if (act === "vtVoid") {
       const id = btn.getAttribute("data-id") || "";
       const v = (AppState.data.voucherThemes || []).find((x) => String(x.voucherNo) === String(id));
-      if (!v) return toast("未找到礼券主题（原型演示）");
+      if (!v) return toast("未找到优惠券主题（原型演示）");
       if (v.status !== "禁用") return toast("仅禁用状态可作废");
       if (isVoucherThemeUsed(id)) return toast("已被促销活动使用，禁止作废");
       v.status = "作废";
@@ -27591,7 +27591,7 @@ function handleAction(r, act, btn) {
     if (act === "vtDelete") {
       const id = btn.getAttribute("data-id") || "";
       const idx = (AppState.data.voucherThemes || []).findIndex((x) => String(x.voucherNo) === String(id));
-      if (idx < 0) return toast("未找到礼券主题（原型演示）");
+      if (idx < 0) return toast("未找到优惠券主题（原型演示）");
       const v = AppState.data.voucherThemes[idx];
       if (v.status !== "作废") return toast("仅作废状态可删除");
       AppState.data.voucherThemes.splice(idx, 1);
@@ -27625,7 +27625,7 @@ function handleAction(r, act, btn) {
     if (act === "vcEdit") {
       const id = btn.getAttribute("data-id") || "";
       const x = (AppState.data.voucherCategories || []).find((t) => String(t.catCode) === String(id));
-      if (!x) return toast("未找到礼券分类（原型演示）");
+      if (!x) return toast("未找到优惠券分类（原型演示）");
       if (String(x.status || "") !== "输入") return toast("仅输入状态可修改");
       AppState._tmpVoucherCategory = { catCode: x.catCode || "", catName: x.catName || "", remark: x.remark || "" };
       location.hash = "#/voucher-categories-edit";
@@ -27904,7 +27904,7 @@ function handleAction(r, act, btn) {
 
       const key = (AppState._tmpVoucherCategory && AppState._tmpVoucherCategory.catCode) ? AppState._tmpVoucherCategory.catCode : code;
       const x = list.find((t) => String(t.catCode) === String(key));
-      if (!x) return toast("未找到礼券分类（原型演示）");
+      if (!x) return toast("未找到优惠券分类（原型演示）");
       if (String(x.status || "") !== "输入") return toast("仅输入状态可修改");
       x.catName = name;
       x.remark = remark;
@@ -28298,7 +28298,7 @@ function handleAction(r, act, btn) {
         if (ui.qVoucherName && !String(r.voucherName || "").includes(ui.qVoucherName)) return false;
         return true;
       });
-      const headers = ["序号", "活动编号", "活动主题", "促销类型", "活动状态", "礼券编码", "礼券名称", "礼券类型", "赠券张数", "满金额/满数量", "赠券类型", "活动开始时间", "活动结束时间"];
+      const headers = ["序号", "活动编号", "活动主题", "促销类型", "活动状态", "优惠券编码", "优惠券名称", "优惠券类型", "赠券张数", "满金额/满数量", "赠券类型", "活动开始时间", "活动结束时间"];
       const rows = list.map((r, idx) => [idx + 1, r.actNo, r.actName, r.promoType, r.status, r.voucherCode, r.voucherName, r.voucherType, r.qty, r.threshold, r.giftType, r.startAt, r.endAt]);
       rptExportCsv("促销活动出券明细表.csv", headers, rows);
       toast("导出成功（原型演示）");
