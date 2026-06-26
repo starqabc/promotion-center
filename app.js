@@ -18795,7 +18795,7 @@ function renderCampaignWizardPage(mode) {
   const useAmountSteps = isAmount;
   const maxStep = useSixSteps ? 6 : useAmountSteps ? 5 : 5;
 
-  const actualOps = (AppState.data.actualSchedules || [])
+  const actualOps = `<option value="">${String(d.scheduleId || "").trim() ? "" : "请选择活动档期"}</option>` + (AppState.data.actualSchedules || [])
     .map((a) => `<option value="${escapeHtml(a.actualId)}" ${String(d.scheduleId || "") === String(a.actualId) ? "selected" : ""}>${escapeHtml(a.actualId)} ${escapeHtml(a.theme || "")}</option>`)
     .join("");
 
