@@ -11206,8 +11206,15 @@ function renderPromoTerminateOrderFormPage(mode, orderId) {
               </div>
               <div class="pto-form-tabsbar__filters">
                 ${tab === "terminate" ? `
-                  <button class="btn btn--primary" type="button" data-act="ptoSelectDocs">选择单据</button>
-                  <button class="btn" type="button" data-act="ptoRangeReset">清空单据</button>
+                  ${(way === "按商品" || way === "商品")
+                    ? `<select class="select pto-form-filter__sel" id="ptoGoodsQCat">${["全部","日百","食品","饮料","纺织"].map(x=>`<option>${escapeHtml(x)}</option>`).join("")}</select>
+                       <select class="select pto-form-filter__sel" id="ptoGoodsQBrand">${["全部","品牌A","品牌B","品牌C"].map(x=>`<option>${escapeHtml(x)}</option>`).join("")}</select>
+                       <select class="select pto-form-filter__sel" id="ptoGoodsQSupplier">${["全部","供货商A","供货商B"].map(x=>`<option>${escapeHtml(x)}</option>`).join("")}</select>
+                       <input class="input pto-form-filter__input" id="ptoGoodsQStore" placeholder="门店编码/名称" />
+                       <input class="input pto-form-filter__input" id="ptoGoodsQGoods" placeholder="商品编码/名称" />
+                       <button class="btn btn--primary" type="button" data-act="ptoGoodsPick">选择商品</button>`
+                    : `<button class="btn btn--primary" type="button" data-act="ptoSelectDocs">选择单据</button>
+                       <button class="btn" type="button" data-act="ptoRangeReset">清空单据</button>`}
                 ` : `
                   ${storeScopeMode === "部分门店" ? `
                     <input class="input pto-form-filter__input" id="ptoStoreKeyword" value="${escapeHtml(draft.storeKeyword || "")}" placeholder="请输入门店编码/名称" />
@@ -11227,10 +11234,38 @@ function renderPromoTerminateOrderFormPage(mode, orderId) {
 
             <div class="pto-form-tablewrap">
               ${tab === "terminate"
-                ? table(docHeaders, docRows || `<tr><td colspan="${docHeaders.length}"><div class="empty">请点击“选择单据”添加活动单据</div></td></tr>`)
+                ? (way === "按商品" || way === "商品"
+                  ? (() => {
+                      const goodsHeaders = ["序号", "活动编码", "活动名称", "促销类型", "活动时间", "促销模版", "商品编码", "商品条码", "商品名称", "规格", "单位", "售价", "促销价", "促销折扣", "会员价", "会员折扣", "整单限购", "会员限购", "参与门店", "促销信息"];
+                      const goodsRowsHtml = (draft.goodsRows || []).map((x, idx) => `
+                        <tr>
+                          <td>${idx + 1}</td>
+                          <td class="mono">${escapeHtml(x.actNo || "—")}</td>
+                          <td>${escapeHtml(x.actName || "—")}</td>
+                          <td>${escapeHtml(x.promoType || "—")}</td>
+                          <td class="mono">${escapeHtml(x.actTime || "—")}</td>
+                          <td class="mono">${escapeHtml(x.tplNo || "—")}</td>
+                          <td class="mono">${escapeHtml(x.skuCode || "—")}</td>
+                          <td class="mono">${escapeHtml(x.barcode || "—")}</td>
+                          <td>${escapeHtml(x.goodsName || "—")}</td>
+                          <td>${escapeHtml(x.spec || "—")}</td>
+                          <td>${escapeHtml(x.unit || "—")}</td>
+                          <td class="mono">${escapeHtml(String(x.price ?? "—"))}</td>
+                          <td class="mono">${escapeHtml(String(x.promoPrice ?? "—"))}</td>
+                          <td class="mono">${escapeHtml(String(x.promoDiscount ?? "—"))}</td>
+                          <td class="mono">${escapeHtml(String(x.memberPrice ?? "—"))}</td>
+                          <td class="mono">${escapeHtml(String(x.memberDiscount ?? "—"))}</td>
+                          <td class="mono">${escapeHtml(String(x.orderLimit ?? "—"))}</td>
+                          <td class="mono">${escapeHtml(String(x.memberLimit ?? "—"))}</td>
+                          <td>${escapeHtml(x.stores || "—")}</td>
+                          <td>${escapeHtml(x.promoInfo || "—")}</td>
+                        </tr>`).join("");
+                      return table(goodsHeaders, goodsRowsHtml || `<tr><td colspan="${goodsHeaders.length}"><div class="empty">请点击"选择商品"添加终止商品</div></td></tr>`);
+                    })()
+                  : table(docHeaders, docRows || `<tr><td colspan="${docHeaders.length}"><div class="empty">请点击"选择单据"添加活动单据</div></td></tr>`))
                 : table(storeHeaders, storeScopeMode === "全部门店"
                   ? `<tr><td colspan="${storeHeaders.length}"><div class="empty">当前选择全部门店，无需维护门店明细</div></td></tr>`
-                  : (storeRowsHtml || `<tr><td colspan="${storeHeaders.length}"><div class="empty">暂无门店范围，请点击“选择门店”添加</div></td></tr>`))}
+                  : (storeRowsHtml || `<tr><td colspan="${storeHeaders.length}"><div class="empty">暂无门店范围，请点击"选择门店"添加</div></td></tr>`))}
             </div>
             <div class="pto-form-pager">
               <div class="psa-pager__meta">共<span class="psa-pager__total">10万</span>/<span class="psa-pager__hot">100</span>条数据</div>
