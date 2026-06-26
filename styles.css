@@ -1911,11 +1911,11 @@ tbody tr:last-child td{border-bottom:none}
   gap:10px;
 }
 .combo-goods-condition-row{
-  display:grid;
-  grid-template-columns:220px 220px;
-  gap:26px;
-  max-width:520px;
+  display:flex;
+  gap:20px;
+  flex-wrap:nowrap;
 }
+.combo-goods-condition-row > .field{flex:1;min-width:0}
 .combo-goods-inner-tabs{
   display:grid;
   grid-template-columns:1fr 1fr 1fr;
