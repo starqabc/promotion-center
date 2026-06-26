@@ -22255,6 +22255,31 @@ function renderPricingPage() {
           </table>
         </div>
       </div>
+      <div class="pricing-right">
+        <div class="pricing-coupon-area">
+          <div class="pricing-coupon-header">可用优惠券<span class="coupon-count">${(AppState.data.pricingCoupons || []).length}张</span></div>
+          <div class="pricing-coupon-list">
+            ${(AppState.data.pricingCoupons || []).map((cp) => {
+              const isSel = (st.selectedCoupons || []).includes(cp.id);
+              const valText = cp.type === "现金券" ? cp.value + "元" : cp.value + "折";
+              return `
+                <div class="pricing-coupon-card ${isSel ? "is-selected" : ""}" data-act="pricingToggleCoupon" data-id="${escapeHtml(cp.id)}">
+                  <div class="pricing-coupon-card__left">
+                    <div class="pricing-coupon-card__value">${escapeHtml(cp.value)}</div>
+                    <div class="pricing-coupon-card__unit">${escapeHtml(cp.unit)}</div>
+                    <div class="pricing-coupon-card__type">${escapeHtml(cp.type)}</div>
+                  </div>
+                  <div class="pricing-coupon-card__right">
+                    <div class="pricing-coupon-card__title">${escapeHtml(cp.title)}</div>
+                    <div class="pricing-coupon-card__scope">使用范围：${escapeHtml(cp.scope)}</div>
+                    <div class="pricing-coupon-card__time">有效期：${escapeHtml(cp.validTime)}</div>
+                  </div>
+                </div>
+              `;
+            }).join("")}
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- ── bottom action bar ── -->
@@ -32139,7 +32164,7 @@ function handleAction(r, act, btn) {
     if (act === "pricingTopReset") return pricingResetFilters();
     if (act === "pricingQuery") return pricingQuery();
     if (act === "pricingSettle") return toast("结算金额：¥ " + AppState.ui.pricing.settlementAmount.toFixed(2) + "（原型演示）");
-    if (act === "pricingPreview") return pricingPreview();
+    if (act === "pricingToggleCoupon") return pricingToggleCoupon(btn);    if (act === "pricingPreview") return pricingPreview();
     if (act === "toggleCoupon") return pricingToggleCoupon(btn);
   }
   if (r === "/campaigns-create" || r === "/campaigns-edit") {
