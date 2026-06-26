@@ -16139,7 +16139,12 @@ function campaignWizardUpdateDraftFromEvent(e) {
   if (!cw) return;
 
   if (cw === "root" && field) {
-    if (field === "tempPriceAdjust") { d[field] = t.value; render(); return; }
+    if (field === "tempPriceAdjust") {
+      d[field] = t.value;
+      if (t.value === "是") d.scheduleId = "";
+      render();
+      return;
+    }
     if (field === "startAt" || field === "endAt") d[field] = fromDatetimeLocalValue(t.value);
     else d[field] = t.value;
     return;
