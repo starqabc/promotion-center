@@ -10948,20 +10948,40 @@ function renderPromoTerminateOrdersPage() {
 }
 
 function renderPromoTerminateOrderGoodsSection(draft, readonly) {
-  const headers = ["序号", "商品编码", "国际条码", "商品名称", "规格", "包装单位"];
+  const headers = ["序号", "活动编码", "活动名称", "促销类型", "活动时间", "促销模版", "商品编码", "商品条码", "商品名称", "规格", "单位", "售价", "促销价", "促销折扣", "会员价", "会员折扣", "整单限购", "会员限购", "参与门店", "促销信息"];
   const rowsHtml = (draft.goodsRows || []).map((x, idx) => `
       <tr>
         <td>${idx + 1}</td>
+        <td class="mono">${escapeHtml(x.actNo || "ACT-2026-0140")}</td>
+        <td>${escapeHtml(x.actName || "一口价-日百纺织9.9元")}</td>
+        <td>${escapeHtml(x.promoType || "直降")}</td>
+        <td class="mono">${escapeHtml(x.actTime || "2026-07-01 ~ 2026-07-31")}</td>
+        <td class="mono">${escapeHtml(x.tplNo || "1010")}</td>
         <td class="mono">${escapeHtml(x.skuCode || "—")}</td>
         <td class="mono">${escapeHtml(x.barcode || "—")}</td>
         <td>${escapeHtml(x.goodsName || "—")}</td>
         <td>${escapeHtml(x.spec || "—")}</td>
         <td>${escapeHtml(x.unit || "—")}</td>
+        <td class="mono">${escapeHtml(String(x.price ?? "—"))}</td>
+        <td class="mono">${escapeHtml(String(x.promoPrice ?? "—"))}</td>
+        <td class="mono">${escapeHtml(String(x.promoDiscount ?? "—"))}</td>
+        <td class="mono">${escapeHtml(String(x.memberPrice ?? "—"))}</td>
+        <td class="mono">${escapeHtml(String(x.memberDiscount ?? "—"))}</td>
+        <td class="mono">${escapeHtml(String(x.orderLimit ?? "—"))}</td>
+        <td class="mono">${escapeHtml(String(x.memberLimit ?? "—"))}</td>
+        <td>${escapeHtml(x.stores || "ST-001,ST-002")}</td>
+        <td>${escapeHtml(x.promoInfo || "一口价9.9元")}</td>
       </tr>
     `).join("");
+  const filtersHtml = `
+    <div class="field"><div class="field__label">类别</div><select class="select" id="ptoGoodsQCat" ${readonly ? "disabled" : ""}>${["全部", "日百", "食品", "饮料", "纺织"].map((x) => `<option>${escapeHtml(x)}</option>`).join("")}</select></div>
+    <div class="field"><div class="field__label">品牌</div><select class="select" id="ptoGoodsQBrand" ${readonly ? "disabled" : ""}>${["全部", "品牌A", "品牌B", "品牌C"].map((x) => `<option>${escapeHtml(x)}</option>`).join("")}</select></div>
+    <div class="field"><div class="field__label">供货商</div><select class="select" id="ptoGoodsQSupplier" ${readonly ? "disabled" : ""}>${["全部", "供货商A", "供货商B"].map((x) => `<option>${escapeHtml(x)}</option>`).join("")}</select></div>
+    <div class="field"><div class="field__label">门店编码/名称</div><input class="input" id="ptoGoodsQStore" placeholder="门店编码/名称" ${readonly ? "disabled" : ""} /></div>
+    <div class="field"><div class="field__label">商品编码/名称</div><input class="input" id="ptoGoodsQGoods" placeholder="商品编码/名称" ${readonly ? "disabled" : ""} /></div>
+  `;
   const actions = readonly ? "" : `
-      <button class="btn" type="button" data-act="ptoGoodsPick">选择商品</button>
-      <button class="btn" type="button" data-act="ptoGoodsClear">全部删除</button>
+      <button class="btn btn--primary" type="button" data-act="ptoGoodsPick">选择商品</button>
     `;
   return layoutCard(`
     <div class="card__header">
@@ -10969,6 +10989,8 @@ function renderPromoTerminateOrderGoodsSection(draft, readonly) {
       <div class="card__actions">${actions}</div>
     </div>
     <div class="card__body">
+      <div class="filters-grid">${filtersHtml}</div>
+      <div class="divider"></div>
       ${table(headers, rowsHtml || `<tr><td colspan="${headers.length}"><div class="empty">暂未选择商品</div></td></tr>`)}
     </div>
   `);
