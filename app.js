@@ -3668,6 +3668,17 @@ function openCampaignGoodsSelectModal({ title, subtitle, checkboxName, onPicked,
         emptyText: "暂无匹配数据",
         colspan: headers.length + 1
       })}
+      <div class="footerbar" style="margin-top:10px;">
+        <div class="pager__meta">共${filtered.length}条</div>
+        <div class="pager">
+          <button class="btn as-pagebtn is-active" type="button">1</button>
+          <button class="btn as-pagebtn" type="button">2</button>
+          <button class="btn as-pagebtn" type="button">3</button>
+          <span class="as-pagebtn as-pagebtn--split">...</span>
+          <button class="btn as-pagebtn" type="button">${Math.max(1, Math.ceil(filtered.length / 10))}</button>
+        </div>
+        <div class="as-jump">跳至 <input class="input" value="1" /> 页</div>
+      </div>
     `;
     ["campGoodsSelGoods", "campGoodsSelCategory", "campGoodsSelBrand"].forEach((id) => {
       const el = document.getElementById(id);
@@ -3700,6 +3711,7 @@ function openCampaignGoodsSelectModal({ title, subtitle, checkboxName, onPicked,
     secondaryText: "取消",
     bodyHtml: '<div id="campSelectWrap"></div>',
     size: "xl",
+    className: "modal--goods-picker-wide",
     onOpen: renderList,
     onPrimary: () => {
       const comboCodeEl = document.getElementById("campGoodsSelComboCode");

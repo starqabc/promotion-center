@@ -3010,6 +3010,9 @@ tbody tr:last-child td{border-bottom:none}
   overflow:hidden;
 }
 .modal.modal--xl{width:min(1040px, calc(100vw - 36px))}
+.modal.modal--goods-picker-wide{width:min(1200px, calc(100vw - 36px))}
+.modal--goods-picker-wide .form__row{display:flex;gap:12px;align-items:flex-end;flex-wrap:nowrap}
+.modal--goods-picker-wide .form__row > .field{flex:1;min-width:0}
 .modal.modal--store-picker{
   width:min(1180px, calc(100vw - 24px));
   max-height:calc(100vh - 24px);
