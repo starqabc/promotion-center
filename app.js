@@ -32686,7 +32686,7 @@ function handleAction(r, act, btn) {
         }
         const isDirectDrop = tpl && String(tpl.templateType || "") === "直降";
         const isOnePrice = campaignIsOnePriceTemplate(tpl);
-        const onePriceComboOpts = (isOnePrice && String(d.goodsScope && d.goodsScope.scopeMode || "商品") !== "商品")
+        const onePriceComboOpts = isOnePrice
           ? ["001", "002", "003", "004", "005"]
           : null;
         if (isDirectDrop || isGoodsDiscount || isQty || isAmount || isTime || isMulSel || isReduce) {
