@@ -11149,7 +11149,7 @@ function renderPromoTerminateOrderFormPage(mode, orderId) {
               </div>
               <div class="field">
                 <div class="field__label"><span class="req">*</span>终止范围</div>
-                <select class="select" id="ptoTerminateWay">
+                <select class="select" id="ptoTerminateWay" data-act="ptoWayChange">
                   ${["单据", "商品", "类别", "品牌"].map((x) => {
                     const map = { "单据": "按单据", "商品": "按商品", "类别": "按类别", "品牌": "按品牌" };
                     const val = map[x];
@@ -31572,7 +31572,8 @@ function handleAction(r, act, btn) {
   if (r === "/promo-terminate-orders-create") {
     if (act === "ptoWayChange") {
       const draft = promoTerminateOrderReadDraftFromDom();
-      draft.terminateWay = btn.value || draft.terminateWay || "按商品";
+      const wayMap = { "单据": "按单据", "商品": "按商品", "类别": "按类别", "品牌": "按品牌" };
+      draft.terminateWay = wayMap[btn.value] || btn.value || draft.terminateWay || "按商品";
       render();
       return;
     }
