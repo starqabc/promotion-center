@@ -3592,8 +3592,9 @@ function campaignSelectableGoodsItems() {
   });
 }
 
-function openCampaignGoodsSelectModal({ title, subtitle, checkboxName, onPicked }) {
+function openCampaignGoodsSelectModal({ title, subtitle, checkboxName, onPicked, comboCodeOptions }) {
   const allItems = campaignSelectableGoodsItems();
+  const hasComboCode = Array.isArray(comboCodeOptions) && comboCodeOptions.length > 0;
   const renderList = () => {
     const goodsEl = document.getElementById("campGoodsSelGoods");
     const categoryEl = document.getElementById("campGoodsSelCategory");
@@ -3624,6 +3625,18 @@ function openCampaignGoodsSelectModal({ title, subtitle, checkboxName, onPicked 
     if (!wrap) return;
     wrap.innerHTML = `
       <div class="form">
+        ${hasComboCode ? `
+        <div class="form__row" style="margin-bottom:12px;">
+          <div class="field">
+            <div class="field__label"><span class="req">*</span>组合编码</div>
+            <select class="select" id="campGoodsSelComboCode">
+              <option value="">请选择组合编码</option>
+              ${comboCodeOptions.map((x) => `<option value="${escapeHtml(String(x))}">${escapeHtml(String(x))}</option>`).join("")}
+            </select>
+          </div>
+        </div>
+        <div class="divider"></div>
+        ` : ""}
         <div class="form__row">
           <div class="field">
             <div class="field__label">商品</div>
@@ -3689,10 +3702,13 @@ function openCampaignGoodsSelectModal({ title, subtitle, checkboxName, onPicked 
     size: "xl",
     onOpen: renderList,
     onPrimary: () => {
+      const comboCodeEl = document.getElementById("campGoodsSelComboCode");
+      const comboCode = comboCodeEl ? comboCodeEl.value : "";
+      if (hasComboCode && !comboCode) { toast("请先选择组合编码"); return; }
       const picked = pickCheckedValues(checkboxName || "campPickGoods");
       if (!picked.length) return toast("请先勾选数据");
       const selectedItems = allItems.filter((g) => picked.includes(String(g.sku)));
-      if (onPicked) onPicked(selectedItems);
+      if (onPicked) onPicked(selectedItems, comboCode);
       closeModal();
     }
   });
@@ -32669,18 +32685,25 @@ function handleAction(r, act, btn) {
           return;
         }
         const isDirectDrop = tpl && String(tpl.templateType || "") === "直降";
+        const isOnePrice = campaignIsOnePriceTemplate(tpl);
+        const onePriceComboOpts = (isOnePrice && String(d.goodsScope && d.goodsScope.scopeMode || "商品") !== "商品")
+          ? ["001", "002", "003", "004", "005"]
+          : null;
         if (isDirectDrop || isGoodsDiscount || isQty || isAmount || isTime || isMulSel || isReduce) {
           openCampaignGoodsSelectModal({
             title: "选择商品",
             checkboxName: "campPickGoods",
             subtitle: "支持按商品、类别、品牌、供应商查询",
-            onPicked: (sel) => {
+            comboCodeOptions: onePriceComboOpts,
+            onPicked: (sel, comboCode) => {
               d.goodsScope = d.goodsScope || {};
               if (!Array.isArray(d.goodsScope.goods)) d.goodsScope.goods = [];
               const ex = new Set(d.goodsScope.goods.map((x) => String(x.skuCode)));
               sel.forEach((g) => {
                 if (ex.has(String(g.sku))) return;
-                d.goodsScope.goods.push({ skuCode: g.sku, barcode: g.barcode, skuName: g.name, spec: g.spec, unit: g.unit, costPrice: g.originCost, price: g.originPrice, ...fullOffExtra, ...qtyExtra, ...mulExtraGoods });
+                const row = { skuCode: g.sku, barcode: g.barcode, skuName: g.name, spec: g.spec, unit: g.unit, costPrice: g.originCost, price: g.originPrice, ...fullOffExtra, ...qtyExtra, ...mulExtraGoods };
+                if (comboCode) row.comboCode = comboCode;
+                d.goodsScope.goods.push(row);
               });
               campaignWizardRenderGoodsTable();
             }
