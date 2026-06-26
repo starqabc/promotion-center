@@ -19693,6 +19693,10 @@ function renderCampaignWizardPage(mode) {
                 return `
                   <div class="form__row" style="margin-bottom:12px;">
                     <div class="field">
+                      <div class="field__label">购买类型</div>
+                      <select class="select" disabled><option selected>组合</option></select>
+                    </div>
+                    <div class="field">
                       <div class="field__label">商品范围<span class="req">*</span></div>
                       <select class="select" data-cw="goodsScope" data-field="scopeMode">
                         ${["商品", "类别", "品牌"].map((x) => `<option ${sm === x ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}
