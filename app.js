@@ -7412,13 +7412,11 @@ function renderTemplatesPage() {
   return `
     <div class="tpl-list-layout">
       <div class="tpl-type-shell ${sideCollapsed ? "is-collapsed" : ""}">
-        <button class="tpl-type-toggle" type="button" data-act="tplSideToggle" aria-label="${sideCollapsed ? "展开" : "收起"}模板类型" title="${sideCollapsed ? "展开" : "收起"}">
+        <button class="tpl-type-toggle" type="button" data-act="tplSideToggle" aria-label="${sideCollapsed ? "展开" : "收起"}" title="${sideCollapsed ? "展开" : "收起"}">
           <span class="tpl-type-toggle__icon">${sideCollapsed ? "»" : "«"}</span>
-          ${sideCollapsed ? `<span class="tpl-type-toggle__vt">模板类型</span>` : ""}
+          ${sideCollapsed ? `<span class="tpl-type-toggle__vt">模版类型</span>` : ""}
         </button>
         ${!sideCollapsed ? `
-        <input class="input" id="tplTypeSideQ" placeholder="搜索模版类型" value="${escapeHtml(String(ui.typeSideQ || ""))}" />
-        <div class="tpl-type-title">模板类型</div>
         <div class="tpl-type-group">
           ${typeSideList.map((x) => `<button class="tpl-type-item ${String(ui.qType || "全部") === String(x) ? "is-active" : ""}" type="button" data-act="tplTypePick" data-type="${escapeHtml(String(x))}">${escapeHtml(displayTemplateType(String(x)))}</button>`).join("")}
         </div>
