@@ -1045,11 +1045,11 @@ tbody tr:last-child td{border-bottom:none}
 .tpl-type-item:hover{background:#f3f4f6}
 .tpl-type-item.is-active{color:#4f46e5;font-weight:700}
 .tpl-list-filters .campaign-list-filters__grid{
-  grid-template-columns:repeat(3,minmax(0,1fr));
+  grid-template-columns:repeat(4,minmax(0,1fr));
   gap:14px 20px;
 }
 .tpl-list-filters .campaign-list-filters__actions{
-  grid-column:span 3;
+  grid-column:span 4;
   display:flex;
   justify-content:flex-end;
   gap:10px;
