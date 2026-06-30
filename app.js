@@ -4215,6 +4215,7 @@ function templateWizardRefreshVisibility() {
   }
 
   setShow("rwDiscountRow", !!spec.rewards.discount);
+  setShow("rwComboRow", promoType === "折扣");
   setShow("rwFullReduceGiftRow", !!spec.rewards.fullReduceGift);
   setShow("rwLimitRow", !!spec.rewards.limit);
   setShow("rwVoucherRuleRow", !!spec.rewards.voucherRule);
@@ -4236,6 +4237,8 @@ function templateWizardRefreshVisibility() {
 
   const discountEnable = document.getElementById("rwDiscountEnable") ? document.getElementById("rwDiscountEnable").checked : false;
   setShow("rwDiscountBox", discountEnable);
+  const comboEnable = document.getElementById("rwComboEnable") ? document.getElementById("rwComboEnable").checked : false;
+  setShow("rwComboBox", comboEnable);
   setShow("rwDiscountMinFreeWrap", discountEnable && !!spec.discountMinFree);
 
   setShow("tcLadderBox", false);
@@ -9313,7 +9316,7 @@ function renderTemplateWizardPage(mode) {
   const rewardSection = section("优惠规则", "", `
     <div class="tpl-choice-grid tpl-choice-grid--2">
       ${optionCard({
-        title: existingType === "直降" ? "特价" : (existingType === "折扣" ? "折扣" : "直降/折扣"),
+        title: existingType === "直降" ? "直降" : (existingType === "折扣" ? "折扣" : "直降/折扣"),
         desc: "",
         control: sw({ id: "rwDiscountEnable" }),
         options: `<div id="rwDiscountBox" style="display:none;">
@@ -9331,6 +9334,21 @@ function renderTemplateWizardPage(mode) {
           </div>
         </div>`,
         id: "rwDiscountRow"
+      })}
+      ${optionCard({
+        title: "组合",
+        desc: "启用后可设置组合价方式（折扣/价格）",
+        control: sw({ id: "rwComboEnable" }),
+        options: `<div id="rwComboBox" style="display:none;">
+          <div class="field">
+            <div class="field__label">组合价方式</div>
+            <select class="select" id="rwComboPriceMode">
+              <option value="折扣">折扣</option>
+              <option value="价格">价格</option>
+            </select>
+          </div>
+        </div>`,
+        id: "rwComboRow"
       })}
       ${optionCard({
         title: "满减/赠优惠",
