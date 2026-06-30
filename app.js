@@ -9342,10 +9342,10 @@ function renderTemplateWizardPage(mode) {
         options: `<div id="rwComboBox" style="display:none;">
           <div class="field">
             <div class="field__label">组合价方式</div>
-            <select class="select" id="rwComboPriceMode">
-              <option value="折扣">折扣</option>
-              <option value="价格">价格</option>
-            </select>
+            <div class="checks">
+              <label class="radio"><input type="radio" name="rwComboPriceMode" value="折扣" checked />折扣</label>
+              <label class="radio"><input type="radio" name="rwComboPriceMode" value="价格" />价格</label>
+            </div>
           </div>
         </div>`,
         id: "rwComboRow"
