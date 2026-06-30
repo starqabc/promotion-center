@@ -4167,7 +4167,7 @@ function templateTypeSpec(type) {
     return {
       ...common,
       rewards: { discount: false, fullReduceGift: true, limit: true, voucherRule: false, voucherCap: false },
-      discountMinFree: true
+      discountMinFree: false
     };
   }
   if (t === "满赠券") {
@@ -27982,19 +27982,18 @@ function bindPageEvents(r) {
       if (t && t.id === "rwMinFreeEnable") {
         const checked = t.checked;
         if (checked) {
-          const frg = document.getElementById("rwFullReduceGift");
-          const lim = document.getElementById("rwLimitEnable");
-          if (frg) frg.checked = false;
-          if (lim) lim.checked = false;
+          if (document.getElementById("rwFullReduceGift")) document.getElementById("rwFullReduceGift").checked = false;
+          if (document.getElementById("rwLimitEnable")) document.getElementById("rwLimitEnable").checked = false;
           setShow("rwFullReduceGiftRow", false);
           setShow("rwLimitRow", false);
+          setShow("rwFullReduceGiftBox", false);
+          setShow("rwLimitBox", false);
         } else {
           const promoType = document.getElementById("twType") ? normalizeTemplateType(document.getElementById("twType").value || "") : "";
           const spec = templateTypeSpec(promoType);
           setShow("rwFullReduceGiftRow", !!spec.rewards.fullReduceGift);
           setShow("rwLimitRow", !!spec.rewards.limit);
         }
-        templateWizardRenderDynamic();
       }
       const tplLimitIds = ["tcUserLimit", "tcMemberLimit", "tcStoreLimit", "tcRegionLimit"];
       if (t && tplLimitIds.includes(t.id) && t.checked) {
