@@ -5285,7 +5285,7 @@ function campaignNavTree() {
     {
       key: "special",
       label: "特价促销",
-      items: ["商品直降", "N件特价", "最低免单"]
+      items: ["商品直降", "N件特价"]
     },
     {
       key: "discount",
@@ -5295,7 +5295,7 @@ function campaignNavTree() {
     {
       key: "reduceGift",
       label: "满减满赠",
-      items: ["满金额减", "满金额赠", "满金额换购"]
+      items: ["满金额减", "满金额赠", "满金额换购", "最低免单"]
     },
     {
       key: "voucherGift",
