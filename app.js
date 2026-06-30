@@ -4220,7 +4220,7 @@ function templateWizardRefreshVisibility() {
   setShow("rwVoucherRuleRow", !!spec.rewards.voucherRule);
   setShow("rwVoucherCapRow", !!spec.rewards.voucherCap);
   const discountTitleEl = document.querySelector("#rwDiscountRow .tpl-option-card__title");
-  if (discountTitleEl) discountTitleEl.textContent = promoType === "直降" ? "特价" : (promoType === "折扣" ? "折扣" : "直降/折扣");
+  if (discountTitleEl) discountTitleEl.textContent = promoType === "直降" ? "直降" : (promoType === "折扣" ? "折扣" : "直降/折扣");
   [
     { id: "rwDiscountEnable", active: !!spec.rewards.discount },
     { id: "rwFullReduceGift", active: !!spec.rewards.fullReduceGift },
