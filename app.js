@@ -4223,15 +4223,9 @@ function templateWizardRefreshVisibility() {
   setShow("rwDiscountRow", !!spec.rewards.discount);
   setShow("rwComboRow", promoType === "折扣");
   setShow("rwMinFreeStandaloneRow", promoType === "满减满赠");
-  setShow("rwFullReduceGiftRow", !!spec.rewards.fullReduceGift);
-  setShow("rwLimitRow", !!spec.rewards.limit);
-  const minFreeStandaloneChecked = document.getElementById("rwMinFreeEnable") ? document.getElementById("rwMinFreeEnable").checked : false;
-  if (minFreeStandaloneChecked) {
-    setShow("rwFullReduceGiftRow", false);
-    setShow("rwLimitRow", false);
-    if (document.getElementById("rwFullReduceGift")) { document.getElementById("rwFullReduceGift").checked = false; }
-    if (document.getElementById("rwLimitEnable")) { document.getElementById("rwLimitEnable").checked = false; }
-  }
+  const minFreeStandaloneChecked = document.getElementById("rwMinFreeEnable") && document.getElementById("rwMinFreeEnable").checked;
+  setShow("rwFullReduceGiftRow", !!spec.rewards.fullReduceGift && !minFreeStandaloneChecked);
+  setShow("rwLimitRow", !!spec.rewards.limit && !minFreeStandaloneChecked);
   setShow("rwVoucherRuleRow", !!spec.rewards.voucherRule);
   setShow("rwVoucherCapRow", !!spec.rewards.voucherCap);
   const discountTitleEl = document.querySelector("#rwDiscountRow .tpl-option-card__title");
@@ -27980,20 +27974,14 @@ function bindPageEvents(r) {
         templateWizardNormalizeFullReduceGiftOptions(String(t.value || ""));
       }
       if (t && t.id === "rwMinFreeEnable") {
-        const checked = t.checked;
-        if (checked) {
-          if (document.getElementById("rwFullReduceGift")) document.getElementById("rwFullReduceGift").checked = false;
-          if (document.getElementById("rwLimitEnable")) document.getElementById("rwLimitEnable").checked = false;
-          setShow("rwFullReduceGiftRow", false);
-          setShow("rwLimitRow", false);
-          setShow("rwFullReduceGiftBox", false);
-          setShow("rwLimitBox", false);
-        } else {
-          const promoType = document.getElementById("twType") ? normalizeTemplateType(document.getElementById("twType").value || "") : "";
-          const spec = templateTypeSpec(promoType);
-          setShow("rwFullReduceGiftRow", !!spec.rewards.fullReduceGift);
-          setShow("rwLimitRow", !!spec.rewards.limit);
+        const mfChecked = document.getElementById("rwMinFreeEnable").checked;
+        if (mfChecked) {
+          const frg = document.getElementById("rwFullReduceGift");
+          const lim = document.getElementById("rwLimitEnable");
+          if (frg) { frg.checked = false; frg.disabled = false; }
+          if (lim) { lim.checked = false; lim.disabled = false; }
         }
+        templateWizardRenderDynamic();
       }
       const tplLimitIds = ["tcUserLimit", "tcMemberLimit", "tcStoreLimit", "tcRegionLimit"];
       if (t && tplLimitIds.includes(t.id) && t.checked) {
