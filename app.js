@@ -4152,8 +4152,8 @@ function templateTypeSpec(type) {
       conditionTitle: "限量设置",
       rules: { fullAmt: true, fullQty: true, ladder: true, multiple: true },
       rewards: { discount: true, fullReduceGift: false, limit: false, voucherRule: false, voucherCap: false },
-      discountModes: ["单品优惠", "组合优惠"],
-      discountMinFree: true
+      discountModes: ["单品优惠"],
+      discountMinFree: false
     };
   }
   if (t === "折扣") {
