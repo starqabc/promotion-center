@@ -4166,7 +4166,8 @@ function templateTypeSpec(type) {
   if (t === "满减满赠") {
     return {
       ...common,
-      rewards: { discount: false, fullReduceGift: true, limit: true, voucherRule: false, voucherCap: false }
+      rewards: { discount: false, fullReduceGift: true, limit: true, voucherRule: false, voucherCap: false },
+      discountMinFree: true
     };
   }
   if (t === "满赠券") {
@@ -4244,7 +4245,14 @@ function templateWizardRefreshVisibility() {
   setShow("rwDiscountBox", discountEnable);
   const comboEnable = document.getElementById("rwComboEnable") ? document.getElementById("rwComboEnable").checked : false;
   setShow("rwComboBox", comboEnable);
-  setShow("rwDiscountMinFreeWrap", discountEnable && !!spec.discountMinFree);
+  setShow("rwDiscountMinFreeWrap", !!spec.discountMinFree);
+  const minFreeChecked = document.getElementById("rwDiscountMinFree") ? document.getElementById("rwDiscountMinFree").checked : false;
+  if (minFreeChecked) {
+    setShow("rwFullReduceGiftRow", false);
+    setShow("rwLimitRow", false);
+    if (document.getElementById("rwFullReduceGift")) { document.getElementById("rwFullReduceGift").checked = false; }
+    if (document.getElementById("rwLimitEnable")) { document.getElementById("rwLimitEnable").checked = false; }
+  }
 
   setShow("tcLadderBox", false);
   const cycleEnable = document.getElementById("twEnableCycle") ? document.getElementById("twEnableCycle").checked : false;
@@ -4309,11 +4317,10 @@ function templateWizardRefreshVisibility() {
 
   const discountModes = Array.from(document.querySelectorAll('input[name="rwDiscountModes"]:checked')).map((x) => String(x.value || ""));
   const minFreeEl = document.getElementById("rwDiscountMinFree");
-  const canMinFree = discountModes.includes("组合优惠") || discountModes.includes("整单优惠");
+  const allowMinFree = !!spec.discountMinFree;
   if (minFreeEl) {
-    const allowMinFree = !!spec.discountMinFree;
-    minFreeEl.disabled = !allowMinFree || !canMinFree;
-    if (!allowMinFree || !canMinFree) minFreeEl.checked = false;
+    minFreeEl.disabled = !allowMinFree;
+    if (!allowMinFree) minFreeEl.checked = false;
   }
 }
 
