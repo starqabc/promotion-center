@@ -5285,12 +5285,12 @@ function campaignNavTree() {
     {
       key: "special",
       label: "特价促销",
-      items: ["商品直降", "组合特价", "N件特价", "最低免单"]
+      items: ["商品直降", "N件特价", "最低免单"]
     },
     {
       key: "discount",
       label: "折扣促销",
-      items: ["商品折扣", "购满折扣", "时段折扣", "N件折扣"]
+      items: ["商品折扣", "购满折扣", "时段折扣", "N件折扣", "组合特价"]
     },
     {
       key: "reduceGift",
