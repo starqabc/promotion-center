@@ -4123,7 +4123,6 @@ function normalizeTemplateType(type) {
 
 function displayTemplateType(type) {
   const raw = normalizeTemplateType(type);
-  if (raw === "直降") return "特价";
   return raw;
 }
 
