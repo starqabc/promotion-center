@@ -9369,6 +9369,14 @@ function renderTemplateWizardPage(mode) {
         desc: "金额和比例可同时选；商品与金额/比例互斥。",
         control: sw({ id: "rwFullReduceGift" }),
         options: `<div id="rwFullReduceGiftBox" style="display:none;">
+          <div class="field">
+            <div class="field__label">优惠方式</div>
+            <div class="checks">
+              <label class="radio"><input type="radio" name="rwGiftBenefitType" value="赠送" checked />赠送</label>
+              <label class="radio"><input type="radio" name="rwGiftBenefitType" value="换购" />换购</label>
+            </div>
+          </div>
+          <div class="divider"></div>
           <div class="checks">
             <label class="check"><input type="checkbox" name="twFullReduceGiftOpts" value="金额" />金额</label>
             <label class="check"><input type="checkbox" name="twFullReduceGiftOpts" value="比例" />比例</label>
