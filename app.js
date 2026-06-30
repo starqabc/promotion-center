@@ -4199,7 +4199,12 @@ function templateWizardRefreshVisibility() {
   setShow("tcMemberLimitRow", true);
   setShow("tcStoreLimitRow", true);
   setShow("tcRegionLimitRow", true);
-  setShow("tcFullAmtRow", !!spec.rules.fullAmt && promoType !== "直降");
+  const comboPriceModeRadio = document.querySelector('input[name="rwComboPriceMode"]:checked');
+  const comboPriceModeIsPrice = comboPriceModeRadio && comboPriceModeRadio.value === "价格";
+  setShow("tcFullAmtRow", !!spec.rules.fullAmt && promoType !== "直降" && !comboPriceModeIsPrice);
+  if (comboPriceModeIsPrice && document.getElementById("tcFullAmt")) {
+    document.getElementById("tcFullAmt").checked = false;
+  }
   setShow("tcFullQtyRow", !!spec.rules.fullQty);
   const fullAmtDescEl = document.querySelector("#tcFullAmtRow .tpl-option-card__desc");
   if (fullAmtDescEl) fullAmtDescEl.textContent = promoType === "直降" ? "最低sku免单时才可以选择满金额" : "启用后可按商品金额设置门槛";
