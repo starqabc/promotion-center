@@ -9371,13 +9371,6 @@ function renderTemplateWizardPage(mode) {
         id: "rwComboRow"
       })}
       ${optionCard({
-        title: "买满免单",
-        desc: "启用后购买范围只能为组合，且不可同时选择满减/赠优惠与上限设置。",
-        control: sw({ id: "rwMinFreeEnable" }),
-        options: "",
-        id: "rwMinFreeStandaloneRow"
-      })}
-      ${optionCard({
         title: "满减/赠优惠",
         desc: "金额和比例可同时选；商品与金额/比例互斥。",
         control: sw({ id: "rwFullReduceGift" }),
@@ -9391,6 +9384,13 @@ function renderTemplateWizardPage(mode) {
           ${templateWizardPurchaseTypeCardHtml({ id: "rwFullReduceGiftPurchaseTypeEnable", boxId: "rwFullReduceGiftPurchaseTypeBox", name: "rwFullReduceGiftPurchaseType" })}
         </div>`,
         id: "rwFullReduceGiftRow"
+      })}
+      ${optionCard({
+        title: "买满免单",
+        desc: "启用后购买范围只能为组合，且不可同时选择满减/赠优惠与上限设置。",
+        control: sw({ id: "rwMinFreeEnable" }),
+        options: "",
+        id: "rwMinFreeStandaloneRow"
       })}
       ${optionCard({
         title: "上限设置",
