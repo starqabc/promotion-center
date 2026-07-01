@@ -5260,6 +5260,23 @@ tbody tr:last-child td{border-bottom:none}
 .as-jump{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;}
 .as-jump .input{width:48px;text-align:center;}
 
+/* 类别信息：展开收起表格树 */
+.gm-cat-toggle{
+  display:inline-block;
+  width:16px;
+  text-align:center;
+  cursor:pointer;
+  color:#64748b;
+  font-size:13px;
+  font-weight:700;
+  user-select:none;
+  margin-right:4px;
+  transition:transform .15s ease;
+}
+.gm-cat-toggle:hover{color:#2563eb}
+.gm-cat-toggle.is-expanded{color:#2563eb}
+.gm-cat-toggle-placeholder{display:inline-block;width:16px;margin-right:4px}
+
 /* 模板周期时间：下级生效配置层级缩进 */
 .tpl-time-sub{
   margin-top:14px;

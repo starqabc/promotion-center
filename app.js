@@ -23116,49 +23116,49 @@ function renderGmCategoryPage(kind) {
     return statusOnly.filter((x) => include.has(normalizeCode(x.catCode)));
   })();
 
-  const treeHtml = (() => {
+  const treeTableHtml = (() => {
     if (!isHierarchyView) return "";
+    const expandedKey = cfg.uiKey + "_expanded";
+    const expanded = AppState.ui.gm[expandedKey] || (AppState.ui.gm[expandedKey] = new Set());
     const byCode = new Map(hierarchyList.map((x) => [normalizeCode(x.catCode), x]));
-    const children = new Map();
+    const childrenMap = new Map();
     hierarchyList.forEach((x) => {
       const p = normalizeCode(x.parentCode);
       const k = (p && byCode.has(p)) ? p : "";
-      if (!children.has(k)) children.set(k, []);
-      children.get(k).push(x);
+      if (!childrenMap.has(k)) childrenMap.set(k, []);
+      childrenMap.get(k).push(x);
     });
-    Array.from(children.keys()).forEach((k) => {
-      children.set(k, sortCats(children.get(k)));
+    Array.from(childrenMap.keys()).forEach((k) => {
+      childrenMap.set(k, sortCats(childrenMap.get(k)));
     });
-    const roots = children.get("") || [];
+    const roots = childrenMap.get("") || [];
     const out = [];
     const walk = (node, depth) => {
       const code = normalizeCode(node.catCode);
-      const levelNum = toLevelNum(node.level);
+      const hasChildren = (childrenMap.get(code) || []).length > 0;
+      const isExpanded = expanded.has(code);
+      const indent = depth * 20;
       out.push(`
-        <div class="gm-cat-node" style="--indent:${depth}" data-row="${escapeHtml(cfg.rowKey)}" data-id="${escapeHtml(code)}">
-          <div class="gm-cat-node__main">
-            <div class="gm-cat-node__title">
-              <span class="gm-cat-node__level">L${levelNum || depth + 1}</span>
-              <span class="gm-cat-node__name">${escapeHtml(node.catName || "")}</span>
-              <span class="gm-cat-node__code mono">${escapeHtml(code || "")}</span>
-            </div>
-            <div class="gm-cat-node__sub">
-              <span class="gm-cat-node__meta">上级：${escapeHtml(node.parentCode || "无")}</span>
-              <span class="gm-cat-node__sep">·</span>
-              <span class="gm-cat-node__meta">部门：${escapeHtml(node.department || "—")}</span>
-            </div>
-          </div>
-          <div class="gm-cat-node__side">
-            ${badge(node.status || "—")}
-          </div>
-        </div>
+        <tr data-row="${cfg.rowKey}" data-id="${escapeHtml(code)}" data-cat-code="${escapeHtml(code)}" data-depth="${depth}">
+          <td style="padding-left:${8 + indent}px;">
+            ${hasChildren ? `<span class="gm-cat-toggle ${isExpanded ? "is-expanded" : ""}" data-act="gmCatToggle" data-code="${escapeHtml(code)}">${isExpanded ? "∨" : ">"}</span>` : `<span class="gm-cat-toggle-placeholder"></span>`}
+            <span class="mono">${escapeHtml(code)}</span>
+          </td>
+          <td>${escapeHtml(node.catName || "")}</td>
+          <td class="mono">${escapeHtml(String(node.level ?? "—"))}</td>
+          <td class="mono">${escapeHtml(node.parentCode || "—")}</td>
+        </tr>
       `);
-      const next = children.get(code) || [];
-      next.forEach((c) => walk(c, depth + 1));
+      if (hasChildren && isExpanded) {
+        const next = childrenMap.get(code) || [];
+        next.forEach((c) => walk(c, depth + 1));
+      }
     };
     roots.forEach((r) => walk(r, 0));
     return out.join("");
   })();
+
+  const treeTableHeaders = ["类别编码", "类别名称", "层级", "上级编码"];
 
   const rows = isHierarchyView
     ? ""
@@ -23184,7 +23184,7 @@ function renderGmCategoryPage(kind) {
     filterActionsHtml: actionsHtml,
     listTitle: cfg.listTitle,
     tableHtml: isHierarchyView
-      ? `<div class="gm-cat-tree">${treeHtml || `<div class="empty">暂无数据</div>`}</div>`
+      ? table(treeTableHeaders, treeTableHtml || `<tr><td colspan="${treeTableHeaders.length}"><div class="empty">暂无数据</div></td></tr>`)
       : table(headers, rows || `<tr><td colspan="${headers.length}"><div class="empty">暂无数据</div></td></tr>`),
     footerHtml: footerbar(`共 ${count} 条`, "第 1 页")
   });
@@ -28352,6 +28352,15 @@ function handleAction(r, act, btn) {
     }
     if (act === "gmOfflineCatReset") {
       AppState.ui.gm.offlineCat = { q: "", status: "全部" };
+      render();
+      return;
+    }
+    if (act === "gmCatToggle") {
+      const code = btn.getAttribute("data-code");
+      const expandedKey = "offlineCat_expanded";
+      const expanded = AppState.ui.gm[expandedKey] || (AppState.ui.gm[expandedKey] = new Set());
+      if (expanded.has(code)) expanded.delete(code);
+      else expanded.add(code);
       render();
       return;
     }
