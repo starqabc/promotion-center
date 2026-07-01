@@ -22735,6 +22735,7 @@ function renderGmGoodsPage() {
   const actionsHtml = `
     <button class="btn btn--primary" type="button" data-act="gmGoodsQuery">查询</button>
     <button class="btn" type="button" data-act="gmGoodsReset">重置</button>
+    <button class="btn" type="button" data-act="gmGoodsExport">导出</button>
   `;
   const rows = list
     .map((g, idx) => {
@@ -28298,6 +28299,10 @@ function handleAction(r, act, btn) {
     if (act === "gmGoodsReset") {
       AppState.ui.gm.goods = { q: "", major: "全部", brand: "全部", supplier: "全部", status: "全部" };
       render();
+      return;
+    }
+    if (act === "gmGoodsExport") {
+      toast("导出成功（原型演示）");
       return;
     }
   }
