@@ -22743,29 +22743,41 @@ function renderGmGoodsPage() {
       const mnemonic = String(g.mnemonic || shortName || g.name || "").trim();
       const maxPackQty = g.maxPackQty ?? "—";
       const maxBoxQty = g.maxBoxQty ?? g.maxPackQty ?? "—";
-      const isNewGoods = g.isNewGoods ?? g.newGoods ?? "否";
+      const skuDisplay = String(g.sku || "").startsWith("000000") ? "P" + String(idx + 100001).padStart(7, "0") : g.sku;
+      const barcodeDisplay = String(g.barcode || "").startsWith("690") ? "2" + String(g.barcode).slice(1) : g.barcode;
+      const goodsCategory = g.goodsCategory ?? (g.goodsType === "生鲜" ? "01-一般物料" : "00-单一物料");
+      const statusMap = { "20": "20-定编", "40": "40-预淘汰", "50": "50-淘汰", "60": "60-废码" };
+      const statusDisplay = statusMap[String(g.status)] || g.status || "20-定编";
+      const deptMap = { "家清": "家清部", "饮料": "饮料部", "生鲜": "生鲜部", "零食": "零食部", "日百": "日百部" };
       return `
         <tr data-row="gmGoods" data-id="${escapeHtml(g.sku)}">
-          <td class="mono"><a class="link" href="javascript:void(0)">${c(g.sku)}</a></td>
+          <td class="mono"><a class="link" href="javascript:void(0)">${c(skuDisplay)}</a></td>
           <td>${c(g.name)}</td>
           <td>${c(shortName)}</td>
           <td>${c(mnemonic)}</td>
           <td>${c(g.category || g.major || g.lv2CatCode)}</td>
           <td>${c(g.spec)}</td>
           <td>${c(g.pricingMode)}</td>
-          <td class="mono">${c(g.barcode)}</td>
+          <td class="mono">${c(barcodeDisplay)}</td>
           <td>${c(g.goodsUnit)}</td>
           <td>${c(maxPackQty)}</td>
           <td>${c(maxBoxQty)}</td>
-          <td>${c(isNewGoods)}</td>
+          <td class="mono">${c(g.lv3CatCode)}</td>
+          <td class="mono">${c(g.lv2CatCode)}</td>
+          <td class="mono">${c(g.lv1CatCode)}</td>
+          <td>${c(deptMap[g.major] || "—")}</td>
+          <td class="mono">${c(g.brandCode)}</td>
+          <td>${c(g.brandName)}</td>
+          <td>${c(goodsCategory)}</td>
+          <td>${c(g.year || "2026")}</td>
           <td>${c(g.selfMade)}</td>
           <td>${c(g.goodsType)}</td>
-          <td>${c(g.status)}</td>
+          <td>${c(statusDisplay)}</td>
         </tr>
       `;
     })
     .join("");
-  const headers = ["商品编码", "商品名称", "简称", "助记符", "类别", "商品规格", "计量", "条形码", "单位", "最大不可拆箱包装数", "最大箱包数", "新商品", "自制商品", "商品类型", "商品状态"];
+  const headers = ["商品编码", "商品名称", "简称", "助记符", "类别", "商品规格", "计量", "条形码", "单位", "最大不可拆箱包装数", "最大箱包数", "小类编码", "中类编码", "大类编码", "所属部门", "品牌编码", "品牌名称", "商品类别", "年度", "自制商品", "商品类型", "商品状态"];
   return listPageLayout({
     filtersHtml,
     filterActionsHtml: actionsHtml,
