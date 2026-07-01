@@ -22958,34 +22958,46 @@ function renderGmPayPage() {
       <div class="field__label">关键字</div>
       <input class="input" id="gmPayQ" value="${escapeHtml(ui.q)}" placeholder="支付编码/名称" />
     </div>
-    <div class="field">
-      <div class="field__label">启用状态</div>
-      <select class="select" id="gmPayEnabled">
-        ${["全部", "启用", "停用"].map((x) => `<option ${x === ui.enabled ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}
-      </select>
-    </div>
   `;
   const actionsHtml = `
     <button class="btn btn--primary" type="button" data-act="gmPayQuery">查询</button>
     <button class="btn" type="button" data-act="gmPayReset">重置</button>
   `;
-  const rows = list
-    .map((x, idx) => {
-      return `
-        <tr data-row="gmPay" data-id="${escapeHtml(x.code)}">
-          <td class="mono"><a class="link" href="javascript:void(0)">${escapeHtml(x.code)}</a></td>
-          <td>${escapeHtml(x.name)}</td>
-          <td>${escapeHtml(x.payCategory || x.type || "—")}</td>
-        </tr>
-      `;
-    })
-    .join("");
-  const headers = ["付款方式编码", "方式名称", "付款分类"];
+  const paySample = [
+    { drpCode: "01", drpName: "现金", sapCode: "1001", sapName: "库存现金", sapFinCode: "100101", sapFinName: "人民币现金", payOwner: "10", payOwnerName: "门店" },
+    { drpCode: "02", drpName: "微信支付", sapCode: "100201", sapName: "微信扫码", sapFinCode: "10020101", sapFinName: "微信支付-门店", payOwner: "10", payOwnerName: "门店" },
+    { drpCode: "03", drpName: "支付宝", sapCode: "100202", sapName: "支付宝扫码", sapFinCode: "10020201", sapFinName: "支付宝-门店", payOwner: "10", payOwnerName: "门店" },
+    { drpCode: "04", drpName: "银行卡", sapCode: "1003", sapName: "银行存款", sapFinCode: "100301", sapFinName: "POS刷卡", payOwner: "20", payOwnerName: "总部" },
+    { drpCode: "05", drpName: "储值卡", sapCode: "1004", sapName: "预收账款", sapFinCode: "100401", sapFinName: "储值卡消费", payOwner: "20", payOwnerName: "总部" },
+    { drpCode: "06", drpName: "优惠券抵扣", sapCode: "1005", sapName: "销售折扣", sapFinCode: "100501", sapFinName: "优惠券抵扣", payOwner: "20", payOwnerName: "总部" }
+  ];
+  const payList = paySample.filter((x) => {
+    const q = String(ui.q || "").trim().toLowerCase();
+    if (q && ![x.drpCode, x.drpName, x.sapCode, x.sapName].some((v) => String(v).toLowerCase().includes(q))) return false;
+    return true;
+  });
+  const headers = ["序号", "DRP付款方式编码", "DRP付款方式描述", "SAP付款方式编码", "SAP付款方式描述", "SAP财务支付方式代码", "SAP财务支付方式描述", "支付归属", "支付归属名称"];
+  const rows = payList.map((x, idx) => `
+    <tr>
+      <td>${idx + 1}</td>
+      <td class="mono">${escapeHtml(x.drpCode)}</td>
+      <td>${escapeHtml(x.drpName)}</td>
+      <td class="mono">${escapeHtml(x.sapCode)}</td>
+      <td>${escapeHtml(x.sapName)}</td>
+      <td class="mono">${escapeHtml(x.sapFinCode)}</td>
+      <td>${escapeHtml(x.sapFinName)}</td>
+      <td class="mono">${escapeHtml(x.payOwner)}</td>
+      <td>${escapeHtml(x.payOwnerName)}</td>
+    </tr>
+  `).join("");
+  const emptyRows = Array.from({ length: Math.max(0, 8 - payList.length) }).map((_, idx) => `
+    <tr><td>${payList.length + idx + 1}</td>${Array.from({ length: headers.length - 1 }).map(() => "<td></td>").join("")}</tr>
+  `).join("");
   return listPageLayout({
     filtersHtml,
     filterActionsHtml: actionsHtml,
     listTitle: "支付方式列表",
-    tableHtml: table(headers, rows || `<tr><td colspan="${headers.length}"><div class="empty">暂无数据</div></td></tr>`),
+    tableHtml: table(headers, rows + emptyRows),
     footerHtml: footerbar(`共 ${list.length} 条`, "第 1 页")
   });
 }
