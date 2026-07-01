@@ -22715,6 +22715,8 @@ function renderGmGoodsPage() {
       return true;
     });
 
+  const counters = ["全部"].concat((AppState.data.gmCounters || []).map((x) => x.counterName || x.ruleName || x.counterCode || ""));
+
   const filtersHtml = `
     <div class="field">
       <div class="field__label">关键字</div>
@@ -22727,6 +22729,10 @@ function renderGmGoodsPage() {
     <div class="field">
       <div class="field__label">品牌</div>
       <select class="select" id="gmGoodsBrand">${brands.map((x) => `<option ${x === ui.brand ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select>
+    </div>
+    <div class="field">
+      <div class="field__label">所属柜组</div>
+      <select class="select" id="gmGoodsCounter">${counters.map((x) => `<option ${x === ui.counter ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select>
     </div>
     <div class="field">
       <div class="field__label">状态</div>
@@ -22768,6 +22774,7 @@ function renderGmGoodsPage() {
           <td class="mono">${c(g.lv2CatCode)}</td>
           <td class="mono">${c(g.lv1CatCode)}</td>
           <td>${c(deptMap[g.major] || "—")}</td>
+          <td>${c(g.counterCode || g.counterName || "—")}</td>
           <td class="mono">${c(g.brandCode)}</td>
           <td>${c(g.brandName)}</td>
           <td>${c(goodsCategory)}</td>
@@ -22779,7 +22786,7 @@ function renderGmGoodsPage() {
       `;
     })
     .join("");
-  const headers = ["商品编码", "商品名称", "简称", "助记符", "类别", "商品规格", "计量", "条形码", "单位", "最大不可拆箱包装数", "最大箱包数", "小类编码", "中类编码", "大类编码", "所属部门", "品牌编码", "品牌名称", "商品类别", "年度", "自制商品", "商品类型", "商品状态"];
+  const headers = ["商品编码", "商品名称", "简称", "助记符", "类别", "商品规格", "计量", "商品条码", "单位", "最大不可拆箱包装数", "最大箱包数", "小类编码", "中类编码", "大类编码", "所属部门", "所属柜组", "品牌编码", "品牌名称", "商品类别", "年度", "自制商品", "商品类型", "商品状态"];
   return listPageLayout({
     filtersHtml,
     filterActionsHtml: actionsHtml,
@@ -22813,6 +22820,7 @@ function renderSmStoreGoodsPage() {
     measure: g.pricingMode || g.measure || "件",
     category: g.major || g.leafCategory || "—",
     spec: g.spec || "—",
+    counter: g.counterCode || "—",
     goodsAttr: g.goodsType || g.attribute || "标品",
     businessMode: g.businessMode || "购销",
     salePrice: g.originPrice != null && g.originPrice !== "" ? Number(g.originPrice).toFixed(2) : (g.price != null && g.price !== "" ? Number(g.price).toFixed(2) : "—"),
@@ -22833,6 +22841,7 @@ function renderSmStoreGoodsPage() {
     </button>
   `).join("");
 
+  const storeCounters = ["全部"].concat((AppState.data.gmCounters || []).map((x) => x.counterName || x.ruleName || x.counterCode || ""));
   const filtersHtml = `
     <div class="field">
       <div class="field__label">商品信息</div>
@@ -22842,13 +22851,17 @@ function renderSmStoreGoodsPage() {
       <div class="field__label">基本分类</div>
       <select class="select" id="smStoreGoodsQCategory">${categories.map((x) => `<option ${x === ui.qCategory ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select>
     </div>
+    <div class="field">
+      <div class="field__label">所属柜组</div>
+      <select class="select" id="smStoreGoodsQCounter">${storeCounters.map((x) => `<option ${x === ui.qCounter ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select>
+    </div>
   `;
   const actionsHtml = `
     <button class="btn btn--primary" type="button" data-act="smStoreGoodsQuery">查询</button>
     <button class="btn" type="button" data-act="smStoreGoodsReset">重置</button>
     <button class="btn" type="button" data-act="smStoreGoodsExport">导出</button>
   `;
-  const headers = ["序号", "门店编码", "门店名称", "商品编码", "商品名称", "单位", "计量", "条形码", "基本分类", "规格", "商品属性", "经营方式", "门店商品状态", "商品售价", "商品最近一次进价"];
+  const headers = ["序号", "门店编码", "门店名称", "商品编码", "商品名称", "单位", "计量", "商品条码", "基本分类", "规格", "所属柜组", "商品属性", "经营方式", "门店商品状态", "商品售价", "商品最近一次进价"];
   const rows = list.map((x, idx) => `
     <tr>
       <td>${idx + 1}</td>
@@ -22861,11 +22874,10 @@ function renderSmStoreGoodsPage() {
       <td class="mono">${escapeHtml(x.barcode)}</td>
       <td>${escapeHtml(x.category)}</td>
       <td>${escapeHtml(x.spec)}</td>
+      <td>${escapeHtml(x.counter || "—")}</td>
       <td>${escapeHtml(x.goodsAttr)}</td>
       <td>${escapeHtml(x.businessMode)}</td>
       <td>${escapeHtml(x.storeGoodsStatus || "正常")}</td>
-      <td class="mono">${escapeHtml(x.salePrice)}</td>
-      <td class="mono">${escapeHtml(x.lastPurchasePrice)}</td>
       <td class="mono">${escapeHtml(x.salePrice)}</td>
       <td class="mono">${escapeHtml(x.lastPurchasePrice)}</td>
     </tr>
@@ -23065,12 +23077,6 @@ function renderGmCategoryPage(kind) {
     <div class="field">
       <div class="field__label">关键字</div>
       <input class="input" id="${cfg.qId}" value="${escapeHtml(ui.q)}" placeholder="类别编码/名称" />
-    </div>
-    <div class="field">
-      <div class="field__label">状态</div>
-      <select class="select" id="${cfg.statusId}">
-        ${["全部", "启用", "停用"].map((x) => `<option ${x === ui.status ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}
-      </select>
     </div>
   `;
   const actionsHtml = `
