@@ -4221,7 +4221,8 @@ function templateWizardRefreshVisibility() {
   }
 
   setShow("rwDiscountRow", !!spec.rewards.discount);
-  setShow("rwComboRow", promoType === "折扣");
+  const comboModeChecked = document.querySelector('#rwDiscountModeCombo input') && document.querySelector('#rwDiscountModeCombo input').checked;
+  setShow("rwComboRow", promoType === "折扣" && comboModeChecked);
   setShow("rwMinFreeStandaloneRow", promoType === "满减满赠");
   const minFreeStandaloneChecked = document.getElementById("rwMinFreeEnable") && document.getElementById("rwMinFreeEnable").checked;
   setShow("rwFullReduceGiftRow", !!spec.rewards.fullReduceGift && !minFreeStandaloneChecked);
