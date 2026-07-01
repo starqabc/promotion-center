@@ -22839,17 +22839,21 @@ function renderSmStoreGoodsPage() {
       <input class="input" id="smStoreGoodsQGoods" value="${escapeHtml(ui.qGoods)}" placeholder="请输入商品编码/条码/名称查询" />
     </div>
     <div class="field">
-      <div class="field__label">类目</div>
+      <div class="field__label">基本分类</div>
       <select class="select" id="smStoreGoodsQCategory">${categories.map((x) => `<option ${x === ui.qCategory ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select>
     </div>
   `;
   const actionsHtml = `
     <button class="btn btn--primary" type="button" data-act="smStoreGoodsQuery">查询</button>
     <button class="btn" type="button" data-act="smStoreGoodsReset">重置</button>
+    <button class="btn" type="button" data-act="smStoreGoodsExport">导出</button>
   `;
-  const headers = ["商品编码", "商品名称", "单位", "计量", "条形码", "类别", "规格", "商品属性", "经营方式", "售价", "上次进价"];
+  const headers = ["序号", "门店编码", "门店名称", "商品编码", "商品名称", "单位", "计量", "条形码", "基本分类", "规格", "商品属性", "经营方式", "门店商品状态", "商品售价", "商品最近一次进价"];
   const rows = list.map((x, idx) => `
     <tr>
+      <td>${idx + 1}</td>
+      <td class="mono">${escapeHtml(x.storeCode)}</td>
+      <td>${escapeHtml(x.storeName)}</td>
       <td class="mono">${escapeHtml(x.skuCode)}</td>
       <td>${escapeHtml(x.skuName)}</td>
       <td>${escapeHtml(x.unit)}</td>
@@ -22859,6 +22863,9 @@ function renderSmStoreGoodsPage() {
       <td>${escapeHtml(x.spec)}</td>
       <td>${escapeHtml(x.goodsAttr)}</td>
       <td>${escapeHtml(x.businessMode)}</td>
+      <td>${escapeHtml(x.storeGoodsStatus || "正常")}</td>
+      <td class="mono">${escapeHtml(x.salePrice)}</td>
+      <td class="mono">${escapeHtml(x.lastPurchasePrice)}</td>
       <td class="mono">${escapeHtml(x.salePrice)}</td>
       <td class="mono">${escapeHtml(x.lastPurchasePrice)}</td>
     </tr>
@@ -28460,6 +28467,10 @@ function handleAction(r, act, btn) {
       const cur = AppState.ui.smStoreGoods ? AppState.ui.smStoreGoods.selectedStore : "";
       AppState.ui.smStoreGoods = { selectedStore: cur, qGoods: "", qCategory: "全部" };
       render();
+      return;
+    }
+    if (act === "smStoreGoodsExport") {
+      toast("导出成功（原型演示）");
       return;
     }
   }
