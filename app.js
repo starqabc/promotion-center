@@ -22694,7 +22694,7 @@ function renderGmGoodsPage() {
   const majors = ["全部"].concat(md.majorCategories || []);
   const suppliers = ["全部"].concat((AppState.data.gmSuppliers || []).map((x) => x.supplierName));
   const brands = ["全部"].concat((AppState.data.gmBrands || []).map((x) => x.brandName));
-  const statuses = ["全部", "上架", "下架", "停售"];
+  const statuses = ["全部", "20-定编", "40-预淘汰", "50-淘汰", "60-废码"];
 
   const list = (md.goods || [])
     .map((g) => {
@@ -22720,16 +22720,12 @@ function renderGmGoodsPage() {
       <input class="input" id="gmGoodsQ" value="${escapeHtml(ui.q)}" placeholder="商品编码/条码/名称" />
     </div>
     <div class="field">
-      <div class="field__label">大类</div>
+      <div class="field__label">基本分类</div>
       <select class="select" id="gmGoodsMajor">${majors.map((x) => `<option ${x === ui.major ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select>
     </div>
     <div class="field">
       <div class="field__label">品牌</div>
       <select class="select" id="gmGoodsBrand">${brands.map((x) => `<option ${x === ui.brand ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select>
-    </div>
-    <div class="field">
-      <div class="field__label">供应商</div>
-      <select class="select" id="gmGoodsSupplier">${suppliers.map((x) => `<option ${x === ui.supplier ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select>
     </div>
     <div class="field">
       <div class="field__label">状态</div>
