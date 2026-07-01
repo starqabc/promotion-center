@@ -6974,7 +6974,7 @@ function renderAssortmentSummaryPage() {
   const rowsData = list.slice(0, 6);
   while (rowsData.length < 6) rowsData.push(null);
   const rows = rowsData.map((x, idx) => {
-    if (!x) return `<tr><td>${idx + 1}</td>${"<td></td>".repeat(26)}</tr>`;
+    if (!x) return `<tr><td>${idx + 1}</td>${"<td></td>".repeat(34)}</tr>`;
     return `
       <tr>
         <td>${idx + 1}</td>
@@ -6986,6 +6986,7 @@ function renderAssortmentSummaryPage() {
         <td>${escapeHtml(x.spec)}</td>
         <td>${escapeHtml(x.boxCount)}</td>
         <td>${escapeHtml(x.supplier)}</td>
+        <td class="mono">${escapeHtml(x.supplierCode || "—")}</td>
         <td>${escapeHtml(x.diffWay)}</td>
         <td>${escapeHtml(x.diffParty)}</td>
         <td class="mono">${escapeHtml(x.originCost)}</td>
@@ -6994,10 +6995,19 @@ function renderAssortmentSummaryPage() {
         <td class="mono">${escapeHtml(x.originPrice)}</td>
         <td class="mono">${escapeHtml(x.promoPrice)}</td>
         <td>${escapeHtml(x.promoMode)}</td>
+        <td class="mono">${escapeHtml(x.ruleValue1 || "—")}</td>
+        <td class="mono">${escapeHtml(x.ruleValue2 || "—")}</td>
+        <td class="mono">${escapeHtml(x.giftCode || "—")}</td>
+        <td class="mono">${escapeHtml(x.giftCost || "—")}</td>
+        <td class="mono">${escapeHtml(x.grossMargin || "—")}</td>
         <td class="mono">${escapeHtml(x.supplierAmount)}</td>
         <td class="mono">${escapeHtml(x.purchaseAmount)}</td>
         <td>${escapeHtml(x.keyFlag)}</td>
         <td>${escapeHtml(x.dmFlag)}</td>
+        <td class="mono">${escapeHtml(x.a1DmLevel || "—")}</td>
+        <td class="mono">${escapeHtml(x.bDmLevel || "—")}</td>
+        <td class="mono">${escapeHtml(x.cDmLevel || "—")}</td>
+        <td class="mono">${escapeHtml(x.gridCount || "—")}</td>
         <td>${escapeHtml(x.planText)}</td>
         <td>${escapeHtml(x.goodsCount)}</td>
         <td>${escapeHtml(x.region)}</td>
@@ -7051,8 +7061,10 @@ function renderAssortmentSummaryPage() {
         <div class="card__body assortment-detail-table">
           ${table([
             "序号", "档期ID", "档期名称", "子主题名称", "商品编码", "商品名称", "商品规格", "箱包数", "供应商",
-            "补差方式", "补差承担方", "原进价", "促销进价", "促销进价单位", "原售价", "促销售价", "促销方式",
-            "供应商承担金额", "采购承担金额", "重点商品标识", "DM标识", "活动方案", "商品品数", "营销区域",
+            "供应商编码", "补差方式", "补差承担方", "原进价", "促销进价", "促销进价单位", "原售价", "促销售价", "促销方式",
+            "方式细则数值1", "方式细则数值2", "赠品编码", "赠品进价", "促销毛利率",
+            "供应商承担金额", "采购承担金额", "重点商品标识", "DM标识", "A1-DM店群促销等级", "B-DM店群促销等级", "C-DM店群促销等级", "格子数",
+            "活动方案", "商品品数", "营销区域",
             "预估件数", "预估营业额", "预估毛利"
           ], rows)}
           <div class="psa-pager assortment-detail-pager">
