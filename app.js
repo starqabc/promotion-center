@@ -6440,7 +6440,7 @@ function renderAssortmentPage() {
     </div>
     <div class="field">
       <div class="field__label">子主题名称</div>
-      <input class="input" id="asQSub" value="${escapeHtml(f("qSub"))}" placeholder="请输入部门联合名称/id查询" />
+      <input class="input" id="asQSub" value="${escapeHtml(f("qSub"))}" placeholder="请输入子主题名称/id查询" />
     </div>
     <div class="field">
       <div class="field__label">促销类型</div>
@@ -6559,17 +6559,16 @@ function renderAssortmentPage() {
     "档期名称",
     "档期开始时间",
     "档期结束时间",
-    "部门联合MD主题名称",
+    "档期年度",
+    "子主题名称",
     "负责人",
     "主题营销策略",
     "引流品类",
     "利润品类",
     "辅助品类",
     "备注",
-    "参考记录数/<br>商品数",
-    "DM记录数/<br>子段",
-    "预估销售额（万元）/<br>增长率",
-    "预估毛利额（万元）/<br>增长率",
+    "重点商品数",
+    "DM记录数/格子数",
     "平均促销毛利率",
     "操作"
   ];
@@ -6589,18 +6588,17 @@ function renderAssortmentPage() {
         <td>${escapeHtml(d.actual.theme || "—")}</td>
         <td class="mono">${escapeHtml(d.actual.startDate || "—")}</td>
         <td class="mono">${escapeHtml(d.actual.endDate || "—")}</td>
-        <td>${escapeHtml(d.mdTheme)}</td>
+        <td class="mono">${escapeHtml(d.actual.year || "2026")}</td>
+        <td>${escapeHtml(d.actual.theme || "—")}</td>
         <td>${escapeHtml(d.owner)}</td>
         <td>${escapeHtml(d.actual.planType || "—")}</td>
         <td>${escapeHtml(d.leadCategory)}</td>
         <td>${escapeHtml(d.profitCategory)}</td>
         <td>${escapeHtml(d.supportCategory)}</td>
         <td>${escapeHtml(d.remark)}</td>
-        <td>${escapeHtml(d.refGoods)}</td>
-        <td>${escapeHtml(d.dmGrid)}</td>
-        <td>${escapeHtml(d.saleForecast)}</td>
-        <td>${escapeHtml(d.grossForecast)}</td>
-        <td>${escapeHtml(d.grossRate)}</td>
+        <td class="mono">${escapeHtml(d.refGoods || "—")}</td>
+        <td class="mono">${escapeHtml(d.dmGrid)}</td>
+        <td class="mono">${escapeHtml(d.grossRate)}</td>
         <td><button class="linkbtn" type="button" data-act="asView" data-id="${escapeHtml(d.actualId)}">详情</button></td>
       </tr>`;
     })
