@@ -268,6 +268,7 @@ const AppState = {
     "/gm-dept-online-cat": { title: "百货线上类别", sub: "只读：查询 + 查看详情（不提供新增/编辑/删除）" },
     "/gm-dept-offline-cat": { title: "百货线下类别", sub: "只读：查询 + 查看详情（不提供新增/编辑/删除）" },
     "/gm-brands": { title: "商品品牌", sub: "只读：查询 + 查看详情（不提供新增/编辑/删除）" },
+    "/gm-packaging": { title: "商品包装", sub: "查询商品包装信息（原型演示）" },
     "/gm-suppliers": { title: "供应商信息", sub: "只读：查询 + 查看详情（不提供新增/编辑/删除）" },
     "/gm-stores": { title: "门店信息", sub: "只读：查询 + 查看详情（不提供新增/编辑/删除）" },
     "/sm-counters": { title: "柜组信息", sub: "只读：查询门店柜组基础信息（原型演示）" },
@@ -23279,6 +23280,86 @@ function openGmBrandDetail(code) {
   });
 }
 
+function renderGmPackagingPage() {
+  const ui = AppState.ui.gmPackaging || (AppState.ui.gmPackaging = { qSku: "", qName: "", qBarcode: "" });
+  const goods = (AppState.data.masterData && AppState.data.masterData.goods) || [];
+  const sample = goods.slice(0, 6).map((g, idx) => ({
+    skuCode: g.sku || "P" + String(100001 + idx).padStart(7, "0"),
+    skuName: g.name || "—",
+    packSpec: g.spec || "—",
+    packUnit: g.unit || "—",
+    packBarcode: g.barcode || "—",
+    serialNo: String(200001 + idx),
+    boxQty: [24, 12, 6, 48, 36, 20][idx] || 12,
+    midPack: [4, 2, 1, 6, 3, 2][idx] || 1,
+    boxPack: [24, 12, 6, 48, 36, 20][idx] || 12,
+    unitDesc: g.unit || "—",
+    baseUnitFlag: idx % 2 === 0 ? "是" : "否",
+    createdAt: "2024-01-15 10:00:00",
+    modifyAt: "2024-06-20 14:30:00"
+  }));
+  const list = sample.filter((x) => {
+    const qs = String(ui.qSku || "").trim().toLowerCase();
+    const qn = String(ui.qName || "").trim().toLowerCase();
+    const qb = String(ui.qBarcode || "").trim().toLowerCase();
+    if (qs && !String(x.skuCode).toLowerCase().includes(qs)) return false;
+    if (qn && !String(x.skuName).toLowerCase().includes(qn)) return false;
+    if (qb && !String(x.packBarcode).toLowerCase().includes(qb)) return false;
+    return true;
+  });
+  const filtersHtml = `
+    <div class="field">
+      <div class="field__label">商品编码</div>
+      <input class="input" id="gmPkgQSku" value="${escapeHtml(ui.qSku)}" placeholder="商品编码" />
+    </div>
+    <div class="field">
+      <div class="field__label">商品名称</div>
+      <input class="input" id="gmPkgQName" value="${escapeHtml(ui.qName)}" placeholder="商品名称" />
+    </div>
+    <div class="field">
+      <div class="field__label">包装条码</div>
+      <input class="input" id="gmPkgQBarcode" value="${escapeHtml(ui.qBarcode)}" placeholder="包装条码" />
+    </div>
+  `;
+  const actionsHtml = `
+    <button class="btn" type="button" data-act="gmPkgReset">重置</button>
+    <button class="btn btn--primary" type="button" data-act="gmPkgQuery">查询</button>
+    <button class="btn" type="button" data-act="gmPkgExport">导出</button>
+  `;
+  const headers = ["序号", "商品编码", "商品名称", "包装规格", "包装单位", "包装条码", "连续号码", "箱包数", "中包装", "箱包装", "单位描述", "基本单位标识", "创建时间", "修改时间"];
+  const rows = list.map((x, idx) => `
+    <tr>
+      <td>${idx + 1}</td>
+      <td class="mono">${escapeHtml(x.skuCode)}</td>
+      <td>${escapeHtml(x.skuName)}</td>
+      <td>${escapeHtml(x.packSpec)}</td>
+      <td>${escapeHtml(x.packUnit)}</td>
+      <td class="mono">${escapeHtml(x.packBarcode)}</td>
+      <td class="mono">${escapeHtml(x.serialNo)}</td>
+      <td class="mono">${escapeHtml(String(x.boxQty))}</td>
+      <td class="mono">${escapeHtml(String(x.midPack))}</td>
+      <td class="mono">${escapeHtml(String(x.boxPack))}</td>
+      <td>${escapeHtml(x.unitDesc)}</td>
+      <td>${escapeHtml(x.baseUnitFlag)}</td>
+      <td class="mono">${escapeHtml(x.createdAt)}</td>
+      <td class="mono">${escapeHtml(x.modifyAt)}</td>
+    </tr>
+  `).join("");
+  const emptyRows = Array.from({ length: Math.max(0, 8 - list.length) }).map((_, idx) => `
+    <tr>
+      <td>${list.length + idx + 1}</td>
+      ${Array.from({ length: headers.length - 1 }).map(() => "<td></td>").join("")}
+    </tr>
+  `).join("");
+  return listPageLayout({
+    filtersHtml,
+    filterActionsHtml: actionsHtml,
+    listTitle: "商品包装列表",
+    tableHtml: table(headers, rows + emptyRows),
+    footerHtml: footerbar(`共 ${list.length} 条`, "第 1 页")
+  });
+}
+
 function renderGmSuppliersPage() {
   const ui = AppState.ui.gm.suppliers;
   const list = (AppState.data.gmSuppliers || []).filter((x) => {
@@ -27498,6 +27579,7 @@ function render() {
   else if (r === "/gm-dept-online-cat") html = renderGmCategoryPage("deptOnline");
   else if (r === "/gm-dept-offline-cat") html = renderGmCategoryPage("deptOffline");
   else if (r === "/gm-brands") html = renderGmBrandsPage();
+  else if (r === "/gm-packaging") html = renderGmPackagingPage();
   else if (r === "/gm-suppliers") html = renderGmSuppliersPage();
   else if (r === "/gm-stores") html = renderGmStoresPage();
   else if (r === "/sm-counters") html = renderStoreMgmtPage("counters");
@@ -28407,6 +28489,26 @@ function handleAction(r, act, btn) {
       return;
     }
     if (act === "gmBrandsExport") {
+      toast("导出成功（原型演示）");
+      return;
+    }
+  }
+  if (r === "/gm-packaging") {
+    const rd = (id) => document.getElementById(id) ? document.getElementById(id).value : "";
+    if (act === "gmPkgQuery") {
+      AppState.ui.gmPackaging = AppState.ui.gmPackaging || {};
+      AppState.ui.gmPackaging.qSku = rd("gmPkgQSku").trim();
+      AppState.ui.gmPackaging.qName = rd("gmPkgQName").trim();
+      AppState.ui.gmPackaging.qBarcode = rd("gmPkgQBarcode").trim();
+      render();
+      return;
+    }
+    if (act === "gmPkgReset") {
+      AppState.ui.gmPackaging = { qSku: "", qName: "", qBarcode: "" };
+      render();
+      return;
+    }
+    if (act === "gmPkgExport") {
       toast("导出成功（原型演示）");
       return;
     }
