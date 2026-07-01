@@ -381,7 +381,7 @@ button,input,select,textarea{font-family:inherit}
   color:var(--text);
   font-weight:600;
 }
-.filters-grid .input,.filters-grid .select{flex:1;min-width:0}
+.filters-grid .input,.filters-grid .select{flex:1;min-width:0;height:36px}
 .section__title{font-weight:800;margin:2px 0 8px 0}
 .section__head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:2px 0 8px 0}
 .section__head .section__title{margin:0}
@@ -473,6 +473,38 @@ button,input,select,textarea{font-family:inherit}
 .field{display:flex;flex-direction:column;gap:6px;min-width:0}
 .field__label{font-size:12px;color:var(--text);font-weight:600}
 .field__label--switch{display:flex;align-items:center;gap:10px}
+.field--time{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field--time .field__label{margin-bottom:0}
+.field--time .campaign-list-time{
+  display:grid;
+  grid-template-columns:110px 1fr 1fr;
+  gap:0;
+  height:32px;
+}
+.field--time .campaign-list-time .select,
+.field--time .campaign-list-time .input{
+  height:32px;
+  border-radius:0;
+  font-size:12px;
+}
+.field--time .campaign-list-time__type{
+  border-top-right-radius:0;
+  border-bottom-right-radius:0;
+}
+.field--time .campaign-list-time__input{
+  border-radius:0;
+  border-left:none;
+}
+.field--time .campaign-list-time__input:last-child{
+  border-top-right-radius:4px;
+  border-bottom-right-radius:4px;
+}
+.field--actions{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding-top:6px;
+}
 .field__label--switch .switch{flex:0 0 auto}
 .field__help{font-size:12px;color:var(--muted);margin-top:2px}
 .req{color:var(--danger);margin-left:4px}
@@ -813,11 +845,18 @@ tbody tr:last-child td{border-bottom:none}
   gap:14px;
 }
 .campaign-list-filters__actions .btn{
-  height:32px;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
+  height:32px !important;
+  min-width:60px !important;
+  padding:0 12px !important;
+  display:inline-flex !important;
+  flex-direction:row !important;
+  align-items:center !important;
+  justify-content:center !important;
+  white-space:nowrap !important;
+  writing-mode:horizontal-tb !important;
+  text-orientation:mixed !important;
+  transform:none !important;
+  font-size:13px !important;
 }
 .filters-grid .input,
 .filters-grid .select,
@@ -972,7 +1011,7 @@ tbody tr:last-child td{border-bottom:none}
 
 .tpl-list-layout{
   display:grid;
-  grid-template-columns:240px minmax(0,1fr);
+  grid-template-columns:180px minmax(0,1fr);
   gap:0;
   align-items:stretch;
   flex:1;
@@ -1009,15 +1048,7 @@ tbody tr:last-child td{border-bottom:none}
 .tpl-type-toggle__vt{display:none;}
 .tpl-type-shell.is-collapsed{padding:0;width:36px;display:flex;flex-direction:column;align-items:center;}
 .tpl-type-shell.is-collapsed .tpl-type-toggle{position:static;top:auto;right:auto;width:36px;height:36px;border:none;border-radius:0;background:#f1f5f9;}
-.tpl-type-shell.is-collapsed .tpl-type-toggle__vt{
-  display:block;
-  writing-mode:vertical-rl;
-  text-orientation:upright;
-  font-size:12px;
-  color:#6b7280;
-  margin-top:8px;
-  letter-spacing:2px;
-}
+.tpl-type-shell.is-collapsed .tpl-type-toggle__vt{display:none;}
 .tpl-type-shell .input{
   height:32px;
   border-radius:4px;
@@ -4197,21 +4228,30 @@ tbody tr:last-child td{border-bottom:none}
   border-radius:2px;
   padding:14px 12px 12px;
   display:flex;
-  align-items:flex-start;
+  align-items:flex-end;
   gap:14px 18px;
+  flex-wrap:wrap;
 }
 .pto-filterbar__grid{
   flex:1;
   display:grid;
-  grid-template-columns:220px 220px 240px 1fr 220px;
-  gap:14px 28px;
+  grid-template-columns:repeat(4, 1fr);
+  gap:14px 18px;
   align-items:end;
   min-width:0;
 }
 .pto-filterbar__actions{
   display:flex;
   gap:12px;
-  padding-top:30px;
+  align-items:center;
+  padding-bottom:2px;
+}
+.pto-filterbar__actions .btn{
+  border-radius:10px;
+  text-align:center;
+  justify-content:center;
+  min-width:70px;
+  height:36px;
 }
 .pto-querytime{
   display:flex;
@@ -4256,7 +4296,9 @@ tbody tr:last-child td{border-bottom:none}
 .pto-actions .btn{
   min-width:96px;
   height:32px;
-  border-radius:2px;
+  border-radius:10px;
+  text-align:center;
+  justify-content:center;
 }
 .pto-tablewrap{
   background:#fff;
