@@ -22299,8 +22299,8 @@ function renderPricingPage() {
   const body = `
     <div class="pricing-top-bar">
       <div class="field pricing-top-bar__store-code">
-        <div class="field__label">门店编码</div>
-        <input class="input" id="pricingStoreCode" placeholder="门店编码" value="${escapeHtml(st.storeCode || "")}" />
+        <div class="field__label">门店名称</div>
+        <input class="input" id="pricingStoreCode" placeholder="门店名称" value="${escapeHtml(st.storeName || st.storeCode || "")}" />
       </div>
       <div class="field pricing-top-bar__time">
         <div class="field__label">模拟活动时间</div>
@@ -22313,16 +22313,16 @@ function renderPricingPage() {
           <option value="是" ${String(st.memberJoin || "否") === "是" ? "selected" : ""}>是</option>
         </select>
       </div>
-      <div class="field pricing-top-bar__member-no" id="pricingMemberNoField" style="${String(st.memberJoin || "否") === "是" ? "" : "display:none;"}">
-        <div class="field__label">会员号</div>
-        <input class="input" id="pricingMemberNo" placeholder="会员号" value="${escapeHtml(st.memberNo)}" />
-      </div>
-      <div class="field pricing-top-bar__member-level" id="pricingMemberLevelField" style="${String(st.memberJoin || "否") === "是" ? "" : "display:none;"}">
+      <div class="field pricing-top-bar__member-level">
         <div class="field__label">会员等级</div>
         <select class="select" id="pricingMemberLevel">
           <option value="">请选择</option>
           ${(Array.isArray(AppState.data.gmMemberGrades) ? AppState.data.gmMemberGrades : []).map((x) => `<option value="${escapeHtml(x.name || "")}" ${String(st.memberLevel || "") === String(x.name || "") ? "selected" : ""}>${escapeHtml(x.name || "")}</option>`).join("")}
         </select>
+      </div>
+      <div class="field pricing-top-bar__member-no">
+        <div class="field__label">优惠券码</div>
+        <input class="input" id="pricingMemberNo" placeholder="优惠券码" value="${escapeHtml(st.memberNo)}" />
       </div>
       <div class="field pricing-top-bar__actions">
         <div class="field__label">&nbsp;</div>
@@ -22373,26 +22373,52 @@ function renderPricingPage() {
       </div>
       <div class="pricing-right">
         <div class="pricing-coupon-area">
-          <div class="pricing-coupon-header">可用优惠券<span class="coupon-count">${(AppState.data.pricingCoupons || []).length}张</span></div>
-          <div class="pricing-coupon-list">
-            ${(AppState.data.pricingCoupons || []).map((cp) => {
-              const isSel = (st.selectedCoupons || []).includes(cp.id);
-              const valText = cp.type === "现金券" ? cp.value + "元" : cp.value + "折";
-              return `
-                <div class="pricing-coupon-card ${isSel ? "is-selected" : ""}" data-act="pricingToggleCoupon" data-id="${escapeHtml(cp.id)}">
-                  <div class="pricing-coupon-card__left">
-                    <div class="pricing-coupon-card__value">${escapeHtml(cp.value)}</div>
-                    <div class="pricing-coupon-card__unit">${escapeHtml(cp.unit)}</div>
-                    <div class="pricing-coupon-card__type">${escapeHtml(cp.type)}</div>
+          <div class="tabbar tabbar--underline" id="pricingCouponTabs">
+            <button class="tabbtn ${String(st.couponTab || "available") !== "gift" ? "is-active" : ""}" type="button" data-act="pricingCouponTab" data-id="available">可用优惠券</button>
+            <button class="tabbtn ${String(st.couponTab) === "gift" ? "is-active" : ""}" type="button" data-act="pricingCouponTab" data-id="gift">可赠优惠券</button>
+          </div>
+          <div id="pricingCouponAvailable" style="${String(st.couponTab || "available") !== "gift" ? "" : "display:none;"}">
+            <div class="pricing-coupon-list">
+              ${(AppState.data.pricingCoupons || []).map((cp) => {
+                const isSel = (st.selectedCoupons || []).includes(cp.id);
+                return `
+                  <div class="pricing-coupon-card ${isSel ? "is-selected" : ""}" data-act="pricingToggleCoupon" data-id="${escapeHtml(cp.id)}">
+                    <div class="pricing-coupon-card__left">
+                      <div class="pricing-coupon-card__value">${escapeHtml(cp.value)}</div>
+                      <div class="pricing-coupon-card__unit">${escapeHtml(cp.unit)}</div>
+                      <div class="pricing-coupon-card__type">${escapeHtml(cp.type)}</div>
+                    </div>
+                    <div class="pricing-coupon-card__right">
+                      <div class="pricing-coupon-card__title">${escapeHtml(cp.title)}</div>
+                      <div class="pricing-coupon-card__scope">使用范围：${escapeHtml(cp.scope)}</div>
+                      <div class="pricing-coupon-card__time">有效期：${escapeHtml(cp.validTime)}</div>
+                    </div>
                   </div>
-                  <div class="pricing-coupon-card__right">
-                    <div class="pricing-coupon-card__title">${escapeHtml(cp.title)}</div>
-                    <div class="pricing-coupon-card__scope">使用范围：${escapeHtml(cp.scope)}</div>
-                    <div class="pricing-coupon-card__time">有效期：${escapeHtml(cp.validTime)}</div>
-                  </div>
-                </div>
-              `;
-            }).join("")}
+                `;
+              }).join("")}
+            </div>
+          </div>
+          <div id="pricingCouponGift" style="${String(st.couponTab) === "gift" ? "" : "display:none;"}">
+            <div class="pricing-coupon-list" id="pricingGiftCouponList">
+              ${st.settled ? `
+                ${(AppState.data.pricingCoupons || []).slice(0, 2).map((cp) => {
+                  return `
+                    <div class="pricing-coupon-card">
+                      <div class="pricing-coupon-card__left">
+                        <div class="pricing-coupon-card__value">${escapeHtml(cp.value)}</div>
+                        <div class="pricing-coupon-card__unit">${escapeHtml(cp.unit)}</div>
+                        <div class="pricing-coupon-card__type">赠</div>
+                      </div>
+                      <div class="pricing-coupon-card__right">
+                        <div class="pricing-coupon-card__title">${escapeHtml(cp.title)}</div>
+                        <div class="pricing-coupon-card__scope">赠送范围：${escapeHtml(cp.scope)}</div>
+                        <div class="pricing-coupon-card__time">有效期：${escapeHtml(cp.validTime)}</div>
+                      </div>
+                    </div>
+                  `;
+                }).join("")}
+              ` : `<div class="empty" style="padding:20px;text-align:center;color:var(--muted);">点击"结算"后展示可赠优惠券</div>`}
+            </div>
           </div>
         </div>
       </div>
@@ -28181,11 +28207,9 @@ function bindPageEvents(r) {
   }
 
   if (r === "/pricing") {
-    /* sync filter state from DOM on re-render */
     const ps = root.querySelector("#pricingSearch");
     const psc = root.querySelector("#pricingStoreCode");
     const pts = root.querySelector("#pricingTimeStart");
-    const pte = root.querySelector("#pricingTimeEnd");
     const pmn = root.querySelector("#pricingMemberNo");
     if (ps) ps.addEventListener("input", () => { AppState.ui.pricing.searchKey = ps.value; });
     if (psc) psc.addEventListener("input", () => { AppState.ui.pricing.storeCode = psc.value; });
@@ -28193,16 +28217,17 @@ function bindPageEvents(r) {
     if (pmn) pmn.addEventListener("input", () => { AppState.ui.pricing.memberNo = pmn.value; });
     const pmj = root.querySelector("#pricingMemberJoin");
     const pml = root.querySelector("#pricingMemberLevel");
-    if (pmj) pmj.addEventListener("change", () => {
-      const v = pmj.value;
-      AppState.ui.pricing.memberJoin = v;
-      const show = v === "是";
-      const noField = document.getElementById("pricingMemberNoField");
-      const lvField = document.getElementById("pricingMemberLevelField");
-      if (noField) noField.style.display = show ? "" : "none";
-      if (lvField) lvField.style.display = show ? "" : "none";
-    });
+    if (pmj) pmj.addEventListener("change", () => { AppState.ui.pricing.memberJoin = pmj.value; });
     if (pml) pml.addEventListener("change", () => { AppState.ui.pricing.memberLevel = pml.value; });
+    root.querySelectorAll('[data-act="pricingCouponTab"]').forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const tabId = btn.getAttribute("data-id");
+        AppState.ui.pricing.couponTab = tabId;
+        document.getElementById("pricingCouponAvailable").style.display = tabId === "available" ? "" : "none";
+        document.getElementById("pricingCouponGift").style.display = tabId === "gift" ? "" : "none";
+        root.querySelectorAll('#pricingCouponTabs .tabbtn').forEach((b) => b.classList.toggle("is-active", b.getAttribute("data-id") === tabId));
+      });
+    });
   }
 
   if (r === "/schedule-plan") {
@@ -32449,7 +32474,13 @@ function handleAction(r, act, btn) {
     if (act === "pricingTopQuery") return runPricingFromForm();
     if (act === "pricingTopReset") return pricingResetFilters();
     if (act === "pricingQuery") return pricingQuery();
-    if (act === "pricingSettle") return toast("结算金额：¥ " + AppState.ui.pricing.settlementAmount.toFixed(2) + "（原型演示）");
+    if (act === "pricingSettle") {
+      AppState.ui.pricing.settled = true;
+      AppState.ui.pricing.couponTab = "gift";
+      render();
+      toast("结算金额：¥ " + AppState.ui.pricing.settlementAmount.toFixed(2) + "（原型演示）");
+      return;
+    }
     if (act === "pricingToggleCoupon") return pricingToggleCoupon(btn);    if (act === "pricingPreview") return pricingPreview();
     if (act === "toggleCoupon") return pricingToggleCoupon(btn);
   }
