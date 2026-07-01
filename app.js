@@ -23232,16 +23232,11 @@ function renderGmBrandsPage() {
       <div class="field__label">关键字</div>
       <input class="input" id="gmBrandsQ" value="${escapeHtml(ui.q)}" placeholder="品牌编码/名称" />
     </div>
-    <div class="field">
-      <div class="field__label">状态</div>
-      <select class="select" id="gmBrandsStatus">
-        ${["全部", "启用", "停用"].map((x) => `<option ${x === ui.status ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}
-      </select>
-    </div>
   `;
   const actionsHtml = `
     <button class="btn btn--primary" type="button" data-act="gmBrandsQuery">查询</button>
     <button class="btn" type="button" data-act="gmBrandsReset">重置</button>
+    <button class="btn" type="button" data-act="gmBrandsExport">导出</button>
   `;
   const rows = list
     .map((x, idx) => {
@@ -23252,13 +23247,12 @@ function renderGmBrandsPage() {
           <td>${escapeHtml(x.brandName)}</td>
           <td>${escapeHtml(x.brandEn || "")}</td>
           <td class="mono">${escapeHtml(x.createdAt || "—")}</td>
-          <td>${badge(x.status || "—")}</td>
-          <td>${escapeHtml(x.remark || "")}</td>
+          <td>${escapeHtml(x.selfOwned || "否")}</td>
         </tr>
       `;
     })
     .join("");
-  const headers = ["序号", "品牌编码", "品牌名称", "英文名", "创建时间", "状态", "备注"];
+  const headers = ["序号", "品牌编码", "品牌名称", "英文名", "创建时间", "是否自有品牌"];
   return listPageLayout({
     filtersHtml,
     filterActionsHtml: actionsHtml,
@@ -28410,6 +28404,10 @@ function handleAction(r, act, btn) {
     if (act === "gmBrandsReset") {
       AppState.ui.gm.brands = { q: "", status: "全部" };
       render();
+      return;
+    }
+    if (act === "gmBrandsExport") {
+      toast("导出成功（原型演示）");
       return;
     }
   }
