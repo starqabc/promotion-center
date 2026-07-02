@@ -3595,29 +3595,55 @@ function openCampaignGoodsSelectModal({ title, subtitle, checkboxName, onPicked,
   const allItems = campaignSelectableGoodsItems();
   const hasComboCode = Array.isArray(comboCodeOptions) && comboCodeOptions.length > 0;
   const renderList = () => {
+    const actNoEl = document.getElementById("campGoodsSelActNo");
+    const actNameEl = document.getElementById("campGoodsSelActName");
+    const tplNameEl = document.getElementById("campGoodsSelTplName");
+    const tplTypeEl = document.getElementById("campGoodsSelTplType");
     const goodsEl = document.getElementById("campGoodsSelGoods");
     const categoryEl = document.getElementById("campGoodsSelCategory");
     const brandEl = document.getElementById("campGoodsSelBrand");
+    const qActNo = String(actNoEl ? actNoEl.value : "").trim().toLowerCase();
+    const qActName = String(actNameEl ? actNameEl.value : "").trim().toLowerCase();
+    const qTplName = String(tplNameEl ? tplNameEl.value : "").trim().toLowerCase();
+    const qTplType = String(tplTypeEl ? tplTypeEl.value : "").trim().toLowerCase();
     const qGoods = String(goodsEl ? goodsEl.value : "").trim().toLowerCase();
     const qCategory = String(categoryEl ? categoryEl.value : "").trim().toLowerCase();
     const qBrand = String(brandEl ? brandEl.value : "").trim().toLowerCase();
     const filtered = allItems.filter((g) => {
+      if (qActNo && !String(g.actNo || "").toLowerCase().includes(qActNo)) return false;
+      if (qActName && !String(g.actName || "").toLowerCase().includes(qActName)) return false;
+      if (qTplName && !String(g.templateName || "").toLowerCase().includes(qTplName)) return false;
+      if (qTplType && !String(g.templateType || "").toLowerCase().includes(qTplType)) return false;
       if (qGoods && ![g.sku, g.barcode, g.name, g.spec].some((v) => String(v || "").toLowerCase().includes(qGoods))) return false;
       if (qCategory && !String(g.category || "").toLowerCase().includes(qCategory)) return false;
       if (qBrand && !String(g.brand || "").toLowerCase().includes(qBrand)) return false;
       return true;
     });
-    const headers = ["商品编码", "商品条码", "商品名称", "商品规格", "单位", "类别", "品牌"];
+    const headers = ["活动编码", "活动主题", "模版名称", "模版类型", "活动时间", "状态", "商品编码", "商品条码", "商品名称", "规格", "单位", "类别", "品牌", "售价", "促销价", "促销扣率", "会员价", "会员促销价", "会员折扣", "参与门店", "促销信息"];
     const rows = filtered.map((g) => `
       <tr>
-        <td><input type="checkbox" name="${escapeHtml(String(checkboxName || "campPickGoods"))}" value="${escapeHtml(String(g.sku || ""))}" /></td>
-        <td class="mono">${escapeHtml(String(g.sku || ""))}</td>
-        <td class="mono">${escapeHtml(String(g.barcode || ""))}</td>
-        <td>${escapeHtml(String(g.name || ""))}</td>
-        <td>${escapeHtml(String(g.spec || ""))}</td>
-        <td>${escapeHtml(String(g.unit || ""))}</td>
-        <td>${escapeHtml(String(g.category || ""))}</td>
-        <td>${escapeHtml(String(g.brand || ""))}</td>
+	        <td><input type="checkbox" name="${escapeHtml(String(checkboxName || "campPickGoods"))}" value="${escapeHtml(String(g.sku || ""))}" /></td>
+	        <td class="mono">${escapeHtml(String(g.actNo || "—"))}</td>
+	        <td>${escapeHtml(String(g.actName || "—"))}</td>
+	        <td>${escapeHtml(String(g.templateName || "—"))}</td>
+	        <td>${escapeHtml(String(g.templateType || "—"))}</td>
+	        <td class="mono">${escapeHtml(String(g.actTime || "—"))}</td>
+	        <td>${escapeHtml(String(g.status || "—"))}</td>
+	        <td class="mono">${escapeHtml(String(g.sku || ""))}</td>
+	        <td class="mono">${escapeHtml(String(g.barcode || ""))}</td>
+	        <td>${escapeHtml(String(g.name || ""))}</td>
+	        <td>${escapeHtml(String(g.spec || ""))}</td>
+	        <td>${escapeHtml(String(g.unit || ""))}</td>
+	        <td>${escapeHtml(String(g.category || ""))}</td>
+	        <td>${escapeHtml(String(g.brand || ""))}</td>
+	        <td class="mono">${escapeHtml(String(g.price || "—"))}</td>
+	        <td class="mono">${escapeHtml(String(g.promoPrice || "—"))}</td>
+	        <td class="mono">${escapeHtml(String(g.deductRate || "—"))}</td>
+	        <td class="mono">${escapeHtml(String(g.memberPrice || "—"))}</td>
+	        <td class="mono">${escapeHtml(String(g.memberPromoPrice || "—"))}</td>
+	        <td class="mono">${escapeHtml(String(g.memberDiscount || "—"))}</td>
+	        <td>${escapeHtml(String(g.participatingStores || "—"))}</td>
+	        <td>${escapeHtml(String(g.promoInfo || "—"))}</td>
       </tr>
     `).join("");
     const wrap = document.getElementById("campSelectWrap");
@@ -3637,6 +3663,22 @@ function openCampaignGoodsSelectModal({ title, subtitle, checkboxName, onPicked,
         <div class="divider"></div>
         ` : ""}
         <div class="form__row">
+	          <div class="field">
+	            <div class="field__label">活动编码</div>
+	            <input class="input" id="campGoodsSelActNo" placeholder="活动编码" value="${escapeHtml(actNoEl ? actNoEl.value : "")}" />
+	          </div>
+	          <div class="field">
+	            <div class="field__label">活动主题</div>
+	            <input class="input" id="campGoodsSelActName" placeholder="活动主题" value="${escapeHtml(actNameEl ? actNameEl.value : "")}" />
+	          </div>
+	          <div class="field">
+	            <div class="field__label">模版名称</div>
+	            <input class="input" id="campGoodsSelTplName" placeholder="模版名称" value="${escapeHtml(tplNameEl ? tplNameEl.value : "")}" />
+	          </div>
+	          <div class="field">
+	            <div class="field__label">模版类型</div>
+	            <input class="input" id="campGoodsSelTplType" placeholder="模版类型" value="${escapeHtml(tplTypeEl ? tplTypeEl.value : "")}" />
+	          </div>
           <div class="field">
             <div class="field__label">商品</div>
             <input class="input" id="campGoodsSelGoods" placeholder="按编码、条码、名称、规格搜索" value="${escapeHtml(goodsEl ? goodsEl.value : "")}" />
@@ -10214,7 +10256,7 @@ function renderPromoGoodsQueuePage({ listTitle, statusText, excludeTerminatedGoo
 
   const tablePack = (() => {
     if (dim === "商品") {
-      const headers = ["序号", "活动编码", "活动主题", "模版名称", "模版类型", "活动时间", "状态", "编码", "条码", "名称", "规格", "单位", "类别", "品牌", "售价", "促销价", "促销扣率", "会员价", "会员促销价", "会员折扣", "参与门店", "促销信息"];
+      const headers = ["序号", "活动编码", "活动主题", "模版名称", "模版类型", "活动时间", "状态", "商品编码", "商品条码", "名称", "规格", "单位", "类别", "品牌", "售价", "促销价", "促销扣率", "会员价", "会员促销价", "会员折扣", "参与门店", "促销信息"];
       const rowsHtml = list.map((r, idx) => `
         <tr data-row="pgt" data-id="${escapeHtml(r.key)}">
           <td>${idx + 1}</td>
@@ -32231,7 +32273,19 @@ function handleAction(r, act, btn) {
       openCampSelectModal({
         title: "选择类别",
         items: cats,
-        columns: [{ key: "catCode", label: "类别编码" }, { key: "catName", label: "类别名称" }],
+        columns: [
+          { key: "catCode", label: "类别编码" },
+          { key: "catName", label: "类别名称" },
+          { key: "templateName", label: "模版名称" },
+          { key: "templateType", label: "模版类型" },
+          { key: "actTime", label: "活动时间" },
+          { key: "status", label: "状态" },
+          { key: "promoDiscount", label: "促销扣率" },
+          { key: "discount", label: "折扣" },
+          { key: "memberDiscount", label: "会员折扣" },
+          { key: "participatingStores", label: "参与门店" },
+          { key: "promoInfo", label: "促销信息" }
+        ],
         searchKeys: ["catCode", "catName"],
         checkboxName: "ptoPickCat",
         uniqueKey: "catCode",
@@ -32240,11 +32294,17 @@ function handleAction(r, act, btn) {
           draft.catRows = (sel || []).map((c) => ({
             catCode: c.catCode || "",
             catName: c.catName || "",
-            promoDiscount: "",
-            memberDiscount: "",
+            templateName: c.templateName || "",
+            templateType: c.templateType || "",
+            actTime: c.actTime || "",
+            status: c.status || "",
+            promoDiscount: c.promoDiscount || "",
+            discount: c.discount || "",
+            memberDiscount: c.memberDiscount || "",
+            participatingStores: c.participatingStores || "",
+            promoInfo: c.promoInfo || "",
             orderLimit: "",
             memberLimit: "",
-            promoInfo: "",
             participateCat: "",
             stores: "",
             actNo: "",
@@ -32291,7 +32351,20 @@ function handleAction(r, act, btn) {
       openCampSelectModal({
         title: "选择品牌",
         items: AppState.data.gmBrands || [],
-        columns: [{ key: "brandCode", label: "品牌编码" }, { key: "brandName", label: "品牌名称" }, { key: "brandEn", label: "品牌英文名" }],
+        columns: [
+          { key: "brandCode", label: "品牌编码" },
+          { key: "brandName", label: "品牌名称" },
+          { key: "brandEn", label: "品牌英文名" },
+          { key: "templateName", label: "模版名称" },
+          { key: "templateType", label: "模版类型" },
+          { key: "actTime", label: "活动时间" },
+          { key: "status", label: "状态" },
+          { key: "promoDiscount", label: "促销扣率" },
+          { key: "discount", label: "折扣" },
+          { key: "memberDiscount", label: "会员折扣" },
+          { key: "participatingStores", label: "参与门店" },
+          { key: "promoInfo", label: "促销信息" }
+        ],
         searchKeys: ["brandCode", "brandName"],
         checkboxName: "ptoPickBrand",
         uniqueKey: "brandCode",
@@ -32300,11 +32373,18 @@ function handleAction(r, act, btn) {
           draft.brandRows = (sel || []).map((b) => ({
             brandCode: b.brandCode || "",
             brandName: b.brandName || "",
-            promoDiscount: "",
-            memberDiscount: "",
+            brandEn: b.brandEn || "",
+            templateName: b.templateName || "",
+            templateType: b.templateType || "",
+            actTime: b.actTime || "",
+            status: b.status || "",
+            promoDiscount: b.promoDiscount || "",
+            discount: b.discount || "",
+            memberDiscount: b.memberDiscount || "",
+            participatingStores: b.participatingStores || "",
+            promoInfo: b.promoInfo || "",
             orderLimit: "",
             memberLimit: "",
-            promoInfo: "",
             stores: "",
             actNo: "",
             actName: "",
