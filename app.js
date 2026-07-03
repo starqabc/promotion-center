@@ -1631,6 +1631,44 @@ const AppState = {
         }
       },
       {
+        id: "T-1010-1",
+        templateNo: "1010-1",
+        name: "组合价",
+        templateType: "直降",
+        status: "有效",
+        creator: "manle - m...",
+        createAt: "2026-05-16 10:02:08",
+        modifier: "manle - m...",
+        modifyAt: "2026-05-16 12:24:33",
+        updatedAt: "2026-05-16 12:24",
+        config: {
+          basic: {
+            templateNo: "1010-1",
+            status: "有效",
+            name: "组合价",
+            type: "直降",
+            desc: "组合价促销（原型演示）",
+            time: { startEnabled: true, endEnabled: true, enableCycle: false, weekdays: [], enableTimeRange: false, timeRanges: "" },
+            object: {
+              channelRequired: true,
+              channelOptions: ["线下"],
+              storeRequired: true,
+              storeOptions: ["门店"],
+              userRequired: true,
+              userOptions: ["全部"],
+              singleItem: true,
+              multiItem: false,
+              goodsCats: [{ major: "日百", sub: "纺织" }]
+            },
+            other: { enableRefundRule: false, refundOptions: [], enableCostSharing: false, costShareTypes: [], costShareRatio: "", enablePayMethods: false, payMethods: [] }
+          },
+          rule: { promoType: "直降" },
+          conditions: {},
+          rewards: {},
+          display: {}
+        }
+      },
+      {
         id: "T-1010",
         templateNo: "1010",
         name: "一口价",
@@ -5019,6 +5057,8 @@ function campaignNormalizePromoType(promoType) {
   if (pt === "满数量以上特价") return "N件特价";
   if (pt === "满金额折扣") return "购满折扣";
   if (pt === "倍数折扣") return "N件折扣";
+  if (pt === "组合特价") return "一口价";
+  if (pt === "一口价" || pt === "组合价") return "组合价";
   return pt;
 }
 
@@ -5058,6 +5098,7 @@ function campaignNavItemLabel(pt) {
   if (s === "满金额换购") return "换购";
   if (s === "满金额赠券") return "满赠券";
   if (s === "组合特价") return "一口价";
+  if (s === "组合价") return "组合价";
   return campaignDisplayPromoType(s);
 }
 
@@ -5082,6 +5123,9 @@ function campaignReduceAllowExcludeTabs(promoType) {
 function campaignPromoTypeMatchesTemplate(templatePromoType, targetPromoType) {
   const tplType = String(templatePromoType || "").trim();
   const targetType = String(targetPromoType || "").trim();
+  if (targetType === "组合价") {
+    return tplType.includes("一口价") || tplType.includes("组合价");
+  }
   if (campaignIsQtyGiftSiblingPromoType(targetType)) {
     return tplType.includes("满数量赠") && !tplType.includes("券");
   }
@@ -5161,7 +5205,7 @@ function campaignIsMultipleDiscountTemplate(tpl) {
 function campaignIsComboSpecialTemplate(tpl, draft = null) {
   const tplName = String((tpl && tpl.name) || "");
   const draftName = String((draft && (draft.templateName || draft.activityType || draft.promoType)) || "");
-  return tplName.includes("组合特价") || draftName.includes("组合特价");
+  return tplName.includes("组合特价") || draftName.includes("组合特价") || tplName.includes("组合价") || draftName.includes("组合价") || tplName.includes("一口价") || draftName.includes("一口价");
 }
 
 function campaignScopeUserDisplayValue(v) {
@@ -18835,17 +18879,21 @@ function comboCampaignGoodsPanelHtml(draft = {}, readonly = false) {
       ${comboCampaignSectionHtml("条件范围", `
         <div class="combo-goods-condition-row">
           <div class="field">
-            <div class="field__label"><span class="req">*</span>购买类型</div>
-            <select class="select" ${readonly ? "disabled" : 'data-cw="goodsScope" data-field="purchaseType"'}>
-              <option value="单品" disabled>单品</option>
-              <option value="组合" ${purchaseType === "组合" ? "selected" : ""}>组合</option>
-              <option value="全场" ${purchaseType === "全场" ? "selected" : ""}>全场</option>
+            <div class="field__label"><span class="req">*</span>补差方式</div>
+            <select class="select" ${readonly ? "disabled" : 'data-cw="goodsScope" data-field="supplySubsidyMethod"'}>
+              ${["固定补差", "倒扣补差", "费用承担"].map((x) => `<option value="${x}" ${String(gs.supplySubsidyMethod || "固定补差") === x ? "selected" : ""}>${x}</option>`).join("")}
             </select>
           </div>
           <div class="field">
-            <div class="field__label"><span class="req">*</span>组合方式</div>
-            <select class="select" ${readonly ? "disabled" : 'data-cw="goodsScope" data-field="comboMode"'}>
-              ${["固定组合", "任选组合"].map((x) => `<option value="${x}" ${String(gs.comboMode || "固定组合") === x ? "selected" : ""}>${x}</option>`).join("")}
+            <div class="field__label"><span class="req">*</span>优惠分摊方式</div>
+            <select class="select" ${readonly ? "disabled" : 'data-cw="goodsScope" data-field="discountShareMethod"'}>
+              ${["按金额", "按数量", "按比例"].map((x) => `<option value="${x}" ${String(gs.discountShareMethod || "按金额") === x ? "selected" : ""}>${x}</option>`).join("")}
+            </select>
+          </div>
+          <div class="field">
+            <div class="field__label"><span class="req">*</span>承担方式</div>
+            <select class="select" ${readonly ? "disabled" : 'data-cw="goodsScope" data-field="burdenMethod"'}>
+              ${["供应商承担", "采购承担", "双方承担"].map((x) => `<option value="${x}" ${String(gs.burdenMethod || "供应商承担") === x ? "selected" : ""}>${x}</option>`).join("")}
             </select>
           </div>
           <div class="field">
@@ -19041,7 +19089,7 @@ function comboCampaignBasicPanelHtml({
         <input class="input" ${readonly ? "disabled" : 'data-cw="root" data-field="activitySubject"'} value="${escapeHtml(d.activitySubject || "")}" placeholder="请输入活动名称" />
       </div>
     </div>
-    <div class="combo-camp-form__row combo-camp-form__row--4">
+    <div class="combo-camp-form__row combo-camp-form__row--5">
       <div class="field">
         <div class="field__label">促销模版</div>
         <input class="input" value="${escapeHtml(comboDisplayName)}" disabled />
@@ -19079,16 +19127,16 @@ function comboCampaignBasicPanelHtml({
     </div>
   `;
   const cycleHtml = `
-    <div class="field">
-      <div class="field__label">${readonly ? "" : '<span class="req">*</span>'}活动时间</div>
-      <div class="combo-camp-datetime">
-        <input class="combo-camp-datetime__input" ${readonly ? "disabled" : 'data-cw="root" data-field="startAt"'} type="datetime-local" value="${escapeHtml(startValue)}" placeholder="请选择活动开始时间" />
-        <span class="combo-camp-datetime__split">至</span>
-        <input class="combo-camp-datetime__input" ${readonly ? "disabled" : 'data-cw="root" data-field="endAt"'} type="datetime-local" value="${escapeHtml(endValue)}" placeholder="请选择活动结束时间" />
-        <span class="combo-camp-datetime__icon">日</span>
+    <div class="combo-camp-form__row combo-camp-form__row--3">
+      <div class="field">
+        <div class="field__label">${readonly ? "" : '<span class="req">*</span>'}活动时间</div>
+        <div class="combo-camp-datetime">
+          <input class="combo-camp-datetime__input" ${readonly ? "disabled" : 'data-cw="root" data-field="startAt"'} type="datetime-local" value="${escapeHtml(startValue)}" placeholder="请选择活动开始时间" />
+          <span class="combo-camp-datetime__split">至</span>
+          <input class="combo-camp-datetime__input" ${readonly ? "disabled" : 'data-cw="root" data-field="endAt"'} type="datetime-local" value="${escapeHtml(endValue)}" placeholder="请选择活动结束时间" />
+          <span class="combo-camp-datetime__icon">日</span>
+        </div>
       </div>
-    </div>
-    <div class="combo-camp-form__row combo-camp-form__row--1">
       <div class="field">
         <div class="field__label">月</div>
         <div class="combo-camp-picker">
@@ -19096,8 +19144,6 @@ function comboCampaignBasicPanelHtml({
           <span class="combo-camp-picker__icon">日</span>
         </div>
       </div>
-    </div>
-    <div class="combo-camp-form__row combo-camp-form__row--1">
       <div class="field">
         <div class="field__label">日</div>
         <div class="combo-camp-picker">
@@ -19122,7 +19168,7 @@ function comboCampaignBasicPanelHtml({
   const curTag = Array.isArray(d.scope.memberTags) && d.scope.memberTags[0] ? String(d.scope.memberTags[0].code || "") : "";
   const scopeHtml = readonly
     ? `
-        <div class="combo-camp-form__row combo-camp-form__row--scope-2">
+        <div class="combo-camp-form__row combo-camp-form__row--scope-4">
           <div class="field">
             <div class="field__label">渠道范围</div>
             <input class="input" value="${escapeHtml(String(d.scope.channel || "全渠道"))}" disabled />
@@ -19131,24 +19177,18 @@ function comboCampaignBasicPanelHtml({
             <div class="field__label">用户范围</div>
             <input class="input" value="${escapeHtml(userScopeDisplay)}" disabled />
           </div>
+          <div class="field">
+            <div class="field__label">会员等级</div>
+            <input class="input" value="${escapeHtml((d.scope.memberGrades && d.scope.memberGrades[0] && (d.scope.memberGrades[0].name || d.scope.memberGrades[0].code)) || "—")}" disabled />
+          </div>
+          <div class="field">
+            <div class="field__label">会员标签</div>
+            <input class="input" value="${escapeHtml((d.scope.memberTags && d.scope.memberTags[0] && (d.scope.memberTags[0].name || d.scope.memberTags[0].code)) || "—")}" disabled />
+          </div>
         </div>
-        ${showMemberExtra ? `
-          <div class="combo-camp-form__row combo-camp-form__row--scope-1">
-            <div class="field">
-              <div class="field__label">会员等级</div>
-              <input class="input" value="${escapeHtml((d.scope.memberGrades && d.scope.memberGrades[0] && (d.scope.memberGrades[0].name || d.scope.memberGrades[0].code)) || "—")}" disabled />
-            </div>
-          </div>
-          <div class="combo-camp-form__row combo-camp-form__row--scope-1">
-            <div class="field">
-              <div class="field__label">会员标签</div>
-              <input class="input" value="${escapeHtml((d.scope.memberTags && d.scope.memberTags[0] && (d.scope.memberTags[0].name || d.scope.memberTags[0].code)) || "—")}" disabled />
-            </div>
-          </div>
-        ` : ""}
       `
     : `
-        <div class="combo-camp-form__row combo-camp-form__row--scope-2">
+        <div class="combo-camp-form__row combo-camp-form__row--scope-4">
           <div class="field">
             <div class="field__label">渠道范围</div>
             <select class="select" data-cw="scope" data-field="channel">
@@ -19161,27 +19201,21 @@ function comboCampaignBasicPanelHtml({
               ${["全部", "会员"].map((x) => `<option ${userScopeDisplay === x ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}
             </select>
           </div>
+          <div class="field">
+            <div class="field__label">会员等级</div>
+            <select class="select" data-cw="scope" data-field="memberGradeCode">
+              <option value="">请选择</option>
+              ${gradeList.map((x) => `<option value="${escapeHtml(x.code)}" ${curGrade === String(x.code) ? "selected" : ""}>${escapeHtml(`${x.code} ${x.name}`)}</option>`).join("")}
+            </select>
+          </div>
+          <div class="field">
+            <div class="field__label">会员标签</div>
+            <select class="select" data-cw="scope" data-field="memberTagCode">
+              <option value="">请选择</option>
+              ${tagList.map((x) => `<option value="${escapeHtml(x.code)}" ${curTag === String(x.code) ? "selected" : ""}>${escapeHtml(`${x.code} ${x.name}`)}</option>`).join("")}
+            </select>
+          </div>
         </div>
-        ${showMemberExtra ? `
-          <div class="combo-camp-form__row combo-camp-form__row--scope-1">
-            <div class="field">
-              <div class="field__label">会员等级</div>
-              <select class="select" data-cw="scope" data-field="memberGradeCode">
-                <option value="">请选择</option>
-                ${gradeList.map((x) => `<option value="${escapeHtml(x.code)}" ${curGrade === String(x.code) ? "selected" : ""}>${escapeHtml(`${x.code} ${x.name}`)}</option>`).join("")}
-              </select>
-            </div>
-          </div>
-          <div class="combo-camp-form__row combo-camp-form__row--scope-1">
-            <div class="field">
-              <div class="field__label">会员标签</div>
-              <select class="select" data-cw="scope" data-field="memberTagCode">
-                <option value="">请选择</option>
-                ${tagList.map((x) => `<option value="${escapeHtml(x.code)}" ${curTag === String(x.code) ? "selected" : ""}>${escapeHtml(`${x.code} ${x.name}`)}</option>`).join("")}
-              </select>
-            </div>
-          </div>
-        ` : ""}
       `;
 
   const panelHtml = `
@@ -19464,7 +19498,19 @@ function renderCampaignWizardPage(mode) {
   const campMainTabBarHtml = campMainTabs.map(x => `<button class="tabbtn ${x.k === campMainTab ? "is-active" : ""}" type="button" data-act="campWizMainTab" data-id="${escapeHtml(x.k)}">${escapeHtml(x.t)}</button>`).join("");
   const campStepActionsHtml = campaignWizardStepActionsHtml(campMainTab, campMainTabs, mode);
   const tplNameForTitle = String((tplSelected && tplSelected.name) || d.templateName || "").trim();
-  const titleName = isComboSpecial ? campaignComboDisplayName(tplNameForTitle) : (tplNameForTitle || "促销活动");
+  const rawPromoType = String(d.promoType || "");
+  const normPromoType = campaignNormalizePromoType(rawPromoType);
+  const isComboType = rawPromoType === "组合特价" || rawPromoType === "组合价" || normPromoType === "组合价";
+  let titleName;
+  if (isComboSpecial || isComboType) {
+    const comboName = tplNameForTitle || rawPromoType || "";
+    titleName = campaignComboDisplayName(comboName);
+    if ((titleName === "组合价" || titleName === "组合特价") && !tplNameForTitle) {
+      titleName = rawPromoType === "组合特价" ? "一口价" : "组合价";
+    }
+  } else {
+    titleName = tplNameForTitle || "促销活动";
+  }
   const titleText = isManZeng
     ? `买赠促销-${mode === "edit" ? "编辑" : "新增"}`
     : `${mode === "edit" ? "编辑" : "创建"}${titleName}`;

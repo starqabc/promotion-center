@@ -1725,7 +1725,10 @@ tbody tr:last-child td{border-bottom:none}
 }
 .combo-camp-form__row--1{grid-template-columns:minmax(0, 420px)}
 .combo-camp-form__row--2{grid-template-columns:240px minmax(0, 1fr)}
+.combo-camp-form__row--3{grid-template-columns:280px 180px 180px}
 .combo-camp-form__row--4{grid-template-columns:240px 180px 180px minmax(280px, 1fr)}
+.combo-camp-form__row--5{grid-template-columns:160px 140px 140px 140px minmax(200px, 1fr)}
+.combo-camp-form__row--scope-4{grid-template-columns:160px 140px 200px 200px}
 .combo-camp-form__row--scope-2{
   grid-template-columns:240px 240px;
   gap:16px 110px;
