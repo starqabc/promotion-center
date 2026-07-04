@@ -206,7 +206,9 @@ const AppState = {
       voucherThemes: { q: "", type: "全部", status: "全部" },
       sysDict: { qType: "", qKey: "", status: "全部" },
       sysParams: { qKey: "", qName: "", status: "全部" },
-      sysApproval: { qId: "", qName: "", status: "全部", publishStatus: "全部" }
+      sysMutex: { subTab: "total" },
+      sysApproval: { qId: "", qName: "", status: "全部", publishStatus: "全部" },
+      dashboard: { scheduleYear: new Date().getFullYear(), scheduleName: "中秋国庆双节大促", compareDate: "", analysisScope: "报数商品" }
     },
     rpt: {
       analysis: { schedule: "全部6档", storeLevel: "门店层级", store: "所有门店", view: "商品·顾客·效率", unit: "万元 / 人次" },
@@ -236,7 +238,7 @@ const AppState = {
     "/assortment": { title: "档期商品", sub: "" },
     "/assortment-create": { title: "创建档期选品", sub: "选择实际档期与大类 · 选择商品/导入明细 · 提交审批" },
     "/assortment-summary": { title: "档期商品-商品明细", sub: "" },
-    "/templates": { title: "促销模板", sub: "" },
+    "/templates": { title: "", sub: "" },
     "/templates-create": { title: "创建促销模板", sub: "" },
     "/templates-edit": { title: "编辑促销模板", sub: "" },
     "/promo-goods-priority": { title: "促销范围优先级", sub: "按促销范围维护活动中商品优先级顺序（原型演示）" },
@@ -248,7 +250,7 @@ const AppState = {
     "/campaigns": { title: "促销活动", sub: "总活动列表 · 审核生效 · 终止/延期" },
     "/campaigns-discount": { title: "商品折扣（案例）", sub: "案例数据：商品折扣（已合并到总活动列表）" },
     "/campaigns-create": { title: "新增促销活动", sub: "按步骤配置：基础信息/用户范围/门店范围/商品范围/承担规则" },
-    "/campaigns-edit": { title: "修改促销活动", sub: "输入状态可修改；生效/作废不可修改" },
+    "/campaigns-edit": { title: "修改促销活动", sub: "草稿状态可修改；生效/作废不可修改" },
     "/promo-goods-terminate": { title: "生效促销列表", sub: "商品级维护：查看活动商品范围中的已生效促销列表（原型演示）" },
     "/promo-terminate-orders": { title: "促销终止单", sub: "终止单列表 · 查询 / 新增 / 查看（原型演示）" },
     "/promo-pending-goods": { title: "待生效促销队例", sub: "查询待生效的促销队例（原型演示）" },
@@ -275,13 +277,14 @@ const AppState = {
     "/sm-store-goods": { title: "门店商品信息", sub: "查询门店商品关联信息（原型演示）" },
     "/voucher-themes": { title: "优惠券主题", sub: "优惠券主题配置与投放口径（原型演示）" },
     "/voucher-themes-create": { title: "新增优惠券主题", sub: "按步骤配置：基本信息/参与对象/参与范围/计费规则" },
-    "/voucher-themes-edit": { title: "修改优惠券主题", sub: "输入状态可修改；生效/作废不可修改" },
+    "/voucher-themes-edit": { title: "修改优惠券主题", sub: "草稿状态可修改；生效/作废不可修改" },
     "/voucher-categories": { title: "优惠券分类", sub: "优惠券分类维护（原型演示）" },
     "/voucher-categories-create": { title: "新增优惠券分类", sub: "维护类别编码/类别名称/备注（原型演示）" },
     "/voucher-categories-edit": { title: "修改优惠券分类", sub: "维护类别名称/备注（原型演示）" },
     "/voucher-packs": { title: "券包管理", sub: "券包列表 · 新增/修改/复制/详情（原型演示）" },
     "/sys-dict": { title: "数据字典", sub: "系统枚举/码表（原型演示）" },
     "/sys-params": { title: "系统参数", sub: "系统开关/阈值/默认值（原型演示）" },
+    "/sys-mutex": { title: "互融互斥规则", sub: "促销活动互融/互斥规则配置（原型演示）" },
     "/sys-approval": { title: "审批配置", sub: "审批流程配置与发布应用（原型演示）" },
     "/sys-approval-edit": { title: "审批配置设计器", sub: "流程节点配置 · 分支结构 · 审批人规则（原型演示）" },
     "/rpt-analysis": { title: "促销分析", sub: "活动概览 · 品类/渠道/价格带/会员分析（原型演示）" },
@@ -651,7 +654,7 @@ const AppState = {
         catCode: "VCAT-001",
         catName: "平台券",
         remark: "线上发券主题",
-        status: "输入",
+        status: "草稿",
         creator: "manle - m...",
         createdAt: "2026-05-01 09:00:00",
         modifier: "manle - m...",
@@ -700,7 +703,7 @@ const AppState = {
       {
         packId: "VP-2026-0002",
         packName: "夏日换购券包",
-        status: "输入",
+        status: "草稿",
         packStartDate: "2026-07-01",
         packEndDate: "2026-07-31",
         packCycle: "周",
@@ -1794,7 +1797,7 @@ const AppState = {
         templateName: "时段折扣",
         activityType: "折扣",
         desc: "案例：早晚两个时段不同折扣",
-        status: "输入",
+        status: "草稿",
         startAt: "2026-06-06 00:00",
         endAt: "2026-06-18 23:59",
         cycle: ["周一", "周二", "周三", "周四", "周五"],
@@ -1823,7 +1826,7 @@ const AppState = {
         templateName: "倍数折扣",
         activityType: "折扣",
         desc: "案例：购买2件触发，第2件5折，按倍数生效",
-        status: "输入",
+        status: "草稿",
         startAt: "2026-06-06 00:00",
         endAt: "2026-06-18 23:59",
         cycle: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"],
@@ -1852,7 +1855,7 @@ const AppState = {
         templateName: "满金额折扣",
         activityType: "折扣",
         desc: "案例：满金额门槛折扣，支持阶梯折扣",
-        status: "输入",
+        status: "草稿",
         startAt: "2026-06-06 00:00",
         endAt: "2026-06-18 23:59",
         cycle: ["周五", "周六", "周日"],
@@ -1881,7 +1884,7 @@ const AppState = {
         templateName: "满数量折扣",
         activityType: "折扣",
         desc: "案例：满数量门槛折扣，支持阶梯折扣",
-        status: "输入",
+        status: "草稿",
         startAt: "2026-06-06 00:00",
         endAt: "2026-06-18 23:59",
         cycle: ["周一", "周二", "周三", "周四", "周五"],
@@ -1910,7 +1913,7 @@ const AppState = {
         templateName: "满金额减",
         activityType: "满减满赠",
         desc: "案例：满金额减现金，支持倍数/阶梯与循环",
-        status: "输入",
+        status: "草稿",
         startAt: "2026-06-06 00:00",
         endAt: "2026-06-18 23:59",
         cycle: ["周六", "周日"],
@@ -1939,7 +1942,7 @@ const AppState = {
         templateName: "满数量减",
         activityType: "满减满赠",
         desc: "案例：满数量减数量，支持倍数/阶梯与循环",
-        status: "输入",
+        status: "草稿",
         startAt: "2026-06-06 00:00",
         endAt: "2026-06-18 23:59",
         cycle: ["周一", "周二", "周三", "周四", "周五"],
@@ -1968,7 +1971,7 @@ const AppState = {
         templateName: "满金额赠",
         activityType: "满减满赠",
         desc: "案例：单组买赠（按商品），阶梯满赠，展示赠品信息",
-        status: "输入",
+        status: "草稿",
         startAt: "2026-06-06 00:00",
         endAt: "2026-06-18 23:59",
         cycle: ["周六", "周日"],
@@ -2035,7 +2038,7 @@ const AppState = {
         templateName: "满数量赠",
         activityType: "满减满赠",
         desc: "案例：多组购买信息 + 赠品信息，展示购买数量口径",
-        status: "输入",
+        status: "草稿",
         startAt: "2026-06-06 00:00",
         endAt: "2026-06-18 23:59",
         cycle: ["周一", "周二", "周三", "周四", "周五"],
@@ -2201,7 +2204,7 @@ const AppState = {
         templateName: "满金额换购",
         activityType: "满金额换购",
         desc: "满99元换购保温杯/水杯",
-        status: "输入",
+        status: "草稿",
         startAt: "2026-06-10 00:00",
         endAt: "2026-06-20 23:59",
         cycle: ["周一", "周二", "周三", "周四", "周五"],
@@ -2355,7 +2358,7 @@ const AppState = {
         templateName: "满数量换购",
         activityType: "满数量换购",
         desc: "买5件零食加价换购零食大礼包",
-        status: "输入",
+        status: "草稿",
         startAt: "2026-06-10 00:00",
         endAt: "2026-06-20 23:59",
         cycle: ["周一", "周二", "周三", "周四", "周五"],
@@ -2456,7 +2459,7 @@ const AppState = {
         templateName: "满金额赠券",
         activityType: "满金额赠券",
         desc: "满金额后赠送优惠券，阶梯方式",
-        status: "输入",
+        status: "草稿",
         startAt: "2026-06-06 00:00",
         endAt: "2026-06-18 23:59",
         cycle: ["周六", "周日"],
@@ -2557,7 +2560,7 @@ const AppState = {
         templateName: "满数量赠券",
         activityType: "满数量赠券",
         desc: "购买指定数量后赠送优惠券，阶梯方式",
-        status: "输入",
+        status: "草稿",
         startAt: "2026-06-10 00:00",
         endAt: "2026-06-20 23:59",
         cycle: ["周一", "周二", "周三", "周四", "周五"],
@@ -2661,7 +2664,7 @@ const AppState = {
         templateName: "单品直降",
         activityType: "直降",
         desc: "指定饮料单品直降促销",
-        status: "输入",
+        status: "草稿",
         startAt: "2026-06-10 00:00",
         endAt: "2026-06-20 23:59",
         cycle: ["周一", "周二", "周三", "周四", "周五"],
@@ -2746,7 +2749,7 @@ const AppState = {
         templateName: "组合特价",
         activityType: "直降",
         desc: "指定零食组合购买享特价",
-        status: "输入",
+        status: "草稿",
         startAt: "2026-06-10 00:00",
         endAt: "2026-06-20 23:59",
         cycle: ["周一", "周二", "周三", "周四", "周五"],
@@ -2832,7 +2835,7 @@ const AppState = {
         templateName: "满数量以上特价",
         activityType: "直降",
         desc: "购买达到指定数量后按特价售卖",
-        status: "输入",
+        status: "草稿",
         startAt: "2026-06-10 00:00",
         endAt: "2026-06-25 23:59",
         cycle: ["周一", "周二", "周三", "周四", "周五"],
@@ -2917,7 +2920,7 @@ const AppState = {
         templateName: "最低免单",
         activityType: "直降",
         desc: "购买指定数量零食，最低价商品免单",
-        status: "输入",
+        status: "草稿",
         startAt: "2026-06-10 00:00",
         endAt: "2026-06-25 23:59",
         cycle: ["周一", "周二", "周三", "周四", "周五"],
@@ -3005,7 +3008,7 @@ const AppState = {
         templateName: "一口价",
         activityType: "直降",
         desc: "指定日百纺织商品统一9.9元一口价",
-        status: "输入",
+        status: "草稿",
         startAt: "2026-06-10 00:00",
         endAt: "2026-06-25 23:59",
         cycle: ["周一", "周二", "周三", "周四", "周五"],
@@ -3092,14 +3095,14 @@ const AppState = {
     ],
     rptData: {
       voucher: [
-        { actNo: "ACT-2026-0080", actName: "满金额赠券（满199赠优惠券）", promoType: "满金额赠券", status: "输入", voucherCode: "V-2001", voucherName: "满50减10现金券", voucherType: "现金券", qty: 2, threshold: 199, giftType: "订单", startAt: "2026-06-06", endAt: "2026-06-18" },
-        { actNo: "ACT-2026-0080", actName: "满金额赠券（满199赠优惠券）", promoType: "满金额赠券", status: "输入", voucherCode: "V-2003", voucherName: "9折折扣券", voucherType: "折扣券", qty: 1, threshold: 199, giftType: "订单", startAt: "2026-06-06", endAt: "2026-06-18" },
-        { actNo: "ACT-2026-0080", actName: "满金额赠券（满199赠优惠券）", promoType: "满金额赠券", status: "输入", voucherCode: "V-2002", voucherName: "满100减25现金券", voucherType: "现金券", qty: 1, threshold: 399, giftType: "订单", startAt: "2026-06-06", endAt: "2026-06-18" },
+        { actNo: "ACT-2026-0080", actName: "满金额赠券（满199赠优惠券）", promoType: "满金额赠券", status: "草稿", voucherCode: "V-2001", voucherName: "满50减10现金券", voucherType: "现金券", qty: 2, threshold: 199, giftType: "订单", startAt: "2026-06-06", endAt: "2026-06-18" },
+        { actNo: "ACT-2026-0080", actName: "满金额赠券（满199赠优惠券）", promoType: "满金额赠券", status: "草稿", voucherCode: "V-2003", voucherName: "9折折扣券", voucherType: "折扣券", qty: 1, threshold: 199, giftType: "订单", startAt: "2026-06-06", endAt: "2026-06-18" },
+        { actNo: "ACT-2026-0080", actName: "满金额赠券（满199赠优惠券）", promoType: "满金额赠券", status: "草稿", voucherCode: "V-2002", voucherName: "满100减25现金券", voucherType: "现金券", qty: 1, threshold: 399, giftType: "订单", startAt: "2026-06-06", endAt: "2026-06-18" },
         { actNo: "ACT-2026-0081", actName: "618全场满赠优惠券", promoType: "满金额赠券", status: "生效", voucherCode: "V-3001", voucherName: "满30减5现金券", voucherType: "现金券", qty: 1, threshold: 99, giftType: "订单", startAt: "2026-06-06", endAt: "2026-06-18" },
         { actNo: "ACT-2026-0081", actName: "618全场满赠优惠券", promoType: "满金额赠券", status: "生效", voucherCode: "V-3002", voucherName: "满80减15现金券", voucherType: "现金券", qty: 2, threshold: 199, giftType: "订单", startAt: "2026-06-06", endAt: "2026-06-18" },
         { actNo: "ACT-2026-0081", actName: "618全场满赠优惠券", promoType: "满金额赠券", status: "生效", voucherCode: "V-3004", voucherName: "满150减40现金券", voucherType: "现金券", qty: 1, threshold: 399, giftType: "订单", startAt: "2026-06-06", endAt: "2026-06-18" },
-        { actNo: "ACT-2026-0090", actName: "满数量赠券（买3赠优惠券）", promoType: "满数量赠券", status: "输入", voucherCode: "V-4001", voucherName: "满30减5现金券", voucherType: "现金券", qty: 1, threshold: 3, giftType: "订单", startAt: "2026-06-10", endAt: "2026-06-20" },
-        { actNo: "ACT-2026-0090", actName: "满数量赠券（买3赠优惠券）", promoType: "满数量赠券", status: "输入", voucherCode: "V-4002", voucherName: "满80减15现金券", voucherType: "现金券", qty: 2, threshold: 5, giftType: "订单", startAt: "2026-06-10", endAt: "2026-06-20" },
+        { actNo: "ACT-2026-0090", actName: "满数量赠券（买3赠优惠券）", promoType: "满数量赠券", status: "草稿", voucherCode: "V-4001", voucherName: "满30减5现金券", voucherType: "现金券", qty: 1, threshold: 3, giftType: "订单", startAt: "2026-06-10", endAt: "2026-06-20" },
+        { actNo: "ACT-2026-0090", actName: "满数量赠券（买3赠优惠券）", promoType: "满数量赠券", status: "草稿", voucherCode: "V-4002", voucherName: "满80减15现金券", voucherType: "现金券", qty: 2, threshold: 5, giftType: "订单", startAt: "2026-06-10", endAt: "2026-06-20" },
         { actNo: "ACT-2026-0091", actName: "618饮品满数量赠优惠券", promoType: "满数量赠券", status: "生效", voucherCode: "V-5001", voucherName: "满20减3现金券", voucherType: "现金券", qty: 1, threshold: 2, giftType: "订单", startAt: "2026-06-06", endAt: "2026-06-18" },
         { actNo: "ACT-2026-0091", actName: "618饮品满数量赠优惠券", promoType: "满数量赠券", status: "生效", voucherCode: "V-5002", voucherName: "满50减10现金券", voucherType: "现金券", qty: 2, threshold: 4, giftType: "订单", startAt: "2026-06-06", endAt: "2026-06-18" },
         { actNo: "ACT-2026-0091", actName: "618饮品满数量赠优惠券", promoType: "满数量赠券", status: "生效", voucherCode: "V-5004", voucherName: "满100减30现金券", voucherType: "现金券", qty: 1, threshold: 10, giftType: "订单", startAt: "2026-06-06", endAt: "2026-06-18" }
@@ -4156,6 +4159,161 @@ function openCampaignComboBrandSelectModal({ title, subtitle, checkboxName, onPi
   });
 }
 
+function openTerminateGoodsSelectModal({ title, subtitle, checkboxName, onPicked }) {
+  const allItems = campaignSelectableGoodsItems();
+  const cbName = checkboxName || "ptoPickGoods";
+  const fieldIds = ["ptoSelActNo", "ptoSelActName", "ptoSelTplName", "ptoSelTplType", "ptoSelActTime", "ptoSelCreatedAt", "ptoSelCreator", "ptoSelStore", "ptoSelGoods", "ptoSelCategory", "ptoSelCounter"];
+  const val = (id) => { const el = document.getElementById(id); return el ? el.value : ""; };
+  const renderList = () => {
+    const qActNo = val("ptoSelActNo").trim().toLowerCase();
+    const qActName = val("ptoSelActName").trim().toLowerCase();
+    const qTplName = val("ptoSelTplName").trim().toLowerCase();
+    const qTplType = val("ptoSelTplType").trim().toLowerCase();
+    const qActTime = val("ptoSelActTime").trim().toLowerCase();
+    const qCreatedAt = val("ptoSelCreatedAt").trim().toLowerCase();
+    const qCreator = val("ptoSelCreator").trim().toLowerCase();
+    const qStore = val("ptoSelStore").trim().toLowerCase();
+    const qGoods = val("ptoSelGoods").trim().toLowerCase();
+    const qCategory = val("ptoSelCategory").trim().toLowerCase();
+    const qCounter = val("ptoSelCounter").trim().toLowerCase();
+    const filtered = allItems.filter((g) => {
+      if (qActNo && !String(g.actNo || "").toLowerCase().includes(qActNo)) return false;
+      if (qActName && !String(g.actName || "").toLowerCase().includes(qActName)) return false;
+      if (qTplName && !String(g.templateName || "").toLowerCase().includes(qTplName)) return false;
+      if (qTplType && !String(g.templateType || "").toLowerCase().includes(qTplType)) return false;
+      if (qActTime && !String(g.actTime || "").toLowerCase().includes(qActTime)) return false;
+      if (qCreatedAt && !String(g.createdAt || g.createAt || "").toLowerCase().includes(qCreatedAt)) return false;
+      if (qCreator && !String(g.creator || g.createdBy || "").toLowerCase().includes(qCreator)) return false;
+      if (qStore && !String(g.participatingStores || g.storeName || "").toLowerCase().includes(qStore)) return false;
+      if (qGoods && ![g.sku, g.barcode, g.name, g.spec].some((v) => String(v || "").toLowerCase().includes(qGoods))) return false;
+      if (qCategory && !String(g.category || "").toLowerCase().includes(qCategory)) return false;
+      if (qCounter && !String(g.counter || "").toLowerCase().includes(qCounter)) return false;
+      return true;
+    });
+    const headers = ["序号", "活动编码", "活动名称", "模版名称", "模版类型", "活动时间", "状态", "商品编码", "商品条码", "名称", "规格", "单位", "类别", "品牌", "售价", "促销价", "促销折扣", "会员促销价", "会员折扣", "参与门店", "促销信息"];
+    const rows = filtered.map((g, i) => `
+      <tr>
+        <td><input type="checkbox" name="${escapeHtml(String(cbName))}" value="${escapeHtml(String(g.sku || ""))}" /></td>
+        <td>${i + 1}</td>
+        <td class="mono">${escapeHtml(String(g.actNo || "—"))}</td>
+        <td>${escapeHtml(String(g.actName || "—"))}</td>
+        <td>${escapeHtml(String(g.templateName || "—"))}</td>
+        <td>${escapeHtml(String(g.templateType || "—"))}</td>
+        <td class="mono">${escapeHtml(String(g.actTime || "—"))}</td>
+        <td>${escapeHtml(String(g.status || "—"))}</td>
+        <td class="mono">${escapeHtml(String(g.sku || ""))}</td>
+        <td class="mono">${escapeHtml(String(g.barcode || ""))}</td>
+        <td>${escapeHtml(String(g.name || ""))}</td>
+        <td>${escapeHtml(String(g.spec || ""))}</td>
+        <td>${escapeHtml(String(g.unit || ""))}</td>
+        <td>${escapeHtml(String(g.category || ""))}</td>
+        <td>${escapeHtml(String(g.brand || ""))}</td>
+        <td class="mono">${escapeHtml(String(g.price ?? "—"))}</td>
+        <td class="mono">${escapeHtml(String(g.promoPrice ?? "—"))}</td>
+        <td class="mono">${escapeHtml(String(g.deductRate ?? "—"))}</td>
+        <td class="mono">${escapeHtml(String(g.memberPromoPrice ?? "—"))}</td>
+        <td class="mono">${escapeHtml(String(g.memberDiscount ?? "—"))}</td>
+        <td>${escapeHtml(String(g.participatingStores || "—"))}</td>
+        <td>${escapeHtml(String(g.promoInfo || "—"))}</td>
+      </tr>
+    `).join("");
+    const wrap = document.getElementById("ptoSelectWrap");
+    if (!wrap) return;
+    wrap.innerHTML = `
+      <div class="form">
+        <div class="form__row">
+          <div class="field"><div class="field__label">活动编码</div><input class="input" id="ptoSelActNo" placeholder="活动编码" value="${escapeHtml(val("ptoSelActNo"))}" /></div>
+          <div class="field"><div class="field__label">活动名称</div><input class="input" id="ptoSelActName" placeholder="活动名称" value="${escapeHtml(val("ptoSelActName"))}" /></div>
+          <div class="field"><div class="field__label">模版名称</div><input class="input" id="ptoSelTplName" placeholder="模版名称" value="${escapeHtml(val("ptoSelTplName"))}" /></div>
+          <div class="field"><div class="field__label">模版类型</div>
+            <select class="select" id="ptoSelTplType">
+              <option value="">全部</option>
+              ${templateTypeOptions().map((x) => `<option value="${escapeHtml(x)}" ${val("ptoSelTplType") === x ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}
+            </select>
+          </div>
+        </div>
+        <div class="form__row">
+          <div class="field"><div class="field__label">活动时间</div><input class="input" id="ptoSelActTime" placeholder="活动时间" value="${escapeHtml(val("ptoSelActTime"))}" /></div>
+          <div class="field"><div class="field__label">创建时间</div><input class="input" id="ptoSelCreatedAt" placeholder="创建时间" value="${escapeHtml(val("ptoSelCreatedAt"))}" /></div>
+          <div class="field"><div class="field__label">创建人</div><input class="input" id="ptoSelCreator" placeholder="创建人" value="${escapeHtml(val("ptoSelCreator"))}" /></div>
+          <div class="field"><div class="field__label">门店名称</div><input class="input" id="ptoSelStore" placeholder="门店名称" value="${escapeHtml(val("ptoSelStore"))}" /></div>
+        </div>
+        <div class="form__row">
+          <div class="field"><div class="field__label">商品</div><input class="input" id="ptoSelGoods" placeholder="编码/条码/名称/规格" value="${escapeHtml(val("ptoSelGoods"))}" /></div>
+          <div class="field"><div class="field__label">类别</div><input class="input" id="ptoSelCategory" placeholder="类别" value="${escapeHtml(val("ptoSelCategory"))}" /></div>
+          <div class="field"><div class="field__label">柜组</div><input class="input" id="ptoSelCounter" placeholder="柜组" value="${escapeHtml(val("ptoSelCounter"))}" /></div>
+          <div class="field" style="min-width:180px;"><div class="field__label">操作</div><div class="toolbar__actions">
+            <button class="btn btn--primary" type="button" id="ptoSelQuery">查询</button>
+            <button class="btn" type="button" id="ptoSelReset">重置</button>
+          </div></div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      ${selectionModalTableHtml({
+        headerCheckboxId: "ptoSelAll",
+        checkboxName: cbName,
+        headers,
+        rowsHtml: rows,
+        emptyText: "暂无匹配数据",
+        colspan: headers.length + 1
+      })}
+      <div class="footerbar" style="margin-top:10px;">
+        <div class="pager__meta">共${filtered.length}条</div>
+        <div class="pager">
+          <button class="btn as-pagebtn is-active" type="button">1</button>
+          <button class="btn as-pagebtn" type="button">2</button>
+          <button class="btn as-pagebtn" type="button">3</button>
+          <span class="as-pagebtn as-pagebtn--split">...</span>
+          <button class="btn as-pagebtn" type="button">${Math.max(1, Math.ceil(filtered.length / 10))}</button>
+        </div>
+        <div class="as-jump">跳至 <input class="input" value="1" /> 页</div>
+      </div>
+    `;
+    fieldIds.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener("input", () => renderList());
+    });
+    const tplTypeEl = document.getElementById("ptoSelTplType");
+    if (tplTypeEl) tplTypeEl.addEventListener("change", () => renderList());
+    const qBtn = document.getElementById("ptoSelQuery");
+    if (qBtn) qBtn.addEventListener("click", () => renderList());
+    const rBtn = document.getElementById("ptoSelReset");
+    if (rBtn) {
+      rBtn.addEventListener("click", () => {
+        fieldIds.forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) el.value = "";
+        });
+        renderList();
+      });
+    }
+    const allEl = document.getElementById("ptoSelAll");
+    if (allEl) {
+      allEl.addEventListener("change", () => {
+        const checked = Boolean(allEl.checked);
+        Array.from(document.querySelectorAll(`input[name="${cbName}"]`)).forEach((x) => { x.checked = checked; });
+      });
+    }
+  };
+  openModal({
+    title: title || "选择商品",
+    subtitle: subtitle || "支持按活动/模版/商品/类别/柜组等查询（原型演示）",
+    primaryText: "保存",
+    secondaryText: "取消",
+    bodyHtml: '<div id="ptoSelectWrap"></div>',
+    size: "xl",
+    className: "modal--goods-picker-wide",
+    onOpen: renderList,
+    onPrimary: () => {
+      const picked = pickCheckedValues(cbName);
+      if (!picked.length) return toast("请先勾选数据");
+      const selectedItems = allItems.filter((g) => picked.includes(String(g.sku)));
+      if (onPicked) onPicked(selectedItems);
+      closeModal();
+    }
+  });
+}
+
 function campaignGiftSelectableItems() {
   return campaignSelectableGoodsItems().map((g) => ({ ...g, manufacturer: g.supplierName || "" }));
 }
@@ -4742,6 +4900,10 @@ function templateWizardRefreshVisibility() {
   setShow("rwVoucherRulePurchaseTypeBox", voucherRule && voucherRulePurchaseTypeEnable);
 
   const discountModeNodes = Array.from(document.querySelectorAll('input[name="rwDiscountModes"]'));
+  const isSpecialDiscountMode = promoType === "特价";
+  discountModeNodes.forEach((x) => { x.type = isSpecialDiscountMode ? "radio" : "checkbox"; });
+  const fullAmtSwitchOn = document.getElementById("tcFullAmt") ? document.getElementById("tcFullAmt").checked : false;
+  const disableSingleDiscount = isSpecialDiscountMode && fullAmtSwitchOn;
   setShow("rwDiscountModeSingle", spec.discountModes.includes("单品优惠"));
   setShow("rwDiscountModeCombo", spec.discountModes.includes("组合优惠"));
   setShow("rwDiscountModeWhole", spec.discountModes.includes("整单优惠"));
@@ -4760,9 +4922,16 @@ function templateWizardRefreshVisibility() {
         else if (singlePicked) singlePicked.checked = true;
       }
     }
+    const singleModeNode = discountModeNodes.find((x) => String(x.value || "") === "单品优惠");
+    if (singleModeNode) {
+      singleModeNode.disabled = disableSingleDiscount;
+      if (disableSingleDiscount) singleModeNode.checked = false;
+    }
     const picked = discountModeNodes.filter((x) => x.checked).map((x) => String(x.value || ""));
     if (!picked.length) {
-      const fallback = discountModeNodes.find((x) => String(x.value || "") === "单品优惠") || discountModeNodes[0];
+      const fallback = discountModeNodes.find((x) => !x.disabled && String(x.value || "") === "单品优惠")
+        || discountModeNodes.find((x) => !x.disabled)
+        || discountModeNodes[0];
       if (fallback) fallback.checked = true;
     }
   }
@@ -4771,6 +4940,7 @@ function templateWizardRefreshVisibility() {
   const isComboSelected = discountModes.includes("组合优惠");
   const minFreeEl = document.getElementById("rwDiscountMinFree");
   const allowMinFree = !!spec.discountMinFree;
+  setShow("rwDiscountMinFreeWrap", isComboSelected && allowMinFree);
   if (minFreeEl) {
     if (!allowMinFree) {
       minFreeEl.checked = false;
@@ -5190,7 +5360,7 @@ function badge(status) {
     "停用": "badge badge--muted",
     "启用": "badge badge--ok",
     "有效": "badge badge--ok",
-    "输入": "badge badge--muted",
+    "草稿": "badge badge--muted",
     "生效": "badge badge--ok",
     "延期": "badge badge--warn",
     "终止": "badge badge--danger",
@@ -5760,16 +5930,19 @@ function campaignWizardMaxStep() {
 
 function campaignNavTree() {
   return [
+    /* [隐藏-后续恢复时去掉注释] 特价促销分组
     {
       key: "special",
       label: "特价促销",
       items: ["商品直降", "N件特价"]
     },
+    */
     {
       key: "discount",
       label: "折扣促销",
-      items: ["商品折扣", "购满折扣", "时段折扣", "N件折扣", "组合特价", "组合价"]
+      items: [/* [隐藏-后续恢复] "商品折扣", "购满折扣", "时段折扣", "N件折扣", */ "组合特价", "组合价"]
     },
+    /* [隐藏-后续恢复时去掉注释] 满减满赠分组
     {
       key: "reduceGift",
       label: "满减满赠",
@@ -5780,6 +5953,7 @@ function campaignNavTree() {
       label: "满赠券促销",
       items: ["满金额赠券"]
     }
+    */
   ];
 }
 
@@ -5798,7 +5972,9 @@ function renderCampaignSubNav() {
   const ui = AppState.ui.nav || (AppState.ui.nav = { openSection: "campaign", openCampaigns: false, openCampaignsCat: "special", openTplPriority: false });
   const openKey = ui.openCampaignsCat || "special";
   const tree = campaignNavTree();
-  const scheduleNav = `<a class="nav__item" href="#/template-priority-schedule-import" data-route="/template-priority-schedule-import">档期智能促销</a>`;
+  // [隐藏-后续恢复时去掉注释] 档期智能促销
+  // const scheduleNav = `<a class="nav__item" href="#/template-priority-schedule-import" data-route="/template-priority-schedule-import">档期智能促销</a>`;
+  const scheduleNav = "";
   box.innerHTML = scheduleNav + tree
     .map((g) => {
       const open = g.key === openKey;
@@ -7846,6 +8022,7 @@ function renderTemplatesPage() {
     "模板类型",
     "模板状态",
     "审核状态",
+    "审核说明",
     "创建人",
     "创建时间",
     "修改人",
@@ -7866,7 +8043,6 @@ function renderTemplatesPage() {
 
     const ops = [
       canEdit ? `<a class="link" href="javascript:;" data-act="tplEdit" data-id="${escapeHtml(id)}">编辑</a>` : `<span class="cell-muted">编辑</span>`,
-      canSubmit ? `<a class="link" href="javascript:;" data-act="tplSubmitAudit" data-id="${escapeHtml(id)}">提交</a>` : `<span class="cell-muted">提交</span>`,
       canApprove ? `<a class="link" href="javascript:;" data-act="tplApprove" data-id="${escapeHtml(id)}">审核</a>` : `<span class="cell-muted">审核</span>`,
       `<a class="link" href="javascript:;" data-act="tplDetail" data-id="${escapeHtml(id)}">详情</a>`,
       canDisable ? `<a class="link" href="javascript:;" data-act="tplDisable" data-id="${escapeHtml(id)}">停用</a>` : `<span class="cell-muted">停用</span>`
@@ -7881,6 +8057,7 @@ function renderTemplatesPage() {
         <td>${escapeHtml(typeText)}</td>
         <td>${escapeHtml(String(t.status || "—"))}</td>
         <td>${escapeHtml(auditStatusText(t))}</td>
+        <td>${escapeHtml(t.auditRemark || "—")}</td>
         <td>${escapeHtml(t.creator || "—")}</td>
         <td class="mono">${escapeHtml(t.createAt || "—")}</td>
         <td>${escapeHtml(t.modifier || "—")}</td>
@@ -7953,10 +8130,9 @@ function renderTemplatesPage() {
 
             <div class="campaign-list-toolbar">
               <button class="btn tb-btn tb-btn--violet" type="button" data-act="tplCreate">创建模板</button>
+              <button class="btn tb-btn tb-btn--teal" type="button" data-act="tplImport">导入</button>
               <button class="btn tb-btn tb-btn--teal" type="button" data-act="tplExport">导出</button>
-              <button class="btn tb-btn tb-btn--cyan" type="button" data-act="tplPrint">打印</button>
-              <button class="btn tb-btn tb-btn--rose" type="button" data-act="tplBulkDelete">删除</button>
-              <button class="btn tb-btn tb-btn--amber" type="button" data-act="tplBulkCopy">复制</button>
+              <button class="btn tb-btn tb-btn--amber" type="button" data-act="tplBulkSubmit">提交</button>
             </div>
             <div class="campaign-list-table">
               ${table(headers, (rowsHtml + emptyRows) || `<tr><td colspan="${headers.length}"><div class="empty">暂无数据</div></td></tr>`)}
@@ -9822,14 +9998,11 @@ function renderTemplateWizardPage(mode) {
           <div class="checks">
             <label class="check" id="rwDiscountModeSingle"><input type="checkbox" name="rwDiscountModes" value="单品优惠" checked />单品优惠</label>
             <label class="check" id="rwDiscountModeCombo"><input type="checkbox" name="rwDiscountModes" value="组合优惠" />组合优惠</label>
+            <span id="rwDiscountMinFreeWrap" style="display:none;align-items:center;gap:6px;margin-left:8px;">
+              <span style="font-size:13px;color:#374151;">最低价SKU免单</span>
+              ${sw({ id: "rwDiscountMinFree", on: "开启", off: "关闭" })}
+            </span>
             <label class="check" id="rwDiscountModeWhole"><input type="checkbox" name="rwDiscountModes" value="整单优惠" />整单优惠</label>
-          </div>
-          <div class="divider"></div>
-          <div class="tpl-form-grid tpl-form-grid--4">
-            <div class="field tpl-form-span-full" id="rwDiscountMinFreeWrap">
-              <div class="field__label">最低价SKU免单</div>
-              <div>${sw({ id: "rwDiscountMinFree", on: "开启", off: "关闭" })}</div>
-            </div>
           </div>
         </div>`,
         id: "rwDiscountRow"
@@ -10131,7 +10304,7 @@ function campaignBatchImportDemo(presetPromoType = "", presetTemplateId = "") {
       templateName: template ? (template.name || "") : "",
       activityType: template ? (campaignActivityTypeLabel(template) || "") : "",
       desc: `${subject}（批量导入示例）`,
-      status: "输入",
+      status: "草稿",
       startAt,
       endAt,
       cycle: ["周一", "周二", "周三"],
@@ -10168,7 +10341,7 @@ function campaignBatchImportDemo(presetPromoType = "", presetTemplateId = "") {
 
 function renderCampaignsListPage(presetPromoType = "", presetTemplateId = "") {
   const ui = AppState.ui.campaigns;
-  const statuses = ["全部", "输入", "作废", "审核", "生效", "终止", "延期"];
+  const statuses = ["全部", "草稿", "审核中", "已生效", "已终止", "已延期", "已作废"];
   const auditStatuses = ["全部", "待审核", "已审核", "未审核"];
   const title = campaignListPageTitle(presetPromoType, presetTemplateId);
 
@@ -10218,8 +10391,8 @@ function renderCampaignsListPage(presetPromoType = "", presetTemplateId = "") {
 
   const rowsHtml = list
     .map((c, idx) => {
-      const canEdit = c.status === "输入";
-      const canSubmit = c.status === "输入";
+      const canEdit = c.status === "草稿";
+      const canSubmit = c.status === "草稿";
       const canEffective = c.status === "审核";
       const auditStatus = campaignAuditStatusLabel(c);
       const checked = selectedNos.includes(String(c.activityNo || ""));
@@ -10301,7 +10474,6 @@ function renderCampaignsListPage(presetPromoType = "", presetTemplateId = "") {
           <button class="btn tb-btn tb-btn--violet" type="button" data-act="campNew">创建活动</button>
           <button class="btn tb-btn tb-btn--blue" type="button" data-act="campImport" data-promo-type="${escapeHtml(presetPromoType || "")}" data-template-id="${escapeHtml(presetTemplateId || "")}">导入</button>
           <button class="btn tb-btn tb-btn--teal" type="button" data-act="campExport">导出</button>
-          <button class="btn tb-btn tb-btn--cyan" type="button" data-act="campPrint">打印</button>
           <button class="btn tb-btn tb-btn--rose" type="button" data-act="campBulkVoid">作废</button>
           <button class="btn tb-btn tb-btn--amber" type="button" data-act="campBulkCopy">复制</button>
           <button class="btn tb-btn tb-btn--orange" type="button" data-act="campBulkCancelEffective">取消生效</button>
@@ -11328,7 +11500,7 @@ function promoTerminateOrderEnsureList() {
         terminateBrand: "",
         goodsRows: [{ skuCode: "SKU-3001", barcode: "6900000000301", goodsName: "纸巾抽纸3层", spec: "100抽", unit: "包" }],
         goodsText: "纸巾抽纸3层",
-        query: { promoNo: "ACT-2026-0005", promoType: "倍数折扣", promoStatus: "输入", creator: "manle - m...", createFrom: "2026-06-01", createTo: "2026-06-30" },
+        query: { promoNo: "ACT-2026-0005", promoType: "倍数折扣", promoStatus: "草稿", creator: "manle - m...", createFrom: "2026-06-01", createTo: "2026-06-30" },
         linkedCampaignNos: ["ACT-2026-0005"]
       },
       {
@@ -11350,7 +11522,7 @@ function promoTerminateOrderEnsureList() {
         terminateBrand: "",
         goodsRows: [],
         goodsText: "饮料",
-        query: { promoNo: "ACT-2026-0004", promoType: "时段折扣", promoStatus: "输入", creator: "manle - m...", createFrom: "2026-06-01", createTo: "2026-06-30" },
+        query: { promoNo: "ACT-2026-0004", promoType: "时段折扣", promoStatus: "草稿", creator: "manle - m...", createFrom: "2026-06-01", createTo: "2026-06-30" },
         linkedCampaignNos: ["ACT-2026-0004"]
       },
       {
@@ -11372,7 +11544,7 @@ function promoTerminateOrderEnsureList() {
         terminateBrand: "可口可乐",
         goodsRows: [],
         goodsText: "可口可乐",
-        query: { promoNo: "ACT-2026-0006", promoType: "满金额折扣", promoStatus: "输入", creator: "manle - m...", createFrom: "2026-06-01", createTo: "2026-06-30" },
+        query: { promoNo: "ACT-2026-0006", promoType: "满金额折扣", promoStatus: "草稿", creator: "manle - m...", createFrom: "2026-06-01", createTo: "2026-06-30" },
         linkedCampaignNos: ["ACT-2026-0006"]
       }
     ];
@@ -12575,8 +12747,8 @@ function campaignWizardEnsureDraft(mode) {
     location.hash = "#/campaigns";
     return;
   }
-  if (isEdit && existing && existing.status !== "输入") {
-    toast("仅输入状态可修改");
+  if (isEdit && existing && existing.status !== "草稿") {
+    toast("仅草稿状态可修改");
     location.hash = "#/campaigns";
     return;
   }
@@ -12593,7 +12765,7 @@ function campaignWizardEnsureDraft(mode) {
         templateName: "",
         activityType: "",
         desc: "",
-        status: "输入",
+        status: "草稿",
         startAt: "",
         endAt: "",
         cycle: [],
@@ -13416,7 +13588,7 @@ function campaignWizardSave(targetStatus) {
     c.auditor = "leader - l...";
     c.auditAt = now;
   } else {
-    c.status = "输入";
+    c.status = "草稿";
   }
 
   AppState.ui.campaignWizard.editingNo = "";
@@ -20918,14 +21090,14 @@ function renderCampaignDetailPage(activityNo) {
   const excludeTab = reduceDetailExcludeTabs.includes(String(AppState.ui.campaignDetail.excludeTab || ""))
     ? String(AppState.ui.campaignDetail.excludeTab || "")
     : ((reduceDetailExcludeTabs[0]) || "excludeCategories");
-  const canEdit = c.status === "输入";
-  const canSubmit = c.status === "输入";
+  const canEdit = c.status === "草稿";
+  const canSubmit = c.status === "草稿";
   const canEffective = c.status === "审核";
   const canCancelEffective = c.status === "生效" || c.status === "延期";
   const canTerminate = c.status === "生效" || c.status === "延期";
   const canDelay = c.status === "生效" || c.status === "延期";
-  const canVoid = c.status === "输入" || c.status === "审核";
-  const canDelete = c.status === "输入" || c.status === "作废";
+  const canVoid = c.status === "草稿" || c.status === "审核";
+  const canDelete = c.status === "草稿" || c.status === "作废";
   const ops = `
     <div class="op-inline">
       <button class="btn" type="button" data-act="campCopy" data-id="${escapeHtml(c.activityNo)}">复制</button>
@@ -24633,7 +24805,7 @@ function isVoucherThemeUsed(voucherNo) {
 function renderVoucherThemesPage() {
   const ui = AppState.ui.voucherThemes;
   const types = ["全部", "现金券", "折扣券"];
-  const statuses = ["全部", "输入", "生效", "禁用", "作废"];
+  const statuses = ["全部", "草稿", "生效", "禁用", "作废"];
   const channels = ["全部", "全渠道", "线上渠道", "线下渠道"];
   const yn = ["全部", "是", "否"];
 
@@ -24725,8 +24897,8 @@ function renderVoucherThemesPage() {
       const opItems = [
         `<button class="linkbtn" type="button" data-act="vtDetail" data-id="${escapeHtml(v.voucherNo)}">详情</button>`,
         `<button class="linkbtn" type="button" data-act="vtCopy" data-id="${escapeHtml(v.voucherNo)}">复制</button>`,
-        v.status === "输入" ? `<button class="linkbtn" type="button" data-act="vtEdit" data-id="${escapeHtml(v.voucherNo)}">修改</button>` : `<span class="cell-muted">修改</span>`,
-        v.status === "输入" ? `<button class="linkbtn" type="button" data-act="vtSubmit" data-id="${escapeHtml(v.voucherNo)}">提交审核</button>` : `<span class="cell-muted">提交审核</span>`,
+        v.status === "草稿" ? `<button class="linkbtn" type="button" data-act="vtEdit" data-id="${escapeHtml(v.voucherNo)}">修改</button>` : `<span class="cell-muted">修改</span>`,
+        v.status === "草稿" ? `<button class="linkbtn" type="button" data-act="vtSubmit" data-id="${escapeHtml(v.voucherNo)}">提交审核</button>` : `<span class="cell-muted">提交审核</span>`,
         v.status === "生效" ? `<button class="linkbtn" type="button" data-act="vtDisable" data-id="${escapeHtml(v.voucherNo)}">禁用</button>` : `<span class="cell-muted">禁用</span>`,
         v.status === "禁用" ? `<button class="linkbtn" type="button" data-act="vtEnable" data-id="${escapeHtml(v.voucherNo)}">启用</button>` : `<span class="cell-muted">启用</span>`,
         v.status === "禁用" ? `<button class="linkbtn" type="button" data-act="vtVoid" data-id="${escapeHtml(v.voucherNo)}">作废</button>` : `<span class="cell-muted">作废</span>`,
@@ -24902,7 +25074,7 @@ function openVoucherCategoryDetail(catCode) {
     primaryText: "修改",
     secondaryText: "关闭",
     onPrimary: () => {
-      if (String(x.status || "") !== "输入") return toast("仅输入状态可修改");
+      if (String(x.status || "") !== "草稿") return toast("仅草稿状态可修改");
       AppState._tmpVoucherCategory = { catCode: x.catCode || "", catName: x.catName || "", remark: x.remark || "" };
       location.hash = "#/voucher-categories-edit";
     },
@@ -25006,7 +25178,7 @@ function voucherPackNormalizeDraft(d = {}) {
   const draft = JSON.parse(JSON.stringify(d || {}));
   draft.packId = String(draft.packId || "");
   draft.packName = String(draft.packName || "");
-  draft.status = String(draft.status || "输入");
+  draft.status = String(draft.status || "草稿");
   draft.packStartDate = String(draft.packStartDate || "2026-06-13");
   draft.packEndDate = String(draft.packEndDate || "2026-06-14");
   draft.packCycle = String(draft.packCycle || "不限");
@@ -25218,7 +25390,7 @@ function voucherPackSave() {
     list.unshift({
       ...d,
       packId,
-      status: "输入",
+      status: "草稿",
       creator: "管理员",
       createdAt: now,
       modifier: "管理员",
@@ -25293,7 +25465,7 @@ function renderVoucherPacksPage() {
   const filtersHtml = `
     <div class="field"><div class="field__label">券包ID</div><input class="input" id="vpQId" value="${escapeHtml(ui.qId)}" placeholder="支持模糊查询" /></div>
     <div class="field"><div class="field__label">券包名称</div><input class="input" id="vpQName" value="${escapeHtml(ui.qName)}" placeholder="支持模糊查询" /></div>
-    <div class="field"><div class="field__label">状态</div><select class="select" id="vpQStatus">${["全部", "输入", "已审核"].map((x) => `<option ${ui.qStatus === x ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select></div>
+    <div class="field"><div class="field__label">状态</div><select class="select" id="vpQStatus">${["全部", "草稿", "已审核"].map((x) => `<option ${ui.qStatus === x ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select></div>
     <div class="field"><div class="field__label">创建时间-起</div><input class="input" type="date" id="vpQCreateFrom" value="${escapeHtml(ui.qCreateFrom)}" /></div>
     <div class="field"><div class="field__label">创建时间-止</div><input class="input" type="date" id="vpQCreateTo" value="${escapeHtml(ui.qCreateTo)}" /></div>
   `;
@@ -25680,7 +25852,7 @@ function voucherWizardSave(targetStatus) {
     v.effectiveBy = v.effectiveBy || "leader - l...";
     v.effectiveAt = now;
   } else {
-    v.status = "输入";
+    v.status = "草稿";
   }
 
   AppState.ui.voucherWizard.editingNo = v.voucherNo;
@@ -25697,8 +25869,8 @@ function renderVoucherThemeWizardPage(mode) {
     location.hash = "#/voucher-themes";
     return "";
   }
-  if (isEdit && existing && existing.status !== "输入") {
-    toast("仅输入状态可修改");
+  if (isEdit && existing && existing.status !== "草稿") {
+    toast("仅草稿状态可修改");
     location.hash = "#/voucher-themes";
     return "";
   }
@@ -26078,6 +26250,152 @@ function openSysParamDetail(key) {
       ["更新时间", `<span class="mono">${escapeHtml(x.updatedAt || "—")}</span>`],
       ["备注", escapeHtml(x.remark || "")]
     ]))
+  });
+}
+
+function renderSysMutexPage() {
+  const ui = AppState.ui.gm.sysMutex || (AppState.ui.gm.sysMutex = { subTab: "total" });
+  const tab = String(ui.subTab || "total");
+  const tabBar = `<div class="tabbar" style="margin-bottom:14px;">${[
+    ["total", "促销总规则", "mutexTabTotal"],
+    ["detail", "促销规则细化", "mutexTabDetail"]
+  ].map(([k, label, actKey]) => `<button class="tabbtn ${tab === k ? "is-active" : ""}" type="button" data-act="${actKey}">${escapeHtml(label)}</button>`).join("")}</div>`;
+  const body = tab === "total" ? renderSysMutexTotalRule() : `<div class="empty">促销规则细化（待补充）</div>`;
+  return layoutCard(`
+    <div class="card__header"><div class="card__title">互融互斥规则</div></div>
+    <div class="card__body">${tabBar}${body}</div>
+  `);
+}
+
+function renderSysMutexTotalRule() {
+  const types = ["满减", "折扣", "赠品", "换购", "满赠券", "一口价"];
+  const legend = [
+    { k: "merge", color: "#dcfce7", border: "#86efac", text: "互融", desc: "允许叠加" },
+    { k: "exclude", color: "#fee2e2", border: "#fca5a5", text: "互斥", desc: "禁止叠加" },
+    { k: "pick", color: "#e5e7eb", border: "#d1d5db", text: "仅可二选一", desc: "N 选 1" }
+  ];
+  const rule = {
+    "满减|折扣": "exclude", "满减|赠品": "merge", "满减|换购": "merge", "满减|满赠券": "exclude", "满减|一口价": "exclude",
+    "折扣|赠品": "merge", "折扣|换购": "merge", "折扣|满赠券": "exclude", "折扣|一口价": "exclude",
+    "赠品|换购": "pick", "赠品|满赠券": "exclude", "赠品|一口价": "exclude",
+    "换购|满赠券": "exclude", "换购|一口价": "exclude",
+    "满赠券|一口价": "exclude"
+  };
+  const metaOf = (k) => legend.find((x) => x.k === k);
+  const statusOf = (a, b) => {
+    if (a === b) return "merge";
+    return rule[`${a}|${b}`] || rule[`${b}|${a}`] || "exclude";
+  };
+  const legendHtml = `<div class="mutex-legend">${legend.map((x) => `<span class="mutex-legend__item"><span class="mutex-legend__swatch" style="background:${x.color};border-color:${x.border};"></span>${escapeHtml(x.text)}<span class="mutex-legend__desc">（${escapeHtml(x.desc)}）</span></span>`).join("")}</div>`;
+  const head = `<tr><th class="mutex-corner">促销类型</th>${types.map((t) => `<th>${escapeHtml(t)}</th>`).join("")}</tr>`;
+  const rows = types.map((a) => `<tr><th class="mutex-row-head">${escapeHtml(a)}</th>${types.map((b) => {
+    const s = statusOf(a, b);
+    const m = metaOf(s);
+    return `<td class="mutex-cell" style="background:${m.color};border-color:${m.border};" title="${escapeHtml(m.text)}">${escapeHtml(m.text)}</td>`;
+  }).join("")}</tr>`).join("");
+  return `${legendHtml}<div class="mutex-matrix-wrap"><table class="mutex-matrix"><thead>${head}</thead><tbody>${rows}</tbody></table><div class="hint" style="margin-top:10px;">说明：行与列两种促销类型是否可同时作用于同一活动；对角线（同类型）默认互融。本页为原型演示，具体规则可按业务调整。</div></div>`;
+}
+
+function openTplApproveModal(id) {
+  const t = AppState.data.templates.find((x) => x.id === id);
+  if (!t) return toast("未找到模板（原型演示）");
+  if ((t.status || "") !== "审核中") return toast("仅审核中可审核");
+  openModal({
+    title: "促销模板审核",
+    subtitle: "审核当前模板（原型演示）",
+    primaryText: "确定",
+    secondaryText: "取消",
+    bodyHtml: `
+      <div class="form">
+        <div class="form__row">
+          <div class="field"><div class="field__label">模板名称</div><input class="input" value="${escapeHtml(t.name || "")}" disabled /></div>
+          <div class="field"><div class="field__label">模板类型</div><input class="input" value="${escapeHtml(t.templateType || "")}" disabled /></div>
+        </div>
+        <div class="form__row">
+          <div class="field">
+            <div class="field__label"><span class="req">*</span>审核</div>
+            <div class="checks">
+              <label class="radio"><input type="radio" name="tplApproveResult" value="审核通过" checked />审核通过</label>
+              <label class="radio"><input type="radio" name="tplApproveResult" value="审核驳回" />审核驳回</label>
+            </div>
+          </div>
+        </div>
+        <div class="form__row">
+          <div class="field" style="flex:1;">
+            <div class="field__label">审核说明<span id="tplApproveRemarkReq" class="req" style="display:none;">*</span></div>
+            <textarea class="textarea" id="tplApproveRemark" rows="5" placeholder="请输入审核说明"></textarea>
+          </div>
+        </div>
+      </div>
+    `,
+    onOpen: () => {
+      const syncReq = () => {
+        const result = (document.querySelector('input[name="tplApproveResult"]:checked') || {}).value || "审核通过";
+        const reqEl = document.getElementById("tplApproveRemarkReq");
+        if (reqEl) reqEl.style.display = result === "审核驳回" ? "" : "none";
+      };
+      syncReq();
+      document.querySelectorAll('input[name="tplApproveResult"]').forEach((el) => el.addEventListener("change", syncReq));
+    },
+    onPrimary: () => {
+      const result = (document.querySelector('input[name="tplApproveResult"]:checked') || {}).value || "审核通过";
+      const remark = (document.getElementById("tplApproveRemark") || {}).value || "";
+      if (result === "审核驳回" && !remark.trim()) {
+        toast("审核驳回时审核说明为必填");
+        return;
+      }
+      t.status = result === "审核通过" ? "有效" : "草稿";
+      t.auditRemark = remark.trim();
+      t.auditor = "manle - m...";
+      t.modifier = "manle - m...";
+      t.modifyAt = nowIsoSeconds();
+      t.updatedAt = nowIsoMinutes();
+      t.auditAt = nowIsoSeconds();
+      toast(result === "审核通过" ? `已审核通过，并在活动中心生成二级菜单：${t.name}（原型演示）` : "已驳回，模板退回草稿（原型演示）");
+      closeModal();
+      render();
+    }
+  });
+}
+
+function openTplImportModal() {
+  openModal({
+    title: "导入模板",
+    subtitle: "支持导入 .json / .csv 模板文件（原型演示）",
+    primaryText: "导入",
+    secondaryText: "取消",
+    bodyHtml: `
+      <div class="form">
+        <div class="form__row">
+          <div class="field">
+            <div class="field__label">模板类型</div>
+            <select class="select" id="tplImportType">
+              ${["特价", "折扣", "满减", "赠品", "换购", "满赠券"].map((x) => `<option value="${escapeHtml(x)}">${escapeHtml(x)}</option>`).join("")}
+            </select>
+          </div>
+          <div class="field" style="flex:1;">
+            <div class="field__label">选择文件<span class="req">*</span></div>
+            <input type="file" id="tplImportFile" />
+          </div>
+        </div>
+        <div class="form__row">
+          <div class="field" style="flex:1;">
+            <div class="field__label">备注</div>
+            <input class="input" id="tplImportRemark" placeholder="选填" />
+          </div>
+        </div>
+        <div class="hint" style="margin-top:6px;">说明：仅支持模板格式文件，单次最多 1 个；导入后模板状态为「草稿」。</div>
+      </div>
+    `,
+    onPrimary: () => {
+      const fileEl = document.getElementById("tplImportFile");
+      if (!fileEl || !fileEl.files || !fileEl.files.length) {
+        toast("请选择要导入的文件");
+        return;
+      }
+      toast(`已导入 ${fileEl.files[0].name}（原型演示）`);
+      closeModal();
+    }
   });
 }
 
@@ -26581,227 +26899,304 @@ function renderSysApprovalEditPage() {
 
 /* ==================== Dashboard ==================== */
 
-function renderDashboardPage() {
-  const d = AppState.data.dashboard;
-  const k = d.kpi;
-  let h = '<div class="dash">';
-
-  /* ---- 01 核心指标概览 ---- */
-  h += '<div class="dash-section">';
-  h += '<div class="dash-section__header"><span class="dash-section__num">01</span><span class="dash-section__title">核心指标概览</span><span class="dash-section__sub">实时数据 · 618促销档期</span></div>';
-  h += '<div class="kpi-grid">';
-
-  /* 销售总额 */
-  h += `<div class="kpi-card"><div class="kpi-card__label">销售额（实收金额）</div><div class="kpi-card__value">${k.totalSales.value}</div><div class="kpi-card__trend"><span class="up">${k.totalSales.growth}</span><span>${k.totalSales.pct}</span></div></div>`;
-  /* 促销商品销售额 */
-  h += `<div class="kpi-card"><div class="kpi-card__label">促销商品销售额</div><div class="kpi-card__value">${k.promoGoodsSales.value}</div><div class="kpi-card__trend"><span class="up">${k.promoGoodsSales.growth}</span><span>${k.promoGoodsSales.pct}</span></div></div>`;
-  /* 关联购买销售额 */
-  h += `<div class="kpi-card"><div class="kpi-card__label">关联购买销售额</div><div class="kpi-card__value">${k.linkedSales.value}</div><div class="kpi-card__trend"><span class="up">${k.linkedSales.growth}</span><span>${k.linkedSales.pct}</span></div></div>`;
-  /* 销售量 */
-  h += `<div class="kpi-card"><div class="kpi-card__label">销售量</div><div class="kpi-card__value">${k.salesVolume.value} <small>${k.salesVolume.unit}</small></div><div class="kpi-card__trend"><span class="up">${k.salesVolume.growth}</span></div></div>`;
-  /* 毛利额 */
-  h += `<div class="kpi-card"><div class="kpi-card__label">毛利额</div><div class="kpi-card__value">${k.grossProfit.value}</div><div class="kpi-card__trend"><span class="up">${k.grossProfit.growth}</span></div></div>`;
-  /* 毛利率 */
-  h += `<div class="kpi-card"><div class="kpi-card__label">毛利率（扣除让利成本）</div><div class="kpi-card__value" style="font-size:18px">${k.grossMargin.promo}</div><div class="kpi-card__compare"><span class="promo">促销 ${k.grossMargin.promo}</span><span class="normal">正常 ${k.grossMargin.normal}</span></div><div class="kpi-card__trend"><span class="down">${k.grossMargin.diff}</span><span>${k.grossMargin.note}</span></div></div>`;
-  /* 来客数 */
-  h += `<div class="kpi-card"><div class="kpi-card__label">来客数（交易笔数）</div><div class="kpi-card__value">${k.visitors.value} <small>${k.visitors.unit}</small></div><div class="kpi-card__trend"><span class="up">${k.visitors.growth}</span></div></div>`;
-  /* 新客占比 */
-  h += `<div class="kpi-card"><div class="kpi-card__label">新客占比</div><div class="kpi-card__value">${k.newCustRatio.value}</div><div class="kpi-card__trend"><span class="up">${k.newCustRatio.growth}</span></div></div>`;
-  /* 老客复购率 */
-  h += `<div class="kpi-card"><div class="kpi-card__label">老客复购率</div><div class="kpi-card__value">${k.repeatRate.value}</div><div class="kpi-card__trend"><span class="up">${k.repeatRate.growth}</span></div></div>`;
-  /* 客单价 */
-  h += `<div class="kpi-card"><div class="kpi-card__label">客单价</div><div class="kpi-card__value" style="font-size:18px">${k.avgTicket.promo}</div><div class="kpi-card__compare"><span class="promo">促销 ${k.avgTicket.promo}</span><span class="normal">平时 ${k.avgTicket.normal}</span></div><div class="kpi-card__trend"><span class="up">${k.avgTicket.diff}</span></div></div>`;
-  /* 渗透率 */
-  h += `<div class="kpi-card"><div class="kpi-card__label">渗透率</div><div class="kpi-card__value">${k.penetration.value}</div><div class="kpi-card__trend"><span class="up">${k.penetration.growth}</span></div></div>`;
-  /* 连带率 */
-  h += `<div class="kpi-card"><div class="kpi-card__label">连带率</div><div class="kpi-card__value">${k.crossSell.value} <small>${k.crossSell.unit}</small></div><div class="kpi-card__trend"><span class="up">${k.crossSell.growth}</span></div></div>`;
-  /* 核销率 */
-  h += `<div class="kpi-card"><div class="kpi-card__label">核销率</div><div class="kpi-card__value">${k.redeemRate.value}</div><div class="kpi-card__trend"><span class="up">${k.redeemRate.growth}</span></div></div>`;
-  /* 价格弹性 */
-  h += `<div class="kpi-card"><div class="kpi-card__label">价格弹性系数</div><div class="kpi-card__value">${k.priceElasticity.value}</div><div class="kpi-card__trend"><span style="color:#f59e0b;font-weight:600">${k.priceElasticity.desc}</span></div></div>`;
-
-  h += '</div></div>';
-
-  /* ---- 02 活动监控 ---- */
-  h += '<div class="dash-section">';
-  h += '<div class="dash-section__header"><span class="dash-section__num">02</span><span class="dash-section__title">活动监控</span><span class="dash-section__sub">关注执行链路与异常</span></div>';
-  h += '<div class="dash-grid-3">';
-
-  /* 执行漏斗 */
-  h += '<div class="dash-card"><div class="dash-card__header"><span class="dash-card__title">执行漏斗</span><span class="dash-card__sub">从计划到执行的损耗</span></div><div class="dash-card__body">';
-  d.executionFunnel.forEach(function(f) {
-    const pct = Math.round((f.value / f.total) * 100);
-    h += `<div class="progress-row"><span class="progress-label">${f.label}</span><div class="progress-track"><div class="progress-fill" style="width:${pct}%;background:${f.color}"></div></div><span class="progress-value">${f.value}</span></div>`;
-  });
-  h += '</div></div>';
-
-  /* 执行健康度 */
-  h += '<div class="dash-card"><div class="dash-card__header"><span class="dash-card__title">执行健康度</span><span class="dash-card__sub">建议作为监控区固定卡片</span></div><div class="dash-card__body">';
-  h += '<table class="health-table"><thead><tr><th>指标</th><th>当前值</th><th>状态</th></tr></thead><tbody>';
-  d.executionHealth.forEach(function(e) {
-    const cls = e.status === "正常" ? "badge--ok" : (e.status === "预警" ? "badge--warn" : "badge--danger");
-    h += `<tr><td>${e.metric}</td><td class="mono" style="font-weight:600">${e.value}</td><td><span class="badge ${cls}">${e.status}</span></td></tr>`;
-  });
-  h += '</tbody></table></div></div>';
-
-  /* 活动异常 Top5 */
-  h += '<div class="dash-card"><div class="dash-card__header"><span class="dash-card__title">活动异常 Top5</span><span class="dash-card__sub">用于当天追责和协调</span></div><div class="dash-card__body">';
-  h += '<table class="anomaly-table"><thead><tr><th>活动</th><th>异常</th><th>等级</th></tr></thead><tbody>';
-  d.anomalyTop5.forEach(function(a) {
-    const cls = a.level === "高" ? "badge--danger" : "badge--warn";
-    h += `<tr><td>${a.activity}</td><td>${a.anomaly}</td><td><span class="badge ${cls}">${a.level}</span></td></tr>`;
-  });
-  h += '</tbody></table></div></div>';
-
-  h += '</div></div>';
-
-  /* ---- 03 商品分析 ---- */
-  h += '<div class="dash-section">';
-  h += '<div class="dash-section__header"><span class="dash-section__num">03</span><span class="dash-section__title">商品分析</span><span class="dash-section__sub">商品表现排行与折扣效果评估</span></div>';
-  h += '<div class="dash-grid-2">';
-
-  /* 商品表现排行 */
-  h += '<div class="dash-card"><div class="dash-card__header"><span class="dash-card__title">商品表现排行</span><span class="dash-card__sub">默认 Top10，可切换品类/品牌/SKU</span></div><div class="dash-card__body">';
-  h += '<table class="anomaly-table"><thead><tr><th>SKU/品类</th><th>促销销售额</th><th>销量提升</th><th>毛利率</th><th>角色</th></tr></thead><tbody>';
-  d.productRanking.forEach(function(p) {
-    const roleColors = { "引流品": "badge--primary", "家庭囤货": "badge--ok", "趋势品": "badge--warn", "基础品": "badge--muted", "利润品": "badge--ok", "补充品": "badge--muted" };
-    h += `<tr><td>${p.sku}</td><td class="mono" style="font-weight:600">${p.sales}</td><td style="color:#16a34a;font-weight:600">${p.growth}</td><td class="mono">${p.margin}</td><td><span class="badge ${roleColors[p.role] || "badge--muted"}">${p.role}</span></td></tr>`;
-  });
-  h += '</tbody></table></div></div>';
-
-  /* 折扣深度与效果 */
-  h += '<div class="dash-card"><div class="dash-card__header"><span class="dash-card__title">折扣深度与效果</span><span class="dash-card__sub">可替换散点图，判断打折是否值得</span></div><div class="dash-card__body">';
-  const verdictColors = { "高效": "#2563eb", "稳健": "#16a34a", "一般": "#94a3b8", "偏弱": "#dc2626" };
-  const verdictBg = { "高效": "#eff6ff", "稳健": "#f0fdf4", "一般": "#f8fafc", "偏弱": "#fef2f2" };
-  d.discountEffect.forEach(function(e) {
-    const vc = verdictColors[e.verdict] || "#94a3b8";
-    const vb = verdictBg[e.verdict] || "#f8fafc";
-    h += `<div class="hbar-row"><span class="hbar-label">${e.category}</span><div class="hbar-track"><div class="hbar-fill" style="width:${e.barPct}%;background:${vc}"><span class="hbar-info">折扣${e.depth} | 提升${e.lift}</span></div></div><span class="hbar-verdict" style="color:${vc};background:${vb}">${e.verdict}</span></div>`;
-  });
-  h += '</div></div>';
-
-  h += '</div></div>';
-
-  /* ---- 04 顾客分析 ---- */
-  h += '<div class="dash-section">';
-  h += '<div class="dash-section__header"><span class="dash-section__num">04</span><span class="dash-section__title">顾客分析</span><span class="dash-section__sub">顾客响应 · 价格弹性 · 客流与客单价</span></div>';
-  h += '<div class="dash-grid-3">';
-
-  /* 顾客响应分析 */
-  h += '<div class="dash-card"><div class="dash-card__header"><span class="dash-card__title">顾客响应分析</span><span class="dash-card__sub">按客群细分统计</span></div><div class="dash-card__body">';
-  h += '<table class="cust-table"><thead><tr><th>客群</th><th>人数</th><th>响应率</th><th>客单价</th><th>券核销率</th></tr></thead><tbody>';
-  d.customerResponse.forEach(function(c) {
-    h += `<tr><td style="font-weight:600">${c.segment}</td><td class="mono">${c.count.toLocaleString()}</td><td class="mono" style="font-weight:600">${c.responseRate}</td><td class="mono">${c.avgOrder}</td><td class="mono">${c.couponUse}</td></tr>`;
-  });
-  h += '</tbody></table></div></div>';
-
-  /* 价格弹性 */
-  h += '<div class="dash-card"><div class="dash-card__header"><span class="dash-card__title">价格弹性分析</span><span class="dash-card__sub">各品类弹性系数与最优折扣区间</span></div><div class="dash-card__body">';
-  h += '<table class="elasticity-table"><thead><tr><th>品类</th><th>弹性系数</th><th>敏感度</th><th>最优折扣</th></tr></thead><tbody>';
-  d.priceElasticity.forEach(function(e) {
-    const sensCls = e.sensitivity === "高弹性" ? "badge--ok" : (e.sensitivity === "低弹性" ? "badge--danger" : "badge--warn");
-    h += `<tr><td style="font-weight:600">${e.category}</td><td class="mono" style="font-weight:700">${e.elasticity}</td><td><span class="badge ${sensCls}">${e.sensitivity}</span></td><td class="mono">${e.optimalDiscount}</td></tr>`;
-  });
-  h += '</tbody></table></div></div>';
-
-  /* 客流与客单价 */
-  h += '<div class="dash-card"><div class="dash-card__header"><span class="dash-card__title">客流与客单价</span><span class="dash-card__sub">促销期间 vs 平时对比</span></div><div class="dash-card__body">';
-  h += '<table class="cust-table"><thead><tr><th>指标</th><th>促销期间</th><th>平时/基准</th><th>变化</th></tr></thead><tbody>';
-  h += `<tr><td style="font-weight:600">来客数（交易笔数）</td><td class="mono" style="font-weight:600">42,860</td><td class="mono">37,152</td><td style="color:#16a34a;font-weight:600">+15.3%</td></tr>`;
-  h += `<tr><td style="font-weight:600">新客占比</td><td class="mono" style="font-weight:600">31.2%</td><td class="mono">25.4%</td><td style="color:#16a34a;font-weight:600">+5.8%</td></tr>`;
-  h += `<tr><td style="font-weight:600">老客复购率</td><td class="mono" style="font-weight:600">68.8%</td><td class="mono">65.6%</td><td style="color:#16a34a;font-weight:600">+3.2%</td></tr>`;
-  h += `<tr><td style="font-weight:600">客单价</td><td class="mono" style="font-weight:600">¥ 299.8</td><td class="mono">¥ 246.5</td><td style="color:#16a34a;font-weight:600">+21.6%</td></tr>`;
-  h += `<tr><td style="font-weight:600">连带率（件/单）</td><td class="mono" style="font-weight:600">2.36</td><td class="mono">2.18</td><td style="color:#16a34a;font-weight:600">+8.3%</td></tr>`;
-  h += '</tbody></table></div></div>';
-
-  h += '</div></div>';
-
-  /* ---- 05 区域分析 ---- */
-  h += '<div class="dash-section">';
-  h += '<div class="dash-section__header"><span class="dash-section__num">05</span><span class="dash-section__title">区域分析</span><span class="dash-section__sub">关注区域差异，找到标杆店与待辅导门店</span></div>';
-  h += '<div class="dash-grid-3">';
-
-  /* 区域排名 */
-  h += '<div class="dash-card"><div class="dash-card__header"><span class="dash-card__title">区域排名</span><span class="dash-card__sub">按促销销售额达成率排名</span></div><div class="dash-card__body">';
-  h += '<table class="health-table"><thead><tr><th>区域</th><th>达成率</th><th>表现</th></tr></thead><tbody>';
-  const regionStatusCls = { "领先": "badge--ok", "稳定": "badge--ok", "波动": "badge--warn", "待提升": "badge--danger" };
-  d.regionalRanking.forEach(function(r) {
-    h += `<tr><td style="font-weight:600">${r.region}</td><td class="mono" style="font-weight:600">${r.achievement}</td><td><span class="badge ${regionStatusCls[r.status] || "badge--muted"}">${r.status}</span></td></tr>`;
-  });
-  h += '</tbody></table></div></div>';
-
-  /* 门店分层 */
-  h += '<div class="dash-card"><div class="dash-card__header"><span class="dash-card__title">门店分层</span><span class="dash-card__sub">按执行×产出四象限分层</span></div><div class="dash-card__body">';
-  h += '<table class="health-table"><thead><tr><th>分层</th><th>门店数</th><th>建议动作</th></tr></thead><tbody>';
-  const layerActions = { "复制": "badge--ok", "调商品": "badge--warn", "抓执行": "badge--warn", "重点辅导": "badge--danger" };
-  d.storeLayering.forEach(function(s) {
-    h += `<tr><td style="font-weight:600">${s.layer}</td><td class="mono" style="font-weight:600">${s.count}</td><td><span class="badge ${layerActions[s.action] || "badge--muted"}">${s.action}</span></td></tr>`;
-  });
-  h += '</tbody></table></div></div>';
-
-  /* 四象限图 */
-  h += '<div class="dash-card"><div class="dash-card__header"><span class="dash-card__title">四象限图</span><span class="dash-card__sub">执行率 × 销售达成率</span></div><div class="dash-card__body">';
-  h += '<div class="quadrant-placeholder"><div class="axis-h"></div><div class="axis-v"></div>';
-  h += '<span class="q-label q-tl">低执行<br>高产出<br><b style="font-size:12px">33店</b></span>';
-  h += '<span class="q-label q-tr">高执行<br>高产出<br><b style="font-size:12px;color:#16a34a">68店</b></span>';
-  h += '<span class="q-label q-bl">低执行<br>低产出<br><b style="font-size:12px;color:#dc2626">57店</b></span>';
-  h += '<span class="q-label q-br">高执行<br>低产出<br><b style="font-size:12px">42店</b></span>';
-  h += '<span class="q-center">↑ 执行率<br>→ 销售达成率</span>';
-  h += '</div></div></div>';
-
-  h += '</div></div>';
-
-  /* ---- 06 促销评分与异常清单 ---- */
-  h += '<div class="dash-section">';
-  h += '<div class="dash-section__header"><span class="dash-section__num">06</span><span class="dash-section__title">促销评分与异常清单</span><span class="dash-section__sub">统一100分制评分 + 异常待办追踪</span></div>';
-  h += '<div class="dash-grid-3">';
-
-  /* 评分模型 */
-  h += '<div class="dash-card"><div class="dash-card__header"><span class="dash-card__title">评分模型</span><span class="dash-card__sub">建议做成统一 100 分制</span></div><div class="dash-card__body">';
-  d.scoringModel.forEach(function(s) {
-    h += `<div class="score-bar-row"><span class="score-bar-label">${s.dimension}</span><div class="score-bar-track"><div class="score-bar-fill" style="width:${s.weight}%;background:${s.color}">${s.weight}%</div></div></div>`;
-  });
-  h += '<div style="margin-top:12px;font-size:11px;color:var(--muted);line-height:1.6">';
-  d.scoringModel.forEach(function(s) {
-    h += `<div><b style="color:${s.color}">${s.dimension}</b>：${s.desc}</div>`;
-  });
-  h += '</div></div></div>';
-
-  /* 当前活动评分 */
-  h += '<div class="dash-card"><div class="dash-card__header"><span class="dash-card__title">当前活动评分</span><span class="dash-card__sub">综合评分</span></div><div class="dash-card__body">';
-  h += '<div class="score-big"><div class="score-big__value">' + d.activityScore.total + '</div><span class="score-big__label">' + d.activityScore.label + '</span></div>';
-  h += '<table class="score-detail-table">';
-  d.activityScore.details.forEach(function(s) {
-    const pct = Math.round((s.score / s.total) * 100);
-    h += `<tr><td style="font-weight:600">${s.name}</td><td class="mono" style="font-weight:600">${s.score}/${s.total}</td><td><div class="progress-track" style="height:12px"><div class="progress-fill" style="width:${pct}%;background:${pct >= 80 ? '#16a34a' : (pct >= 60 ? '#f59e0b' : '#dc2626')}"></div></div></td><td class="mono" style="font-size:12px;color:var(--muted)">${pct}%</td></tr>`;
-  });
-  h += '</table></div></div>';
-
-  /* 异常待办 */
-  h += '<div class="dash-card"><div class="dash-card__header"><span class="dash-card__title">异常待办</span><span class="dash-card__sub" style="color:#dc2626;font-weight:600">需处理</span></div><div class="dash-card__body">';
-  h += '<div class="score-big"><div class="score-big__value" style="color:#dc2626">' + d.anomalyTodo.total + '</div><span class="score-big__label" style="background:#fef2f2;color:#dc2626">待处理</span></div>';
-  h += '<table class="score-detail-table">';
-  d.anomalyTodo.items.forEach(function(item) {
-    h += `<tr><td style="font-weight:600">${item.type}</td><td class="mono" style="font-weight:700;font-size:16px">${item.count}</td></tr>`;
-  });
-  h += '</table></div></div>';
-
-  h += '</div>';
-
-  /* 异常清单（全宽表格） */
-  h += '<div class="dash-card" style="margin-top:16px"><div class="dash-card__header"><span class="dash-card__title">异常清单</span><span class="dash-card__sub">需追踪处理的活动异常明细</span></div><div class="dash-card__body" style="padding:0">';
-  h += '<table class="anomaly-full-table"><thead><tr><th>活动</th><th>区域/门店</th><th>SKU</th><th>异常类型</th><th>异常值</th><th>责任人</th><th>建议动作</th></tr></thead><tbody>';
-  d.anomalyList.forEach(function(a) {
-    const typeCls = a.type === "库存不足" || a.type === "断货率高" ? "badge--danger" : (a.type === "价签未更新" || a.type === "价格未生效" ? "badge--warn" : "badge--muted");
-    h += `<tr><td style="font-weight:600">${a.activity}</td><td>${a.store}</td><td>${a.sku}</td><td><span class="badge ${typeCls}">${a.type}</span></td><td class="mono" style="font-weight:600">${a.value}</td><td>${a.owner}</td><td style="font-weight:600">${a.action}</td></tr>`;
-  });
-  h += '</tbody></table></div></div>';
-
-  h += '</div>';
-
-  h += '</div>';
-  return h;
+function formatNum(n, opts = {}) {
+  const { unit = "", decimals = 0 } = opts;
+  const num = Number(n);
+  if (!Number.isFinite(num)) return String(n);
+  const grouped = num.toLocaleString("en-US", { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+  return unit ? `${grouped}${unit}` : grouped;
 }
+
+function dashboardKpi(opt) {
+  const color = opt.color || "blue";
+  const deltaUp = opt.deltaUp !== false;
+  return `
+    <div class="rpa-kpi rpa-kpi--${escapeHtml(color)}">
+      <div class="rpa-kpi__head">
+        <div class="rpa-kpi__title">${escapeHtml(opt.title || "")}</div>
+        ${opt.delta ? `<div class="rpa-kpi__delta ${deltaUp ? "is-up" : "is-down"}">${escapeHtml(opt.delta)}</div>` : ""}
+      </div>
+      <div class="rpa-kpi__value"><span class="rpa-kpi__num">${escapeHtml(opt.value || "—")}</span></div>
+      ${opt.sub ? `<div class="rpa-kpi__sub">${escapeHtml(opt.sub)}</div>` : ""}
+    </div>`;
+}
+
+const DASHBOARD_V2 = {
+  schedules: [
+    { name: "中秋国庆双节大促", type: "档前", period: "2026-09-28 ~ 2026-10-08", samePeriod: "2025-09-29 ~ 2025-10-09" },
+    { name: "2026夏日清凉节", type: "档中", period: "2026-07-01 ~ 2026-07-31", samePeriod: "2025-07-01 ~ 2025-07-31" },
+    { name: "端午促销", type: "档末", period: "2026-06-08 ~ 2026-06-15", samePeriod: "2025-05-31 ~ 2025-06-07" }
+  ],
+  pre: {
+    inventoryKpi: [
+      { title: "库存数量", value: "1,286,540", delta: "+8.2%", deltaUp: true, sub: "环比上周", color: "blue" },
+      { title: "库存金额", value: "¥3,860万", delta: "+6.5%", deltaUp: true, sub: "环比上周", color: "orange" },
+      { title: "渗透率", value: "62.4%", delta: "+3.1%", deltaUp: true, sub: "环比上周", color: "green" },
+      { title: "缺货率", value: "4.8%", delta: "-1.2%", deltaUp: false, sub: "环比上周", color: "purple" },
+      { title: "仓库库存数量", value: "864,230", delta: "+5.1%", deltaUp: true, sub: "环比上周", color: "teal" }
+    ],
+    categoryStock: [
+      { cat: "日百", qty: "312,540", amt: "¥980万", stockDays: "18", shortRate: "3.2%" },
+      { cat: "食品", qty: "286,310", amt: "¥760万", stockDays: "15", shortRate: "4.1%" },
+      { cat: "饮料", qty: "204,880", amt: "¥520万", stockDays: "12", shortRate: "5.6%" },
+      { cat: "纺织", qty: "168,420", amt: "¥640万", stockDays: "22", shortRate: "2.8%" },
+      { cat: "家清", qty: "142,650", amt: "¥380万", stockDays: "16", shortRate: "4.4%" }
+    ],
+    satisfyKpi: [
+      { title: "报数SKU总数", value: "1,486", delta: "+56", deltaUp: true, sub: "同比", color: "blue" },
+      { title: "满足率", value: "92.6%", delta: "+2.4%", deltaUp: true, sub: "同比", color: "green" },
+      { title: "缺货率", value: "7.4%", delta: "-1.6%", deltaUp: false, sub: "同比", color: "orange" },
+      { title: "库存金额", value: "¥3,860万", delta: "+6.5%", deltaUp: true, sub: "同比", color: "purple" }
+    ],
+    deptCompare: [
+      { dept: "纺织部", satisfy: "95.1%", short: "4.9%", satisfyPct: 95 },
+      { dept: "食品部", satisfy: "94.2%", short: "5.8%", satisfyPct: 94 },
+      { dept: "日百部", satisfy: "91.5%", short: "8.5%", satisfyPct: 91 },
+      { dept: "饮料部", satisfy: "88.6%", short: "11.4%", satisfyPct: 88 }
+    ],
+    deptDetail: [
+      { dept: "食品部", sku: 482, satisfy: "94.2%", short: "5.8%", stock: "¥1,120万" },
+      { dept: "日百部", sku: 386, satisfy: "91.5%", short: "8.5%", stock: "¥980万" },
+      { dept: "饮料部", sku: 318, satisfy: "88.6%", short: "11.4%", stock: "¥760万" },
+      { dept: "纺织部", sku: 300, satisfy: "95.1%", short: "4.9%", stock: "¥1,000万" }
+    ]
+  },
+  mid: {
+    salesL1: [
+      { title: "销售额（万元）", value: "12,847", delta: "+18.3%", deltaUp: true, color: "blue" },
+      { title: "采购预估达成", value: "92%", delta: "+4.2%", deltaUp: true, color: "green" },
+      { title: "预算达成", value: "88%", delta: "+3.1%", deltaUp: true, color: "teal" },
+      { title: "同比销售增长率", value: "+18.3%", delta: "+5.2%", deltaUp: true, color: "indigo" },
+      { title: "毛利率（补差后）", value: "21.6%", delta: "+1.8%", deltaUp: true, color: "orange" },
+      { title: "毛利率提升（补差后）", value: "+1.8%", delta: "+0.6%", deltaUp: true, color: "purple" },
+      { title: "客流增长", value: "+15.3%", delta: "+3.4%", deltaUp: true, color: "blue" }
+    ],
+    salesL2: [
+      { title: "客流", value: "42,860", delta: "+15.3%", deltaUp: true, color: "blue" },
+      { title: "客单", value: "¥299.8", delta: "+21.6%", deltaUp: true, color: "green" },
+      { title: "客单提升", value: "+8.4%", delta: "+2.1%", deltaUp: true, color: "teal" },
+      { title: "促销占比", value: "62.4%", delta: "+5.6%", deltaUp: true, color: "orange" },
+      { title: "DM占比", value: "28.6%", delta: "+3.2%", deltaUp: true, color: "purple" },
+      { title: "店促占比", value: "34.2%", delta: "+2.4%", deltaUp: true, color: "indigo" },
+      { title: "天天低价占比", value: "12.5%", delta: "+1.1%", deltaUp: true, color: "blue" },
+      { title: "毛利额增长", value: "+22.8%", delta: "+6.4%", deltaUp: true, color: "green" },
+      { title: "库存金额", value: "¥3,860万", delta: "+6.5%", deltaUp: true, color: "orange" },
+      { title: "周转天数", value: "14.2天", delta: "-2.1天", deltaUp: true, color: "teal" }
+    ],
+    top20: Array.from({ length: 20 }).map((_, i) => ({
+      rank: i + 1,
+      name: ["纯牛奶整箱","抽纸大包","洗衣液3kg","玻璃水","酸奶200g","卷纸12卷","洗洁精","婴儿纸尿裤","大米10kg","食用油5L","核桃露","即食燕麦","蜂蜜","咖啡","巧克力礼盒","坚果礼盒","白酒","红酒","啤酒","果汁"][i],
+      share: +(28 - i * 1.2).toFixed(1),
+      yoy: +(15 - i * 0.5).toFixed(1),
+      margin: +(24 - i * 0.4).toFixed(1),
+      contrib: +(12 - i * 0.5).toFixed(1),
+      per1000: +(86 - i * 3).toFixed(0),
+      cat: ["饮料","家清","家清","家清","饮料","家清","家清","日百","食品","食品","饮料","食品","食品","饮料","食品","食品","饮料","饮料","饮料","饮料"][i]
+    })),
+    analysis: {
+      kpi: [
+        { title: "销售数量", value: "286,540", delta: "+18.6%", deltaUp: true, color: "blue" },
+        { title: "销售额", value: "¥12,847万", delta: "+18.3%", deltaUp: true, color: "green" },
+        { title: "同比销售增长率", value: "+18.3%", delta: "+5.2%", deltaUp: true, color: "orange" },
+        { title: "千人购买量", value: "86", delta: "+12.4%", deltaUp: true, color: "purple" },
+        { title: "库存数量", value: "1,286,540", delta: "+8.2%", deltaUp: true, color: "teal" },
+        { title: "销售排名", value: "Top 5", delta: "↑2", deltaUp: true, color: "indigo" },
+        { title: "商品销售排名", value: "Top 3", delta: "↑1", deltaUp: true, color: "blue" },
+        { title: "毛利额", value: "¥2,775万", delta: "+22.8%", deltaUp: true, color: "green" },
+        { title: "毛利率（补差后）", value: "21.6%", delta: "+1.8%", deltaUp: true, color: "orange" },
+        { title: "渗透率", value: "62.4%", delta: "+3.1%", deltaUp: true, color: "purple" }
+      ],
+      groupBy: [
+        { dept: "食品部", cat: "粮油", sku: 86, qty: "48,620", sales: "2,180", gp: "486", margin: "22.3%", traffic: "12,460", stock: "860" },
+        { dept: "食品部", cat: "零食", sku: 124, qty: "62,310", sales: "2,860", gp: "618", margin: "21.6%", traffic: "15,820", stock: "920" },
+        { dept: "日百部", cat: "家清", sku: 96, qty: "38,540", sales: "1,920", gp: "430", margin: "22.4%", traffic: "10,260", stock: "640" },
+        { dept: "日百部", cat: "纸品", sku: 72, qty: "31,280", sales: "1,560", gp: "364", margin: "23.3%", traffic: "8,640", stock: "520" },
+        { dept: "饮料部", cat: "酒水", sku: 110, qty: "54,860", sales: "2,640", gp: "580", margin: "21.9%", traffic: "13,580", stock: "780" },
+        { dept: "饮料部", cat: "乳品", sku: 88, qty: "46,320", sales: "2,240", gp: "492", margin: "21.9%", traffic: "11,920", stock: "700" }
+      ]
+    }
+  },
+  post: {
+    analysis: {
+      kpi: [
+        { title: "销售数量", value: "286,540", delta: "+18.6%", deltaUp: true, color: "blue" },
+        { title: "销售额", value: "¥12,847万", delta: "+18.3%", deltaUp: true, color: "green" },
+        { title: "销售增长率", value: "+18.3%", delta: "+5.2%", deltaUp: true, color: "orange" },
+        { title: "千人购买量", value: "86", delta: "+12.4%", deltaUp: true, color: "purple" },
+        { title: "库存数量", value: "1,186,320", delta: "-7.8%", deltaUp: false, color: "teal" },
+        { title: "库存金额", value: "¥3,560万", delta: "-7.8%", deltaUp: false, color: "indigo" },
+        { title: "库存周转天数", value: "12.4天", delta: "-1.8天", deltaUp: true, color: "blue" },
+        { title: "毛利额", value: "¥2,775万", delta: "+22.8%", deltaUp: true, color: "green" },
+        { title: "毛利率（补差后）", value: "21.6%", delta: "+1.8%", deltaUp: true, color: "orange" },
+        { title: "客单", value: "¥299.8", delta: "+21.6%", deltaUp: true, color: "purple" }
+      ],
+      groupBy: [
+        { dept: "食品部", cat: "粮油", sku: 86, sales: "2,180", gp: "486", margin: "22.3%", traffic: "12,460", turnover: "12.6" },
+        { dept: "食品部", cat: "零食", sku: 124, sales: "2,860", gp: "618", margin: "21.6%", traffic: "15,820", turnover: "11.8" },
+        { dept: "日百部", cat: "家清", sku: 96, sales: "1,920", gp: "430", margin: "22.4%", traffic: "10,260", turnover: "13.2" },
+        { dept: "日百部", cat: "纸品", sku: 72, sales: "1,560", gp: "364", margin: "23.3%", traffic: "8,640", turnover: "10.4" },
+        { dept: "饮料部", cat: "酒水", sku: 110, sales: "2,640", gp: "580", margin: "21.9%", traffic: "13,580", turnover: "14.6" },
+        { dept: "饮料部", cat: "乳品", sku: 88, sales: "2,240", gp: "492", margin: "21.9%", traffic: "11,920", turnover: "12.2" }
+      ]
+    }
+  }
+};
+DASHBOARD_V2.post.salesL1 = DASHBOARD_V2.mid.salesL1;
+DASHBOARD_V2.post.salesL2 = DASHBOARD_V2.mid.salesL2;
+
+function dbScheduleType(name) {
+  const s = DASHBOARD_V2.schedules.find((x) => x.name === name);
+  return s ? s.type : "档前";
+}
+
+function renderDashboardPage() {
+  const ui = AppState.ui.gm.dashboard;
+  const year = Number(ui.scheduleYear) || new Date().getFullYear();
+  const name = ui.scheduleName || DASHBOARD_V2.schedules[0].name;
+  const schedule = DASHBOARD_V2.schedules.find((x) => x.name === name) || DASHBOARD_V2.schedules[0];
+  const sType = schedule.type;
+  const years = [];
+  for (let i = year - 2; i <= year + 1; i++) years.push(i);
+
+  const filtersHtml = `
+    <div class="field">
+      <div class="field__label">档期年份</div>
+      <select class="select" data-act="dbScheduleYear">
+        ${years.map((y) => `<option value="${y}" ${y === year ? "selected" : ""}>${y}</option>`).join("")}
+      </select>
+    </div>
+    <div class="field">
+      <div class="field__label">档期名称</div>
+      <select class="select" data-act="dbScheduleName">
+        ${DASHBOARD_V2.schedules.map((s) => `<option value="${escapeHtml(s.name)}" ${s.name === name ? "selected" : ""}>${escapeHtml(s.name)}（${s.type}）</option>`).join("")}
+      </select>
+    </div>
+  `;
+
+  const headHtml = `
+    <div class="db-head">
+      <div class="db-head__main">
+        <div class="db-head__title">${escapeHtml(schedule.name)}</div>
+        <div class="db-head__meta">
+          <span class="db-head__label">档期时间</span>
+          <span class="db-head__value mono">${escapeHtml(schedule.period)}</span>
+          <span class="db-head__label" style="margin-left:18px;">同期时间</span>
+          <input class="input db-head__compare" type="date" data-act="dbCompareDate" value="${escapeHtml(ui.compareDate || schedule.samePeriod.split(" ~ ")[0])}" />
+        </div>
+      </div>
+      <span class="badge badge--primary">${escapeHtml(sType)}</span>
+    </div>
+  `;
+
+  let body = "";
+  if (sType === "档前") body = renderDashboardPre();
+  else if (sType === "档中") body = renderDashboardMid();
+  else body = renderDashboardPost();
+
+  return `
+    <div class="dash">
+      <div class="db-filters">${filtersHtml}</div>
+      ${headHtml}
+      ${body}
+    </div>
+  `;
+}
+
+function renderDashboardPre() {
+  const pre = DASHBOARD_V2.pre;
+  const invKpis = pre.inventoryKpi.map((k) => dashboardKpi(k)).join("");
+  const satKpis = pre.satisfyKpi.map((k) => dashboardKpi(k)).join("");
+  const catRows = pre.categoryStock.map((r) => `<tr><td style="font-weight:600">${escapeHtml(r.cat)}</td><td class="mono">${escapeHtml(r.qty)}</td><td class="mono">${escapeHtml(r.amt)}</td><td class="mono">${escapeHtml(r.stockDays)}</td><td class="mono">${escapeHtml(r.shortRate)}</td></tr>`).join("");
+  const deptCmpRows = pre.deptCompare.map((r) => `<tr><td style="font-weight:600">${escapeHtml(r.dept)}</td><td style="min-width:200px"><div class="progress-row"><div class="progress-track"><div class="progress-fill" style="width:${r.satisfyPct}%;background:#16a34a"></div></div><span class="progress-value">${escapeHtml(r.satisfy)}</span></div></td><td class="mono">${escapeHtml(r.short)}</td></tr>`).join("");
+  const deptDetailRows = pre.deptDetail.map((r) => `<tr><td style="font-weight:600">${escapeHtml(r.dept)}</td><td class="mono">${r.sku}</td><td class="mono">${escapeHtml(r.satisfy)}</td><td class="mono">${escapeHtml(r.short)}</td><td class="mono">${escapeHtml(r.stock)}</td></tr>`).join("");
+  return `
+    <div class="dash-section">
+      <div class="dash-section__header"><span class="dash-section__title">库存数据总览</span><span class="dash-section__sub">5 个核心库存指标 · 环比趋势</span></div>
+      <div class="rpa-kpis">${invKpis}</div>
+    </div>
+    <div class="dash-section">
+      <div class="dash-section__header"><span class="dash-section__title">各品类库存明细</span><a class="link db-more" href="#/rpt-goods">查看更多 ›</a></div>
+      ${table(["品类", "库存数量", "库存金额", "可售天数", "缺货率"], catRows || `<tr><td colspan="5"><div class="empty">暂无数据</div></td></tr>`)}
+    </div>
+    <div class="dash-section">
+      <div class="dash-section__header"><span class="dash-section__title">报数商品满足率与缺货率分析</span><span class="dash-section__sub">同比趋势</span></div>
+      <div class="rpa-kpis">${satKpis}</div>
+    </div>
+    <div class="dash-section">
+      <div class="dash-section__header"><span class="dash-section__title">各部门满足率与缺货率对比</span></div>
+      ${table(["部门", "满足率", "缺货率"], deptCmpRows || `<tr><td colspan="3"><div class="empty">暂无数据</div></td></tr>`)}
+    </div>
+    <div class="dash-section">
+      <div class="dash-section__header"><span class="dash-section__title">各部门报数商品满足率明细</span></div>
+      ${table(["部门", "报数SKU数", "满足率", "缺货率", "库存金额"], deptDetailRows || `<tr><td colspan="5"><div class="empty">暂无数据</div></td></tr>`)}
+    </div>
+  `;
+}
+
+function renderDashboardMid() {
+  const mid = DASHBOARD_V2.mid;
+  const ui = AppState.ui.gm.dashboard;
+  const l1 = mid.salesL1.map((k) => dashboardKpi(k)).join("");
+  const l2 = mid.salesL2.map((k) => dashboardKpi(k)).join("");
+  const maxShare = Math.max(...mid.top20.map((x) => x.share));
+  const topRows = mid.top20.map((r) => {
+    const pct = Math.round((r.share / maxShare) * 100);
+    return `<div class="hbar-row">
+      <span class="hbar-label"><b>${r.rank}</b> ${escapeHtml(r.name)}<span class="db-top-meta">类别${escapeHtml(r.cat)} · 同比+${r.yoy}% · 毛利${r.margin}% · 贡献${r.contrib}% · 千人${r.per1000}</span></span>
+      <div class="hbar-track"><div class="hbar-fill" style="width:${pct}%;background:#2563eb"><span class="hbar-info">${r.share}%</span></div></div>
+    </div>`;
+  }).join("");
+  const analysisKpis = mid.analysis.kpi.map((k) => dashboardKpi(k)).join("");
+  const groupRows = mid.analysis.groupBy.map((r) => `<tr><td style="font-weight:600">${escapeHtml(r.dept)}</td><td>${escapeHtml(r.cat)}</td><td class="mono">${r.sku}</td><td class="mono">${escapeHtml(r.qty)}</td><td class="mono">${escapeHtml(r.sales)}</td><td class="mono">${escapeHtml(r.gp)}</td><td class="mono">${escapeHtml(r.margin)}</td><td class="mono">${escapeHtml(r.traffic)}</td><td class="mono">${escapeHtml(r.stock)}</td></tr>`).join("");
+  const scopes = ["报数商品", "实际定档商品", "DM商品", "重点商品"];
+  const scopeHtml = `<div class="checks db-scopes">${scopes.map((s) => `<label class="radio"><input type="radio" name="dbAnalysisScope" value="${escapeHtml(s)}" ${s === ui.analysisScope ? "checked" : ""} data-act="dbAnalysisScope" />${escapeHtml(s)}</label>`).join("")}</div>`;
+  return `
+    <div class="dash-section">
+      <div class="dash-section__header"><span class="dash-section__title">整体销售总览</span><span class="dash-section__sub">一级指标</span></div>
+      <div class="rpa-kpis">${l1}</div>
+      <div class="dash-section__header" style="margin-top:18px;border:none;"><span class="dash-section__sub">二级指标</span></div>
+      <div class="rpa-kpis">${l2}</div>
+    </div>
+    <div class="dash-section">
+      <div class="dash-section__header"><span class="dash-section__title">销售前 20 商品排名</span><a class="link db-more" href="#/rpt-goods">查看更多 ›</a></div>
+      <div class="dash-card"><div class="dash-card__body">${topRows}<div class="hint" style="margin-top:10px;">柱条为销售占比%；每行附类别 / 同比增长率 / 毛利率（补差后） / 毛利贡献度 / 千人购买量。</div></div></div>
+    </div>
+    <div class="dash-section">
+      <div class="dash-section__header"><span class="dash-section__title">商品分析</span></div>
+      ${scopeHtml}
+      <div class="rpa-kpis" style="margin-top:12px;">${analysisKpis}</div>
+      <div class="dash-section__header" style="margin-top:18px;border:none;"><span class="dash-section__sub">按部门 / 大类汇总</span><a class="link db-more" href="#/rpt-goods">查看更多 ›</a></div>
+      ${table(["部门", "大类", "商品数", "销售数量", "销售额(万元)", "毛利额(万元)", "毛利率(%)", "客流(人次)", "库存金额(万元)"], groupRows || `<tr><td colspan="9"><div class="empty">暂无数据</div></td></tr>`)}
+    </div>
+  `;
+}
+
+function renderDashboardPost() {
+  const post = DASHBOARD_V2.post;
+  const ui = AppState.ui.gm.dashboard;
+  const l1 = post.salesL1.map((k) => dashboardKpi(k)).join("");
+  const l2 = post.salesL2.map((k) => dashboardKpi(k)).join("");
+  const analysisKpis = post.analysis.kpi.map((k) => dashboardKpi(k)).join("");
+  const groupRows = post.analysis.groupBy.map((r) => `<tr><td style="font-weight:600">${escapeHtml(r.dept)}</td><td>${escapeHtml(r.cat)}</td><td class="mono">${r.sku}</td><td class="mono">${escapeHtml(r.sales)}</td><td class="mono">${escapeHtml(r.gp)}</td><td class="mono">${escapeHtml(r.margin)}</td><td class="mono">${escapeHtml(r.traffic)}</td><td class="mono">${escapeHtml(r.turnover)}</td></tr>`).join("");
+  const scopes = ["报数商品", "实际定档商品", "DM商品", "重点商品"];
+  const scopeHtml = `<div class="checks db-scopes">${scopes.map((s) => `<label class="radio"><input type="radio" name="dbAnalysisScope" value="${escapeHtml(s)}" ${s === ui.analysisScope ? "checked" : ""} data-act="dbAnalysisScope" />${escapeHtml(s)}</label>`).join("")}</div>`;
+  return `
+    <div class="dash-section">
+      <div class="dash-section__header"><span class="dash-section__title">整体销售总览</span><span class="dash-section__sub">与档中口径一致</span></div>
+      <div class="rpa-kpis">${l1}</div>
+      <div class="dash-section__header" style="margin-top:18px;border:none;"><span class="dash-section__sub">二级指标</span></div>
+      <div class="rpa-kpis">${l2}</div>
+    </div>
+    <div class="dash-section">
+      <div class="dash-section__header"><span class="dash-section__title">商品分析</span></div>
+      ${scopeHtml}
+      <div class="rpa-kpis" style="margin-top:12px;">${analysisKpis}</div>
+      <div class="dash-section__header" style="margin-top:18px;border:none;"><span class="dash-section__sub">按部门 / 大类汇总</span><a class="link db-more" href="#/rpt-goods">查看更多 ›</a></div>
+      ${table(["部门", "大类", "商品数", "销售额(万元)", "毛利额(万元)", "毛利率(%)", "客流(人次)", "库存周转天数"], groupRows || `<tr><td colspan="8"><div class="empty">暂无数据</div></td></tr>`)}
+    </div>
+  `;
+}
+
 
 /* ==================== End Dashboard ==================== */
 
@@ -27770,7 +28165,7 @@ function renderRptStoreAbnormalPage() {
 function renderRptVoucherPage() {
   const ui = AppState.ui.rpt.voucher;
   const promoTypes = ["全部", "直降", "折扣", "满减满赠", "满金额换购", "满数量换购", "满金额赠券", "满数量赠券"];
-  const statuses = ["全部", "输入", "作废", "审核", "生效", "终止", "延期"];
+  const statuses = ["全部", "草稿", "作废", "审核", "生效", "终止", "延期"];
 
   const list = (AppState.data.rptData.voucher || []).filter((r) => {
     if (ui.qActNo && !String(r.actNo || "").includes(ui.qActNo)) return false;
@@ -27835,7 +28230,7 @@ function renderRptVoucherPage() {
 function renderRptActivityPage() {
   const ui = AppState.ui.rpt.activity;
   const promoTypes = ["全部", "直降", "折扣", "满减满赠", "满金额换购", "满数量换购", "满金额赠券", "满数量赠券"];
-  const statuses = ["全部", "输入", "作废", "审核", "生效", "终止", "延期"];
+  const statuses = ["全部", "草稿", "作废", "审核", "生效", "终止", "延期"];
 
   const list = (AppState.data.rptData.activity || []).filter((r) => {
     if (ui.qActNo && !String(r.actNo || "").includes(ui.qActNo)) return false;
@@ -28532,6 +28927,7 @@ function render() {
   else if (r === "/voucher-packs") html = renderVoucherPacksPage();
   else if (r === "/sys-dict") html = renderSysDictPage();
   else if (r === "/sys-params") html = renderSysParamsPage();
+  else if (r === "/sys-mutex") html = renderSysMutexPage();
   else if (r === "/sys-approval") html = renderSysApprovalPage();
   else if (r === "/sys-approval-edit") html = renderSysApprovalEditPage();
   else if (r === "/rpt-analysis") html = renderRptAnalysisPage();
@@ -28597,6 +28993,18 @@ function bindTabsBarEvents() {
 
 function bindPageEvents(r) {
   const root = els.content;
+
+  if (r === "/dashboard") {
+    const dbYear = document.querySelector('[data-act="dbScheduleYear"]');
+    if (dbYear) dbYear.addEventListener("change", () => { AppState.ui.gm.dashboard.scheduleYear = dbYear.value; render(); });
+    const dbName = document.querySelector('[data-act="dbScheduleName"]');
+    if (dbName) dbName.addEventListener("change", () => { AppState.ui.gm.dashboard.scheduleName = dbName.value; render(); });
+    const dbCmp = document.querySelector('[data-act="dbCompareDate"]');
+    if (dbCmp) dbCmp.addEventListener("change", () => { AppState.ui.gm.dashboard.compareDate = dbCmp.value; });
+    document.querySelectorAll('[data-act="dbAnalysisScope"]').forEach((el) => {
+      el.addEventListener("change", () => { AppState.ui.gm.dashboard.analysisScope = el.value; render(); });
+    });
+  }
 
   root.querySelectorAll("tr[data-row]").forEach((tr) => {
     tr.addEventListener("click", (e) => {
@@ -29623,7 +30031,7 @@ function handleAction(r, act, btn) {
       const id = btn.getAttribute("data-id") || "";
       const v = (AppState.data.voucherThemes || []).find((x) => String(x.voucherNo) === String(id));
       if (!v) return toast("未找到优惠券主题（原型演示）");
-      if (v.status !== "输入") return toast("仅输入状态可修改");
+      if (v.status !== "草稿") return toast("仅草稿状态可修改");
       AppState.ui.voucherWizard.editingNo = id;
       AppState.ui.voucherWizard._initKey = "";
       location.hash = "#/voucher-themes-edit";
@@ -29636,7 +30044,7 @@ function handleAction(r, act, btn) {
       const now = nowIsoSeconds();
       const copy = JSON.parse(JSON.stringify(src));
       copy.voucherNo = nextVoucherNo();
-      copy.status = "输入";
+      copy.status = "草稿";
       copy.creator = "manle - m...";
       copy.createdAt = now;
       copy.modifier = "manle - m...";
@@ -29654,7 +30062,7 @@ function handleAction(r, act, btn) {
       const id = btn.getAttribute("data-id") || "";
       const v = (AppState.data.voucherThemes || []).find((x) => String(x.voucherNo) === String(id));
       if (!v) return toast("未找到优惠券主题（原型演示）");
-      if (v.status !== "输入") return toast("仅输入状态可提交审核");
+      if (v.status !== "草稿") return toast("仅草稿状态可提交审核");
       v.status = "生效";
       v.effectiveBy = "leader - l...";
       v.effectiveAt = nowIsoSeconds();
@@ -29740,7 +30148,7 @@ function handleAction(r, act, btn) {
       const id = btn.getAttribute("data-id") || "";
       const x = (AppState.data.voucherCategories || []).find((t) => String(t.catCode) === String(id));
       if (!x) return toast("未找到优惠券分类（原型演示）");
-      if (String(x.status || "") !== "输入") return toast("仅输入状态可修改");
+      if (String(x.status || "") !== "草稿") return toast("仅草稿状态可修改");
       AppState._tmpVoucherCategory = { catCode: x.catCode || "", catName: x.catName || "", remark: x.remark || "" };
       location.hash = "#/voucher-categories-edit";
       return;
@@ -29787,7 +30195,7 @@ function handleAction(r, act, btn) {
       AppState._tmpVoucherPack = voucherPackNormalizeDraft({
         ...JSON.parse(JSON.stringify(src)),
         packId: "",
-        status: "输入",
+        status: "草稿",
         creator: "管理员",
         createdAt: now,
         modifier: "管理员",
@@ -29806,7 +30214,7 @@ function handleAction(r, act, btn) {
     }
     if (act === "vtWizSave") {
       if (!voucherWizardValidateStep(1)) return;
-      voucherWizardSave("输入");
+      voucherWizardSave("草稿");
       return;
     }
     if (act === "vtWizSubmit") {
@@ -30005,7 +30413,7 @@ function handleAction(r, act, btn) {
           catCode: code,
           catName: name,
           remark,
-          status: "输入",
+          status: "草稿",
           creator: "manle - m...",
           createdAt: now,
           modifier: "manle - m...",
@@ -30019,7 +30427,7 @@ function handleAction(r, act, btn) {
       const key = (AppState._tmpVoucherCategory && AppState._tmpVoucherCategory.catCode) ? AppState._tmpVoucherCategory.catCode : code;
       const x = list.find((t) => String(t.catCode) === String(key));
       if (!x) return toast("未找到优惠券分类（原型演示）");
-      if (String(x.status || "") !== "输入") return toast("仅输入状态可修改");
+      if (String(x.status || "") !== "草稿") return toast("仅草稿状态可修改");
       x.catName = name;
       x.remark = remark;
       x.modifier = "manle - m...";
@@ -30055,6 +30463,14 @@ function handleAction(r, act, btn) {
     }
     if (act === "spReset") {
       AppState.ui.gm.sysParams = { qKey: "", qName: "", status: "全部" };
+      render();
+      return;
+    }
+  }
+  if (r === "/sys-mutex") {
+    if (act === "mutexTabTotal" || act === "mutexTabDetail") {
+      AppState.ui.gm.sysMutex = AppState.ui.gm.sysMutex || { subTab: "total" };
+      AppState.ui.gm.sysMutex.subTab = act === "mutexTabDetail" ? "detail" : "total";
       render();
       return;
     }
@@ -31771,6 +32187,25 @@ function handleAction(r, act, btn) {
     }
     if (act === "tplExport") return toast("导出功能展示（原型演示）");
     if (act === "tplPrint") return toast("打印功能展示（原型演示）");
+    if (act === "tplImport") { openTplImportModal(); return; }
+    if (act === "tplBulkSubmit") {
+      const picked = Array.isArray(AppState.ui.templates.selectedIds) ? AppState.ui.templates.selectedIds.map((x) => String(x)) : [];
+      if (!picked.length) return toast("请先勾选要提交的模板");
+      let count = 0;
+      (AppState.data.templates || []).forEach((t) => {
+        if (picked.includes(String(t.id || "")) && String(t.status || "") === "草稿") {
+          t.status = "审核中";
+          t.modifier = "manle - m...";
+          t.modifyAt = nowIsoSeconds();
+          t.updatedAt = nowIsoMinutes();
+          count += 1;
+        }
+      });
+      AppState.ui.templates.selectedIds = [];
+      toast(count ? `已提交 ${count} 个模板（原型演示）` : "勾选的模板无可提交的草稿");
+      render();
+      return;
+    }
     if (act === "tplBulkDelete") {
       const picked = Array.isArray(AppState.ui.templates.selectedIds) ? AppState.ui.templates.selectedIds.map((x) => String(x)) : [];
       if (!picked.length) return toast("请先勾选要删除的模板");
@@ -31839,15 +32274,8 @@ function handleAction(r, act, btn) {
     }
     if (act === "tplApprove") {
       const id = btn.getAttribute("data-id") || "";
-      const t = AppState.data.templates.find((x) => x.id === id);
-      if (!t) return toast("未找到模板（原型演示）");
-      if ((t.status || "") !== "审核中") return toast("仅审核中可审核生效");
-      t.status = "有效";
-      t.modifier = "manle - m...";
-      t.modifyAt = nowIsoSeconds();
-      t.updatedAt = nowIsoMinutes();
-      toast(`已审核生效，并在活动中心生成二级菜单：${t.name}（原型演示）`);
-      return render();
+      openTplApproveModal(id);
+      return;
     }
     if (act === "tplDisable") {
       const id = btn.getAttribute("data-id") || "";
@@ -32305,7 +32733,7 @@ function handleAction(r, act, btn) {
         templateName: presetTpl ? (presetTpl.name || "") : "",
         activityType: presetTpl ? (presetTpl.templateType || presetTpl.type || "") : "",
         desc: `由档期智能促销创建：${derived.theme || d.actualId || ""}`,
-        status: "输入",
+        status: "草稿",
         startAt: "",
         endAt: "",
         cycle: [],
@@ -32846,9 +33274,9 @@ function handleAction(r, act, btn) {
       return;
     }
     if (act === "ptoGoodsPick") {
-      openCampaignGoodsSelectModal({
+      openTerminateGoodsSelectModal({
         title: "选择商品",
-        subtitle: "支持按商品、类别，品牌、供应商查询（原型演示）",
+        subtitle: "支持按组合编码、商品编码、商品名称、柜组查询（原型演示）",
         checkboxName: "ptoPickGoods",
         onPicked: (sel) => {
           const draft = promoTerminateOrderReadDraftFromDom();
@@ -32867,6 +33295,7 @@ function handleAction(r, act, btn) {
             memberLimit: "",
             promoInfo: "",
             stores: "",
+            shareRatio: g.shareRatio || "",
             actNo: "",
             actName: "",
             tplType: "",
@@ -33188,7 +33617,7 @@ function handleAction(r, act, btn) {
         const copy = JSON.parse(JSON.stringify(src));
         copy.id = `C-${String(Date.now() + Math.floor(Math.random() * 1000)).slice(-6)}`;
         copy.activityNo = nextCampaignNo();
-        copy.status = "输入";
+        copy.status = "草稿";
         copy.creator = "manle - m...";
         copy.createAt = now;
         copy.modifier = "manle - m...";
@@ -33210,7 +33639,7 @@ function handleAction(r, act, btn) {
       let changed = 0;
       items.forEach((c) => {
         if (!c) return;
-        if (act === "campBulkVoid" && (c.status === "输入" || c.status === "审核")) {
+        if (act === "campBulkVoid" && (c.status === "草稿" || c.status === "审核")) {
           c.status = "作废";
           changed++;
         }
@@ -33265,7 +33694,7 @@ function handleAction(r, act, btn) {
     if (act === "campEdit") {
       const c = findByNo(id);
       if (!c) return toast("未找到活动（原型演示）");
-      if (c.status !== "输入") return toast("仅输入状态可修改");
+      if (c.status !== "草稿") return toast("仅草稿状态可修改");
       AppState.ui.campaignWizard.editingNo = c.activityNo;
       AppState.ui.campaignWizard.wizardStep = 1;
       AppState._tmpCampaign = null;
@@ -33279,7 +33708,7 @@ function handleAction(r, act, btn) {
       const copy = JSON.parse(JSON.stringify(src));
       copy.id = `C-${String(Date.now()).slice(-6)}`;
       copy.activityNo = nextCampaignNo();
-      copy.status = "输入";
+      copy.status = "草稿";
       copy.creator = "manle - m...";
       copy.createAt = now;
       copy.modifier = "manle - m...";
@@ -33300,7 +33729,7 @@ function handleAction(r, act, btn) {
     if (act === "campSubmit") {
       const c = findByNo(id);
       if (!c) return toast("未找到活动（原型演示）");
-      if (c.status !== "输入") return toast("仅输入状态可提交审核");
+      if (c.status !== "草稿") return toast("仅草稿状态可提交审核");
       c.status = "审核";
       c.auditor = "leader - l...";
       c.auditAt = nowIsoSeconds();
@@ -33337,7 +33766,7 @@ function handleAction(r, act, btn) {
           const picked = pickCheckedValues("campApproveResult");
           const result = picked[0] || "pass";
           const remarkEl = document.getElementById("campApproveRemark");
-          c.status = result === "pass" ? "审核" : "输入";
+          c.status = result === "pass" ? "审核" : "草稿";
           c.auditRemark = remarkEl ? remarkEl.value.trim() : "";
           c.auditor = "leader - l...";
           c.auditAt = nowIsoSeconds();
@@ -33427,7 +33856,7 @@ function handleAction(r, act, btn) {
     if (act === "campVoid") {
       const c = findByNo(id);
       if (!c) return toast("未找到活动（原型演示）");
-      if (!(c.status === "输入" || c.status === "审核")) return toast("仅输入/审核状态可作废");
+      if (!(c.status === "草稿" || c.status === "审核")) return toast("仅草稿/审核状态可作废");
       c.status = "作废";
       c.modifier = "manle - m...";
       c.modifyAt = nowIsoSeconds();
@@ -33439,7 +33868,7 @@ function handleAction(r, act, btn) {
       const idx = (AppState.data.campaigns || []).findIndex((x) => String(x.activityNo || x.id) === String(id));
       if (idx < 0) return toast("未找到活动（原型演示）");
       const c = AppState.data.campaigns[idx];
-      if (!(c.status === "输入" || c.status === "作废")) return toast("仅输入/作废状态可删除");
+      if (!(c.status === "草稿" || c.status === "作废")) return toast("仅草稿/作废状态可删除");
       AppState.data.campaigns.splice(idx, 1);
       toast("删除成功（原型演示）");
       render();
@@ -33708,7 +34137,7 @@ function handleAction(r, act, btn) {
     }
     if (act === "campWizSave") {
       for (let s = 1; s <= campaignWizardMaxStep(); s++) { const msg = campaignWizardValidateStep(s); if (msg) return toast(msg); }
-      campaignWizardSave("输入");
+      campaignWizardSave("草稿");
       return;
     }
     if (act === "campWizSubmit") {

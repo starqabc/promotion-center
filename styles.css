@@ -1961,6 +1961,31 @@ tbody tr:last-child td{border-bottom:none}
 .combo-burden-group__title{position:relative;padding-left:10px;margin-bottom:6px;font-size:13px;color:#374151;font-weight:600}
 .combo-burden-group__title::before{content:"";position:absolute;left:0;top:2px;bottom:2px;width:3px;background:#2563eb;border-radius:2px}
 .combo-burden-empty{color:#94a3b8;font-size:13px;padding:8px 0}
+.mutex-legend{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:14px;font-size:13px;color:#374151}
+.mutex-legend__item{display:inline-flex;align-items:center;gap:6px}
+.mutex-legend__swatch{display:inline-block;width:18px;height:18px;border-radius:3px;border:1px solid #d1d5db}
+.mutex-legend__desc{color:#6b7280}
+.mutex-matrix-wrap{overflow-x:auto}
+.mutex-matrix{border-collapse:collapse;width:100%;font-size:13px;background:#fff}
+.mutex-matrix th,.mutex-matrix td{border:1px solid #e5e7eb;padding:10px 8px;text-align:center;min-width:88px}
+.mutex-matrix thead th{background:#f3f4f6;font-weight:600;color:#374151}
+.mutex-matrix .mutex-corner{background:#e5e7eb;font-weight:600}
+.mutex-matrix .mutex-row-head{background:#f9fafb;font-weight:600;text-align:left;white-space:nowrap}
+.mutex-cell{font-weight:600;color:#374151}
+.db-filters{display:flex;gap:16px;flex-wrap:wrap;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px;margin-bottom:16px}
+.db-filters .field{flex:0 0 240px;min-width:0}
+.db-head{display:flex;align-items:center;justify-content:space-between;gap:16px;background:linear-gradient(135deg,#eff6ff,#f5f3ff);border:1px solid #dbeafe;border-radius:12px;padding:16px 20px;margin-bottom:20px}
+.db-head__main{flex:1;min-width:0}
+.db-head__title{font-size:20px;font-weight:800;color:#1e293b;margin-bottom:8px}
+.db-head__meta{display:flex;align-items:center;flex-wrap:wrap;gap:8px;font-size:13px;color:#475569}
+.db-head__label{color:#64748b}
+.db-head__value{font-weight:600}
+.db-head__compare{width:auto;padding:4px 8px;font-size:13px}
+.db-more{font-size:13px}
+.db-scopes{margin-bottom:4px}
+.db-scopes .radio{margin-right:14px}
+.db-top-meta{display:block;font-size:11px;color:#64748b;font-weight:400;margin-top:2px}
+.hbar-label{flex:0 0 260px;min-width:0}
 .combo-goods-inner-tabs{
   display:grid;
   grid-template-columns:1fr 1fr 1fr;
