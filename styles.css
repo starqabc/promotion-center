@@ -1950,6 +1950,17 @@ tbody tr:last-child td{border-bottom:none}
   flex-wrap:nowrap;
 }
 .combo-goods-condition-row > .field{flex:1;min-width:0}
+.combo-burden-row{display:flex;gap:20px;flex-wrap:nowrap}
+.combo-burden-row > .combo-burden-col{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
+.combo-burden-amount{display:flex;align-items:center;gap:6px}
+.combo-burden-amount .input{flex:1;min-width:0}
+.combo-burden-amount__unit{flex-shrink:0;font-size:13px;color:#6b7280}
+.combo-burden-share{margin-bottom:12px;max-width:240px}
+.combo-burden-group{margin-top:14px}
+.combo-burden-group:first-child{margin-top:0}
+.combo-burden-group__title{position:relative;padding-left:10px;margin-bottom:6px;font-size:13px;color:#374151;font-weight:600}
+.combo-burden-group__title::before{content:"";position:absolute;left:0;top:2px;bottom:2px;width:3px;background:#2563eb;border-radius:2px}
+.combo-burden-empty{color:#94a3b8;font-size:13px;padding:8px 0}
 .combo-goods-inner-tabs{
   display:grid;
   grid-template-columns:1fr 1fr 1fr;

@@ -239,9 +239,6 @@ const AppState = {
     "/templates": { title: "促销模板", sub: "" },
     "/templates-create": { title: "创建促销模板", sub: "" },
     "/templates-edit": { title: "编辑促销模板", sub: "" },
-    "/template-priority": { title: "模版优先级", sub: "按模版类型维护模板优先级顺序（原型演示）" },
-    "/template-priority-create": { title: "新增模版优先级", sub: "维护模版类型、模版、优先级与说明（原型演示）" },
-    "/template-priority-edit": { title: "编辑模版优先级", sub: "维护模版类型、模版、优先级与说明（原型演示）" },
     "/promo-goods-priority": { title: "促销范围优先级", sub: "按促销范围维护活动中商品优先级顺序（原型演示）" },
     "/promo-goods-priority-create": { title: "新增促销范围优先级", sub: "维护促销类型、促销范围、商品与优先级（原型演示）" },
     "/promo-goods-priority-edit": { title: "编辑促销范围优先级", sub: "维护促销类型、促销范围、商品与优先级（原型演示）" },
@@ -3612,6 +3609,7 @@ function openCampaignStoreSelectModal({ onPicked }) {
 function campaignSelectableGoodsItems() {
   const src = (AppState.data.masterData && AppState.data.masterData.goods) || [];
   const brands = AppState.data.gmBrands || [];
+  const counters = AppState.data.gmCounters || [];
   const pickIdx = (seed, len) => {
     const s = String(seed || "");
     let h = 0;
@@ -3620,10 +3618,12 @@ function campaignSelectableGoodsItems() {
   };
   return src.map((g) => {
     const bi = pickIdx(String(g.major || g.sku || ""), brands.length);
+    const ci = pickIdx(String(g.sku || g.major || ""), counters.length);
     return {
       ...g,
       category: g.major || "",
       brand: brands[bi] ? (brands[bi].brandName || "") : "",
+      counter: counters[ci] ? (counters[ci].counterName || counters[ci].ruleName || "") : "",
       supplierName: g.supplier || ""
     };
   });
@@ -3802,6 +3802,355 @@ function openCampaignGoodsSelectModal({ title, subtitle, checkboxName, onPicked,
       if (!picked.length) return toast("请先勾选数据");
       const selectedItems = allItems.filter((g) => picked.includes(String(g.sku)));
       if (onPicked) onPicked(selectedItems, comboCode);
+      closeModal();
+    }
+  });
+}
+
+function openCampaignComboGoodsSelectModal({ title, subtitle, checkboxName, onPicked }) {
+  const allItems = campaignSelectableGoodsItems();
+  const cbName = checkboxName || "campPickComboGoods";
+  const fieldIds = ["campComboSelCategory", "campComboSelBrand", "campComboSelGoods", "campComboSelCounter"];
+  const renderList = () => {
+    const goodsEl = document.getElementById("campComboSelGoods");
+    const categoryEl = document.getElementById("campComboSelCategory");
+    const brandEl = document.getElementById("campComboSelBrand");
+    const counterEl = document.getElementById("campComboSelCounter");
+    const qGoods = String(goodsEl ? goodsEl.value : "").trim().toLowerCase();
+    const qCategory = String(categoryEl ? categoryEl.value : "").trim().toLowerCase();
+    const qBrand = String(brandEl ? brandEl.value : "").trim().toLowerCase();
+    const qCounter = String(counterEl ? counterEl.value : "").trim().toLowerCase();
+    const filtered = allItems.filter((g) => {
+      if (qGoods && !String(g.name || "").toLowerCase().includes(qGoods)) return false;
+      if (qCategory && !String(g.category || "").toLowerCase().includes(qCategory)) return false;
+      if (qBrand && !String(g.brand || "").toLowerCase().includes(qBrand)) return false;
+      if (qCounter && !String(g.counter || "").toLowerCase().includes(qCounter)) return false;
+      return true;
+    });
+    const headers = ["序号", "商品编码", "商品条码", "商品名称", "规格", "单位", "类别", "品牌", "柜组"];
+    const rows = filtered.map((g, i) => `
+      <tr>
+        <td><input type="checkbox" name="${escapeHtml(String(cbName))}" value="${escapeHtml(String(g.sku || ""))}" /></td>
+        <td>${i + 1}</td>
+        <td class="mono">${escapeHtml(String(g.sku || ""))}</td>
+        <td class="mono">${escapeHtml(String(g.barcode || ""))}</td>
+        <td>${escapeHtml(String(g.name || ""))}</td>
+        <td>${escapeHtml(String(g.spec || ""))}</td>
+        <td>${escapeHtml(String(g.unit || ""))}</td>
+        <td>${escapeHtml(String(g.category || ""))}</td>
+        <td>${escapeHtml(String(g.brand || ""))}</td>
+        <td>${escapeHtml(String(g.counter || ""))}</td>
+      </tr>
+    `).join("");
+    const wrap = document.getElementById("campComboSelectWrap");
+    if (!wrap) return;
+    wrap.innerHTML = `
+      <div class="form">
+        <div class="form__row">
+          <div class="field">
+            <div class="field__label">商品类别</div>
+            <input class="input" id="campComboSelCategory" placeholder="请输入类别" value="${escapeHtml(categoryEl ? categoryEl.value : "")}" />
+          </div>
+          <div class="field">
+            <div class="field__label">商品品牌</div>
+            <input class="input" id="campComboSelBrand" placeholder="请输入品牌" value="${escapeHtml(brandEl ? brandEl.value : "")}" />
+          </div>
+          <div class="field">
+            <div class="field__label">商品名称</div>
+            <input class="input" id="campComboSelGoods" placeholder="请输入商品名称" value="${escapeHtml(goodsEl ? goodsEl.value : "")}" />
+          </div>
+          <div class="field">
+            <div class="field__label">柜组</div>
+            <input class="input" id="campComboSelCounter" placeholder="请输入柜组" value="${escapeHtml(counterEl ? counterEl.value : "")}" />
+          </div>
+          <div class="field" style="min-width:180px;">
+            <div class="field__label">操作</div>
+            <div class="toolbar__actions">
+              <button class="btn btn--primary" type="button" id="campComboSelQuery">查询</button>
+              <button class="btn" type="button" id="campComboSelReset">重置</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      ${selectionModalTableHtml({
+        headerCheckboxId: "campComboSelAll",
+        checkboxName: cbName,
+        headers,
+        rowsHtml: rows,
+        emptyText: "暂无匹配数据",
+        colspan: headers.length + 1
+      })}
+      <div class="footerbar" style="margin-top:10px;">
+        <div class="pager__meta">共${filtered.length}条</div>
+        <div class="pager">
+          <button class="btn as-pagebtn is-active" type="button">1</button>
+          <button class="btn as-pagebtn" type="button">2</button>
+          <button class="btn as-pagebtn" type="button">3</button>
+          <span class="as-pagebtn as-pagebtn--split">...</span>
+          <button class="btn as-pagebtn" type="button">${Math.max(1, Math.ceil(filtered.length / 10))}</button>
+        </div>
+        <div class="as-jump">跳至 <input class="input" value="1" /> 页</div>
+      </div>
+    `;
+    fieldIds.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener("input", () => renderList());
+    });
+    const qBtn = document.getElementById("campComboSelQuery");
+    if (qBtn) qBtn.addEventListener("click", () => renderList());
+    const rBtn = document.getElementById("campComboSelReset");
+    if (rBtn) {
+      rBtn.addEventListener("click", () => {
+        fieldIds.forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) el.value = "";
+        });
+        renderList();
+      });
+    }
+    const allEl = document.getElementById("campComboSelAll");
+    if (allEl) {
+      allEl.addEventListener("change", () => {
+        const checked = Boolean(allEl.checked);
+        Array.from(document.querySelectorAll(`input[name="${cbName}"]`)).forEach((x) => { x.checked = checked; });
+      });
+    }
+  };
+  openModal({
+    title: title || "选择商品",
+    subtitle: subtitle || "支持按类别、品牌、商品名称、柜组查询（原型演示）",
+    primaryText: "保存",
+    secondaryText: "取消",
+    bodyHtml: '<div id="campComboSelectWrap"></div>',
+    size: "xl",
+    className: "modal--goods-picker-wide",
+    onOpen: renderList,
+    onPrimary: () => {
+      const picked = pickCheckedValues(cbName);
+      if (!picked.length) return toast("请先勾选数据");
+      const selectedItems = allItems.filter((g) => picked.includes(String(g.sku)));
+      if (onPicked) onPicked(selectedItems);
+      closeModal();
+    }
+  });
+}
+
+function openCampaignComboCategorySelectModal({ title, subtitle, checkboxName, onPicked }) {
+  const allItems = (AppState.data.gmOnlineCategories || []).concat(AppState.data.gmOfflineCategories || []);
+  const cbName = checkboxName || "campPickComboCat";
+  const fieldIds = ["campComboCatSelCode", "campComboCatSelName"];
+  const renderList = () => {
+    const codeEl = document.getElementById("campComboCatSelCode");
+    const nameEl = document.getElementById("campComboCatSelName");
+    const qCode = String(codeEl ? codeEl.value : "").trim().toLowerCase();
+    const qName = String(nameEl ? nameEl.value : "").trim().toLowerCase();
+    const filtered = allItems.filter((g) => {
+      if (qCode && !String(g.catCode || "").toLowerCase().includes(qCode)) return false;
+      if (qName && !String(g.catName || "").toLowerCase().includes(qName)) return false;
+      return true;
+    });
+    const headers = ["序号", "类别编码", "类别名称", "备注"];
+    const rows = filtered.map((g, i) => `
+      <tr>
+        <td><input type="checkbox" name="${escapeHtml(String(cbName))}" value="${escapeHtml(String(g.catCode || ""))}" /></td>
+        <td>${i + 1}</td>
+        <td class="mono">${escapeHtml(String(g.catCode || ""))}</td>
+        <td>${escapeHtml(String(g.catName || ""))}</td>
+        <td>${escapeHtml(String(g.remark || ""))}</td>
+      </tr>
+    `).join("");
+    const wrap = document.getElementById("campComboCatSelectWrap");
+    if (!wrap) return;
+    wrap.innerHTML = `
+      <div class="form">
+        <div class="form__row">
+          <div class="field">
+            <div class="field__label">类别编码</div>
+            <input class="input" id="campComboCatSelCode" placeholder="请输入类别编码" value="${escapeHtml(codeEl ? codeEl.value : "")}" />
+          </div>
+          <div class="field">
+            <div class="field__label">类别名称</div>
+            <input class="input" id="campComboCatSelName" placeholder="请输入类别名称" value="${escapeHtml(nameEl ? nameEl.value : "")}" />
+          </div>
+          <div class="field" style="min-width:180px;">
+            <div class="field__label">操作</div>
+            <div class="toolbar__actions">
+              <button class="btn btn--primary" type="button" id="campComboCatSelQuery">查询</button>
+              <button class="btn" type="button" id="campComboCatSelReset">重置</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      ${selectionModalTableHtml({
+        headerCheckboxId: "campComboCatSelAll",
+        checkboxName: cbName,
+        headers,
+        rowsHtml: rows,
+        emptyText: "暂无匹配数据",
+        colspan: headers.length + 1
+      })}
+      <div class="footerbar" style="margin-top:10px;">
+        <div class="pager__meta">共${filtered.length}条</div>
+        <div class="pager">
+          <button class="btn as-pagebtn is-active" type="button">1</button>
+          <button class="btn as-pagebtn" type="button">2</button>
+          <button class="btn as-pagebtn" type="button">3</button>
+          <span class="as-pagebtn as-pagebtn--split">...</span>
+          <button class="btn as-pagebtn" type="button">${Math.max(1, Math.ceil(filtered.length / 10))}</button>
+        </div>
+        <div class="as-jump">跳至 <input class="input" value="1" /> 页</div>
+      </div>
+    `;
+    fieldIds.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener("input", () => renderList());
+    });
+    const qBtn = document.getElementById("campComboCatSelQuery");
+    if (qBtn) qBtn.addEventListener("click", () => renderList());
+    const rBtn = document.getElementById("campComboCatSelReset");
+    if (rBtn) {
+      rBtn.addEventListener("click", () => {
+        fieldIds.forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) el.value = "";
+        });
+        renderList();
+      });
+    }
+    const allEl = document.getElementById("campComboCatSelAll");
+    if (allEl) {
+      allEl.addEventListener("change", () => {
+        const checked = Boolean(allEl.checked);
+        Array.from(document.querySelectorAll(`input[name="${cbName}"]`)).forEach((x) => { x.checked = checked; });
+      });
+    }
+  };
+  openModal({
+    title: title || "选择类别",
+    subtitle: subtitle || "支持按类别编码、类别名称查询（原型演示）",
+    primaryText: "保存",
+    secondaryText: "取消",
+    bodyHtml: '<div id="campComboCatSelectWrap"></div>',
+    size: "xl",
+    className: "modal--goods-picker-wide",
+    onOpen: renderList,
+    onPrimary: () => {
+      const picked = pickCheckedValues(cbName);
+      if (!picked.length) return toast("请先勾选数据");
+      const selectedItems = allItems.filter((g) => picked.includes(String(g.catCode)));
+      if (onPicked) onPicked(selectedItems);
+      closeModal();
+    }
+  });
+}
+
+function openCampaignComboBrandSelectModal({ title, subtitle, checkboxName, onPicked }) {
+  const allItems = Array.isArray(AppState.data.gmBrands) ? AppState.data.gmBrands : [];
+  const cbName = checkboxName || "campPickComboBrand";
+  const fieldIds = ["campComboBrandSelCode", "campComboBrandSelName"];
+  const renderList = () => {
+    const codeEl = document.getElementById("campComboBrandSelCode");
+    const nameEl = document.getElementById("campComboBrandSelName");
+    const qCode = String(codeEl ? codeEl.value : "").trim().toLowerCase();
+    const qName = String(nameEl ? nameEl.value : "").trim().toLowerCase();
+    const filtered = allItems.filter((g) => {
+      if (qCode && !String(g.brandCode || "").toLowerCase().includes(qCode)) return false;
+      if (qName && !String(g.brandName || "").toLowerCase().includes(qName)) return false;
+      return true;
+    });
+    const headers = ["序号", "品牌编码", "品牌名称", "备注"];
+    const rows = filtered.map((g, i) => `
+      <tr>
+        <td><input type="checkbox" name="${escapeHtml(String(cbName))}" value="${escapeHtml(String(g.brandCode || ""))}" /></td>
+        <td>${i + 1}</td>
+        <td class="mono">${escapeHtml(String(g.brandCode || ""))}</td>
+        <td>${escapeHtml(String(g.brandName || ""))}</td>
+        <td>${escapeHtml(String(g.remark || ""))}</td>
+      </tr>
+    `).join("");
+    const wrap = document.getElementById("campComboBrandSelectWrap");
+    if (!wrap) return;
+    wrap.innerHTML = `
+      <div class="form">
+        <div class="form__row">
+          <div class="field">
+            <div class="field__label">品牌编码</div>
+            <input class="input" id="campComboBrandSelCode" placeholder="请输入品牌编码" value="${escapeHtml(codeEl ? codeEl.value : "")}" />
+          </div>
+          <div class="field">
+            <div class="field__label">品牌名称</div>
+            <input class="input" id="campComboBrandSelName" placeholder="请输入品牌名称" value="${escapeHtml(nameEl ? nameEl.value : "")}" />
+          </div>
+          <div class="field" style="min-width:180px;">
+            <div class="field__label">操作</div>
+            <div class="toolbar__actions">
+              <button class="btn btn--primary" type="button" id="campComboBrandSelQuery">查询</button>
+              <button class="btn" type="button" id="campComboBrandSelReset">重置</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      ${selectionModalTableHtml({
+        headerCheckboxId: "campComboBrandSelAll",
+        checkboxName: cbName,
+        headers,
+        rowsHtml: rows,
+        emptyText: "暂无匹配数据",
+        colspan: headers.length + 1
+      })}
+      <div class="footerbar" style="margin-top:10px;">
+        <div class="pager__meta">共${filtered.length}条</div>
+        <div class="pager">
+          <button class="btn as-pagebtn is-active" type="button">1</button>
+          <button class="btn as-pagebtn" type="button">2</button>
+          <button class="btn as-pagebtn" type="button">3</button>
+          <span class="as-pagebtn as-pagebtn--split">...</span>
+          <button class="btn as-pagebtn" type="button">${Math.max(1, Math.ceil(filtered.length / 10))}</button>
+        </div>
+        <div class="as-jump">跳至 <input class="input" value="1" /> 页</div>
+      </div>
+    `;
+    fieldIds.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener("input", () => renderList());
+    });
+    const qBtn = document.getElementById("campComboBrandSelQuery");
+    if (qBtn) qBtn.addEventListener("click", () => renderList());
+    const rBtn = document.getElementById("campComboBrandSelReset");
+    if (rBtn) {
+      rBtn.addEventListener("click", () => {
+        fieldIds.forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) el.value = "";
+        });
+        renderList();
+      });
+    }
+    const allEl = document.getElementById("campComboBrandSelAll");
+    if (allEl) {
+      allEl.addEventListener("change", () => {
+        const checked = Boolean(allEl.checked);
+        Array.from(document.querySelectorAll(`input[name="${cbName}"]`)).forEach((x) => { x.checked = checked; });
+      });
+    }
+  };
+  openModal({
+    title: title || "选择品牌",
+    subtitle: subtitle || "支持按品牌编码、品牌名称查询（原型演示）",
+    primaryText: "保存",
+    secondaryText: "取消",
+    bodyHtml: '<div id="campComboBrandSelectWrap"></div>',
+    size: "xl",
+    className: "modal--goods-picker-wide",
+    onOpen: renderList,
+    onPrimary: () => {
+      const picked = pickCheckedValues(cbName);
+      if (!picked.length) return toast("请先勾选数据");
+      const selectedItems = allItems.filter((g) => picked.includes(String(g.brandCode)));
+      if (onPicked) onPicked(selectedItems);
       closeModal();
     }
   });
@@ -12281,7 +12630,9 @@ function campaignWizardEnsureDraft(mode) {
       };
   base._initKey = key;
   if (!existing && !String(base.templateId || "").trim() && String(base.promoType || "").trim()) {
-    const cand = getEffectiveTemplates().find((t) => campaignPromoTypeMatchesTemplate(campaignPromoTypeFromTemplate(t) || "", String(base.promoType || "").trim()));
+    const pt = String(base.promoType || "").trim();
+    let cand = getEffectiveTemplates().find((t) => String(campaignPromoTypeFromTemplate(t) || "").trim() === pt);
+    if (!cand) cand = getEffectiveTemplates().find((t) => campaignPromoTypeMatchesTemplate(campaignPromoTypeFromTemplate(t) || "", pt));
     if (cand) base.templateId = cand.id;
   }
   if (!base.scope) base.scope = { channel: "全渠道", userScope: "全部", memberGrades: [], memberTags: [] };
@@ -15968,7 +16319,7 @@ function campaignWizardRenderGoodsTable() {
     headers = ["商品编码", "商品条码", "商品名称", "商品规格", "商品单位", "商品进价", "商品售价", "倍数数量", "折扣", "限购数量"];
   }
   if (isOnePrice && tab === "goods") {
-    headers = ["商品编码", "商品条码", "商品名称", "商品规格", "商品单位", "商品进价", "商品售价"];
+    headers = ["商品编码", "商品条码", "商品名称", "规格", "单位", "商品售价", "销售分摊比例%"];
   }
   if (isOnePrice && tab === "categories") {
     headers = ["组合编码", "类别编码", "类别名称"];
@@ -16072,10 +16423,10 @@ function campaignWizardRenderGoodsTable() {
           <td><input class="input mono" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="skuCode" value="${escapeHtml(x.skuCode || "")}" placeholder="商品编码" /></td>
           <td><input class="input mono" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="barcode" value="${escapeHtml(x.barcode || "")}" placeholder="商品条码" /></td>
           <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="skuName" value="${escapeHtml(x.skuName || "")}" placeholder="商品名称" /></td>
-          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="spec" value="${escapeHtml(x.spec || "")}" placeholder="商品规格" /></td>
-          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="unit" value="${escapeHtml(x.unit || "")}" placeholder="商品单位" /></td>
-          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="costPrice" type="number" min="0" step="0.01" value="${escapeHtml(String(x.costPrice ?? ""))}" placeholder="商品进价" /></td>
-          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="price" type="number" min="0" step="0.01" value="${escapeHtml(String(x.price ?? ""))}" placeholder="商品售价" /></td>
+          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="spec" value="${escapeHtml(x.spec || "")}" placeholder="规格" /></td>
+          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="unit" value="${escapeHtml(x.unit || "")}" placeholder="单位" /></td>
+          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="price" type="number" min="0" step="0.01" value="${escapeHtml(String(x.price ?? ""))}" placeholder="售价" /></td>
+          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="shareRatio" type="number" min="0" max="100" step="0.01" value="${escapeHtml(String(x.shareRatio ?? ""))}" placeholder="销售分摊比例%" /></td>
           <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="discount" type="number" min="0" max="1" step="0.01" value="${escapeHtml(String(x.discount ?? gs.discountAll ?? ""))}" placeholder="折扣" /></td>
           <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="limitQty" type="number" min="0" step="1" value="${escapeHtml(String(x.limitQty ?? ""))}" placeholder="限购数量" /></td>
         </tr>`;
@@ -16086,10 +16437,9 @@ function campaignWizardRenderGoodsTable() {
           <td><input class="input mono" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="skuCode" value="${escapeHtml(x.skuCode || "")}" placeholder="商品编码" /></td>
           <td><input class="input mono" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="barcode" value="${escapeHtml(x.barcode || "")}" placeholder="商品条码" /></td>
           <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="skuName" value="${escapeHtml(x.skuName || "")}" placeholder="商品名称" /></td>
-          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="spec" value="${escapeHtml(x.spec || "")}" placeholder="商品规格" /></td>
-          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="unit" value="${escapeHtml(x.unit || "")}" placeholder="商品单位" /></td>
-          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="costPrice" type="number" min="0" step="0.01" value="${escapeHtml(String(x.costPrice ?? ""))}" placeholder="商品进价" /></td>
-          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="price" type="number" min="0" step="0.01" value="${escapeHtml(String(x.price ?? ""))}" placeholder="商品售价" /></td>
+          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="spec" value="${escapeHtml(x.spec || "")}" placeholder="规格" /></td>
+          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="unit" value="${escapeHtml(x.unit || "")}" placeholder="单位" /></td>
+          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="price" type="number" min="0" step="0.01" value="${escapeHtml(String(x.price ?? ""))}" placeholder="售价" /></td>
           <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="qtyThreshold" type="number" min="1" step="1" value="${escapeHtml(String(x.qtyThreshold ?? ""))}" placeholder="倍数数量" /></td>
           <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="discount" type="number" min="0" max="1" step="0.01" value="${escapeHtml(String(x.discount ?? gs.discountAll ?? ""))}" placeholder="折扣" /></td>
           <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="limitQty" type="number" min="0" step="1" value="${escapeHtml(String(x.limitQty ?? ""))}" placeholder="限购数量" /></td>
@@ -16100,10 +16450,9 @@ function campaignWizardRenderGoodsTable() {
           <td><input class="input mono" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="skuCode" value="${escapeHtml(x.skuCode || "")}" placeholder="商品编码" /></td>
           <td><input class="input mono" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="barcode" value="${escapeHtml(x.barcode || "")}" placeholder="商品条码" /></td>
           <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="skuName" value="${escapeHtml(x.skuName || "")}" placeholder="商品名称" /></td>
-          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="spec" value="${escapeHtml(x.spec || "")}" placeholder="商品规格" /></td>
-          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="unit" value="${escapeHtml(x.unit || "")}" placeholder="商品单位" /></td>
-          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="costPrice" type="number" min="0" step="0.01" value="${escapeHtml(String(x.costPrice ?? ""))}" placeholder="商品进价" /></td>
-          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="price" type="number" min="0" step="0.01" value="${escapeHtml(String(x.price ?? ""))}" placeholder="商品售价" /></td>
+          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="spec" value="${escapeHtml(x.spec || "")}" placeholder="规格" /></td>
+          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="unit" value="${escapeHtml(x.unit || "")}" placeholder="单位" /></td>
+          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="price" type="number" min="0" step="0.01" value="${escapeHtml(String(x.price ?? ""))}" placeholder="售价" /></td>
           <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="qtyThreshold" type="number" min="1" step="1" value="${escapeHtml(String(x.qtyThreshold ?? ""))}" placeholder="满数量" /></td>
           <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="discount" type="number" min="0" max="1" step="0.01" value="${escapeHtml(String(x.discount ?? gs.discountAll ?? ""))}" placeholder="折扣" /></td>
         </tr>`;
@@ -16113,10 +16462,9 @@ function campaignWizardRenderGoodsTable() {
           <td><input class="input mono" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="skuCode" value="${escapeHtml(x.skuCode || "")}" placeholder="商品编码" /></td>
           <td><input class="input mono" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="barcode" value="${escapeHtml(x.barcode || "")}" placeholder="商品条码" /></td>
           <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="skuName" value="${escapeHtml(x.skuName || "")}" placeholder="商品名称" /></td>
-          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="spec" value="${escapeHtml(x.spec || "")}" placeholder="商品规格" /></td>
-          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="unit" value="${escapeHtml(x.unit || "")}" placeholder="商品单位" /></td>
-          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="costPrice" type="number" min="0" step="0.01" value="${escapeHtml(String(x.costPrice ?? ""))}" placeholder="商品进价" /></td>
-          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="price" type="number" min="0" step="0.01" value="${escapeHtml(String(x.price ?? ""))}" placeholder="商品售价" /></td>
+          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="spec" value="${escapeHtml(x.spec || "")}" placeholder="规格" /></td>
+          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="unit" value="${escapeHtml(x.unit || "")}" placeholder="单位" /></td>
+          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="price" type="number" min="0" step="0.01" value="${escapeHtml(String(x.price ?? ""))}" placeholder="售价" /></td>
           <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="limitQty" type="number" min="0" step="1" value="${escapeHtml(String(x.limitQty ?? ""))}" placeholder="限购数量" /></td>
         </tr>`;
       }
@@ -16155,10 +16503,9 @@ function campaignWizardRenderGoodsTable() {
           <td><input class="input mono" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="skuCode" value="${escapeHtml(x.skuCode || "")}" placeholder="商品编码" /></td>
           <td><input class="input mono" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="barcode" value="${escapeHtml(x.barcode || "")}" placeholder="商品条码" /></td>
           <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="skuName" value="${escapeHtml(x.skuName || "")}" placeholder="商品名称" /></td>
-          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="spec" value="${escapeHtml(x.spec || "")}" placeholder="商品规格" /></td>
-          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="unit" value="${escapeHtml(x.unit || "")}" placeholder="商品单位" /></td>
-          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="costPrice" type="number" min="0" step="0.01" value="${escapeHtml(String(x.costPrice ?? ""))}" placeholder="商品进价" /></td>
-          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="price" type="number" min="0" step="0.01" value="${escapeHtml(String(x.price ?? ""))}" placeholder="商品售价" /></td>
+          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="spec" value="${escapeHtml(x.spec || "")}" placeholder="规格" /></td>
+          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="unit" value="${escapeHtml(x.unit || "")}" placeholder="单位" /></td>
+          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="price" type="number" min="0" step="0.01" value="${escapeHtml(String(x.price ?? ""))}" placeholder="售价" /></td>
           <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="promoPrice" type="number" min="0" step="0.01" value="${escapeHtml(String(pv ?? ""))}" placeholder="促销价" /></td>
           ${goodsFlags.includeDeductRate ? `<td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="deductRate" type="number" min="0" step="0.01" value="${escapeHtml(String(x.deductRate ?? ""))}" placeholder="扣率" /></td>` : ""}
           ${goodsFlags.includeQtyThreshold ? `<td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="qtyThreshold" type="number" min="1" step="1" value="${escapeHtml(String(x.qtyThreshold ?? ""))}" placeholder="购满数量" /></td>` : ""}
@@ -16170,10 +16517,10 @@ function campaignWizardRenderGoodsTable() {
           <td><input class="input mono" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="skuCode" value="${escapeHtml(x.skuCode || "")}" placeholder="商品编码" /></td>
           <td><input class="input mono" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="barcode" value="${escapeHtml(x.barcode || "")}" placeholder="商品条码" /></td>
           <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="skuName" value="${escapeHtml(x.skuName || "")}" placeholder="商品名称" /></td>
-          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="spec" value="${escapeHtml(x.spec || "")}" placeholder="商品规格" /></td>
-          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="unit" value="${escapeHtml(x.unit || "")}" placeholder="商品单位" /></td>
-          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="costPrice" type="number" min="0" step="0.01" value="${escapeHtml(String(x.costPrice ?? ""))}" placeholder="商品进价" /></td>
-          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="price" type="number" min="0" step="0.01" value="${escapeHtml(String(x.price ?? ""))}" placeholder="商品售价" /></td>
+          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="spec" value="${escapeHtml(x.spec || "")}" placeholder="规格" /></td>
+          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="unit" value="${escapeHtml(x.unit || "")}" placeholder="单位" /></td>
+          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="price" type="number" min="0" step="0.01" value="${escapeHtml(String(x.price ?? ""))}" placeholder="售价" /></td>
+          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="shareRatio" type="number" min="0" max="100" step="0.01" value="${escapeHtml(String(x.shareRatio ?? ""))}" placeholder="销售分摊比例%" /></td>
         </tr>`;
       }
       if (isOnePrice && tab === "categories") {
@@ -16195,10 +16542,9 @@ function campaignWizardRenderGoodsTable() {
           <td><input class="input mono" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="skuCode" value="${escapeHtml(x.skuCode || "")}" placeholder="商品编码" /></td>
           <td><input class="input mono" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="barcode" value="${escapeHtml(x.barcode || "")}" placeholder="商品条码" /></td>
           <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="skuName" value="${escapeHtml(x.skuName || "")}" placeholder="商品名称" /></td>
-          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="spec" value="${escapeHtml(x.spec || "")}" placeholder="商品规格" /></td>
-          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="unit" value="${escapeHtml(x.unit || "")}" placeholder="商品单位" /></td>
-          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="costPrice" type="number" min="0" step="0.01" value="${escapeHtml(String(x.costPrice ?? ""))}" placeholder="商品进价" /></td>
-          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="price" type="number" min="0" step="0.01" value="${escapeHtml(String(x.price ?? ""))}" placeholder="商品售价" /></td>
+          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="spec" value="${escapeHtml(x.spec || "")}" placeholder="规格" /></td>
+          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="unit" value="${escapeHtml(x.unit || "")}" placeholder="单位" /></td>
+          <td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="price" type="number" min="0" step="0.01" value="${escapeHtml(String(x.price ?? ""))}" placeholder="售价" /></td>
           ${goodsFlags.includeLimitQty ? `<td><input class="input" style="width:100%" data-cw="goodsTab" data-tab="${escapeHtml(tab)}" data-idx="${idx}" data-field="limitQty" type="number" min="0" step="1" value="${escapeHtml(String(x.limitQty ?? ""))}" placeholder="限购数量" /></td>` : ""}
         </tr>`;
       }
@@ -16707,13 +17053,32 @@ function campaignWizardUpdateDraftFromEvent(e) {
     }
     return;
   }
+  if (cw === "burdenRule" && field) {
+    d.goodsScope = d.goodsScope || {};
+    d.goodsScope.burdenRule = d.goodsScope.burdenRule || {};
+    if (field === "shareMode") {
+      d.goodsScope.burdenRule.shareMode = t.value;
+      render();
+      return;
+    }
+    d.goodsScope.burdenRule[field] = t.value === "" ? "" : Number(t.value);
+    return;
+  }
+  if (cw === "burdenGoods" && field) {
+    const idx = Number(t.getAttribute("data-idx"));
+    d.goodsScope = d.goodsScope || {};
+    if (Array.isArray(d.goodsScope.goods) && d.goodsScope.goods[idx]) {
+      d.goodsScope.goods[idx][field] = t.value === "" ? "" : Number(t.value);
+    }
+    return;
+  }
   if (cw === "goodsScope" && field) {
     d.goodsScope = d.goodsScope || {};
     d.goodsScope[field] = t.value;
     if (field === "purchaseType") {
       d.goodsScope[field] = campaignReducePurchaseTypeNorm(t.value);
     }
-    if (field === "comboMode" || field === "comboScope" || field === "scopeMode") {
+    if (field === "comboMode" || field === "comboScope" || field === "scopeMode" || field === "supplySubsidyMethod" || field === "discountShareMethod") {
       render();
       return;
     }
@@ -16823,7 +17188,7 @@ function campaignWizardUpdateDraftFromEvent(e) {
   if (cw === "comboGoods" && field && Number.isFinite(idx)) {
     const gs = comboCampaignEnsureGoodsScope(d);
     if (!gs.goods[idx]) gs.goods[idx] = {};
-    if (field === "costPrice" || field === "deductRate") gs.goods[idx][field] = t.value === "" ? "" : Number(t.value);
+    if (field === "costPrice" || field === "deductRate" || field === "price") gs.goods[idx][field] = t.value === "" ? "" : Number(t.value);
     else if (field === "comboCode") gs.goods[idx][field] = comboCampaignGoodsCodeValue(t.value, 1);
     else gs.goods[idx][field] = t.value;
     return;
@@ -17823,7 +18188,7 @@ function comboCampaignEnsureGoodsScope(draft = {}) {
   if (!Array.isArray(gs.excludeGoods)) gs.excludeGoods = [];
   if (!Array.isArray(gs.comboSettings)) gs.comboSettings = [];
   if (typeof gs.purchaseType === "undefined" || gs.purchaseType === "" || gs.purchaseType === "单品") gs.purchaseType = "组合";
-  if (typeof gs.comboMode === "undefined" || gs.comboMode === "") gs.comboMode = "固定组合";
+  if (typeof gs.comboMode === "undefined" || gs.comboMode === "") gs.comboMode = "任选组合";
   if (typeof gs.comboScope === "undefined" || gs.comboScope === "") gs.comboScope = "商品";
   if (typeof gs.keyword === "undefined") gs.keyword = "";
   gs.goods.forEach((item, idx) => {
@@ -17836,12 +18201,20 @@ function comboCampaignEnsureGoodsScope(draft = {}) {
     if (typeof row.unit === "undefined") row.unit = "";
     if (typeof row.costPrice === "undefined") row.costPrice = "";
     if (typeof row.deductRate === "undefined") row.deductRate = "";
+    if (typeof row.barcode === "undefined") row.barcode = "";
+    if (typeof row.shortName === "undefined") row.shortName = "";
+    if (typeof row.price === "undefined") row.price = "";
+    if (typeof row.burdenRatio === "undefined") row.burdenRatio = "";
+    if (typeof row.supplierRatio === "undefined") row.supplierRatio = "";
+    if (typeof row.purchaseRatio === "undefined") row.purchaseRatio = "";
+    if (typeof row.storeRatio === "undefined") row.storeRatio = "";
   });
   gs.categories.forEach((item, idx) => {
     if (!item || typeof item !== "object") gs.categories[idx] = {};
     const row = gs.categories[idx];
     if (typeof row.catCode === "undefined") row.catCode = "";
     if (typeof row.catName === "undefined") row.catName = "";
+    if (typeof row.shareRatio === "undefined") row.shareRatio = "";
   });
   gs.brands.forEach((item, idx) => {
     if (!item || typeof item !== "object") gs.brands[idx] = {};
@@ -17850,6 +18223,7 @@ function comboCampaignEnsureGoodsScope(draft = {}) {
     if (typeof row.brandName === "undefined") row.brandName = "";
     if (typeof row.promoPrice === "undefined") row.promoPrice = "";
     if (typeof row.limitQty === "undefined") row.limitQty = "";
+    if (typeof row.shareRatio === "undefined") row.shareRatio = "";
   });
   gs.excludeCategories.forEach((item, idx) => {
     if (!item || typeof item !== "object") gs.excludeCategories[idx] = {};
@@ -17882,6 +18256,11 @@ function comboCampaignEnsureGoodsScope(draft = {}) {
     const uniqueCodes = Array.from(new Set(gs.goods.map((x) => comboCampaignGoodsCodeValue(x.comboCode, 1))));
     if (uniqueCodes.length) gs.comboSettings = uniqueCodes.map((code) => ({ comboCode: code, promoPrice: "", discountWay: "倍数", cap: "" }));
   }
+  gs.burdenRule = gs.burdenRule || {};
+  if (typeof gs.burdenRule.shareMode === "undefined" || gs.burdenRule.shareMode === "") gs.burdenRule.shareMode = "统一比例";
+  ["supplier", "purchase", "store"].forEach((key) => {
+    if (typeof gs.burdenRule[key] === "undefined" || gs.burdenRule[key] === "") gs.burdenRule[key] = 0;
+  });
   return gs;
 }
 
@@ -17891,14 +18270,15 @@ function comboCampaignGoodsCodeOptionsHtml(selected = "") {
 }
 
 function comboCampaignGoodsQueryMeta(goodsScope = {}) {
-  const keyword = String(goodsScope.keyword || "").trim().toLowerCase();
+  const keywordCode = String(goodsScope.keywordCode || "").trim().toLowerCase();
+  const keywordName = String(goodsScope.keywordName || "").trim().toLowerCase();
   const allRows = (Array.isArray(goodsScope.goods) ? goodsScope.goods : []).map((x, idx) => ({ ...x, __idx: idx }));
   const rows = allRows.filter((x) => {
-    if (!keyword) return true;
-    const haystack = [x.comboCode, x.skuCode, x.barcode, x.skuName, x.spec, x.unit].join(" ").toLowerCase();
-    return haystack.includes(keyword);
+    if (keywordCode && !String(x.skuCode || "").toLowerCase().includes(keywordCode)) return false;
+    if (keywordName && !String(x.skuName || "").toLowerCase().includes(keywordName)) return false;
+    return true;
   });
-  return { keyword, rows };
+  return { rows };
 }
 
 function comboCampaignCategoryActiveTab() {
@@ -17960,16 +18340,16 @@ function comboCampaignGoodsToolbarHtml(goodsScope = {}, readonly = false) {
     <div class="combo-goods-toolbar">
       <div class="combo-goods-toolbar__title">商品信息</div>
       <div class="combo-goods-toolbar__filters">
-        <input class="input" ${readonly ? "disabled" : 'data-cw="goodsScope" data-field="keyword"'} value="${escapeHtml(String(goodsScope.keyword || ""))}" placeholder="请输入商品编码、商品名称" />
-        ${readonly ? "" : `<button class="btn btn--primary combo-goods-toolbar__query" type="button" data-act="campKeywordQuery" data-cw="goodsScope" data-field="keyword">查询</button>`}
+        <input class="input" ${readonly ? "disabled" : 'data-cw="goodsScope" data-field="keywordCode"'} value="${escapeHtml(String(goodsScope.keywordCode || ""))}" placeholder="商品编码" />
+        <input class="input" ${readonly ? "disabled" : 'data-cw="goodsScope" data-field="keywordName"'} value="${escapeHtml(String(goodsScope.keywordName || ""))}" placeholder="商品名称" />
+        ${readonly ? "" : `<button class="btn btn--primary combo-goods-toolbar__query" type="button" data-act="campKeywordQuery">查询</button>`}
       </div>
       ${readonly ? "" : `
         <div class="combo-goods-toolbar__actions">
           <button class="btn" type="button" data-act="campImportScheduleGoods">引入档期商品</button>
           <button class="btn btn--primary" type="button" data-act="campSelectGoodsTab">选商品</button>
-          <button class="btn" type="button" data-act="campGoodsImport">导入商品</button>
-          <button class="btn" type="button" data-act="campComboGoodsAdd">增加行</button>
-          <button class="btn" type="button" data-act="campComboGoodsRemove">移除商品</button>
+          <button class="btn btn--primary" type="button" data-act="campComboGoodsAdd">新增一行</button>
+          <button class="btn" type="button" data-act="campGoodsImport">导入</button>
         </div>
       `}
     </div>
@@ -18057,7 +18437,7 @@ function comboCampaignBrandToolbarHtml(goodsScope = {}, readonly = false) {
 
 function comboCampaignGoodsInfoTableHtml(draft = {}, readonly = false) {
   const gs = comboCampaignEnsureGoodsScope(draft);
-  const isFixedCombo = String(gs.comboMode || "固定组合") === "固定组合";
+  const showShareRatio = String(gs.supplySubsidyMethod || "") === "销售补差" && String(gs.discountShareMethod || "") === "固定比例";
   const ui = AppState.ui.campaignWizard || {};
   const meta = comboCampaignGoodsQueryMeta(gs);
   const pickedSet = new Set((Array.isArray(ui.comboGoodsPicked) ? ui.comboGoodsPicked : []).map((x) => Number(x)).filter(Number.isFinite));
@@ -18071,13 +18451,19 @@ function comboCampaignGoodsInfoTableHtml(draft = {}, readonly = false) {
         <td>${idx + 1}</td>
         <td>${readonly
           ? `<span class="combo-goods-cell-text mono">${escapeHtml(String(x.comboCode || ""))}</span>`
-          : `<select class="combo-goods-cell-select mono" data-cw="comboGoods" data-idx="${dataIdx}" data-field="comboCode">${comboCampaignGoodsCodeOptionsHtml(x.comboCode)}</select>`}</td>
+          : `<input class="combo-goods-cell-input mono" data-cw="comboGoods" data-idx="${dataIdx}" data-field="comboCode" value="${escapeHtml(String(x.comboCode || ""))}" />`}</td>
         <td>${readonly
           ? `<span class="combo-goods-cell-text mono">${escapeHtml(String(x.skuCode || ""))}</span>`
           : `<input class="combo-goods-cell-input mono" data-cw="comboGoods" data-idx="${dataIdx}" data-field="skuCode" value="${escapeHtml(String(x.skuCode || ""))}" />`}</td>
         <td>${readonly
+          ? `<span class="combo-goods-cell-text mono">${escapeHtml(String(x.barcode || ""))}</span>`
+          : `<input class="combo-goods-cell-input mono" data-cw="comboGoods" data-idx="${dataIdx}" data-field="barcode" value="${escapeHtml(String(x.barcode || ""))}" />`}</td>
+        <td>${readonly
           ? `<span class="combo-goods-cell-text">${escapeHtml(String(x.skuName || ""))}</span>`
           : `<input class="combo-goods-cell-input" data-cw="comboGoods" data-idx="${dataIdx}" data-field="skuName" value="${escapeHtml(String(x.skuName || ""))}" />`}</td>
+        <td>${readonly
+          ? `<span class="combo-goods-cell-text">${escapeHtml(String(x.shortName || ""))}</span>`
+          : `<input class="combo-goods-cell-input" data-cw="comboGoods" data-idx="${dataIdx}" data-field="shortName" value="${escapeHtml(String(x.shortName || ""))}" />`}</td>
         <td>${readonly
           ? `<span class="combo-goods-cell-text">${escapeHtml(String(x.spec || ""))}</span>`
           : `<input class="combo-goods-cell-input" data-cw="comboGoods" data-idx="${dataIdx}" data-field="spec" value="${escapeHtml(String(x.spec || ""))}" />`}</td>
@@ -18085,19 +18471,21 @@ function comboCampaignGoodsInfoTableHtml(draft = {}, readonly = false) {
           ? `<span class="combo-goods-cell-text">${escapeHtml(String(x.unit || ""))}</span>`
           : `<input class="combo-goods-cell-input" data-cw="comboGoods" data-idx="${dataIdx}" data-field="unit" value="${escapeHtml(String(x.unit || ""))}" />`}</td>
         <td>${readonly
-          ? `<span class="combo-goods-cell-text">${escapeHtml(String(x.costPrice ?? ""))}</span>`
-          : `<input class="combo-goods-cell-input" data-cw="comboGoods" data-idx="${dataIdx}" data-field="costPrice" type="number" min="0" step="0.01" value="${escapeHtml(String(x.costPrice ?? ""))}" />`}</td>
-        ${isFixedCombo ? `<td>${readonly
-          ? `<span class="combo-goods-cell-text">${escapeHtml(String(x.qty ?? ""))}</span>`
-          : `<input class="combo-goods-cell-input" data-cw="comboGoods" data-idx="${dataIdx}" data-field="qty" type="number" min="0" step="1" value="${escapeHtml(String(x.qty ?? ""))}" />`}</td>` : ""}
+          ? `<span class="combo-goods-cell-text">${escapeHtml(String(x.price ?? ""))}</span>`
+          : `<input class="combo-goods-cell-input" data-cw="comboGoods" data-idx="${dataIdx}" data-field="price" type="number" min="0" step="0.01" value="${escapeHtml(String(x.price ?? ""))}" />`}</td>
+        ${showShareRatio ? `<td>${readonly
+          ? `<span class="combo-goods-cell-text">${escapeHtml(String(x.shareRatio ?? ""))}</span>`
+          : `<input class="combo-goods-cell-input" data-cw="comboGoods" data-idx="${dataIdx}" data-field="shareRatio" type="number" min="0" max="100" step="0.01" value="${escapeHtml(String(x.shareRatio ?? ""))}" placeholder="销售分摊比例%" />`}</td>` : ""}
+        ${readonly ? "" : `<td><a class="link" href="javascript:;" data-act="campComboGoodsRowDel" data-idx="${dataIdx}">删除</a></td>`}
       </tr>
     `;
   }).join("");
+  const totalCols = 10 + (showShareRatio ? 1 : 0) + (readonly ? 0 : 1);
   const emptyRows = Array.from({ length: Math.max(0, 3 - visibleRows.length) }).map((_, idx) => `
     <tr>
       <td class="combo-goods-table__check"><input type="checkbox" disabled /></td>
       <td>${visibleRows.length + idx + 1}</td>
-      ${Array.from({ length: 6 + (isFixedCombo ? 1 : 0) }).map(() => "<td></td>").join("")}
+      ${Array.from({ length: totalCols - 2 }).map(() => "<td></td>").join("")}
     </tr>
   `).join("");
   return `
@@ -18109,11 +18497,14 @@ function comboCampaignGoodsInfoTableHtml(draft = {}, readonly = false) {
             <th>序号</th>
             <th>组合编码</th>
             <th>商品编码</th>
+            <th>商品条码</th>
             <th>商品名称</th>
+            <th>商品简称</th>
             <th>商品规格</th>
-            <th>商品单位</th>
-            <th>商品进价</th>
-            ${isFixedCombo ? `<th>商品数量</th>` : ""}
+            <th>单位</th>
+            <th>商品售价</th>
+            ${showShareRatio ? `<th>销售分摊比例%</th>` : ""}
+            ${readonly ? "" : `<th>操作</th>`}
           </tr>
         </thead>
         <tbody>${rowHtml}${emptyRows}</tbody>
@@ -18126,6 +18517,7 @@ function comboCampaignGoodsInfoTableHtml(draft = {}, readonly = false) {
 function comboCampaignCategoryInfoTableHtml(draft = {}, readonly = false) {
   const gs = comboCampaignEnsureGoodsScope(draft);
   const activeTab = comboCampaignCategoryActiveTab();
+  const showShareRatio = activeTab === "categories" && String(gs.supplySubsidyMethod || "") === "销售补差" && String(gs.discountShareMethod || "") === "固定比例";
   const ui = AppState.ui.campaignWizard || {};
   const meta = comboCampaignCategoryQueryMeta(gs, activeTab);
   const pickKey = comboCampaignScopePickKey(activeTab);
@@ -18162,10 +18554,13 @@ function comboCampaignCategoryInfoTableHtml(draft = {}, readonly = false) {
         <td>${readonly || activeTab === "excludeCategories"
           ? `<span class="combo-goods-cell-text">${escapeHtml(String(x.catName || ""))}</span>`
           : `<input class="combo-goods-cell-input" data-cw="comboScopeRows" data-tab="${activeTab}" data-idx="${dataIdx}" data-field="catName" value="${escapeHtml(String(x.catName || ""))}" />`}</td>
+        ${showShareRatio ? `<td>${readonly
+          ? `<span class="combo-goods-cell-text">${escapeHtml(String(x.shareRatio ?? ""))}</span>`
+          : `<input class="combo-goods-cell-input" type="number" min="0" max="100" step="0.01" data-cw="comboScopeRows" data-tab="${activeTab}" data-idx="${dataIdx}" data-field="shareRatio" value="${escapeHtml(String(x.shareRatio ?? ""))}" />`}</td>` : ""}
       </tr>
     `;
   }).join("");
-  const emptyCols = activeTab === "excludeGoods" ? 9 : 5;
+  const emptyCols = activeTab === "excludeGoods" ? 9 : (showShareRatio ? 6 : 5);
   const minRows = (activeTab === "excludeCategories" || activeTab === "excludeGoods") ? 6 : 2;
   const emptyRows = Array.from({ length: Math.max(0, minRows - visibleRows.length) }).map((_, idx) => `
     <tr>
@@ -18195,6 +18590,7 @@ function comboCampaignCategoryInfoTableHtml(draft = {}, readonly = false) {
         <th>组合编码</th>
         <th>类别编码</th>
         <th>类别名称</th>
+        ${showShareRatio ? `<th>销售分摊比例%</th>` : ""}
       </tr>
     `;
   return `
@@ -18211,6 +18607,7 @@ function comboCampaignCategoryInfoTableHtml(draft = {}, readonly = false) {
 function comboCampaignBrandInfoTableHtml(draft = {}, readonly = false) {
   const gs = comboCampaignEnsureGoodsScope(draft);
   const activeTab = comboCampaignBrandActiveTab();
+  const showShareRatio = activeTab === "brands" && String(gs.supplySubsidyMethod || "") === "销售补差" && String(gs.discountShareMethod || "") === "固定比例";
   const ui = AppState.ui.campaignWizard || {};
   const meta = comboCampaignBrandQueryMeta(gs, activeTab);
   const pickKey = comboCampaignBrandPickKey(activeTab);
@@ -18247,10 +18644,13 @@ function comboCampaignBrandInfoTableHtml(draft = {}, readonly = false) {
         <td>${readonly
           ? `<span class="combo-goods-cell-text">${escapeHtml(String(x.brandName || ""))}</span>`
           : `<input class="combo-goods-cell-input" data-cw="comboBrandRows" data-tab="${activeTab}" data-idx="${dataIdx}" data-field="brandName" value="${escapeHtml(String(x.brandName || ""))}" />`}</td>
+        ${showShareRatio ? `<td>${readonly
+          ? `<span class="combo-goods-cell-text">${escapeHtml(String(x.shareRatio ?? ""))}</span>`
+          : `<input class="combo-goods-cell-input" type="number" min="0" max="100" step="0.01" data-cw="comboBrandRows" data-tab="${activeTab}" data-idx="${dataIdx}" data-field="shareRatio" value="${escapeHtml(String(x.shareRatio ?? ""))}" />`}</td>` : ""}
       </tr>
     `;
   }).join("");
-  const emptyCols = activeTab === "excludeGoods" ? 9 : 5;
+  const emptyCols = activeTab === "excludeGoods" ? 9 : (showShareRatio ? 6 : 5);
   const minRows = activeTab === "excludeGoods" ? 6 : 2;
   const emptyRows = Array.from({ length: Math.max(0, minRows - visibleRows.length) }).map((_, idx) => `
     <tr>
@@ -18280,6 +18680,7 @@ function comboCampaignBrandInfoTableHtml(draft = {}, readonly = false) {
         <th>组合编码</th>
         <th>品牌编码</th>
         <th>品牌名称</th>
+        ${showShareRatio ? `<th>销售分摊比例%</th>` : ""}
       </tr>
     `;
   return `
@@ -18865,6 +19266,100 @@ function campaignReduceComboRuleTableHtml(draft = {}, readonly = false) {
   return campaignWizardRenderTable(headers, rows + emptyRows, "暂无数据，请新增条件") + campaignListPaginationHtml(rowsAll.length || 100000);
 }
 
+function comboCampaignBurdenRuleHtml(gs = {}, readonly = false) {
+  const rule = gs.burdenRule || {};
+  const shareMode = String(rule.shareMode || "统一比例");
+  const isCustom = shareMode === "自定义比例";
+  const shareAttrs = readonly ? "disabled" : 'data-cw="burdenRule" data-field="shareMode"';
+  const shareSelect = `
+    <div class="combo-burden-share">
+      <div class="field">
+        <div class="field__label"><span class="req">*</span>分摊方式</div>
+        <select class="select" ${shareAttrs}>
+          ${["统一比例", "自定义比例"].map((x) => `<option value="${x}" ${shareMode === x ? "selected" : ""}>${x}</option>`).join("")}
+        </select>
+      </div>
+    </div>
+  `;
+  if (isCustom) {
+    return shareSelect + comboCampaignBurdenCustomHtml(gs, readonly);
+  }
+  const parties = [
+    { key: "supplier", label: "供货商承担" },
+    { key: "purchase", label: "采购承担" },
+    { key: "store", label: "门店承担" }
+  ];
+  const cols = parties.map((p) => {
+    const val = rule[p.key] ?? 0;
+    const attrs = readonly ? "disabled" : `data-cw="burdenRule" data-field="${p.key}"`;
+    return `
+      <div class="combo-burden-col">
+        <div class="field__label"><span class="req">*</span>${p.label}</div>
+        <div class="combo-burden-amount">
+          <input class="input" type="number" min="0" max="100" step="0.01" ${attrs} value="${escapeHtml(String(val))}" />
+          <span class="combo-burden-amount__unit">%</span>
+        </div>
+      </div>
+    `;
+  }).join("");
+  return shareSelect + `<div class="combo-burden-row">${cols}</div>`;
+}
+
+function comboCampaignBurdenCustomHtml(gs = {}, readonly = false) {
+  const goods = Array.isArray(gs.goods) ? gs.goods : [];
+  const order = [];
+  const groups = {};
+  goods.forEach((g, idx) => {
+    const code = comboCampaignGoodsCodeValue(g.comboCode, 1);
+    if (!groups[code]) { groups[code] = []; order.push(code); }
+    groups[code].push({ item: g, idx });
+  });
+  if (!order.length) {
+    return `<div class="combo-burden-empty">暂无商品，请先在“商品信息”中添加商品</div>`;
+  }
+  const headers = ["序号", "商品编码", "商品条码", "商品名称", "规格", "承担比例%", "供货商承担%", "采购承担%", "门店承担%"];
+  const ratioFields = ["burdenRatio", "supplierRatio", "purchaseRatio", "storeRatio"];
+  const tables = order.map((code) => {
+    const rows = groups[code].map(({ item, idx }, k) => {
+      const cells = [
+        `<td>${k + 1}</td>`,
+        `<td>${escapeHtml(String(item.skuCode || ""))}</td>`,
+        `<td>${escapeHtml(String(item.barcode || ""))}</td>`,
+        `<td>${escapeHtml(String(item.skuName || ""))}</td>`,
+        `<td>${escapeHtml(String(item.spec || ""))}</td>`
+      ];
+      ratioFields.forEach((f) => {
+        const v = item[f] ?? "";
+        if (readonly) {
+          cells.push(`<td>${escapeHtml(String(v))}</td>`);
+        } else {
+          cells.push(`<td><input class="input" style="width:100%" type="number" min="0" max="100" step="0.01" data-cw="burdenGoods" data-idx="${idx}" data-field="${f}" value="${escapeHtml(String(v))}" /></td>`);
+        }
+      });
+      return `<tr>${cells.join("")}</tr>`;
+    }).join("");
+    return `
+      <div class="combo-burden-group">
+        <div class="combo-burden-group__title">【${escapeHtml(code)}】组合</div>
+        ${campaignWizardRenderTable(headers, rows)}
+      </div>
+    `;
+  }).join("");
+  return tables;
+}
+
+function comboCampaignBurdenStepHtml(draft = {}, readonly = false) {
+  const gs = comboCampaignEnsureGoodsScope(draft);
+  const showBurdenRule = String(gs.discountShareMethod || "销售占比") === "固定比例";
+  return `
+    <div class="combo-camp-panel combo-camp-burden-panel">
+      ${comboCampaignSectionHtml("承担规则", showBurdenRule
+        ? comboCampaignBurdenRuleHtml(gs, readonly)
+        : `<div class="combo-burden-empty">请先将“商品范围”中的优惠分摊方式设置为「固定比例」</div>`)}
+    </div>
+  `;
+}
+
 function comboCampaignGoodsPanelHtml(draft = {}, readonly = false) {
   const gs = comboCampaignEnsureGoodsScope(draft);
   const purchaseType = String(gs.purchaseType || "组合") === "全场" ? "全场" : "组合";
@@ -18879,27 +19374,21 @@ function comboCampaignGoodsPanelHtml(draft = {}, readonly = false) {
       ${comboCampaignSectionHtml("条件范围", `
         <div class="combo-goods-condition-row">
           <div class="field">
+            <div class="field__label"><span class="req">*</span>商品范围</div>
+            <select class="select" ${readonly ? "disabled" : 'data-cw="goodsScope" data-field="comboScope"'}>
+              ${["单品", "类别", "品牌"].map((x) => `<option value="${x}" ${String(gs.comboScope || "单品") === x ? "selected" : ""}>${x}</option>`).join("")}
+            </select>
+          </div>
+          <div class="field">
             <div class="field__label"><span class="req">*</span>补差方式</div>
             <select class="select" ${readonly ? "disabled" : 'data-cw="goodsScope" data-field="supplySubsidyMethod"'}>
-              ${["固定补差", "倒扣补差", "费用承担"].map((x) => `<option value="${x}" ${String(gs.supplySubsidyMethod || "固定补差") === x ? "selected" : ""}>${x}</option>`).join("")}
+              ${["销售补差", "活动补差"].map((x) => `<option value="${x}" ${String(gs.supplySubsidyMethod || "销售补差") === x ? "selected" : ""}>${x}</option>`).join("")}
             </select>
           </div>
           <div class="field">
             <div class="field__label"><span class="req">*</span>优惠分摊方式</div>
             <select class="select" ${readonly ? "disabled" : 'data-cw="goodsScope" data-field="discountShareMethod"'}>
-              ${["按金额", "按数量", "按比例"].map((x) => `<option value="${x}" ${String(gs.discountShareMethod || "按金额") === x ? "selected" : ""}>${x}</option>`).join("")}
-            </select>
-          </div>
-          <div class="field">
-            <div class="field__label"><span class="req">*</span>承担方式</div>
-            <select class="select" ${readonly ? "disabled" : 'data-cw="goodsScope" data-field="burdenMethod"'}>
-              ${["供应商承担", "采购承担", "双方承担"].map((x) => `<option value="${x}" ${String(gs.burdenMethod || "供应商承担") === x ? "selected" : ""}>${x}</option>`).join("")}
-            </select>
-          </div>
-          <div class="field">
-            <div class="field__label"><span class="req">*</span>商品范围</div>
-            <select class="select" ${readonly ? "disabled" : 'data-cw="goodsScope" data-field="comboScope"'}>
-              ${["商品", "类别", "品牌"].map((x) => `<option value="${x}" ${String(gs.comboScope || "商品") === x ? "selected" : ""}>${x}</option>`).join("")}
+              ${["销售占比", "固定比例", "按平均单价"].map((x) => `<option value="${x}" ${String(gs.discountShareMethod || "销售占比") === x ? "selected" : ""}>${x}</option>`).join("")}
             </select>
           </div>
         </div>
@@ -20338,7 +20827,7 @@ function renderCampaignWizardPage(mode) {
       </div>
 
       <div class="detail-tab-panel ${campMainTab === "burden" ? "is-active" : ""}" data-tab="burden">
-        ${(!tplSelected || isGoodsDiscount) ? campaignWizardBurdenFormHtml(d, { stepNo: burdenStepNo, hideSummary: isGoodsDiscount }) : campaignIsQtyVoucherGiftTemplate(tplSelected) ? `
+        ${isComboSpecial ? comboCampaignBurdenStepHtml(d) : (!tplSelected || isGoodsDiscount) ? campaignWizardBurdenFormHtml(d, { stepNo: burdenStepNo, hideSummary: isGoodsDiscount }) : campaignIsQtyVoucherGiftTemplate(tplSelected) ? `
           <div class="wizard-step" data-step="${burdenStepNo}">
             <div class="form">
               <div class="form__row">
@@ -22688,17 +23177,6 @@ function renderPricingPage() {
           ${(Array.isArray(AppState.data.gmMemberGrades) ? AppState.data.gmMemberGrades : []).map((x) => `<option value="${escapeHtml(x.name || "")}" ${String(st.memberLevel || "") === String(x.name || "") ? "selected" : ""}>${escapeHtml(x.name || "")}</option>`).join("")}
         </select>
       </div>
-      <div class="field pricing-top-bar__member-no">
-        <div class="field__label">优惠券码</div>
-        <input class="input" id="pricingMemberNo" placeholder="优惠券码" value="${escapeHtml(st.memberNo)}" />
-      </div>
-      <div class="field pricing-top-bar__actions">
-        <div class="field__label">&nbsp;</div>
-        <div class="pricing-top-bar__btns">
-          <button class="btn btn--primary" type="button" data-act="pricingTopQuery">查询</button>
-          <button class="btn" type="button" data-act="pricingTopReset">重置</button>
-        </div>
-      </div>
     </div>
 
     <div class="pricing-layout">
@@ -22742,10 +23220,9 @@ function renderPricingPage() {
       <div class="pricing-right">
         <div class="pricing-coupon-area">
           <div class="tabbar tabbar--underline" id="pricingCouponTabs">
-            <button class="tabbtn ${String(st.couponTab || "available") !== "gift" ? "is-active" : ""}" type="button" data-act="pricingCouponTab" data-id="available">可用优惠券</button>
             <button class="tabbtn ${String(st.couponTab) === "gift" ? "is-active" : ""}" type="button" data-act="pricingCouponTab" data-id="gift">可赠优惠券</button>
           </div>
-          <div id="pricingCouponAvailable" style="${String(st.couponTab || "available") !== "gift" ? "" : "display:none;"}">
+          <div id="pricingCouponAvailable" style="display:none;">
             <div class="pricing-coupon-list">
               ${(AppState.data.pricingCoupons || []).map((cp) => {
                 const isSel = (st.selectedCoupons || []).includes(cp.id);
@@ -33666,10 +34143,10 @@ function handleAction(r, act, btn) {
       const fullOffExtra = isFullOff ? { fullAmount: "", reduceAmount: "" } : {};
       if (tab === "goods") {
         if (isComboStyled && (comboCampaignGoodsIsFixedGoodsMode(d) || comboCampaignGoodsIsAnyGoodsMode(d))) {
-          openCampaignGoodsSelectModal({
+          openCampaignComboGoodsSelectModal({
             title: "选择商品",
             checkboxName: "campPickGoods",
-            subtitle: "支持按商品、类别、品牌、供应商查询",
+            subtitle: "支持按类别、品牌、商品名称、柜组查询",
             onPicked: (sel) => {
               const gs = comboCampaignEnsureGoodsScope(d);
               const ex = new Set(gs.goods.map((x) => String(x.skuCode || "")));
@@ -34799,6 +35276,21 @@ function handleAction(r, act, btn) {
       toast("已移除勾选商品（原型演示）");
       return;
     }
+    if (act === "campComboGoodsRowDel") {
+      const d = AppState._tmpCampaign;
+      if (!d) return;
+      const idx = Number(btn.getAttribute("data-idx"));
+      if (!Number.isFinite(idx)) return;
+      const gs = comboCampaignEnsureGoodsScope(d);
+      gs.goods.splice(idx, 1);
+      const ui = AppState.ui.campaignWizard || (AppState.ui.campaignWizard = {});
+      ui.comboGoodsPicked = (Array.isArray(ui.comboGoodsPicked) ? ui.comboGoodsPicked : [])
+        .map((x) => Number(x)).filter((x) => Number.isFinite(x) && x !== idx)
+        .map((x) => (x > idx ? x - 1 : x));
+      campaignWizardRenderGoodsTable();
+      toast("已删除该商品（原型演示）");
+      return;
+    }
     if (act === "campComboCategoryTab") {
       const d = AppState._tmpCampaign;
       if (!d) return;
@@ -34829,16 +35321,12 @@ function handleAction(r, act, btn) {
         });
         return;
       }
-      const cats = (AppState.data.gmOnlineCategories || []).concat(AppState.data.gmOfflineCategories || []);
-      openCampSelectModal({
-        title: activeTab === "categories" ? "选择类别" : "选择排除类别",
-        items: cats,
-        columns: [{ key: "catCode", label: "类别编码" }, { key: "catName", label: "类别名称" }],
-        searchKeys: ["catCode", "catName"],
-        checkboxName: activeTab === "categories" ? "campPickComboCat" : "campPickComboExCat",
-        uniqueKey: "catCode",
+      const isExcl = activeTab === "excludeCategories";
+      openCampaignComboCategorySelectModal({
+        title: isExcl ? "选择排除类别" : "选择类别",
+        checkboxName: isExcl ? "campPickComboExCat" : "campPickComboCat",
         onPicked: (sel) => {
-          const key = activeTab === "categories" ? "categories" : "excludeCategories";
+          const key = isExcl ? "excludeCategories" : "categories";
           const ex = new Set((gs[key] || []).map((x) => String(x.catCode || "")));
           sel.forEach((s) => {
             if (ex.has(String(s.catCode))) return;
@@ -34925,13 +35413,9 @@ function handleAction(r, act, btn) {
         });
         return;
       }
-      openCampSelectModal({
+      openCampaignComboBrandSelectModal({
         title: "选择品牌",
-        items: AppState.data.gmBrands || [],
-        columns: [{ key: "brandCode", label: "品牌编码" }, { key: "brandName", label: "品牌名称" }, { key: "brandEn", label: "品牌分类" }],
-        searchKeys: ["brandCode", "brandName"],
         checkboxName: "campPickComboBrand",
-        uniqueKey: "brandCode",
         onPicked: (sel) => {
           const ex = new Set((gs.brands || []).map((x) => String(x.brandCode || "")));
           sel.forEach((s) => {
