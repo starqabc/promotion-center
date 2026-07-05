@@ -214,6 +214,10 @@ const AppState = {
       analysis: { schedule: "全部6档", storeLevel: "门店层级", store: "所有门店", view: "商品·顾客·效率", unit: "万元 / 人次" },
       achievement: { schedule: "全部6档", store: "全部12家", compare: "达成率·ROI", unit: "万元" },
       warning: { qGoodsCode: "", qCat: "", qPromoType: "全部", qStore: "", qEffectiveAt: "", qTplName: "", qSchedule: "", qBrand: "" },
+      salesDetail: { qYear: "", qSchedule: "中秋国庆双节大促", qScheduleId: "", qDept: "全部", qCat: "全部", qRegion: "全部", qStore: "" },
+      stockDetail: { qYear: "", qSchedule: "中秋国庆双节大促", qScheduleId: "", qDept: "全部", qCat: "全部", qRegion: "全部", qStore: "", qGoodsType: "全部", qSort: "缺货率降序" },
+      goodsRank: { top: "20", qYear: "", qSchedule: "2026夏日清凉节", qScheduleId: "", qDept: "全部", qCat: "全部", qRegion: "全部", qStore: "", qGoodsType: "全部" },
+      userOrders: { qCreator: "", qModifier: "", qTemplate: "全部" },
       storeAbnormal: { qGoodsCode: "", qCat: "", qPromoType: "全部", qStore: "", qEffectiveRange: "", qBrand: "", qSchedule: "" },
       voucher: { qActNo: "", qActName: "", qPromoType: "全部", qScheduleId: "", qStartFrom: "", qEndTo: "", qStatus: "全部", qVoucherCode: "", qVoucherName: "" },
       activity: { qActNo: "", qActName: "", qPromoType: "全部", qTplNo: "", qScheduleId: "", qStartFrom: "", qEndTo: "", qStatus: "全部" },
@@ -290,6 +294,10 @@ const AppState = {
     "/rpt-analysis": { title: "促销分析", sub: "活动概览 · 品类/渠道/价格带/会员分析（原型演示）" },
     "/rpt-achievement": { title: "促销达成", sub: "档期达成 · ROI · 毛利 · 客流（原型演示）" },
     "/rpt-warning": { title: "促销预警", sub: "冲突预警 · 互斥校验 · 规则命中链路（原型演示）" },
+    "/rpt-sales-detail": { title: "销售明细报表", sub: "按档期/部门/大类/门店查询销售明细（原型演示）" },
+    "/rpt-stock-detail": { title: "库存明细报表", sub: "按档期/部门/大类/门店查询库存明细（原型演示）" },
+    "/rpt-goods-rank": { title: "商品排行明细", sub: "商品销售排名 Top20/50/100（原型演示）" },
+    "/rpt-user-orders": { title: "人员订单统计报表", sub: "按创建人/模板统计订单（原型演示）" },
     "/rpt-store-abnormal": { title: "门店促销品异常", sub: "参与促销商品门店缺失校验（原型演示）" },
     "/rpt-voucher": { title: "促销活动出券明细表", sub: "查询赠券发放明细（原型演示）" },
     "/rpt-activity": { title: "促销活动明细表", sub: "查询活动汇总信息（原型演示）" },
@@ -17201,6 +17209,8 @@ function campaignWizardUpdateDraftFromEvent(e) {
     else set.delete(idx);
     ui.storePicked = Array.from(set);
     campaignWizardRenderStoreTables();
+    const _storeRemoveBtn = document.querySelector('[data-act="campStoreRemove"]');
+    if (_storeRemoveBtn) _storeRemoveBtn.disabled = !(ui.storePicked && ui.storePicked.length);
     return;
   }
   if (cw === "storePickAll") {
@@ -17213,6 +17223,8 @@ function campaignWizardUpdateDraftFromEvent(e) {
     });
     ui.storePicked = t.checked ? meta.rows.slice(0, 8).map((x) => Number(x.__idx)).filter(Number.isFinite) : [];
     campaignWizardRenderStoreTables();
+    const _storeRemoveBtnAll = document.querySelector('[data-act="campStoreRemove"]');
+    if (_storeRemoveBtnAll) _storeRemoveBtnAll.disabled = !(ui.storePicked && ui.storePicked.length);
     return;
   }
   if (cw === "storeScope" && field) {
@@ -19675,7 +19687,7 @@ function comboCampaignStorePanelHtml({ storeScope = {}, readonly = false, wizard
       <button class="btn btn--primary" type="button" data-act="campSelectStore">选门店</button>
       <button class="btn" type="button" data-act="campStoreImport">导入门店</button>
       <button class="btn" type="button" data-act="campStoreAdd">增加行</button>
-      <button class="btn" type="button" data-act="campStoreRemove">移除门店</button>
+      <button class="btn" type="button" data-act="campStoreRemove" ${selectedRows.length ? "" : "disabled"}>移除门店</button>
     </div>
   `;
   return `
@@ -27962,6 +27974,219 @@ function renderRptAchievementPage() {
   `;
 }
 
+function renderRptSalesDetailPage() {
+  const ui = AppState.ui.rpt.salesDetail;
+  const schedules = (typeof DASHBOARD_V2 !== "undefined" && Array.isArray(DASHBOARD_V2.schedules)) ? DASHBOARD_V2.schedules : [];
+  const schName = ui.qSchedule || (schedules[0] ? schedules[0].name : "");
+  const sch = schedules.find((s) => s.name === schName) || schedules[0] || { name: schName, period: "—" };
+  const year = Number(ui.qYear) || new Date().getFullYear();
+  const years = [];
+  for (let i = year - 2; i <= year + 1; i++) years.push(i);
+  const depts = ["全部", "日百部", "食品部", "饮料部", "纺织部"];
+  const cats = ["全部", "婴童", "车品", "粮油", "零食", "家清", "酒水", "乳品"];
+  const regions = ["全部", "华东", "华南", "华北"];
+
+  const allRows = [
+    { sku: "0506247", name: "新生儿宽口玻璃奶瓶300", dept: "日百部", cat: "婴童", qty: 1280, amt: 38400, margin: 24.6, growth: 18.2, purchase: 92, per1000: 86, stock: 4200 },
+    { sku: "0506703", name: "好车帮玻璃水", dept: "日百部", cat: "车品", qty: 2460, amt: 24600, margin: 22.1, growth: 15.4, purchase: 88, per1000: 165, stock: 6800 },
+    { sku: "11080402", name: "爱得利3001安抚奶嘴", dept: "日百部", cat: "婴童", qty: 860, amt: 12800, margin: 26.8, growth: 12.6, purchase: 85, per1000: 58, stock: 2400 },
+    { sku: "2001001", name: "黄金大米10kg", dept: "食品部", cat: "粮油", qty: 1820, amt: 86400, margin: 21.4, growth: 16.8, purchase: 94, per1000: 122, stock: 3200 },
+    { sku: "2002002", name: "金沙食用油5L", dept: "食品部", cat: "粮油", qty: 1340, amt: 80800, margin: 23.2, growth: 14.2, purchase: 91, per1000: 90, stock: 5600 },
+    { sku: "3001003", name: "奥利奥饼干礼盒", dept: "食品部", cat: "零食", qty: 2680, amt: 53600, margin: 19.8, growth: 21.4, purchase: 96, per1000: 180, stock: 4200 },
+    { sku: "4002004", name: "伊利纯牛奶整箱", dept: "饮料部", cat: "乳品", qty: 3240, amt: 116640, margin: 20.6, growth: 18.6, purchase: 95, per1000: 218, stock: 8600 },
+    { sku: "4005005", name: "茅台飞天500ml", dept: "饮料部", cat: "酒水", qty: 128, amt: 192000, margin: 18.4, growth: 8.6, purchase: 76, per1000: 9, stock: 320 },
+    { sku: "5006006", name: "清风抽纸大包", dept: "日百部", cat: "家清", qty: 4120, amt: 32960, margin: 25.2, growth: 24.6, purchase: 98, per1000: 276, stock: 9800 },
+    { sku: "6007007", name: "全棉时代卷纸12卷", dept: "日百部", cat: "家清", qty: 2240, amt: 26880, margin: 23.6, growth: 16.2, purchase: 92, per1000: 150, stock: 6400 }
+  ];
+  const filtered = allRows.filter((r) => {
+    if (ui.qDept && ui.qDept !== "全部" && r.dept !== ui.qDept) return false;
+    if (ui.qCat && ui.qCat !== "全部" && r.cat !== ui.qCat) return false;
+    return true;
+  });
+  const totalQty = filtered.reduce((s, r) => s + r.qty, 0);
+  const totalAmt = filtered.reduce((s, r) => s + r.amt, 0);
+  const avgMargin = filtered.length ? (filtered.reduce((s, r) => s + r.margin, 0) / filtered.length).toFixed(1) : "0.0";
+  const kpis = [
+    { title: "销售数量合计", value: totalQty.toLocaleString() + " 件", delta: "+18.6%", deltaUp: true, color: "blue" },
+    { title: "销售金额合计", value: "¥" + totalAmt.toLocaleString(), delta: "+18.3%", deltaUp: true, color: "green" },
+    { title: "平均毛利率", value: avgMargin + "%", delta: "+1.8%", deltaUp: true, color: "orange" },
+    { title: "同比销售增长率", value: "+18.3%", delta: "+5.2%", deltaUp: true, color: "purple" }
+  ];
+
+  const filtersHtml = `
+    <div class="field"><div class="field__label">档期年份</div><select class="select" id="rsdQYear">${years.map((y) => `<option ${y === year ? "selected" : ""}>${y}</option>`).join("")}</select></div>
+    <div class="field"><div class="field__label">档期名称</div><select class="select" id="rsdQSchedule">${schedules.map((s) => `<option ${s.name === schName ? "selected" : ""}>${escapeHtml(s.name)}</option>`).join("")}</select></div>
+    <div class="field"><div class="field__label">档期ID</div><input class="input" id="rsdQScheduleId" value="${escapeHtml(ui.qScheduleId)}" placeholder="请输入档期ID" /></div>
+    <div class="field"><div class="field__label">所属部门</div><select class="select" id="rsdQDept">${depts.map((x) => `<option ${x === ui.qDept ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select></div>
+    <div class="field"><div class="field__label">所属大类</div><select class="select" id="rsdQCat">${cats.map((x) => `<option ${x === ui.qCat ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select></div>
+    <div class="field"><div class="field__label">销售区域</div><select class="select" id="rsdQRegion">${regions.map((x) => `<option ${x === ui.qRegion ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select></div>
+    <div class="field"><div class="field__label">门店名称</div><input class="input" id="rsdQStore" value="${escapeHtml(ui.qStore)}" placeholder="请输入门店名称" /></div>
+  `;
+  const rowsHtml = filtered.map((r, i) => `<tr><td>${i + 1}</td><td class="mono">${r.sku}</td><td>${escapeHtml(r.name)}</td><td>${escapeHtml(r.dept)}</td><td>${escapeHtml(r.cat)}</td><td class="mono">${r.qty.toLocaleString()}</td><td class="mono">${r.amt.toLocaleString()}</td><td class="mono">${r.margin}%</td><td style="color:#16a34a;font-weight:600">+${r.growth}%</td><td class="mono">${r.purchase}%</td><td class="mono">${r.per1000}</td><td class="mono">${r.stock.toLocaleString()}</td></tr>`).join("");
+
+  return `
+    <div class="list-page">
+      ${layoutCard(`<div class="card__header"><div class="card__title">筛选条件</div><div class="card__actions"><button class="btn btn--primary" type="button" data-act="rsdQuery">查询</button><button class="btn" type="button" data-act="rsdReset">重置</button></div></div><div class="card__body"><div class="filters-grid">${filtersHtml}</div></div>`)}
+      ${layoutCard(`<div class="card__header"><div class="card__title">${escapeHtml(sch.name)}</div><div class="card__actions"><span class="mono" style="color:#64748b;font-size:13px;">档期时间：${escapeHtml(sch.period)}</span></div></div><div class="card__body"><div class="rpa-kpis">${kpis.map((k) => dashboardKpi(k)).join("")}</div></div>`)}
+      ${layoutCard(`<div class="card__header"><div class="card__title">销售明细数据</div><div class="card__actions"><button class="btn" type="button" data-act="rsdExport">导出</button></div></div><div class="card__body">${table(["序号", "商品编码", "商品名称", "部门", "大类", "销售数量(件)", "销售金额(元)", "毛利率(%)", "销售增长率(%)", "采购预估达成(%)", "千人购买量", "库存数量(件)"], rowsHtml || `<tr><td colspan="12"><div class="empty">暂无数据</div></td></tr>`)}</div>`)}
+    </div>
+  `;
+}
+
+function renderRptStockDetailPage() {
+  const ui = AppState.ui.rpt.stockDetail;
+  const schedules = (typeof DASHBOARD_V2 !== "undefined" && Array.isArray(DASHBOARD_V2.schedules)) ? DASHBOARD_V2.schedules : [];
+  const schName = ui.qSchedule || (schedules[0] ? schedules[0].name : "");
+  const sch = schedules.find((s) => s.name === schName) || schedules[0] || { name: schName, period: "—" };
+  const year = Number(ui.qYear) || new Date().getFullYear();
+  const years = [];
+  for (let i = year - 2; i <= year + 1; i++) years.push(i);
+  const depts = ["全部", "日百部", "食品部", "饮料部", "纺织部"];
+  const cats = ["全部", "婴童", "车品", "粮油", "零食", "家清", "酒水", "乳品"];
+  const regions = ["全部", "华东", "华南", "华北"];
+  const goodsTypes = ["全部", "DM商品", "店促商品", "天天低价", "正常商品"];
+  const sorts = ["缺货率降序", "库存数量降序", "库存金额降序", "周转天数升序", "渗透率降序"];
+  const allRows = [
+    { sku: "0506247", name: "新生儿宽口玻璃奶瓶300", dept: "日百部", cat: "婴童", qty: 4200, amt: 126, pen: "62.4%", short: 4.8, wh: 2800, turn: 18 },
+    { sku: "0506703", name: "好车帮玻璃水", dept: "日百部", cat: "车品", qty: 6800, amt: 68, pen: "58.2%", short: 6.2, wh: 4200, turn: 15 },
+    { sku: "11080402", name: "爱得利3001安抚奶嘴", dept: "日百部", cat: "婴童", qty: 2400, amt: 36, pen: "45.6%", short: 8.4, wh: 1600, turn: 22 },
+    { sku: "2001001", name: "黄金大米10kg", dept: "食品部", cat: "粮油", qty: 3200, amt: 152, pen: "68.4%", short: 3.6, wh: 2100, turn: 14 },
+    { sku: "2002002", name: "金沙食用油5L", dept: "食品部", cat: "粮油", qty: 5600, amt: 224, pen: "72.1%", short: 2.8, wh: 3600, turn: 12 },
+    { sku: "3001003", name: "奥利奥饼干礼盒", dept: "食品部", cat: "零食", qty: 4200, amt: 84, pen: "65.3%", short: 5.2, wh: 2800, turn: 16 },
+    { sku: "4002004", name: "伊利纯牛奶整箱", dept: "饮料部", cat: "乳品", qty: 8600, amt: 344, pen: "78.6%", short: 2.1, wh: 5400, turn: 10 },
+    { sku: "4005005", name: "茅台飞天500ml", dept: "饮料部", cat: "酒水", qty: 320, amt: 480, pen: "32.4%", short: 12.6, wh: 180, turn: 28 },
+    { sku: "5006006", name: "清风抽纸大包", dept: "日百部", cat: "家清", qty: 9800, amt: 98, pen: "81.2%", short: 1.8, wh: 6200, turn: 9 },
+    { sku: "6007007", name: "全棉时代卷纸12卷", dept: "日百部", cat: "家清", qty: 6400, amt: 96, pen: "74.5%", short: 3.2, wh: 4100, turn: 13 }
+  ];
+  const filtered = allRows.filter((r) => {
+    if (ui.qDept && ui.qDept !== "全部" && r.dept !== ui.qDept) return false;
+    if (ui.qCat && ui.qCat !== "全部" && r.cat !== ui.qCat) return false;
+    return true;
+  });
+  const filtersHtml = `
+    <div class="field"><div class="field__label">档期年份</div><select class="select" id="rstockQYear">${years.map((y) => `<option ${y === year ? "selected" : ""}>${y}</option>`).join("")}</select></div>
+    <div class="field"><div class="field__label">档期名称</div><select class="select" id="rstockQSchedule">${schedules.map((s) => `<option ${s.name === schName ? "selected" : ""}>${escapeHtml(s.name)}</option>`).join("")}</select></div>
+    <div class="field"><div class="field__label">档期ID</div><input class="input" id="rstockQScheduleId" value="${escapeHtml(ui.qScheduleId)}" placeholder="请输入档期ID" /></div>
+    <div class="field"><div class="field__label">所属部门</div><select class="select" id="rstockQDept">${depts.map((x) => `<option ${x === ui.qDept ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select></div>
+    <div class="field"><div class="field__label">所属大类</div><select class="select" id="rstockQCat">${cats.map((x) => `<option ${x === ui.qCat ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select></div>
+    <div class="field"><div class="field__label">销售区域</div><select class="select" id="rstockQRegion">${regions.map((x) => `<option ${x === ui.qRegion ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select></div>
+    <div class="field"><div class="field__label">门店名称</div><input class="input" id="rstockQStore" value="${escapeHtml(ui.qStore)}" placeholder="请输入门店名称" /></div>
+    <div class="field"><div class="field__label">商品类型</div><select class="select" id="rstockQGoodsType">${goodsTypes.map((x) => `<option ${x === ui.qGoodsType ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select></div>
+    <div class="field"><div class="field__label">排序方式</div><select class="select" id="rstockQSort">${sorts.map((x) => `<option ${x === ui.qSort ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select></div>
+  `;
+  const rowsHtml = filtered.map((r, i) => `<tr><td>${i + 1}</td><td class="mono">${r.sku}</td><td>${escapeHtml(r.name)}</td><td>${escapeHtml(r.dept)}</td><td>${escapeHtml(r.cat)}</td><td class="mono">${r.qty.toLocaleString()}</td><td class="mono">${r.amt}</td><td class="mono">${r.pen}</td><td class="mono">${r.short}%</td><td class="mono">${r.wh.toLocaleString()}</td><td class="mono">${r.turn}</td></tr>`).join("");
+  return `
+    <div class="list-page">
+      ${layoutCard(`<div class="card__header"><div class="card__title">筛选条件</div><div class="card__actions"><button class="btn btn--primary" type="button" data-act="rstockQuery">查询</button><button class="btn" type="button" data-act="rstockReset">重置</button></div></div><div class="card__body"><div class="filters-grid">${filtersHtml}</div></div>`)}
+      ${layoutCard(`<div class="card__header"><div class="card__title">${escapeHtml(sch.name)}</div><div class="card__actions"><span class="mono" style="color:#64748b;font-size:13px;">档期时间：${escapeHtml(sch.period)}</span></div></div>`)}
+      ${layoutCard(`<div class="card__header"><div class="card__title">库存明细数据</div><div class="card__actions"><button class="btn" type="button" data-act="rstockExport">导出</button></div></div><div class="card__body">${table(["序号", "商品编码", "商品名称", "部门", "大类", "库存数量(件)", "库存金额(万元)", "渗透率", "缺货率(%)", "仓库库存(件)", "库存周转天数"], rowsHtml || `<tr><td colspan="11"><div class="empty">暂无数据</div></td></tr>`)}</div>`)}
+    </div>
+  `;
+}
+
+function renderRptGoodsRankPage() {
+  const ui = AppState.ui.rpt.goodsRank;
+  const schedules = (typeof DASHBOARD_V2 !== "undefined" && Array.isArray(DASHBOARD_V2.schedules)) ? DASHBOARD_V2.schedules : [];
+  const schName = ui.qSchedule || (schedules[0] ? schedules[0].name : "");
+  const sch = schedules.find((s) => s.name === schName) || schedules[0] || { name: schName, period: "—" };
+  const year = Number(ui.qYear) || new Date().getFullYear();
+  const years = [];
+  for (let i = year - 2; i <= year + 1; i++) years.push(i);
+  const top = String(ui.top || "20");
+  const tops = [["20", "TOP20"], ["50", "TOP50"], ["100", "TOP100"]];
+  const depts = ["全部", "日百部", "食品部", "饮料部", "纺织部"];
+  const cats = ["全部", "婴童", "车品", "粮油", "零食", "家清", "酒水", "乳品"];
+  const regions = ["全部", "华东", "华南", "华北"];
+  const goodsTypes = ["全部", "DM商品", "店促商品", "天天低价", "正常商品"];
+  const baseNames = ["纯牛奶整箱","抽纸大包","洗衣液3kg","玻璃水","酸奶200g","卷纸12卷","洗洁精","婴儿纸尿裤","大米10kg","食用油5L","核桃露","即食燕麦","蜂蜜","咖啡","巧克力礼盒","坚果礼盒","白酒","红酒","啤酒","果汁","矿泉水","茶叶","酱油","醋","牙膏","洗发水","沐浴露","洗衣粉","垃圾袋","保鲜膜"];
+  const baseCats = ["饮料","家清","家清","家清","饮料","家清","家清","日百","食品","食品","饮料","食品","食品","饮料","食品","食品","饮料","饮料","饮料","饮料","饮料","食品","食品","食品","日百","日百","日百","家清","家清","家清"];
+  const deptByCat = { "饮料": "饮料部", "家清": "日百部", "日百": "日百部", "食品": "食品部" };
+  const allRows = baseNames.map((nm, i) => ({
+    rank: i + 1, sku: String(1000000 + i + 1), name: nm, cat: baseCats[i] || "其他",
+    sales: +(120 - i * 3.2).toFixed(1), share: +(28 - i * 0.8).toFixed(1), yoy: +(18 - i * 0.4).toFixed(1),
+    margin: +(24 - i * 0.3).toFixed(1), contrib: +(12 - i * 0.3).toFixed(1), per1000: +(86 - i * 2).toFixed(0)
+  }));
+  const topN = Number(top) || 20;
+  const filtered = allRows.slice(0, topN).filter((r) => {
+    if (ui.qDept && ui.qDept !== "全部" && deptByCat[r.cat] !== ui.qDept) return false;
+    if (ui.qCat && ui.qCat !== "全部" && r.cat !== ui.qCat) return false;
+    return true;
+  });
+  const totalSales = filtered.reduce((s, r) => s + r.sales, 0).toFixed(1);
+  const totalContrib = filtered.reduce((s, r) => s + r.contrib, 0).toFixed(1);
+  const kpis = [
+    { title: "入围商品数据", value: filtered.length + " 个", delta: "TOP" + topN, deltaUp: true, color: "blue" },
+    { title: "合计销售金额", value: totalSales + " 万元", delta: "+18.3%", deltaUp: true, color: "green" },
+    { title: "合计毛利贡献度", value: totalContrib + "%", delta: "+2.1%", deltaUp: true, color: "orange" }
+  ];
+  const tabHtml = `<div class="tabbar tabbar--underline" style="margin-bottom:14px;">${tops.map(([k, t]) => `<button class="tabbtn ${top === k ? "is-active" : ""}" type="button" data-act="rgrTop" data-id="${k}">${t}</button>`).join("")}</div>`;
+  const filtersHtml = `
+    <div class="field"><div class="field__label">档期年份</div><select class="select" id="rgrQYear">${years.map((y) => `<option ${y === year ? "selected" : ""}>${y}</option>`).join("")}</select></div>
+    <div class="field"><div class="field__label">档期名称</div><select class="select" id="rgrQSchedule">${schedules.map((s) => `<option ${s.name === schName ? "selected" : ""}>${escapeHtml(s.name)}</option>`).join("")}</select></div>
+    <div class="field"><div class="field__label">档期ID</div><input class="input" id="rgrQScheduleId" value="${escapeHtml(ui.qScheduleId)}" placeholder="请输入档期ID" /></div>
+    <div class="field"><div class="field__label">所属部门</div><select class="select" id="rgrQDept">${depts.map((x) => `<option ${x === ui.qDept ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select></div>
+    <div class="field"><div class="field__label">所属大类</div><select class="select" id="rgrQCat">${cats.map((x) => `<option ${x === ui.qCat ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select></div>
+    <div class="field"><div class="field__label">销售区域</div><select class="select" id="rgrQRegion">${regions.map((x) => `<option ${x === ui.qRegion ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select></div>
+    <div class="field"><div class="field__label">门店名称</div><input class="input" id="rgrQStore" value="${escapeHtml(ui.qStore)}" placeholder="请输入门店名称" /></div>
+    <div class="field"><div class="field__label">商品类型</div><select class="select" id="rgrQGoodsType">${goodsTypes.map((x) => `<option ${x === ui.qGoodsType ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select></div>
+  `;
+  const rowsHtml = filtered.map((r) => `<tr><td>${r.rank}</td><td class="mono">${r.sku}</td><td>${escapeHtml(r.name)}</td><td>${escapeHtml(r.cat)}</td><td class="mono">${r.sales}</td><td class="mono">${r.share}%</td><td style="color:#16a34a;font-weight:600">+${r.yoy}%</td><td class="mono">${r.margin}%</td><td class="mono">${r.contrib}%</td><td class="mono">${r.per1000}</td></tr>`).join("");
+  return `
+    <div class="list-page">
+      ${layoutCard(`<div class="card__body">${tabHtml}<div class="filters-grid">${filtersHtml}</div><div style="margin-top:12px;"><button class="btn btn--primary" type="button" data-act="rgrQuery">查询</button> <button class="btn" type="button" data-act="rgrReset">重置</button></div></div>`)}
+      ${layoutCard(`<div class="card__header"><div class="card__title">${escapeHtml(sch.name)}</div><div class="card__actions"><span class="mono" style="color:#64748b;font-size:13px;">档期时间：${escapeHtml(sch.period)}</span></div></div><div class="card__body"><div class="rpa-kpis">${kpis.map((k) => dashboardKpi(k)).join("")}</div></div>`)}
+      ${layoutCard(`<div class="card__header"><div class="card__title">商品排行明细</div><div class="card__actions"><button class="btn" type="button" data-act="rgrExport">导出</button></div></div><div class="card__body">${table(["排名", "商品编码", "商品名称", "品类", "销售金额(万元)", "销售占比(%)", "同比销售增长率(%)", "毛利率(%)", "毛利贡献度(%)", "千人购买量"], rowsHtml || `<tr><td colspan="10"><div class="empty">暂无数据</div></td></tr>`)}</div>`)}
+    </div>
+  `;
+}
+
+function renderRptUserOrdersPage() {
+  const ui = AppState.ui.rpt.userOrders;
+  const templates = ["全部", "一口价", "组合价", "折扣", "满减", "赠品"];
+  const allRows = [
+    { creator: "张三 - m...", time: "2026-06-15 10:24", template: "一口价", stores: 8, orders: 12, goods: 286 },
+    { creator: "张三 - m...", time: "2026-06-15 10:24", template: "组合价", stores: 6, orders: 8, goods: 184 },
+    { creator: "李四 - m...", time: "2026-06-14 09:18", template: "一口价", stores: 5, orders: 9, goods: 198 },
+    { creator: "李四 - m...", time: "2026-06-14 09:18", template: "折扣", stores: 4, orders: 6, goods: 142 },
+    { creator: "王五 - m...", time: "2026-06-13 14:30", template: "组合价", stores: 7, orders: 11, goods: 245 },
+    { creator: "王五 - m...", time: "2026-06-13 14:30", template: "满减", stores: 3, orders: 5, goods: 96 },
+    { creator: "赵六 - m...", time: "2026-06-12 16:42", template: "赠品", stores: 6, orders: 7, goods: 168 },
+    { creator: "赵六 - m...", time: "2026-06-12 16:42", template: "一口价", stores: 5, orders: 8, goods: 176 }
+  ];
+  const qCreator = String(ui.qCreator || "").trim().toLowerCase();
+  const qModifier = String(ui.qModifier || "").trim().toLowerCase();
+  const qTpl = String(ui.qTemplate || "全部");
+  const filtered = allRows.filter((r) => {
+    if (qCreator && !String(r.creator || "").toLowerCase().includes(qCreator)) return false;
+    if (qTpl && qTpl !== "全部" && r.template !== qTpl) return false;
+    return true;
+  });
+  const creators = Array.from(new Set(filtered.map((r) => r.creator)));
+  const totalOrders = filtered.reduce((s, r) => s + r.orders, 0);
+  const totalStores = filtered.reduce((s, r) => s + r.stores, 0);
+  const totalGoods = filtered.reduce((s, r) => s + r.goods, 0);
+  const kpis = [
+    { title: "总人数", value: creators.length + " 人", delta: "去重创建人", deltaUp: true, color: "blue" },
+    { title: "总单据数", value: totalOrders + " 单", delta: "+12.4%", deltaUp: true, color: "green" },
+    { title: "总门店", value: totalStores + " 家", delta: "+8.6%", deltaUp: true, color: "orange" },
+    { title: "总商品记录数", value: totalGoods.toLocaleString() + " 条", delta: "+15.2%", deltaUp: true, color: "purple" }
+  ];
+  const filtersHtml = `
+    <div class="field"><div class="field__label">创建人</div><input class="input" id="ruoQCreator" value="${escapeHtml(ui.qCreator)}" placeholder="请输入创建人" /></div>
+    <div class="field"><div class="field__label">修改人</div><input class="input" id="ruoQModifier" value="${escapeHtml(ui.qModifier)}" placeholder="请输入修改人" /></div>
+    <div class="field"><div class="field__label">模板名称</div><select class="select" id="ruoQTemplate">${templates.map((x) => `<option ${x === qTpl ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select></div>
+  `;
+  const rowsHtml = filtered.map((r) => `<tr><td style="font-weight:600">${escapeHtml(r.creator)}</td><td class="mono">${escapeHtml(r.time)}</td><td class="mono">${r.stores}</td><td>${escapeHtml(r.template)}</td><td class="mono">${r.orders}</td><td class="mono">${r.goods}</td></tr>`).join("");
+  const hint = qTpl === "全部" ? `<div class="hint" style="margin-bottom:8px;">模板=全部：按模板名称平铺展示多条记录。</div>` : "";
+  return `
+    <div class="list-page">
+      ${layoutCard(`<div class="card__header"><div class="card__title">筛选条件</div><div class="card__actions"><button class="btn btn--primary" type="button" data-act="ruoQuery">查询</button><button class="btn" type="button" data-act="ruoReset">重置</button></div></div><div class="card__body"><div class="filters-grid">${filtersHtml}</div></div>`)}
+      ${layoutCard(`<div class="card__body"><div class="rpa-kpis">${kpis.map((k) => dashboardKpi(k)).join("")}</div></div>`)}
+      ${layoutCard(`<div class="card__header"><div class="card__title">订单明细列表</div><div class="card__actions"><button class="btn" type="button" data-act="ruoExport">导出</button></div></div><div class="card__body">${hint}${table(["创建人", "时间", "门店数", "模板名称", "单据数", "商品记录数"], rowsHtml || `<tr><td colspan="6"><div class="empty">暂无数据</div></td></tr>`)}</div>`)}
+    </div>
+  `;
+}
+
 function renderRptWarningPage() {
   const ui = AppState.ui.rpt.warning;
   const catOps = ["请选择类别", "生鲜", "饮料", "纸品", "家清"];
@@ -28933,6 +29158,10 @@ function render() {
   else if (r === "/rpt-analysis") html = renderRptAnalysisPage();
   else if (r === "/rpt-achievement") html = renderRptAchievementPage();
   else if (r === "/rpt-warning") html = renderRptWarningPage();
+  else if (r === "/rpt-sales-detail") html = renderRptSalesDetailPage();
+  else if (r === "/rpt-stock-detail") html = renderRptStockDetailPage();
+  else if (r === "/rpt-goods-rank") html = renderRptGoodsRankPage();
+  else if (r === "/rpt-user-orders") html = renderRptUserOrdersPage();
   else if (r === "/rpt-store-abnormal") html = renderRptStoreAbnormalPage();
   else if (r === "/rpt-voucher") html = renderRptVoucherPage();
   else if (r === "/rpt-activity") html = renderRptActivityPage();
@@ -30875,6 +31104,96 @@ function handleAction(r, act, btn) {
       toast("导出成功（原型演示）");
       return;
     }
+  }
+
+  if (r === "/rpt-sales-detail") {
+    if (act === "rsdQuery") {
+      const ui = AppState.ui.rpt.salesDetail;
+      ui.qYear = document.getElementById("rsdQYear") ? document.getElementById("rsdQYear").value : "";
+      ui.qSchedule = document.getElementById("rsdQSchedule") ? document.getElementById("rsdQSchedule").value : "";
+      ui.qScheduleId = document.getElementById("rsdQScheduleId") ? document.getElementById("rsdQScheduleId").value : "";
+      ui.qDept = document.getElementById("rsdQDept") ? document.getElementById("rsdQDept").value : "全部";
+      ui.qCat = document.getElementById("rsdQCat") ? document.getElementById("rsdQCat").value : "全部";
+      ui.qRegion = document.getElementById("rsdQRegion") ? document.getElementById("rsdQRegion").value : "全部";
+      ui.qStore = document.getElementById("rsdQStore") ? document.getElementById("rsdQStore").value : "";
+      render();
+      toast("查询完成（原型演示）");
+      return;
+    }
+    if (act === "rsdReset") {
+      AppState.ui.rpt.salesDetail = { qYear: "", qSchedule: "中秋国庆双节大促", qScheduleId: "", qDept: "全部", qCat: "全部", qRegion: "全部", qStore: "" };
+      render();
+      return;
+    }
+    if (act === "rsdExport") {
+      toast("已导出销售明细（原型演示）");
+      return;
+    }
+  }
+
+  if (r === "/rpt-stock-detail") {
+    if (act === "rstockQuery") {
+      const ui = AppState.ui.rpt.stockDetail;
+      ui.qYear = document.getElementById("rstockQYear") ? document.getElementById("rstockQYear").value : "";
+      ui.qSchedule = document.getElementById("rstockQSchedule") ? document.getElementById("rstockQSchedule").value : "";
+      ui.qScheduleId = document.getElementById("rstockQScheduleId") ? document.getElementById("rstockQScheduleId").value : "";
+      ui.qDept = document.getElementById("rstockQDept") ? document.getElementById("rstockQDept").value : "全部";
+      ui.qCat = document.getElementById("rstockQCat") ? document.getElementById("rstockQCat").value : "全部";
+      ui.qRegion = document.getElementById("rstockQRegion") ? document.getElementById("rstockQRegion").value : "全部";
+      ui.qStore = document.getElementById("rstockQStore") ? document.getElementById("rstockQStore").value : "";
+      ui.qGoodsType = document.getElementById("rstockQGoodsType") ? document.getElementById("rstockQGoodsType").value : "全部";
+      ui.qSort = document.getElementById("rstockQSort") ? document.getElementById("rstockQSort").value : "缺货率降序";
+      render();
+      toast("查询完成（原型演示）");
+      return;
+    }
+    if (act === "rstockReset") {
+      AppState.ui.rpt.stockDetail = { qYear: "", qSchedule: "中秋国庆双节大促", qScheduleId: "", qDept: "全部", qCat: "全部", qRegion: "全部", qStore: "", qGoodsType: "全部", qSort: "缺货率降序" };
+      render();
+      return;
+    }
+    if (act === "rstockExport") { toast("已导出库存明细（原型演示）"); return; }
+  }
+  if (r === "/rpt-goods-rank") {
+    if (act === "rgrTop") { AppState.ui.rpt.goodsRank.top = btn.getAttribute("data-id") || "20"; render(); return; }
+    if (act === "rgrQuery") {
+      const ui = AppState.ui.rpt.goodsRank;
+      ui.qYear = document.getElementById("rgrQYear") ? document.getElementById("rgrQYear").value : "";
+      ui.qSchedule = document.getElementById("rgrQSchedule") ? document.getElementById("rgrQSchedule").value : "";
+      ui.qScheduleId = document.getElementById("rgrQScheduleId") ? document.getElementById("rgrQScheduleId").value : "";
+      ui.qDept = document.getElementById("rgrQDept") ? document.getElementById("rgrQDept").value : "全部";
+      ui.qCat = document.getElementById("rgrQCat") ? document.getElementById("rgrQCat").value : "全部";
+      ui.qRegion = document.getElementById("rgrQRegion") ? document.getElementById("rgrQRegion").value : "全部";
+      ui.qStore = document.getElementById("rgrQStore") ? document.getElementById("rgrQStore").value : "";
+      ui.qGoodsType = document.getElementById("rgrQGoodsType") ? document.getElementById("rgrQGoodsType").value : "全部";
+      render();
+      toast("查询完成（原型演示）");
+      return;
+    }
+    if (act === "rgrReset") {
+      AppState.ui.rpt.goodsRank = { top: "20", qYear: "", qSchedule: "2026夏日清凉节", qScheduleId: "", qDept: "全部", qCat: "全部", qRegion: "全部", qStore: "", qGoodsType: "全部" };
+      render();
+      return;
+    }
+    if (act === "rgrExport") { toast("已导出商品排行（原型演示）"); return; }
+  }
+
+  if (r === "/rpt-user-orders") {
+    if (act === "ruoQuery") {
+      const ui = AppState.ui.rpt.userOrders;
+      ui.qCreator = document.getElementById("ruoQCreator") ? document.getElementById("ruoQCreator").value : "";
+      ui.qModifier = document.getElementById("ruoQModifier") ? document.getElementById("ruoQModifier").value : "";
+      ui.qTemplate = document.getElementById("ruoQTemplate") ? document.getElementById("ruoQTemplate").value : "全部";
+      render();
+      toast("查询完成（原型演示）");
+      return;
+    }
+    if (act === "ruoReset") {
+      AppState.ui.rpt.userOrders = { qCreator: "", qModifier: "", qTemplate: "全部" };
+      render();
+      return;
+    }
+    if (act === "ruoExport") { toast("已导出人员订单统计（原型演示）"); return; }
   }
 
   if (r === "/rpt-goods") {
@@ -37896,8 +38215,8 @@ function handleAction(r, act, btn) {
         title: "提示",
         subtitle: "",
         className: "modal--confirm",
-        bodyHtml: '<div class="confirm-modal__body">确认要移除门店?</div>',
-        primaryText: "确认",
+        bodyHtml: '<div class="confirm-modal__body">确认继续移除？</div>',
+        primaryText: "确定",
         secondaryText: "取消",
         onPrimary: () => {
           d.storeScope.stores = d.storeScope.stores.filter((_, idx) => !picked.has(idx));
