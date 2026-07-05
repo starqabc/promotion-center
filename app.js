@@ -3821,6 +3821,7 @@ function openCampaignGoodsSelectModal({ title, subtitle, checkboxName, onPicked,
 function openCampaignComboGoodsSelectModal({ title, subtitle, checkboxName, onPicked }) {
   const allItems = campaignSelectableGoodsItems();
   const cbName = checkboxName || "campPickComboGoods";
+  const comboCodeVal = "001";
   const fieldIds = ["campComboSelCategory", "campComboSelBrand", "campComboSelGoods", "campComboSelCounter"];
   const renderList = () => {
     const goodsEl = document.getElementById("campComboSelGoods");
@@ -3838,7 +3839,7 @@ function openCampaignComboGoodsSelectModal({ title, subtitle, checkboxName, onPi
       if (qCounter && !String(g.counter || "").toLowerCase().includes(qCounter)) return false;
       return true;
     });
-    const headers = ["序号", "商品编码", "商品条码", "商品名称", "规格", "单位", "类别", "品牌", "柜组"];
+    const headers = ["序号", "商品编码", "商品条码", "商品名称", "规格", "单位", "类别", "品牌", "柜组", "售价", "参考进价"];
     const rows = filtered.map((g, i) => `
       <tr>
         <td><input type="checkbox" name="${escapeHtml(String(cbName))}" value="${escapeHtml(String(g.sku || ""))}" /></td>
@@ -3851,6 +3852,8 @@ function openCampaignComboGoodsSelectModal({ title, subtitle, checkboxName, onPi
         <td>${escapeHtml(String(g.category || ""))}</td>
         <td>${escapeHtml(String(g.brand || ""))}</td>
         <td>${escapeHtml(String(g.counter || ""))}</td>
+        <td class="mono">${escapeHtml(String(g.price ?? ""))}</td>
+        <td class="mono">${escapeHtml(String(g.costPrice ?? g.originCost ?? ""))}</td>
       </tr>
     `).join("");
     const wrap = document.getElementById("campComboSelectWrap");
@@ -3884,6 +3887,17 @@ function openCampaignComboGoodsSelectModal({ title, subtitle, checkboxName, onPi
         </div>
       </div>
       <div class="divider"></div>
+      <div class="form" style="padding-top:4px;">
+        <div class="form__row">
+          <div class="field" style="flex:0 0 240px;">
+            <div class="field__label"><span class="req">*</span>组合编码</div>
+            <select class="select" id="campComboSelComboCode">
+              ${comboCampaignGoodsCodeOptionsHtml(comboCodeVal)}
+            </select>
+          </div>
+          <div class="field" style="flex:1;align-self:center;color:#64748b;font-size:13px;">为本次勾选的商品指定所属组合（分组）</div>
+        </div>
+      </div>
       ${selectionModalTableHtml({
         headerCheckboxId: "campComboSelAll",
         checkboxName: cbName,
@@ -3940,8 +3954,10 @@ function openCampaignComboGoodsSelectModal({ title, subtitle, checkboxName, onPi
     onPrimary: () => {
       const picked = pickCheckedValues(cbName);
       if (!picked.length) return toast("请先勾选数据");
+      const comboCodeEl = document.getElementById("campComboSelComboCode");
+      const comboCode = comboCodeEl ? comboCodeEl.value : "001";
       const selectedItems = allItems.filter((g) => picked.includes(String(g.sku)));
-      if (onPicked) onPicked(selectedItems);
+      if (onPicked) onPicked(selectedItems, comboCode);
       closeModal();
     }
   });
@@ -3950,6 +3966,7 @@ function openCampaignComboGoodsSelectModal({ title, subtitle, checkboxName, onPi
 function openCampaignComboCategorySelectModal({ title, subtitle, checkboxName, onPicked }) {
   const allItems = (AppState.data.gmOnlineCategories || []).concat(AppState.data.gmOfflineCategories || []);
   const cbName = checkboxName || "campPickComboCat";
+  const comboCodeVal = "001";
   const fieldIds = ["campComboCatSelCode", "campComboCatSelName"];
   const renderList = () => {
     const codeEl = document.getElementById("campComboCatSelCode");
@@ -3977,6 +3994,24 @@ function openCampaignComboCategorySelectModal({ title, subtitle, checkboxName, o
       <div class="form">
         <div class="form__row">
           <div class="field">
+            <div class="field__label">大类</div>
+            <select class="select" id="campComboCatSelMajor">
+              ${["全部", "日百", "食品", "饮料", "纺织"].map((x) => `<option>${escapeHtml(x)}</option>`).join("")}
+            </select>
+          </div>
+          <div class="field">
+            <div class="field__label">种类</div>
+            <select class="select" id="campComboCatSelMid">
+              ${["全部", "家清", "粮油", "零食", "酒水", "乳品"].map((x) => `<option>${escapeHtml(x)}</option>`).join("")}
+            </select>
+          </div>
+          <div class="field">
+            <div class="field__label">小类</div>
+            <select class="select" id="campComboCatSelSub">
+              ${["全部", "纸品", "清洁", "大米", "食用油", "饼干", "白酒", "牛奶"].map((x) => `<option>${escapeHtml(x)}</option>`).join("")}
+            </select>
+          </div>
+          <div class="field">
             <div class="field__label">类别编码</div>
             <input class="input" id="campComboCatSelCode" placeholder="请输入类别编码" value="${escapeHtml(codeEl ? codeEl.value : "")}" />
           </div>
@@ -3994,6 +4029,17 @@ function openCampaignComboCategorySelectModal({ title, subtitle, checkboxName, o
         </div>
       </div>
       <div class="divider"></div>
+      <div class="form" style="padding-top:4px;">
+        <div class="form__row">
+          <div class="field" style="flex:0 0 240px;">
+            <div class="field__label"><span class="req">*</span>组合编码</div>
+            <select class="select" id="campComboCatSelComboCode">
+              ${comboCampaignGoodsCodeOptionsHtml(comboCodeVal)}
+            </select>
+          </div>
+          <div class="field" style="flex:1;align-self:center;color:#64748b;font-size:13px;">为本次勾选的类别指定所属组合（分组）</div>
+        </div>
+      </div>
       ${selectionModalTableHtml({
         headerCheckboxId: "campComboCatSelAll",
         checkboxName: cbName,
@@ -4050,8 +4096,10 @@ function openCampaignComboCategorySelectModal({ title, subtitle, checkboxName, o
     onPrimary: () => {
       const picked = pickCheckedValues(cbName);
       if (!picked.length) return toast("请先勾选数据");
+      const comboCodeEl = document.getElementById("campComboCatSelComboCode");
+      const comboCode = comboCodeEl ? comboCodeEl.value : "001";
       const selectedItems = allItems.filter((g) => picked.includes(String(g.catCode)));
-      if (onPicked) onPicked(selectedItems);
+      if (onPicked) onPicked(selectedItems, comboCode);
       closeModal();
     }
   });
@@ -18374,6 +18422,8 @@ function comboCampaignEnsureGoodsScope(draft = {}) {
   if (typeof gs.purchaseType === "undefined" || gs.purchaseType === "" || gs.purchaseType === "单品") gs.purchaseType = "组合";
   if (typeof gs.comboMode === "undefined" || gs.comboMode === "") gs.comboMode = "任选组合";
   if (typeof gs.comboScope === "undefined" || gs.comboScope === "") gs.comboScope = "商品";
+  if (typeof gs.supplySubsidyMethod === "undefined" || gs.supplySubsidyMethod === "") gs.supplySubsidyMethod = "销售补差";
+  if (typeof gs.specialGoodsJoin === "undefined" || gs.specialGoodsJoin === "") gs.specialGoodsJoin = "否";
   if (typeof gs.keyword === "undefined") gs.keyword = "";
   gs.goods.forEach((item, idx) => {
     if (!item || typeof item !== "object") gs.goods[idx] = {};
@@ -18530,7 +18580,7 @@ function comboCampaignGoodsToolbarHtml(goodsScope = {}, readonly = false) {
       </div>
       ${readonly ? "" : `
         <div class="combo-goods-toolbar__actions">
-          <button class="btn" type="button" data-act="campImportScheduleGoods">引入档期商品</button>
+          <button class="btn" type="button" data-act="campImportScheduleGoods">选择档期商品</button>
           <button class="btn btn--primary" type="button" data-act="campSelectGoodsTab">选商品</button>
           <button class="btn btn--primary" type="button" data-act="campComboGoodsAdd">新增一行</button>
           <button class="btn" type="button" data-act="campGoodsImport">导入</button>
@@ -18543,7 +18593,7 @@ function comboCampaignGoodsToolbarHtml(goodsScope = {}, readonly = false) {
 function comboCampaignCategoryTabbarHtml() {
   const activeTab = comboCampaignCategoryActiveTab();
   const tabs = [
-    { k: "categories", t: "商品范围" },
+    { k: "categories", t: "类别范围" },
     { k: "excludeCategories", t: "排除类别" },
     { k: "excludeGoods", t: "排除商品" }
   ];
@@ -18556,16 +18606,15 @@ function comboCampaignCategoryTabbarHtml() {
 
 function comboCampaignCategoryToolbarHtml(goodsScope = {}, readonly = false) {
   const activeTab = comboCampaignCategoryActiveTab();
-  const placeholder = "请输入商品编码、商品名称";
-  const selectText = activeTab === "categories" ? "+类别" : (activeTab === "excludeCategories" ? "+类别" : "+商品");
+  const placeholder = "请输入类别编码、类别名称";
+  const selectText = activeTab === "categories" ? "选类别" : (activeTab === "excludeCategories" ? "选类别" : "+商品");
   const importText = activeTab === "categories" ? "导入类别" : (activeTab === "excludeCategories" ? "导入类别" : "导入商品");
   const addText = activeTab === "categories" ? "增加行" : (activeTab === "excludeCategories" ? "增加行" : "增加行");
   const removeText = activeTab === "categories" ? "移除类别" : (activeTab === "excludeCategories" ? "移除类别" : "移除商品");
-  const hideActions = activeTab === "excludeCategories" || activeTab === "excludeGoods";
+  const hideActions = activeTab === "excludeGoods";
   return `
     ${comboCampaignCategoryTabbarHtml()}
     <div class="combo-goods-toolbar combo-goods-toolbar--category">
-      <div class="combo-goods-toolbar__title">商品信息</div>
       <div class="combo-goods-toolbar__filters">
         <input class="input" ${readonly ? "disabled" : 'data-cw="goodsScope" data-field="keyword"'} value="${escapeHtml(String(goodsScope.keyword || ""))}" placeholder="${escapeHtml(placeholder)}" />
         ${readonly ? "" : `<button class="btn btn--primary combo-goods-toolbar__query" type="button" data-act="campKeywordQuery" data-cw="goodsScope" data-field="keyword">查询</button>`}
@@ -18575,7 +18624,6 @@ function comboCampaignCategoryToolbarHtml(goodsScope = {}, readonly = false) {
           <button class="btn btn--primary" type="button" data-act="campComboScopeSelect">${selectText}</button>
           <button class="btn" type="button" data-act="campComboScopeImport">${importText}</button>
           <button class="btn" type="button" data-act="campComboScopeAdd">${addText}</button>
-          <button class="btn" type="button" data-act="campComboScopeRemove">${removeText}</button>
         </div>
       `}
     </div>
@@ -18657,6 +18705,9 @@ function comboCampaignGoodsInfoTableHtml(draft = {}, readonly = false) {
         <td>${readonly
           ? `<span class="combo-goods-cell-text">${escapeHtml(String(x.price ?? ""))}</span>`
           : `<input class="combo-goods-cell-input" data-cw="comboGoods" data-idx="${dataIdx}" data-field="price" type="number" min="0" step="0.01" value="${escapeHtml(String(x.price ?? ""))}" />`}</td>
+        <td>${readonly
+          ? `<span class="combo-goods-cell-text">${escapeHtml(String(x.costPrice ?? ""))}</span>`
+          : `<input class="combo-goods-cell-input" data-cw="comboGoods" data-idx="${dataIdx}" data-field="costPrice" type="number" min="0" step="0.01" value="${escapeHtml(String(x.costPrice ?? ""))}" />`}</td>
         ${showShareRatio ? `<td>${readonly
           ? `<span class="combo-goods-cell-text">${escapeHtml(String(x.shareRatio ?? ""))}</span>`
           : `<input class="combo-goods-cell-input" data-cw="comboGoods" data-idx="${dataIdx}" data-field="shareRatio" type="number" min="0" max="100" step="0.01" value="${escapeHtml(String(x.shareRatio ?? ""))}" placeholder="销售分摊比例%" />`}</td>` : ""}
@@ -18664,7 +18715,7 @@ function comboCampaignGoodsInfoTableHtml(draft = {}, readonly = false) {
       </tr>
     `;
   }).join("");
-  const totalCols = 10 + (showShareRatio ? 1 : 0) + (readonly ? 0 : 1);
+  const totalCols = 11 + (showShareRatio ? 1 : 0) + (readonly ? 0 : 1);
   const emptyRows = Array.from({ length: Math.max(0, 3 - visibleRows.length) }).map((_, idx) => `
     <tr>
       <td class="combo-goods-table__check"><input type="checkbox" disabled /></td>
@@ -18687,6 +18738,7 @@ function comboCampaignGoodsInfoTableHtml(draft = {}, readonly = false) {
             <th>商品规格</th>
             <th>单位</th>
             <th>商品售价</th>
+            <th>参考进价</th>
             ${showShareRatio ? `<th>销售分摊比例%</th>` : ""}
             ${readonly ? "" : `<th>操作</th>`}
           </tr>
@@ -18741,10 +18793,11 @@ function comboCampaignCategoryInfoTableHtml(draft = {}, readonly = false) {
         ${showShareRatio ? `<td>${readonly
           ? `<span class="combo-goods-cell-text">${escapeHtml(String(x.shareRatio ?? ""))}</span>`
           : `<input class="combo-goods-cell-input" type="number" min="0" max="100" step="0.01" data-cw="comboScopeRows" data-tab="${activeTab}" data-idx="${dataIdx}" data-field="shareRatio" value="${escapeHtml(String(x.shareRatio ?? ""))}" />`}</td>` : ""}
+        ${activeTab === "categories" && !readonly ? `<td><a class="link" href="javascript:;" data-act="campComboScopeRowDel" data-tab="${activeTab}" data-idx="${dataIdx}">删除</a></td>` : ""}
       </tr>
     `;
   }).join("");
-  const emptyCols = activeTab === "excludeGoods" ? 9 : (showShareRatio ? 6 : 5);
+  const emptyCols = activeTab === "excludeGoods" ? 9 : (activeTab === "categories" && !readonly ? (showShareRatio ? 7 : 6) : (showShareRatio ? 6 : 5));
   const minRows = (activeTab === "excludeCategories" || activeTab === "excludeGoods") ? 6 : 2;
   const emptyRows = Array.from({ length: Math.max(0, minRows - visibleRows.length) }).map((_, idx) => `
     <tr>
@@ -18775,6 +18828,7 @@ function comboCampaignCategoryInfoTableHtml(draft = {}, readonly = false) {
         <th>类别编码</th>
         <th>类别名称</th>
         ${showShareRatio ? `<th>销售分摊比例%</th>` : ""}
+        ${activeTab === "categories" && !readonly ? `<th>操作</th>` : ""}
       </tr>
     `;
   return `
@@ -19534,12 +19588,9 @@ function comboCampaignBurdenCustomHtml(gs = {}, readonly = false) {
 
 function comboCampaignBurdenStepHtml(draft = {}, readonly = false) {
   const gs = comboCampaignEnsureGoodsScope(draft);
-  const showBurdenRule = String(gs.discountShareMethod || "销售占比") === "固定比例";
   return `
     <div class="combo-camp-panel combo-camp-burden-panel">
-      ${comboCampaignSectionHtml("承担规则", showBurdenRule
-        ? comboCampaignBurdenRuleHtml(gs, readonly)
-        : `<div class="combo-burden-empty">请先将“商品范围”中的优惠分摊方式设置为「固定比例」</div>`)}
+      ${comboCampaignSectionHtml("承担规则", comboCampaignBurdenRuleHtml(gs, readonly))}
     </div>
   `;
 }
@@ -19565,16 +19616,24 @@ function comboCampaignGoodsPanelHtml(draft = {}, readonly = false) {
           </div>
           <div class="field">
             <div class="field__label"><span class="req">*</span>补差方式</div>
-            <select class="select" ${readonly ? "disabled" : 'data-cw="goodsScope" data-field="supplySubsidyMethod"'}>
+            <select class="select" disabled>
               ${["销售补差", "活动补差"].map((x) => `<option value="${x}" ${String(gs.supplySubsidyMethod || "销售补差") === x ? "selected" : ""}>${x}</option>`).join("")}
             </select>
           </div>
           <div class="field">
             <div class="field__label"><span class="req">*</span>优惠分摊方式</div>
             <select class="select" ${readonly ? "disabled" : 'data-cw="goodsScope" data-field="discountShareMethod"'}>
-              ${["销售占比", "固定比例", "按平均单价"].map((x) => `<option value="${x}" ${String(gs.discountShareMethod || "销售占比") === x ? "selected" : ""}>${x}</option>`).join("")}
+              ${["销售占比", "按平均单价"].map((x) => `<option value="${x}" ${String(gs.discountShareMethod || "销售占比") === x ? "selected" : ""}>${x}</option>`).join("")}
             </select>
           </div>
+          ${(isCategoryMode || isBrandMode) ? `
+          <div class="field">
+            <div class="field__label"><span class="req">*</span>特价商品是否参与</div>
+            <div class="checks">
+              <label class="radio"><input type="radio" name="comboSpecialGoodsJoin" ${readonly ? "disabled" : 'data-cw="goodsScope" data-field="specialGoodsJoin"'} value="是" ${String(gs.specialGoodsJoin || "否") === "是" ? "checked" : ""} />是</label>
+              <label class="radio"><input type="radio" name="comboSpecialGoodsJoin" ${readonly ? "disabled" : 'data-cw="goodsScope" data-field="specialGoodsJoin"'} value="否" ${String(gs.specialGoodsJoin || "否") === "否" ? "checked" : ""} />否</label>
+            </div>
+          </div>` : ""}
         </div>
       `)}
       ${comboCampaignSectionHtml("商品信息", `
@@ -34895,13 +34954,13 @@ function handleAction(r, act, btn) {
             title: "选择商品",
             checkboxName: "campPickGoods",
             subtitle: "支持按类别、品牌、商品名称、柜组查询",
-            onPicked: (sel) => {
+            onPicked: (sel, comboCode) => {
               const gs = comboCampaignEnsureGoodsScope(d);
               const ex = new Set(gs.goods.map((x) => String(x.skuCode || "")));
               sel.forEach((g) => {
                 if (ex.has(String(g.sku))) return;
                 gs.goods.push({
-                  comboCode: "001",
+                  comboCode: comboCode || "001",
                   skuCode: g.sku,
                   barcode: g.barcode,
                   skuName: g.name,
@@ -34995,7 +35054,32 @@ function handleAction(r, act, btn) {
       return;
     }
     if (act === "campImportScheduleGoods") {
-      toast("已引入档期商品（原型演示）");
+      const d = AppState._tmpCampaign;
+      if (!d) return;
+      openCampaignComboGoodsSelectModal({
+        title: "选择档期商品",
+        checkboxName: "campPickScheduleGoods",
+        subtitle: "从档期商品中选择（原型演示）",
+        onPicked: (sel, comboCode) => {
+          const gs = comboCampaignEnsureGoodsScope(d);
+          const ex = new Set(gs.goods.map((x) => String(x.skuCode || "")));
+          sel.forEach((g) => {
+            if (ex.has(String(g.sku))) return;
+            gs.goods.push({
+              comboCode: comboCode || "001",
+              skuCode: g.sku,
+              barcode: g.barcode,
+              skuName: g.name,
+              spec: g.spec,
+              unit: g.unit,
+              costPrice: g.originCost,
+              price: g.originPrice,
+              deductRate: ""
+            });
+          });
+          campaignWizardRenderGoodsTable();
+        }
+      });
       return;
     }
     if (act === "campSelectExcludeTab") {
@@ -36073,12 +36157,12 @@ function handleAction(r, act, btn) {
       openCampaignComboCategorySelectModal({
         title: isExcl ? "选择排除类别" : "选择类别",
         checkboxName: isExcl ? "campPickComboExCat" : "campPickComboCat",
-        onPicked: (sel) => {
+        onPicked: (sel, comboCode) => {
           const key = isExcl ? "excludeCategories" : "categories";
           const ex = new Set((gs[key] || []).map((x) => String(x.catCode || "")));
           sel.forEach((s) => {
             if (ex.has(String(s.catCode))) return;
-            gs[key].push({ catCode: s.catCode, catName: s.catName });
+            gs[key].push({ catCode: s.catCode, catName: s.catName, comboCode: comboCode || "001" });
           });
           campaignWizardRenderGoodsTable();
         }
@@ -36129,6 +36213,22 @@ function handleAction(r, act, btn) {
       ui[pickKey] = [];
       campaignWizardRenderGoodsTable();
       toast("已移除勾选数据（原型演示）");
+      return;
+    }
+    if (act === "campComboScopeRowDel") {
+      const tab = btn.getAttribute("data-tab") || "categories";
+      const idx = Number(btn.getAttribute("data-idx"));
+      if (!Number.isFinite(idx)) return;
+      const d = AppState._tmpCampaign;
+      if (!d) return;
+      const gs = comboCampaignEnsureGoodsScope(d);
+      if (Array.isArray(gs[tab])) gs[tab].splice(idx, 1);
+      const pickKey = comboCampaignScopePickKey(tab);
+      const ui = AppState.ui.campaignWizard || (AppState.ui.campaignWizard = {});
+      ui[pickKey] = (Array.isArray(ui[pickKey]) ? ui[pickKey] : [])
+        .map((x) => Number(x)).filter((x) => Number.isFinite(x) && x !== idx)
+        .map((x) => (x > idx ? x - 1 : x));
+      campaignWizardRenderGoodsTable();
       return;
     }
     if (act === "campComboBrandTab") {
