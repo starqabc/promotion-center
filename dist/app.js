@@ -3467,7 +3467,7 @@ function openCampSelectModal({ title, subtitle, items, columns, searchKeys, chec
   });
 }
 
-function openCampaignStoreSelectModal({ onPicked, title = "选择门店", primaryText = "批量添加", showQuickPick = true }) {
+function openCampaignStoreSelectModal({ onPicked }) {
   const allItems = AppState.data.gmStores || [];
   const regionList = Array.from(new Set(allItems.map((x) => String(x.regionDesc || x.regionCode || "")).filter(Boolean)));
   const priceGroupList = Array.from(new Set(allItems.map((x) => String(x.priceGroupCode || "")).filter(Boolean)));
@@ -3555,10 +3555,8 @@ function openCampaignStoreSelectModal({ onPicked, title = "选择门店", primar
             <div class="toolbar__actions combo-store-picker__ops-actions">
               <button class="btn btn--primary" type="button" id="campStoreSelQuery">查询</button>
               <button class="btn" type="button" id="campStoreSelReset">重置</button>
-              <button class="btn" type="button" id="campStoreSelImport">导入门店</button>
-              ${showQuickPick ? `
               <button class="btn" type="button" id="campStoreSelPickRegion">按同区域</button>
-              <button class="btn" type="button" id="campStoreSelPickPg">按同价格组</button>` : ""}
+              <button class="btn" type="button" id="campStoreSelPickPg">按同价格组</button>
             </div>
           </div>
         </div>
@@ -3626,8 +3624,6 @@ function openCampaignStoreSelectModal({ onPicked, title = "选择门店", primar
         pickBy((s) => pgs.length === 0 || pgs.includes(String(s.priceGroupCode || "")), pgs.length ? `同价格组(${pgs.join("/")})` : "全部价格组");
       });
     }
-    const importBtn = document.getElementById("campStoreSelImport");
-    if (importBtn) importBtn.addEventListener("click", () => toast("导入门店：请选择文件（原型演示）"));
     const allEl = document.getElementById("campStoreSelAll");
     if (allEl) {
       allEl.addEventListener("change", () => {
@@ -3637,9 +3633,9 @@ function openCampaignStoreSelectModal({ onPicked, title = "选择门店", primar
     }
   };
   openModal({
-    title,
+    title: "选择门店",
     subtitle: "支持按区域、价格组筛选（原型演示）",
-    primaryText,
+    primaryText: "批量添加",
     secondaryText: "取消",
     size: "xl",
     className: "modal--store-picker",
@@ -3678,7 +3674,7 @@ function campaignSelectableGoodsItems() {
   });
 }
 
-function openCampaignGoodsSelectModal({ title, subtitle, checkboxName, onPicked, comboCodeOptions, primaryText = "保存" }) {
+function openCampaignGoodsSelectModal({ title, subtitle, checkboxName, onPicked, comboCodeOptions }) {
   const allItems = campaignSelectableGoodsItems();
   const hasComboCode = Array.isArray(comboCodeOptions) && comboCodeOptions.length > 0;
   let hasQueried = false;
@@ -3834,7 +3830,7 @@ function openCampaignGoodsSelectModal({ title, subtitle, checkboxName, onPicked,
   openModal({
     title: title || "选择商品",
     subtitle: subtitle || "支持按商品、品类、品牌查询（原型演示）",
-    primaryText: primaryText,
+    primaryText: "保存",
     secondaryText: "取消",
     bodyHtml: '<div id="campSelectWrap"></div>',
     size: "xl",
@@ -3853,12 +3849,12 @@ function openCampaignGoodsSelectModal({ title, subtitle, checkboxName, onPicked,
   });
 }
 
-function openCampaignComboGoodsSelectModal({ title, subtitle, checkboxName, onPicked, queryOnOpen = false, primaryText = "保存", showImport = false }) {
+function openCampaignComboGoodsSelectModal({ title, subtitle, checkboxName, onPicked }) {
   const allItems = campaignSelectableGoodsItems();
   const cbName = checkboxName || "campPickComboGoods";
   const comboCodeVal = "001";
   const fieldIds = ["campComboSelCategory", "campComboSelBrand", "campComboSelGoods", "campComboSelCounter"];
-  let hasQueried = !!queryOnOpen;
+  let hasQueried = false;
   const renderList = () => {
     const goodsEl = document.getElementById("campComboSelGoods");
     const categoryEl = document.getElementById("campComboSelCategory");
@@ -3913,12 +3909,11 @@ function openCampaignComboGoodsSelectModal({ title, subtitle, checkboxName, onPi
             <div class="field__label">柜组</div>
             <input class="input" id="campComboSelCounter" placeholder="请输入柜组" value="${escapeHtml(counterEl ? counterEl.value : "")}" />
           </div>
-          <div class="field" style="min-width:${showImport ? 220 : 180}px;">
+          <div class="field" style="min-width:180px;">
             <div class="field__label">操作</div>
             <div class="toolbar__actions">
               <button class="btn btn--primary" type="button" id="campComboSelQuery">查询</button>
               <button class="btn" type="button" id="campComboSelReset">重置</button>
-              ${showImport ? `<button class="btn" type="button" id="campComboSelImport">导入商品</button>` : ""}
             </div>
           </div>
         </div>
@@ -3967,8 +3962,6 @@ function openCampaignComboGoodsSelectModal({ title, subtitle, checkboxName, onPi
         renderList();
       });
     }
-    const importBtn = document.getElementById("campComboSelImport");
-    if (importBtn) importBtn.addEventListener("click", () => toast("导入商品：请选择文件（原型演示）"));
     const allEl = document.getElementById("campComboSelAll");
     if (allEl) {
       allEl.addEventListener("change", () => {
@@ -3980,7 +3973,7 @@ function openCampaignComboGoodsSelectModal({ title, subtitle, checkboxName, onPi
   openModal({
     title: title || "选择商品",
     subtitle: subtitle || "支持按品类、品牌、商品名称、柜组查询（原型演示）",
-    primaryText: primaryText || "保存",
+    primaryText: "保存",
     secondaryText: "取消",
     bodyHtml: '<div id="campComboSelectWrap"></div>',
     size: "xl",
@@ -10495,8 +10488,6 @@ function renderCampaignsListPage(presetPromoType = "", presetTemplateId = "") {
         canEdit ? `<button class="linkbtn" type="button" data-act="campEdit" data-id="${id}">编辑</button>` : `<span class="cell-muted">编辑</span>`,
         canSubmit ? `<button class="linkbtn" type="button" data-act="campSubmit" data-id="${id}">提交</button>` : `<span class="cell-muted">提交</span>`,
         `<button class="linkbtn" type="button" data-act="campApprove" data-id="${id}">审核</button>`,
-        `<button class="linkbtn" type="button" data-act="campAppendStores" data-id="${id}">追加门店</button>`,
-        `<button class="linkbtn" type="button" data-act="campAppendGoods" data-id="${id}">追加商品</button>`,
         `<button class="linkbtn" type="button" data-act="campCopy" data-id="${id}">复制</button>`
       ].join("");
       const moreOps = [
@@ -19654,20 +19645,8 @@ function comboCampaignBurdenRuleHtml(gs = {}, readonly = false) {
   const rule = gs.burdenRule || {};
   const shareMode = String(rule.shareMode || "统一比例");
   const isCustom = shareMode === "自定义比例";
-  const shareHead = `
-    <div class="combo-burden-share">
-      <div class="field">
-        <div class="field__label"><span class="req">*</span>分摊方式</div>
-        ${readonly
-          ? `<input class="input" value="${escapeHtml(shareMode)}" disabled />`
-          : `<select class="select" data-cw="burdenRule" data-field="shareMode">
-              ${["统一比例", "自定义比例"].map((x) => `<option value="${x}" ${shareMode === x ? "selected" : ""}>${x}</option>`).join("")}
-            </select>`}
-      </div>
-    </div>
-  `;
   if (isCustom) {
-    return shareHead + comboCampaignBurdenCustomHtml(gs, readonly);
+    return comboCampaignBurdenCustomHtml(gs, readonly);
   }
   const parties = [
     { key: "supplier", label: "供货商承担" },
@@ -19687,7 +19666,7 @@ function comboCampaignBurdenRuleHtml(gs = {}, readonly = false) {
       </div>
     `;
   }).join("");
-  return shareHead + `<div class="combo-burden-row">${cols}</div>`;
+  return `<div class="combo-burden-row">${cols}</div>`;
 }
 
 function comboCampaignBurdenCustomHtml(gs = {}, readonly = false) {
@@ -19947,6 +19926,7 @@ function comboCampaignBasicPanelHtml({
   const monthText = campaignCycleInlineText((Array.isArray(d.cycle) ? d.cycle : []).filter((x) => /^\d{1,2}月$/.test(String(x))), "月");
   const dayText = campaignCycleInlineText((Array.isArray(d.cycle) ? d.cycle : []).filter((x) => /^\d{1,2}日$/.test(String(x))), "日");
   const comboDisplayName = campaignComboDisplayName(d.templateName || d.activitySubject || "");
+  const shareMode = String(((d.goodsScope && d.goodsScope.burdenRule) || {}).shareMode || "统一比例");
   const userScopeDisplay = campaignScopeUserDisplayValue(d.scope.userScope || "全部");
   const showMemberExtra = userScopeDisplay === "会员";
   const title = readonly ? `${comboDisplayName}详情` : `${mode === "edit" ? "编辑" : "创建"}${comboDisplayName}`;
@@ -19957,7 +19937,7 @@ function comboCampaignBasicPanelHtml({
   const startValue = toDatetimeLocalValue(d.startAt || "");
   const endValue = toDatetimeLocalValue(d.endAt || "");
   const basicInfoHtml = `
-    <div class="combo-camp-form__row row--stretch">
+    <div class="combo-camp-form__row combo-camp-form__row--2">
       <div class="field">
         <div class="field__label">活动编码</div>
         <input class="input mono" value="${escapeHtml(d.activityNo || "")}" placeholder="保存时自动生成" disabled />
@@ -19966,16 +19946,8 @@ function comboCampaignBasicPanelHtml({
         <div class="field__label">${readonly ? "" : '<span class="req">*</span>'}活动名称</div>
         <input class="input" ${readonly ? "disabled" : 'data-cw="root" data-field="activitySubject"'} value="${escapeHtml(d.activitySubject || "")}" placeholder="请输入活动名称" />
       </div>
-      <div class="field">
-        <div class="field__label">${readonly ? "" : '<span class="req">*</span>'}活动模式</div>
-        ${readonly
-          ? `<input class="input" value="${escapeHtml(d.activityMode || "集采")}" disabled />`
-          : `<select class="select" data-cw="root" data-field="activityMode">
-              ${["集采", "区域"].map((x) => `<option ${String(d.activityMode || "集采") === x ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}
-            </select>`}
-      </div>
     </div>
-    <div class="combo-camp-form__row row--stretch">
+    <div class="combo-camp-form__row combo-camp-form__row--5 row--stretch">
       <div class="field">
         <div class="field__label">${(!readonly && String(d.activityMode || "") === "区域") ? '<span class="req">*</span>' : ''}活动档期</div>
         ${readonly ? `<input class="input" value="${escapeHtml(scheduleValue || "")}" disabled />` : scheduleDisplay}
@@ -19988,8 +19960,27 @@ function comboCampaignBasicPanelHtml({
         <div class="field__label">促销类型</div>
         <input class="input" value="${escapeHtml(d.activityType || "特价")}" disabled />
       </div>
+      <div class="field">
+        <div class="field__label">${readonly ? "" : '<span class="req">*</span>'}活动模式</div>
+        ${readonly
+          ? `<input class="input" value="${escapeHtml(d.activityMode || "集采")}" disabled />`
+          : `<select class="select" data-cw="root" data-field="activityMode">
+              ${["集采", "区域"].map((x) => `<option ${String(d.activityMode || "集采") === x ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}
+            </select>`}
+      </div>
     </div>
-    <div class="combo-camp-form__row row--stretch">${campaignExtraBasicFieldsHtml(d, readonly)}
+    <div class="combo-camp-form__row combo-camp-form__row--3 row--stretch">${campaignExtraBasicFieldsHtml(d, readonly)}
+    </div>
+    ${campaignLimitSettingsHtml(d, readonly)}
+    <div class="combo-camp-form__row combo-camp-form__row--3 row--stretch">
+      <div class="field">
+        <div class="field__label">分摊方式</div>
+        ${readonly
+          ? `<input class="input" value="${escapeHtml(shareMode)}" disabled />`
+          : `<select class="select" data-cw="burdenRule" data-field="shareMode">
+              ${["统一比例", "自定义比例"].map((x) => `<option value="${x}" ${shareMode === x ? "selected" : ""}>${x}</option>`).join("")}
+            </select>`}
+      </div>
     </div>
     ${(!readonly && mode === "create") ? `` : ``}
     <div class="field">
@@ -20089,14 +20080,12 @@ function comboCampaignBasicPanelHtml({
         </div>
       `;
 
-  const limitScopeHtml = campaignLimitSettingsHtml(d, readonly);
   const panelHtml = `
     <div class="combo-camp-panel">
       ${comboCampaignSectionHtml("基础信息", basicInfoHtml)}
       ${comboCampaignSectionHtml("活动周期", cycleHtml)}
       ${readonly ? comboCampaignSectionHtml("门店范围", storeScopeHtml) : ""}
       ${comboCampaignSectionHtml("活动范围", scopeHtml)}
-      ${comboCampaignSectionHtml("限量设置", limitScopeHtml)}
       ${footerHtml || ""}
     </div>
   `;
@@ -34244,24 +34233,6 @@ function handleAction(r, act, btn) {
       return;
     }
     const id = btn.getAttribute("data-id") || "";
-    if (act === "campAppendStores") {
-      openCampaignStoreSelectModal({
-        title: "追加门店",
-        primaryText: "批量追加",
-        showQuickPick: false,
-        onPicked: (items) => toast(`已追加 ${items.length} 家门店到活动 ${id}（原型演示）`)
-      });
-      return;
-    }
-    if (act === "campAppendGoods") {
-      openCampaignComboGoodsSelectModal({
-        title: "追加商品",
-        queryOnOpen: true,
-        showImport: true,
-        onPicked: (items) => toast(`已追加 ${items.length} 个商品到活动 ${id}（原型演示）`)
-      });
-      return;
-    }
     if (act === "campDetail") {
       AppState.ui.campaignDetail.goodsTab = "goods";
       location.hash = `#/campaigns-detail/${encodeURIComponent(String(id || ""))}`;
