@@ -277,9 +277,11 @@ const AppState = {
     "/sm-counters": { title: "柜组信息", sub: "" },
     "/sm-regions": { title: "区域信息", sub: "" },
     "/sm-price-groups": { title: "价格组信息", sub: "" },
+    "/changelog": { title: "版本更新", sub: "更新日志" },
+    "/activity-settings": { title: "活动基础设置", sub: "" },
     "/sm-stores": { title: "门店信息", sub: "" },
-    "/sm-store-groups": { title: "门店组信息", sub: "" },
-    "/sm-combo-codes": { title: "商品组合信息", sub: "" },
+    "/sm-store-groups": { title: "门店组维护", sub: "" },
+    "/sm-combo-codes": { title: "促销组合维护", sub: "" },
     "/sm-store-goods": { title: "门店商品信息", sub: "" },
     "/voucher-themes": { title: "优惠券主题", sub: "优惠券主题配置与投放口径（原型演示）" },
     "/voucher-themes-create": { title: "新增优惠券主题", sub: "按步骤配置：基本信息/参与对象/参与范围/计费规则" },
@@ -5615,6 +5617,9 @@ function navSectionFromRoute(r) {
   if (rr.startsWith("/campaigns") || rr.startsWith("/template-priority-schedule-import")) return "campaign";
   if (rr.startsWith("/promo-goods-terminate") || rr.startsWith("/promo-terminate-orders") || rr.startsWith("/promo-pending-goods") || rr.startsWith("/promo-goods-profile")) return "dispatch";
   if (rr.startsWith("/pricing")) return "calc";
+  if (rr.startsWith("/sm-store-groups") || rr.startsWith("/sm-combo-codes")) return "activity-settings";
+  if (rr.startsWith("/changelog")) return "changelog";
+  if (rr.startsWith("/activity-settings")) return "activity-settings";
   if (rr.startsWith("/gm-") || rr.startsWith("/sm-")) return "master";
   if (rr.startsWith("/voucher-themes") || rr.startsWith("/voucher-categories") || rr.startsWith("/voucher-packs")) return "voucher";
   if (rr.startsWith("/sys-")) return "sys";
@@ -19830,7 +19835,6 @@ function comboCampaignStorePanelHtml({ storeScope = {}, readonly = false, wizard
     <div class="combo-store-toolbar__actions">
       <button class="btn btn--primary" type="button" data-act="campSelectStore">选门店</button>
       <button class="btn" type="button" data-act="campStoreImport">导入门店</button>
-      <button class="btn" type="button" data-act="campStoreRemove" ${selectedRows.length ? "" : "disabled"}>移除门店</button>
     </div>
   `;
   return `
@@ -24788,7 +24792,7 @@ function renderStoreMgmtPage(kind) {
       queryAct: "smStoresQuery",
       resetAct: "smStoresReset",
       listTitle: "门店信息列表",
-      headers: ["序号", "门店编码", "门店名称", "门店类型", "大区", "价格组编码", "DM店群分组", "地址", "业态", "门店分组", "数据节点", "门店生命周期", "开业时间", "撤店日期"],
+      headers: ["序号", "门店编码", "门店名称", "门店类型", "大区", "价格组编码", "DM店群分组", "地址", "业态", "门店分组", "门店生命周期"],
       rowHtml: (x, idx) => `<tr>
         <td>${idx + 1}</td>
         <td class="mono">${escapeHtml(x.storeCode || "")}</td>
@@ -24800,10 +24804,7 @@ function renderStoreMgmtPage(kind) {
         <td>${escapeHtml(x.address || "—")}</td>
         <td>${escapeHtml(x.businessFormat || x.format || "—")}</td>
         <td>${escapeHtml(x.storeGroup || "—")}</td>
-        <td>${escapeHtml(x.dataNode || "—")}</td>
         <td>${escapeHtml(x.storeLifeCycle || "—")}</td>
-        <td class="mono">${escapeHtml(x.openDate || "—")}</td>
-        <td class="mono">${escapeHtml(x.closeDate || "—")}</td>
       </tr>`,
       hit: (x, ui) => String(x.storeCode || "").includes(ui.qCode) && String(x.storeName || "").includes(ui.qCode)
     }
@@ -24893,7 +24894,7 @@ function renderStoreGroupsPage() {
       <button class="btn" type="button" data-act="sgReset">重置</button>
       <button class="btn btn--primary" type="button" data-act="sgNew">新增门店组</button>
     `,
-    listTitle: "门店组信息列表",
+    listTitle: "门店组维护列表",
     tableHtml: table(headers, rowsHtml || `<tr><td colspan="${headers.length}"><div class="empty">暂无数据</div></td></tr>`),
     footerHtml: footerbar(`共 ${filtered.length} 条`, "第 1 页")
   });
@@ -24911,15 +24912,36 @@ function renderComboCodesPage() {
       </td>
     </tr>
   `).join("");
-  return listPageLayout({
-    filtersHtml: "",
-    filterActionsHtml: `
-      <button class="btn btn--primary" type="button" data-act="ccNew">新增组合编码</button>
-    `,
-    listTitle: "商品组合信息列表",
-    tableHtml: table(headers, rowsHtml || `<tr><td colspan="${headers.length}"><div class="empty">暂无数据</div></td></tr>`),
-    footerHtml: footerbar(`共 ${list.length} 条`, "第 1 页")
-  });
+  return `
+    <div class="tpl-page">
+      <div style="margin-bottom:10px;text-align:right;"><button class="btn btn--primary" type="button" data-act="ccNew">新增组合编码</button></div>
+      ${table(headers, rowsHtml || `<tr><td colspan="${headers.length}"><div class="empty">暂无数据</div></td></tr>`)}
+      ${footerbar(`共 ${list.length} 条`, "第 1 页")}
+    </div>`;
+}
+
+function renderChangelogPage() {
+  if (!AppState.data.changelogs) {
+    AppState.data.changelogs = [
+      { version: "20260710v1.0.0", date: "2026-07-10", items: ["初始版本发布", "促销活动新增/编辑/审核/终止完整流程", "促销模版管理（创建/审核/优先级排序）", "门店范围选店/批量导入", "商品范围单品/品类/品牌选择", "组合价/一口价活动配置", "满减满赠活动配置", "模拟算价功能", "促销终止单流程", "促销活动列表（含批量操作）", "主档信息管理（门店/品类/品牌/供应商等）"] },
+      { version: "20260710v1.0.1", date: "2026-07-10", items: ["门店范围操作列添加+/-按钮", "商品范围去条件范围模块", "商家信息+/-行按钮", "待生效促销队列商品明细视图", "生效/失效列表同步更新", "门店组维护左右布局", "促销组合维护页面", "版本更新页面", "活动基础设置菜单", "导航菜单结构调整"] }
+    ];
+  }
+  const list = AppState.data.changelogs || [];
+  return `
+    <div class="tpl-page">
+      ${list.map((v) => `
+        <div style="margin-bottom:20px;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px 24px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+            <span style="font-weight:700;font-size:15px;color:#1f2937;">${escapeHtml(v.version)}</span>
+            <span style="font-size:12px;color:#9ca3af;">${escapeHtml(v.date)}</span>
+          </div>
+          <ul style="margin:0;padding-left:18px;line-height:2;">
+            ${(v.items || []).map((item) => `<li style="font-size:13px;color:#4b5563;">${escapeHtml(item)}</li>`).join("")}
+          </ul>
+        </div>
+      `).join("")}
+    </div>`;
 }
 
 function openStoreGroupEditModal(groupCode) {
@@ -29384,6 +29406,8 @@ function render() {
   else if (r === "/sm-counters") html = renderStoreMgmtPage("counters");
   else if (r === "/sm-regions") html = renderStoreMgmtPage("regions");
   else if (r === "/sm-price-groups") html = renderStoreMgmtPage("priceGroups");
+  else if (r === "/changelog") html = renderChangelogPage();
+  else if (r === "/activity-settings") html = listPageLayout({ listTitle: "活动基础设置", tableHtml: '<div class="empty" style="padding:40px;text-align:center;">活动基础设置（待开发）</div>', filtersHtml: "", filterActionsHtml: "", footerHtml: footerbar("共 0 条", "第 1 页") });
   else if (r === "/sm-stores") html = renderStoreMgmtPage("stores");
   else if (r === "/sm-store-groups") html = renderStoreGroupsPage();
   else if (r === "/sm-combo-codes") html = renderComboCodesPage();
@@ -35415,6 +35439,7 @@ function handleAction(r, act, btn) {
     }
     if (act === "campSelectStore") {
       openCampaignStoreSelectModal({
+        hideImport: true,
         onPicked: (sel) => {
           const d = AppState._tmpCampaign;
           d.storeScope = d.storeScope || {};
