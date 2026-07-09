@@ -278,6 +278,8 @@ const AppState = {
     "/sm-regions": { title: "区域信息", sub: "" },
     "/sm-price-groups": { title: "价格组信息", sub: "" },
     "/sm-stores": { title: "门店信息", sub: "" },
+    "/sm-store-groups": { title: "门店组信息", sub: "" },
+    "/sm-combo-codes": { title: "商品组合信息", sub: "" },
     "/sm-store-goods": { title: "门店商品信息", sub: "" },
     "/voucher-themes": { title: "优惠券主题", sub: "优惠券主题配置与投放口径（原型演示）" },
     "/voucher-themes-create": { title: "新增优惠券主题", sub: "按步骤配置：基本信息/参与对象/参与范围/计费规则" },
@@ -589,6 +591,7 @@ const AppState = {
       { groupCode: "SG-003", groupName: "华北店群", storeCodes: ["ST-003"] },
       { groupCode: "SG-004", groupName: "全部门店", storeCodes: ["ST-001", "ST-002", "ST-003"] }
     ],
+    gmComboCodes: Array.from({ length: 10 }, (_, i) => String(i + 1).padStart(3, "0")),
     gmMemberGrades: [
       { code: "MG-01", name: "普通会员" },
       { code: "MG-02", name: "银卡会员" },
@@ -3467,7 +3470,7 @@ function openCampSelectModal({ title, subtitle, items, columns, searchKeys, chec
   });
 }
 
-function openCampaignStoreSelectModal({ onPicked, title = "选择门店", primaryText = "批量添加", showQuickPick = true }) {
+function openCampaignStoreSelectModal({ onPicked, title = "选择门店", primaryText = "批量添加", showQuickPick = true, hideImport = false, showImmediate = false }) {
   const allItems = AppState.data.gmStores || [];
   const regionList = Array.from(new Set(allItems.map((x) => String(x.regionDesc || x.regionCode || "")).filter(Boolean)));
   const priceGroupList = Array.from(new Set(allItems.map((x) => String(x.priceGroupCode || "")).filter(Boolean)));
@@ -3490,6 +3493,7 @@ function openCampaignStoreSelectModal({ onPicked, title = "选择门店", primar
   const pickedPriceGroups = new Set();
   let pgPanelOpen = false;
   let hasQueried = false;
+  if (showImmediate) hasQueried = true;
   const renderList = () => {
     const qEl = document.getElementById("campStoreSelQ");
     const regionEl = document.getElementById("campStoreSelRegion");
@@ -3555,7 +3559,7 @@ function openCampaignStoreSelectModal({ onPicked, title = "选择门店", primar
             <div class="toolbar__actions combo-store-picker__ops-actions">
               <button class="btn btn--primary" type="button" id="campStoreSelQuery">查询</button>
               <button class="btn" type="button" id="campStoreSelReset">重置</button>
-              <button class="btn" type="button" id="campStoreSelImport">导入门店</button>
+              ${hideImport ? "" : `<button class="btn" type="button" id="campStoreSelImport">导入门店</button>`}
               ${showQuickPick ? `
               <button class="btn" type="button" id="campStoreSelPickRegion">按同区域</button>
               <button class="btn" type="button" id="campStoreSelPickPg">按同价格组</button>` : ""}
@@ -3563,9 +3567,9 @@ function openCampaignStoreSelectModal({ onPicked, title = "选择门店", primar
           </div>
         </div>
         <div class="combo-store-picker__table">
-          ${hasQueried ? table(headers, (rows || "") + emptyRows || `<tr><td colspan="${headers.length}"><div class="empty">暂无匹配数据</div></td></tr>`) : `<div class="empty" style="padding:40px;text-align:center;color:var(--muted);">请输入查询条件后点击「查询」</div>`}
+          ${(hasQueried || showImmediate) ? table(headers, (rows || "") + emptyRows || `<tr><td colspan="${headers.length}"><div class="empty">暂无匹配数据</div></td></tr>`) : `<div class="empty" style="padding:40px;text-align:center;color:var(--muted);">请输入查询条件后点击「查询」</div>`}
         </div>
-        ${hasQueried ? paginationHtml(filtered.length) : ""}
+        ${(hasQueried || showImmediate) ? paginationHtml(filtered.length) : ""}
       </div>
     `;
     const bindRerender = (id, evt = "change") => {
@@ -3707,7 +3711,7 @@ function openCampaignGoodsSelectModal({ title, subtitle, checkboxName, onPicked,
       if (qBrand && !String(g.brand || "").toLowerCase().includes(qBrand)) return false;
       return true;
     });
-    const headers = ["活动编码", "活动主题", "模版名称", "模版类型", "活动时间", "状态", "商品编码", "商品条码", "商品名称", "规格", "单位", "品类", "品牌", "售价", "促销价", "促销扣率", "会员促销价", "会员折扣", "参与门店", "促销信息"];
+    const headers = ["活动编码", "活动主题", "模版名称", "促销类型", "活动时间", "状态", "商品编码", "商品条码", "商品名称", "规格", "单位", "品类", "品牌", "售价", "促销价", "促销扣率", "会员促销价", "会员折扣", "参与门店", "促销信息"];
     const rows = filtered.map((g) => `
       <tr>
 	        <td><input type="checkbox" name="${escapeHtml(String(checkboxName || "campPickGoods"))}" value="${escapeHtml(String(g.sku || ""))}" /></td>
@@ -3763,7 +3767,7 @@ function openCampaignGoodsSelectModal({ title, subtitle, checkboxName, onPicked,
 	            <input class="input" id="campGoodsSelTplName" placeholder="模版名称" value="${escapeHtml(tplNameEl ? tplNameEl.value : "")}" />
 	          </div>
 	          <div class="field">
-	            <div class="field__label">模版类型</div>
+	            <div class="field__label">促销类型</div>
 	            <select class="select" id="campGoodsSelTplType">
 	              <option value="">全部</option>
 	              ${templateTypeOptions().map((x) => `<option value="${escapeHtml(x)}" ${tplTypeEl && tplTypeEl.value === x ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}
@@ -4275,7 +4279,7 @@ function openTerminateGoodsSelectModal({ title, subtitle, checkboxName, onPicked
       if (qCounter && !String(g.counter || "").toLowerCase().includes(qCounter)) return false;
       return true;
     });
-    const headers = ["序号", "活动编码", "活动名称", "模版名称", "模版类型", "活动时间", "状态", "商品编码", "商品条码", "名称", "规格", "单位", "品类", "品牌", "售价", "促销价", "促销折扣", "会员促销价", "会员折扣", "参与门店", "促销信息"];
+    const headers = ["序号", "活动编码", "活动名称", "模版名称", "促销类型", "活动时间", "状态", "商品编码", "商品条码", "名称", "规格", "单位", "品类", "品牌", "售价", "促销价", "促销折扣", "会员促销价", "会员折扣", "参与门店", "促销信息"];
     const rows = filtered.map((g, i) => `
       <tr>
         <td><input type="checkbox" name="${escapeHtml(String(cbName))}" value="${escapeHtml(String(g.sku || ""))}" /></td>
@@ -4310,7 +4314,7 @@ function openTerminateGoodsSelectModal({ title, subtitle, checkboxName, onPicked
           <div class="field"><div class="field__label">活动编码</div><input class="input" id="ptoSelActNo" placeholder="活动编码" value="${escapeHtml(val("ptoSelActNo"))}" /></div>
           <div class="field"><div class="field__label">活动名称</div><input class="input" id="ptoSelActName" placeholder="活动名称" value="${escapeHtml(val("ptoSelActName"))}" /></div>
           <div class="field"><div class="field__label">模版名称</div><input class="input" id="ptoSelTplName" placeholder="模版名称" value="${escapeHtml(val("ptoSelTplName"))}" /></div>
-          <div class="field"><div class="field__label">模版类型</div>
+          <div class="field"><div class="field__label">促销类型</div>
             <select class="select" id="ptoSelTplType">
               <option value="">全部</option>
               ${templateTypeOptions().map((x) => `<option value="${escapeHtml(x)}" ${val("ptoSelTplType") === x ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}
@@ -5523,6 +5527,7 @@ function openModal({ title, subtitle, bodyHtml, primaryText = "保存", secondar
     const prevClassName = String(els.modal.dataset.extraClass || "").trim();
     if (prevClassName) prevClassName.split(/\s+/).filter(Boolean).forEach((cls) => els.modal.classList.remove(cls));
     els.modal.classList.toggle("modal--xl", String(size || "") === "xl");
+    els.modal.classList.toggle("modal--xxl", String(size || "") === "xxl");
     const nextClassName = String(className || "").trim();
     if (nextClassName) {
       nextClassName.split(/\s+/).filter(Boolean).forEach((cls) => els.modal.classList.add(cls));
@@ -8154,7 +8159,7 @@ function renderTemplatesPage() {
       <div class="tpl-type-shell ${sideCollapsed ? "is-collapsed" : ""}">
         <button class="tpl-type-toggle" type="button" data-act="tplSideToggle" aria-label="${sideCollapsed ? "展开" : "收起"}" title="${sideCollapsed ? "展开" : "收起"}">
           <span class="tpl-type-toggle__icon">${sideCollapsed ? "»" : "«"}</span>
-          ${sideCollapsed ? `<span class="tpl-type-toggle__vt">模版类型</span>` : ""}
+          ${sideCollapsed ? `<span class="tpl-type-toggle__vt">促销类型</span>` : ""}
         </button>
         ${!sideCollapsed ? `
         <div class="tpl-type-group">
@@ -8206,8 +8211,6 @@ function renderTemplatesPage() {
 
             <div class="campaign-list-toolbar">
               <button class="btn tb-btn tb-btn--violet" type="button" data-act="tplCreate">创建模板</button>
-              <button class="btn tb-btn tb-btn--teal" type="button" data-act="tplImport">导入</button>
-              <button class="btn tb-btn tb-btn--teal" type="button" data-act="tplExport">导出</button>
               <button class="btn tb-btn tb-btn--amber" type="button" data-act="tplBulkSubmit">提交</button>
             </div>
             <div class="campaign-list-table">
@@ -8648,7 +8651,7 @@ function renderTemplatePriorityEditPage(mode) {
           <div class="form">
             <div class="form__row">
               <div class="field">
-                <div class="field__label">模版类型</div>
+                <div class="field__label">促销类型</div>
                 <select class="select" id="tpType">${typeOps.map((x) => `<option value="${escapeHtml(x)}" ${x === d.templateType ? "selected" : ""}>${escapeHtml(displayTemplateType(x))}</option>`).join("")}</select>
               </div>
               <div class="field">
@@ -8658,7 +8661,7 @@ function renderTemplatePriorityEditPage(mode) {
                 </select>
               </div>
             </div>
-            <div class="hint">按模版类型勾选需要配置的模版，并逐条填写优先级；同类型下数值越小越优先。已存在优先级配置的模版不可重复新增。</div>
+            <div class="hint">按促销类型勾选需要配置的模版，并逐条填写优先级；同类型下数值越小越优先。已存在优先级配置的模版不可重复新增。</div>
             <div class="hint">当前类型共 ${tpls.length} 个模版，可新增 ${availableCount} 个。</div>
             ${table(["选择", "序号", "模版编号", "模版名称", "模版状态", "优先级"], batchRows || `<tr><td colspan="6"><div class="empty">当前类型暂无可配置模版</div></td></tr>`)}
             <div class="field" style="margin-top:12px;">
@@ -8689,7 +8692,7 @@ function renderTemplatePriorityEditPage(mode) {
               <input class="input mono" value="${escapeHtml(d.id || "保存后自动生成")}" disabled />
             </div>
             <div class="field">
-              <div class="field__label">模版类型</div>
+              <div class="field__label">促销类型</div>
               <select class="select" id="tpType">${typeOps.map((x) => `<option value="${escapeHtml(x)}" ${x === d.templateType ? "selected" : ""}>${escapeHtml(displayTemplateType(x))}</option>`).join("")}</select>
             </div>
           </div>
@@ -8714,7 +8717,7 @@ function renderTemplatePriorityEditPage(mode) {
             <div class="field">
               <div class="field__label">优先级</div>
               <input class="input" id="tpPriority" type="number" min="1" step="1" value="${escapeHtml(String(d.priority ?? 10))}" />
-              <div class="field__help">同一模版类型下，数值越小优先级越高。</div>
+              <div class="field__help">同一促销类型下，数值越小优先级越高。</div>
             </div>
           </div>
           <div class="form__row">
@@ -8726,7 +8729,7 @@ function renderTemplatePriorityEditPage(mode) {
             </div>
             <div class="field">
               <div class="field__label">排序说明</div>
-              <input class="input" value="系统先按模版类型分组，再按优先级升序排序" disabled />
+              <input class="input" value="系统先按促销类型分组，再按优先级升序排序" disabled />
             </div>
           </div>
           <div class="field">
@@ -10484,7 +10487,6 @@ function renderCampaignsListPage(presetPromoType = "", presetTemplateId = "") {
   const rowsHtml = list
     .map((c, idx) => {
       const canEdit = c.status === "草稿";
-      const canSubmit = c.status === "草稿";
       const canVoid = c.status === "草稿" || c.status === "审核";
       const canRevoke = c.status === "审核";
       const canTerminate = c.status === "生效" || c.status === "延期";
@@ -10493,7 +10495,6 @@ function renderCampaignsListPage(presetPromoType = "", presetTemplateId = "") {
       const id = escapeHtml(c.activityNo);
       const mainOps = [
         canEdit ? `<button class="linkbtn" type="button" data-act="campEdit" data-id="${id}">编辑</button>` : `<span class="cell-muted">编辑</span>`,
-        canSubmit ? `<button class="linkbtn" type="button" data-act="campSubmit" data-id="${id}">提交</button>` : `<span class="cell-muted">提交</span>`,
         `<button class="linkbtn" type="button" data-act="campApprove" data-id="${id}">审核</button>`,
         `<button class="linkbtn" type="button" data-act="campAppendStores" data-id="${id}">追加门店</button>`,
         `<button class="linkbtn" type="button" data-act="campAppendGoods" data-id="${id}">追加商品</button>`,
@@ -10581,6 +10582,7 @@ function renderCampaignsListPage(presetPromoType = "", presetTemplateId = "") {
           <button class="btn tb-btn tb-btn--violet" type="button" data-act="campNew">创建活动</button>
           <button class="btn tb-btn tb-btn--blue" type="button" data-act="campImport" data-promo-type="${escapeHtml(presetPromoType || "")}" data-template-id="${escapeHtml(presetTemplateId || "")}">导入</button>
           <button class="btn tb-btn tb-btn--teal" type="button" data-act="campExport">导出</button>
+          <button class="btn tb-btn tb-btn--amber" type="button" data-act="campBulkSubmit">提交</button>
         </div>
         <div class="campaign-list-table">
           ${table(headers, rowsHtml || `<tr><td colspan="${headers.length}"><div class="empty">暂无数据</div></td></tr>`)}
@@ -10655,7 +10657,7 @@ function promoGoodsTerminateApply(keys) {
   return changed;
 }
 
-function renderPromoGoodsQueuePage({ listTitle, statusText, excludeTerminatedGoods = false }) {
+function renderPromoGoodsQueuePage({ listTitle, statusText, excludeTerminatedGoods = false, showGoodsDetail = false, hideRule = false, hideTplNameFilter = false }) {
   const ui = AppState.ui.promoGoodsTerminate || (AppState.ui.promoGoodsTerminate = {
     qActNo: "",
     qActName: "",
@@ -10731,19 +10733,14 @@ function renderPromoGoodsQueuePage({ listTitle, statusText, excludeTerminatedGoo
 
     // 左侧“查看维度”= 促销类型：按所选类型筛选，按活动（单据）粒度展示
     if (String(dim) !== "全部" && String(promoType) !== String(dim)) return;
-    rows.push({
-      actNo,
-      actName,
-      promoType,
-      startAt,
-      endAt,
-      status: statusText || c.status || "",
-      dim: "单据",
-      scopeText: isAll ? "全场" : `商品${goods.length} · 品类${categories.length} · 品牌${brands.length}`,
-      rule,
-      promoInfo
-    });
-    return;
+    if (!showGoodsDetail) {
+      rows.push({
+        actNo, actName, promoType, startAt, endAt, status: statusText || c.status || "",
+        dim: "单据", scopeText: isAll ? "全场" : `商品${goods.length} · 品类${categories.length} · 品牌${brands.length}`,
+        rule, promoInfo
+      });
+      return;
+    }
 
     if (dim === "单据") {
       const scopeText = isAll
@@ -10942,8 +10939,8 @@ function renderPromoGoodsQueuePage({ listTitle, statusText, excludeTerminatedGoo
   const baseFiltersHtml = `
     <div class="campaign-list-field"><div class="campaign-list-field__label">活动编号</div><input class="input" id="pgtQActNo" value="${escapeHtml(ui.qActNo)}" placeholder="活动编码" /></div>
     <div class="campaign-list-field"><div class="campaign-list-field__label">活动主题</div><input class="input" id="pgtQActName" value="${escapeHtml(ui.qActName)}" placeholder="活动主题" /></div>
-    <div class="campaign-list-field"><div class="campaign-list-field__label">模版名称</div><input class="input" id="pgtQTplName" value="${escapeHtml(ui.qTplName || "")}" placeholder="模版名称" /></div>
-    <div class="campaign-list-field"><div class="campaign-list-field__label">模版类型</div><select class="select" id="pgtQTemplateType">${templateTypes.map((x) => `<option ${x === ui.qTemplateType ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select></div>
+    ${hideTplNameFilter ? "" : `<div class="campaign-list-field"><div class="campaign-list-field__label">模版名称</div><input class="input" id="pgtQTplName" value="${escapeHtml(ui.qTplName || "")}" placeholder="模版名称" /></div>`}
+    <div class="campaign-list-field"><div class="campaign-list-field__label">促销类型</div><select class="select" id="pgtQTemplateType">${templateTypes.map((x) => `<option ${x === ui.qTemplateType ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select></div>
     <div class="campaign-list-field"><div class="campaign-list-field__label">活动时间</div>
       <div class="campaign-list-time">
         <input class="input campaign-list-time__input" id="pgtQTimeFrom" type="date" value="${escapeHtml(ui.qTimeFrom)}" placeholder="开始日期" />
@@ -10962,12 +10959,19 @@ function renderPromoGoodsQueuePage({ listTitle, statusText, excludeTerminatedGoo
   const extraFiltersHtml =
     dim === "商品"
       ? `
-        <div class="campaign-list-field"><div class="campaign-list-field__label">商品</div><input class="input" id="pgtQGoods" value="${escapeHtml(ui.qGoods || "")}" placeholder="编码/条码/名称" /></div>
+        <div class="campaign-list-field"><div class="campaign-list-field__label">商品名称</div><input class="input" id="pgtQGoods" value="${escapeHtml(ui.qGoods || "")}" placeholder="商品名称" /></div>
         <div class="campaign-list-field">
           <div class="campaign-list-field__label">品类</div>
           <select class="select" id="pgtQCategory">${(AppState.data.masterData?.categoryOptions || []).map((x) => `<option value="${escapeHtml(x.value)}" ${ui.qCategory === x.value ? "selected" : ""}>${escapeHtml(x.label)}</option>`).join("")}</select>
         </div>
-        <div class="campaign-list-field"><div class="campaign-list-field__label">柜组</div><input class="input" id="pgtQCounter" value="${escapeHtml(ui.qCounter || "")}" placeholder="柜组" /></div>
+        <div class="campaign-list-field">
+          <div class="campaign-list-field__label">品牌</div>
+          <select class="select" id="pgtQBrand"><option value="">全部</option>${gmBrands.map((x) => `<option value="${escapeHtml(x.brandName||"")}" ${ui.qBrand === (x.brandName||"") ? "selected" : ""}>${escapeHtml(x.brandName||"")}</option>`).join("")}</select>
+        </div>
+        <div class="campaign-list-field">
+          <div class="campaign-list-field__label">柜组</div>
+          <select class="select" id="pgtQCounter"><option value="">全部</option>${(AppState.data.gmCounters||[]).map((x) => `<option value="${escapeHtml(x.counterName||x.counterCode||"")}" ${ui.qCounter === (x.counterName||x.counterCode||"") ? "selected" : ""}>${escapeHtml(x.counterName||x.counterCode||"")}</option>`).join("")}</select>
+        </div>
         <div class="field field--actions">
           <button class="btn btn--primary" type="button" data-act="pgtQuery">查询</button>
           <button class="btn" type="button" data-act="pgtReset">重置</button>
@@ -10981,7 +10985,7 @@ function renderPromoGoodsQueuePage({ listTitle, statusText, excludeTerminatedGoo
         </div>`
         : dim === "品牌"
           ? `<div class="campaign-list-field"><div class="campaign-list-field__label">品牌</div><input class="input" id="pgtQBrand" value="${escapeHtml(ui.qBrand || "")}" placeholder="品牌编码/名称" /></div>
-        <div class="campaign-list-field"><div class="campaign-list-field__label">模版类型</div><select class="select" id="pgtQTemplateType">${templateTypes.map((x) => `<option ${x === ui.qTemplateType ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select></div>
+        <div class="campaign-list-field"><div class="campaign-list-field__label">促销类型</div><select class="select" id="pgtQTemplateType">${templateTypes.map((x) => `<option ${x === ui.qTemplateType ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select></div>
         <div class="field field--actions">
           <button class="btn btn--primary" type="button" data-act="pgtQuery">查询</button>
           <button class="btn" type="button" data-act="pgtReset">重置</button>
@@ -10993,36 +10997,17 @@ function renderPromoGoodsQueuePage({ listTitle, statusText, excludeTerminatedGoo
 
   const tablePack = (() => {
     if (dim === "商品") {
-      const headers = ["序号", "活动编码", "活动主题", "模版名称", "模版类型", "活动时间", "状态", "商品编码", "商品条码", "名称", "规格", "单位", "品类", "品牌", "售价", "促销价", "促销扣率", "会员促销价", "会员折扣", "参与门店", "促销信息"];
-      const rowsHtml = list.map((r, idx) => `
-        <tr data-row="pgt" data-id="${escapeHtml(r.key)}">
-          <td>${idx + 1}</td>
-          <td class="mono">${escapeHtml(r.actNo || "")}</td>
-          <td>${escapeHtml(r.actName || "")}</td>
-          <td>${escapeHtml(r.templateName || "")}</td>
-          <td>${escapeHtml(r.templateType || "")}</td>
-          <td class="mono">${escapeHtml((r.startAt || "—") + " ~ " + (r.endAt || "—"))}</td>
-          <td>${escapeHtml(r.status || "—")}</td>
-          <td class="mono">${escapeHtml(r.skuCode || "")}</td>
-          <td class="mono">${escapeHtml(r.barcode || "")}</td>
-          <td>${escapeHtml(r.goodsName || "")}</td>
-          <td>${escapeHtml(r.spec || "")}</td>
-          <td>${escapeHtml(r.unit || "")}</td>
-          <td>${escapeHtml(r.category || "")}</td>
-          <td>${escapeHtml(r.brand || "")}</td>
-          <td class="mono">${escapeHtml(r.salePrice || "")}</td>
-          <td class="mono">${escapeHtml(r.promoPrice || "")}</td>
-          <td class="mono">${escapeHtml(r.deductRate || "")}</td>
-          <td class="mono">${escapeHtml(r.memberPromoPrice || "")}</td>
-          <td class="mono">${escapeHtml(r.memberDiscount || "")}</td>
-          <td>${escapeHtml(r.participatingStores)}</td>
-          <td>${escapeHtml(r.promoInfo)}</td>
-        </tr>
-      `).join("");
+      const headers = showGoodsDetail
+        ? ["序号", "商品编码", "商品名称", "商品条码", "品类", "品牌", "门店编码", "门店名称", "促销价", "会员促销价", "活动编码", "活动主题", "促销类型", "活动时间", "状态", "售价", "促销扣率", "参与门店", "促销信息"]
+        : ["序号", "活动编码", "活动主题", "模版名称", "促销类型", "活动时间", "状态", "商品编码", "商品条码", "名称", "规格", "单位", "品类", "品牌", "售价", "促销价", "促销扣率", "会员促销价", "会员折扣", "参与门店", "促销信息"];
+      const rowsHtml = list.map((r, idx) => showGoodsDetail
+        ? `<tr data-row="pgt" data-id="${escapeHtml(r.key)}"><td>${idx+1}</td><td class="mono">${escapeHtml(r.skuCode||"")}</td><td>${escapeHtml(r.goodsName||"")}</td><td class="mono">${escapeHtml(r.barcode||"")}</td><td>${escapeHtml(r.category||"")}</td><td>${escapeHtml(r.brand||"")}</td><td class="mono">${escapeHtml(r.storeCode||"")}</td><td>${escapeHtml(r.storeName||"")}</td><td class="mono">${escapeHtml(r.promoPrice||"")}</td><td class="mono">${escapeHtml(r.memberPrice||"")}</td><td class="mono">${escapeHtml(r.actNo||"")}</td><td>${escapeHtml(r.actName||"")}</td><td>${escapeHtml(r.promoType||"")}</td><td class="mono">${escapeHtml((r.startAt||"—")+" ~ "+(r.endAt||"—"))}</td><td>${escapeHtml(r.status||"—")}</td><td class="mono">${escapeHtml(r.salePrice||"")}</td><td class="mono">${escapeHtml(r.deductRate||"")}</td><td>${escapeHtml(r.participatingStores||"")}</td><td>${escapeHtml(r.promoInfo||"")}</td></tr>`
+        : `<tr data-row="pgt" data-id="${escapeHtml(r.key)}"><td>${idx+1}</td><td class="mono">${escapeHtml(r.actNo||"")}</td><td>${escapeHtml(r.actName||"")}</td><td>${escapeHtml(r.templateName||"")}</td><td>${escapeHtml(r.templateType||"")}</td><td class="mono">${escapeHtml((r.startAt||"—")+" ~ "+(r.endAt||"—"))}</td><td>${escapeHtml(r.status||"—")}</td><td class="mono">${escapeHtml(r.skuCode||"")}</td><td class="mono">${escapeHtml(r.barcode||"")}</td><td>${escapeHtml(r.goodsName||"")}</td><td>${escapeHtml(r.spec||"")}</td><td>${escapeHtml(r.unit||"")}</td><td>${escapeHtml(r.category||"")}</td><td>${escapeHtml(r.brand||"")}</td><td class="mono">${escapeHtml(r.salePrice||"")}</td><td class="mono">${escapeHtml(r.promoPrice||"")}</td><td class="mono">${escapeHtml(r.deductRate||"")}</td><td class="mono">${escapeHtml(r.memberPromoPrice||"")}</td><td class="mono">${escapeHtml(r.memberDiscount||"")}</td><td>${escapeHtml(r.participatingStores||"")}</td><td>${escapeHtml(r.promoInfo||"")}</td></tr>`
+      ).join("");
       return { headers, rowsHtml };
     }
     if (dim === "品类") {
-      const headers = ["序号", "活动编码", "活动主题", "模版类型", "活动时间", "状态", "品类编码", "品类名称", "模版名称", "促销扣率", "折扣", "会员折扣", "参与门店", "促销信息"];
+      const headers = ["序号", "活动编码", "活动主题", "促销类型", "活动时间", "状态", "品类编码", "品类名称", "模版名称", "促销扣率", "折扣", "会员折扣", "参与门店", "促销信息"];
       const rowsHtml = list.map((r, idx) => `
         <tr>
           <td>${idx + 1}</td>
@@ -11044,7 +11029,7 @@ function renderPromoGoodsQueuePage({ listTitle, statusText, excludeTerminatedGoo
       return { headers, rowsHtml };
     }
     if (dim === "品牌") {
-      const headers = ["序号", "活动编码", "活动主题", "模版类型", "活动时间", "状态", "品牌编码", "品牌名称", "模版名称", "促销扣率", "折扣", "会员折扣", "参与门店", "促销信息"];
+      const headers = ["序号", "活动编码", "活动主题", "促销类型", "活动时间", "状态", "品牌编码", "品牌名称", "模版名称", "促销扣率", "折扣", "会员折扣", "参与门店", "促销信息"];
       const rowsHtml = list.map((r, idx) => `
         <tr>
           <td>${idx + 1}</td>
@@ -11290,11 +11275,18 @@ function promoTerminateOrderCampaignResultsByDraft(draft) {
       const no = String(c.activityNo || c.id || "");
       if (draft.promoNo && !no.includes(String(draft.promoNo || ""))) return false;
       if (draft.promoType !== "全部" && String(c.promoType || "") !== String(draft.promoType || "")) return false;
+      if (draft.promoName && !String(c.activitySubject || "").includes(String(draft.promoName || ""))) return false;
+      if (draft.tplName && !(String(c.templateName || c.templateNo || "")).includes(String(draft.tplName || ""))) return false;
       if (draft.promoStatus !== "全部" && String(c.status || "") !== String(draft.promoStatus || "")) return false;
       if (draft.creator && !String(c.creator || "").includes(String(draft.creator || ""))) return false;
+      if (draft.storeName && !String(c.storeName || "").includes(String(draft.storeName || ""))) return false;
       const createDate = String(c.createAt || "").slice(0, 10);
       if (draft.createFrom && createDate && createDate < String(draft.createFrom || "")) return false;
       if (draft.createTo && createDate && createDate > String(draft.createTo || "")) return false;
+      const startDate = String(c.startAt || "").slice(0, 10);
+      const endDate = String(c.endAt || "").slice(0, 10);
+      if (draft.actFrom && endDate && endDate < String(draft.actFrom || "")) return false;
+      if (draft.actTo && startDate && startDate > String(draft.actTo || "")) return false;
       return true;
     })
     .map((c) => ({
@@ -11307,8 +11299,9 @@ function promoTerminateOrderCampaignResultsByDraft(draft) {
       startAt: c.startAt || "",
       endAt: c.endAt || "",
       templateName: c.templateName || c.templateNo || "",
-      effectiveBy: c.effectiveBy || c.creator || "",
-      effectiveAt: c.effectiveAt || c.startAt || "",
+      auditor: c.auditor || "",
+      auditAt: c.auditAt || "",
+      cycle: campaignCycleText(c),
       storeText: Array.isArray(c.storeScope && c.storeScope.stores) ? `${c.storeScope.stores.length}家门店` : "—"
     }));
 }
@@ -11318,7 +11311,7 @@ function openPromoTerminateOrderCampaignSelectModal({ pickedNos = [], onPicked }
   const query = { activityNo: "", activityName: "", activityFrom: "", activityTo: "", promoType: "全部" };
   const rows = promoTerminateOrderCampaignResultsByDraft(promoTerminateOrderEnsureDraft());
   const promoTypeOptions = ["全部"].concat(Array.from(new Set(rows.map((x) => String(x.promoType || "")).filter(Boolean))));
-  const tableHeaders = ['<input type="checkbox" id="ptoPickDocAll" />', "序号", "活动编码", "活动名称", "促销类型", "活动时间", "促销模版", "参与门店"];
+  const tableHeaders = ['<input type="checkbox" id="ptoPickDocAll" />', "序号", "活动编码", "活动名称", "活动周期", "促销类型", "促销方式", "活动时间", "审核人", "审核时间", "参与门店"];
   const getFilteredRows = () => rows.filter((x) => {
     const no = String(x.activityNo || "");
     const name = String(x.activitySubject || "");
@@ -11340,9 +11333,12 @@ function openPromoTerminateOrderCampaignSelectModal({ pickedNos = [], onPicked }
         <td>${idx + 1}</td>
         <td class="mono">${escapeHtml(x.activityNo || "")}</td>
         <td>${escapeHtml(x.activitySubject || "")}</td>
+        <td>${escapeHtml(x.cycle || "—")}</td>
         <td>${escapeHtml(x.promoType || "")}</td>
-        <td class="mono">${escapeHtml((x.startAt || "—") + " ~ " + (x.endAt || "—"))}</td>
         <td>${escapeHtml(x.templateName || "—")}</td>
+        <td class="mono">${escapeHtml((x.startAt || "—") + " ~ " + (x.endAt || "—"))}</td>
+        <td>${escapeHtml(x.auditor || "—")}</td>
+        <td class="mono">${escapeHtml(x.auditAt || "—")}</td>
         <td>${escapeHtml(x.storeText || "—")}</td>
       </tr>
     `).join("") || `<tr><td colspan="${tableHeaders.length}"><div class="empty">暂无可选单据</div></td></tr>`
@@ -11352,100 +11348,79 @@ function openPromoTerminateOrderCampaignSelectModal({ pickedNos = [], onPicked }
     subtitle: "选择需要加入终止单据范围的活动单据（原型演示）",
     primaryText: "确定",
     secondaryText: "取消",
-    size: "xl",
+    size: "xxl",
+    className: "modal--goods-picker-wide",
     bodyHtml: `
-      <div class="combo-store-picker">
-        <div class="combo-store-picker__filters">
-          <div class="field">
-            <div class="field__label">活动编码</div>
-            <input class="input" id="ptoPickDocActNo" placeholder="请输入活动编码" />
+      ${(()=>{
+        const promoMethodOptions=["全部"].concat(Array.from(new Set(rows.map((x)=>String(x.templateName||"").trim()).filter(Boolean))));
+        const f=`
+        <div class="form">
+          <div class="form__row">
+            <div class="field"><div class="field__label">活动编码</div><input class="input" id="ptoPickDocActNo" placeholder="请输入活动编码" /></div>
+            <div class="field"><div class="field__label">活动名称</div><input class="input" id="ptoPickDocActName" placeholder="请输入活动名称" /></div>
+            <div class="field"><div class="field__label">促销类型</div><select class="select" id="ptoPickDocPromoType">${promoTypeOptions.map((x)=>`<option value="${escapeHtml(x)}">${escapeHtml(x)}</option>`).join("")}</select></div>
+            <div class="field"><div class="field__label">促销方式</div><select class="select" id="ptoPickDocPromoMethod">${promoMethodOptions.map((x)=>`<option>${escapeHtml(x)}</option>`).join("")}</select></div>
           </div>
-          <div class="field">
-            <div class="field__label">活动名称</div>
-            <input class="input" id="ptoPickDocActName" placeholder="请输入活动名称" />
+          <div class="form__row">
+            <div class="field"><div class="field__label">活动时间</div><div style="display:flex;gap:4px;align-items:center;"><input class="input" style="flex:1;" id="ptoPickDocActFrom" type="date" /><span>-</span><input class="input" style="flex:1;" id="ptoPickDocActTo" type="date" /></div></div>
+            <div class="field"><div class="field__label">创建时间</div><div style="display:flex;gap:4px;align-items:center;"><input class="input" style="flex:1;" id="ptoPickDocCreateFrom" type="date" /><span>-</span><input class="input" style="flex:1;" id="ptoPickDocCreateTo" type="date" /></div></div>
+            <div class="field"><div class="field__label">创建人</div><input class="input" id="ptoPickDocCreator" placeholder="请输入创建人" /></div>
+            <div class="field"><div class="field__label">门店名称</div><input class="input" id="ptoPickDocStoreName" placeholder="请输入门店名称" /></div>
           </div>
-          <div class="field">
-            <div class="field__label">促销类型</div>
-            <select class="select" id="ptoPickDocPromoType">
-              ${promoTypeOptions.map((x) => `<option value="${escapeHtml(x)}">${escapeHtml(x)}</option>`).join("")}
-            </select>
-          </div>
-          <div class="field combo-store-picker__ops">
-            <div class="field__label">活动时间</div>
-            <div style="display:flex;gap:8px;align-items:center;">
-              <input class="input" id="ptoPickDocActFrom" type="date" />
-              <span class="hint">至</span>
-              <input class="input" id="ptoPickDocActTo" type="date" />
-            </div>
-          </div>
-          <div class="field combo-store-picker__ops">
-            <div class="field__label">&nbsp;</div>
-            <div class="toolbar__actions combo-store-picker__ops-actions">
+          <div class="form__row">
+            <div class="pto-filterbar__actions" style="align-self:flex-end;margin-top:8px;">
               <button class="btn btn--primary" type="button" id="ptoPickDocQuery">查询</button>
               <button class="btn" type="button" id="ptoPickDocReset">重置</button>
             </div>
           </div>
         </div>
-        <div class="combo-store-picker__table" id="ptoPickDocTableWrap">
-          ${buildTableHtml(getFilteredRows())}
-        </div>
-      </div>
+        `;
+        return f+'<div class="divider"></div><div class="combo-store-picker__table" id="ptoPickDocTableWrap">'+buildTableHtml(getFilteredRows())+'</div>';
+      })()}
     `,
     onOpen: () => {
-      const readQuery = () => {
-        query.activityNo = document.getElementById("ptoPickDocActNo") ? document.getElementById("ptoPickDocActNo").value.trim() : "";
-        query.activityName = document.getElementById("ptoPickDocActName") ? document.getElementById("ptoPickDocActName").value.trim() : "";
-        query.activityFrom = document.getElementById("ptoPickDocActFrom") ? document.getElementById("ptoPickDocActFrom").value.trim() : "";
-        query.activityTo = document.getElementById("ptoPickDocActTo") ? document.getElementById("ptoPickDocActTo").value.trim() : "";
-        query.promoType = document.getElementById("ptoPickDocPromoType") ? document.getElementById("ptoPickDocPromoType").value : "全部";
+      const docVal = (id) => (document.getElementById(id)||{}).value||"";
+      const docSel = (id) => (document.getElementById(id)||{}).value||"全部";
+      const syncFilters = () => {
+        draft.promoNo = docVal("ptoPickDocActNo"); draft.promoName = docVal("ptoPickDocActName");
+        draft.promoType = docSel("ptoPickDocPromoType"); draft.tplName = docSel("ptoPickDocPromoMethod");
+        draft.creator = docVal("ptoPickDocCreator"); draft.storeName = docVal("ptoPickDocStoreName");
+        draft.createFrom = docVal("ptoPickDocCreateFrom"); draft.createTo = docVal("ptoPickDocCreateTo");
+        draft.actFrom = docVal("ptoPickDocActFrom"); draft.actTo = docVal("ptoPickDocActTo");
       };
       const bindTableEvents = () => {
         const allEl = document.getElementById("ptoPickDocAll");
         const rowEls = Array.from(document.querySelectorAll('input[name="ptoPickDoc"]'));
         if (allEl) {
-          allEl.checked = rowEls.length > 0 && rowEls.every((x) => x.checked);
           allEl.addEventListener("change", () => {
-            const checked = Boolean(allEl.checked);
-            rowEls.forEach((x) => {
-              x.checked = checked;
-              const val = String(x.value || "");
-              if (checked) pickedSet.add(val);
-              else pickedSet.delete(val);
-            });
+            const ck = Boolean(allEl.checked);
+            rowEls.forEach((x) => { x.checked = ck; const v = String(x.value||""); if(ck) pickedSet.add(v); else pickedSet.delete(v); });
           });
         }
         rowEls.forEach((x) => {
           x.addEventListener("change", () => {
-            const val = String(x.value || "");
-            if (x.checked) pickedSet.add(val);
-            else pickedSet.delete(val);
-            if (allEl) allEl.checked = rowEls.length > 0 && rowEls.every((node) => node.checked);
+            const v = String(x.value||"");
+            if (x.checked) pickedSet.add(v); else pickedSet.delete(v);
+            if (allEl) allEl.checked = rowEls.every((n) => n.checked);
           });
         });
       };
       const renderTable = () => {
         const wrap = document.getElementById("ptoPickDocTableWrap");
         if (!wrap) return;
-        wrap.innerHTML = buildTableHtml(getFilteredRows());
+        syncFilters();
+        wrap.innerHTML = buildTableHtml(promoTerminateOrderCampaignResultsByDraft(draft));
         bindTableEvents();
       };
-      const queryBtn = document.getElementById("ptoPickDocQuery");
-      const resetBtn = document.getElementById("ptoPickDocReset");
-      if (queryBtn) queryBtn.addEventListener("click", () => {
-        readQuery();
-        renderTable();
-      });
-      if (resetBtn) resetBtn.addEventListener("click", () => {
-        query.activityNo = "";
-        query.activityName = "";
-        query.activityFrom = "";
-        query.activityTo = "";
-        query.promoType = "全部";
-        if (document.getElementById("ptoPickDocActNo")) document.getElementById("ptoPickDocActNo").value = "";
-        if (document.getElementById("ptoPickDocActName")) document.getElementById("ptoPickDocActName").value = "";
-        if (document.getElementById("ptoPickDocActFrom")) document.getElementById("ptoPickDocActFrom").value = "";
-        if (document.getElementById("ptoPickDocActTo")) document.getElementById("ptoPickDocActTo").value = "";
-        if (document.getElementById("ptoPickDocPromoType")) document.getElementById("ptoPickDocPromoType").value = "全部";
+      const qBtn = document.getElementById("ptoPickDocQuery");
+      const rBtn = document.getElementById("ptoPickDocReset");
+      if (qBtn) qBtn.addEventListener("click", renderTable);
+      if (rBtn) rBtn.addEventListener("click", () => {
+        ["ptoPickDocActNo","ptoPickDocActName","ptoPickDocPromoType","ptoPickDocPromoMethod","ptoPickDocActFrom","ptoPickDocActTo","ptoPickDocCreateFrom","ptoPickDocCreateTo","ptoPickDocCreator","ptoPickDocStoreName"].forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) { if (el.tagName === "SELECT") el.value = "全部"; else el.value = ""; }
+        });
+        draft.promoNo="";draft.promoName="";draft.tplName="";draft.promoType="全部";draft.creator="";draft.storeName="";draft.createFrom="";draft.createTo="";draft.actFrom="";draft.actTo="";
         renderTable();
       });
       bindTableEvents();
@@ -11771,10 +11746,15 @@ function promoTerminateOrderBuildSavedRecord(draft) {
 }
 
 function renderPromoPendingGoodsPage() {
+  const ui = AppState.ui.promoGoodsTerminate || (AppState.ui.promoGoodsTerminate = {});
+  ui.dim = "商品";
   return renderPromoGoodsQueuePage({
     listTitle: "待生效促销队例",
     statusText: "待生效",
-    excludeTerminatedGoods: false
+    excludeTerminatedGoods: false,
+    showGoodsDetail: true,
+    hideRule: true,
+    hideTplNameFilter: true
   });
 }
 
@@ -11832,6 +11812,7 @@ function renderPromoTerminateOrdersPage() {
             <button class="linkbtn" type="button" data-act="ptoEdit" data-id="${escapeHtml(String(actionFirstRow.id || ""))}">编辑</button>
             <button class="linkbtn" type="button" data-act="ptoSubmit" data-id="${escapeHtml(String(actionFirstRow.id || ""))}">提交</button>
             <button class="linkbtn" type="button" data-act="ptoAudit" data-id="${escapeHtml(String(actionFirstRow.id || ""))}">审核</button>
+            <button class="linkbtn" type="button" data-act="ptoVoidRow" data-id="${escapeHtml(String(actionFirstRow.id || ""))}">作废</button>
             <button class="linkbtn" type="button" data-act="ptoView" data-id="${escapeHtml(String(actionFirstRow.id || ""))}">详情</button>
           ` : ""}
         </td>
@@ -11859,16 +11840,10 @@ function renderPromoTerminateOrdersPage() {
             </div>
           </div>
           <div class="campaign-list-field">
-            <div class="campaign-list-field__label">查询时间</div>
-            <div class="pto-querytime">
-              <select class="select pto-querytime__type" id="ptoQQueryTimeType">
-                ${["创建时间"].map((x) => `<option value="${escapeHtml(x)}" ${String(ui.qQueryTimeType || "创建时间") === x ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}
-              </select>
-              <div class="pto-range">
-                <input class="input pto-range__input" id="ptoQQueryFrom" value="${escapeHtml(ui.qQueryFrom || "")}" placeholder="请选择查询开始时间" />
-                <span class="pto-range__dash">-</span>
-                <input class="input pto-range__input" id="ptoQQueryTo" value="${escapeHtml(ui.qQueryTo || "")}" placeholder="请选择结束时间" />
-              </div>
+            <div class="campaign-list-field__label">创建时间</div>
+            <div class="pto-range">
+              <input class="input pto-range__input" id="ptoQQueryFrom" value="${escapeHtml(ui.qQueryFrom || "")}" placeholder="请选择创建开始/结束时间" />
+              <span class="pto-range__icon">📅</span>
             </div>
           </div>
           <div class="campaign-list-field">
@@ -11884,13 +11859,7 @@ function renderPromoTerminateOrdersPage() {
             </select>
           </div>
           <div class="campaign-list-field">
-            <div class="campaign-list-field__label">操作人</div>
-            <select class="select" id="ptoQOperator">
-              ${["创建人", "修改人", "审核人", "终止人"].map((x) => `<option value="${escapeHtml(x)}" ${String(ui.qOperator || "创建人") === x ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}
-            </select>
-          </div>
-          <div class="campaign-list-field">
-            <div class="campaign-list-field__label">操作人姓名</div>
+            <div class="campaign-list-field__label">创建人</div>
             <input class="input" id="ptoQOperatorName" value="${escapeHtml(ui.qOperatorName || "")}" placeholder="请输入" />
           </div>
           <div class="pto-filterbar__actions">
@@ -11902,7 +11871,8 @@ function renderPromoTerminateOrdersPage() {
 
       <div class="pto-actions">
         <button class="btn tb-btn tb-btn--violet" type="button" data-act="ptoNew">创建终止单</button>
-        <button class="btn tb-btn tb-btn--blue" type="button" data-act="ptoExport">导出</button>
+        <button class="btn tb-btn tb-btn--blue" type="button" data-act="ptoImport">导入</button>
+        <button class="btn tb-btn tb-btn--teal" type="button" data-act="ptoExport">导出</button>
       </div>
 
       <div class="pto-tablewrap">
@@ -12096,7 +12066,7 @@ function renderPromoTerminateOrderFormPage(mode, orderId) {
     const tab = String(draft.rangeTab || "terminate");
     const tabBtn = (k, t) => `<button class="pto-form-tab ${tab === k ? "is-active" : ""}" type="button" data-act="ptoRangeTab" data-id="${escapeHtml(k)}">${escapeHtml(t)}</button>`;
     const selectedDocs = promoTerminateOrderCampaignRowsByNos(draft.promoResultNos || []);
-    const docHeaders = ["序号", "活动编码", "活动名称", "促销类型", "活动时间", "促销模版", "生效人", "生效时间", "参与门店"];
+    const docHeaders = ["序号", "活动编码", "活动名称", "促销类型", "活动时间", "促销方式", "审核人", "审核时间", "参与门店"];
     const docRows = selectedDocs.map((x, idx) => `
       <tr>
         <td>${idx + 1}</td>
@@ -12105,8 +12075,8 @@ function renderPromoTerminateOrderFormPage(mode, orderId) {
         <td>${escapeHtml(x.promoType || "")}</td>
         <td class="mono">${escapeHtml((x.startAt || "—") + " ~ " + (x.endAt || "—"))}</td>
         <td>${escapeHtml(x.templateName || "—")}</td>
-        <td>${escapeHtml(x.effectiveBy || "—")}</td>
-        <td class="mono">${escapeHtml(x.effectiveAt || "—")}</td>
+        <td>${escapeHtml(x.auditor || "—")}</td>
+        <td class="mono">${escapeHtml(x.auditAt || "—")}</td>
         <td>${escapeHtml(x.storeText || "—")}</td>
       </tr>
     `).join("");
@@ -12249,7 +12219,7 @@ function renderPromoTerminateOrderFormPage(mode, orderId) {
               ${tab === "terminate"
                 ? (way === "按商品" || way === "商品"
                   ? (() => {
-                      const goodsHeaders = ["序号", "活动编码", "活动名称", "模版类型", "活动时间", "模版名称", "商品编码", "商品条码", "商品名称", "规格", "单位", "售价", "促销价", "促销折扣", "会员促销价", "会员折扣", "整单限购", "会员限购", "促销信息", "参与门店"];
+                      const goodsHeaders = ["序号", "活动编码", "活动名称", "促销类型", "活动时间", "促销方式", "商品编码", "商品条码", "商品名称", "规格", "单位", "售价", "促销价", "促销折扣", "会员促销价", "会员折扣", "促销信息", "参与门店"];
                       const goodsRowsHtml = (draft.goodsRows || []).map((x, idx) => `
                         <tr>
                           <td>${idx + 1}</td>
@@ -12268,8 +12238,6 @@ function renderPromoTerminateOrderFormPage(mode, orderId) {
                           <td class="mono">${escapeHtml(String(x.promoDiscount ?? "—"))}</td>
                           <td class="mono">${escapeHtml(String(x.memberPromoPrice ?? "—"))}</td>
                           <td class="mono">${escapeHtml(String(x.memberDiscount ?? "—"))}</td>
-                          <td class="mono">${escapeHtml(String(x.orderLimit ?? "—"))}</td>
-                          <td class="mono">${escapeHtml(String(x.memberLimit ?? "—"))}</td>
                           <td>${escapeHtml(x.promoInfo || "—")}</td>
                           <td>${escapeHtml(x.stores || "—")}</td>
                         </tr>`).join("");
@@ -12277,7 +12245,7 @@ function renderPromoTerminateOrderFormPage(mode, orderId) {
                     })()
                   : (way === "按品类" || way === "品类")
                     ? (() => {
-                        const catHeaders = ["序号", "活动编码", "活动名称", "模版类型", "活动时间", "模版名称", "品类编码", "品类名称", "促销折扣", "会员折扣", "整单限购", "会员限购", "促销信息", "参与品类", "参与门店"];
+                        const catHeaders = ["序号", "活动编码", "活动名称", "促销类型", "活动时间", "促销方式", "品类编码", "品类名称", "促销折扣", "会员折扣", "促销信息", "参与门店"];
                         const catRowsHtml = (draft.catRows || []).map((x, idx) => `
                           <tr>
                             <td>${idx + 1}</td>
@@ -12290,17 +12258,14 @@ function renderPromoTerminateOrderFormPage(mode, orderId) {
                             <td>${escapeHtml(x.catName || "—")}</td>
                             <td class="mono">${escapeHtml(String(x.promoDiscount ?? "—"))}</td>
                             <td class="mono">${escapeHtml(String(x.memberDiscount ?? "—"))}</td>
-                            <td class="mono">${escapeHtml(String(x.orderLimit ?? "—"))}</td>
-                            <td class="mono">${escapeHtml(String(x.memberLimit ?? "—"))}</td>
                             <td>${escapeHtml(x.promoInfo || "—")}</td>
-                            <td>${escapeHtml(x.participateCat || "—")}</td>
                             <td>${escapeHtml(x.stores || "—")}</td>
                           </tr>`).join("");
                         return table(catHeaders, catRowsHtml || `<tr><td colspan="${catHeaders.length}"><div class="empty">请点击"选品类"添加终止品类</div></td></tr>`);
                       })()
                     : (way === "按品牌" || way === "品牌")
                       ? (() => {
-                          const brandHeaders = ["序号", "活动编码", "活动名称", "模版类型", "活动时间", "模版名称", "品牌编码", "品牌名称", "促销折扣", "会员折扣", "整单限购", "会员限购", "促销信息", "参与门店"];
+                          const brandHeaders = ["序号", "活动编码", "活动名称", "促销类型", "活动时间", "促销方式", "品牌编码", "品牌名称", "促销折扣", "会员折扣", "促销信息", "参与门店"];
                           const brandRowsHtml = (draft.brandRows || []).map((x, idx) => `
                             <tr>
                               <td>${idx + 1}</td>
@@ -12313,8 +12278,6 @@ function renderPromoTerminateOrderFormPage(mode, orderId) {
                               <td>${escapeHtml(x.brandName || "—")}</td>
                               <td class="mono">${escapeHtml(String(x.promoDiscount ?? "—"))}</td>
                               <td class="mono">${escapeHtml(String(x.memberDiscount ?? "—"))}</td>
-                              <td class="mono">${escapeHtml(String(x.orderLimit ?? "—"))}</td>
-                              <td class="mono">${escapeHtml(String(x.memberLimit ?? "—"))}</td>
                               <td>${escapeHtml(x.promoInfo || "—")}</td>
                               <td>${escapeHtml(x.stores || "—")}</td>
                             </tr>`).join("");
@@ -13051,7 +13014,6 @@ function campaignWizardValidateStep(step) {
   if (Number(step) === 1) {
     if (!String(d.activitySubject || "").trim()) return "请填写活动主题";
     if (!String(d.templateId || "").trim()) return "请选择模版名称";
-    if (String(d.activityMode || "") === "区域" && !String(d.scheduleId || "").trim()) return "请选择活动档期";
     if (!String(d.startAt || "").trim()) return "请选择开始时间";
     if (!String(d.endAt || "").trim()) return "请选择结束时间";
   }
@@ -18346,13 +18308,15 @@ function campaignWizardRenderQueryBar({ tabsHtml = "", inputHtml = "", actionsHt
 
 function campaignWizardMainTabsForTemplate(tplSelected, promoType = "") {
   const hasConditionTab = false;
-  return [
+  const isComboSpecial = campaignIsComboSpecialTemplate(tplSelected);
+  const tabs = [
     { k: "basic", t: "基础信息" },
     { k: "store", t: "门店范围" },
     ...(hasConditionTab ? [{ k: "condition", t: "条件范围" }] : []),
     { k: "goods", t: "商品范围" },
     { k: "burden", t: campaignIsVoucherGiftTemplate(tplSelected) ? "奖励券信息" : "承担规则" }
   ];
+  return isComboSpecial ? tabs.filter((t) => t.k !== "burden") : tabs;
 }
 
 function campaignWizardStepActionsHtml(currentTab, tabs, mode = "create") {
@@ -18380,26 +18344,7 @@ const CAMPAIGN_LIMIT_ACTIVITY_DIM_OPTIONS = ["单笔订单", "活动期内", "�
 const CAMPAIGN_LIMIT_OBJECT_DIM_OPTIONS = ["按件数", "按优惠次数"];
 
 function campaignExtraBasicFieldsHtml(d = {}, readonly = false) {
-  const isRegion = String((d && d.activityMode) || "") === "区域";
-  const renderSelect = (field, options, disableFn) => readonly
-    ? `<input class="input" value="${escapeHtml((d && d[field]) || "")}" disabled />`
-    : `<select class="select" data-cw="root" data-field="${field}">
-        <option value="">请选择</option>
-        ${(options || []).map((x) => {
-          const sel = String((d && d[field]) || "") === String(x) ? " selected" : "";
-          const dis = disableFn && disableFn(x) ? " disabled" : "";
-          return `<option${sel}${dis}>${escapeHtml(x)}</option>`;
-        }).join("")}
-      </select>`;
-  return `
-      <div class="field">
-        <div class="field__label">促销分类</div>
-        ${renderSelect("promoCategory", CAMPAIGN_PROMO_CATEGORY_OPTIONS)}
-      </div>
-      <div class="field">
-        <div class="field__label">调价分类</div>
-        ${renderSelect("priceAdjustCategory", CAMPAIGN_PRICE_ADJUST_OPTIONS, (x) => isRegion && x === "出清处理")}
-      </div>`;
+  return "";
 }
 
 function campaignLimitSettingsHtml(d = {}, readonly = false) {
@@ -18461,7 +18406,7 @@ function campaignAmountGiftBasicPanelHtml({
     </div>
     <div class="combo-camp-form__row combo-camp-form__row--4 row--stretch">
       <div class="field">
-        <div class="field__label">${(!readonly && String(d.activityMode || "") === "区域") ? '<span class="req">*</span>' : ''}活动档期</div>
+        <div class="field__label">活动档期</div>
         ${scheduleDisplay}
       </div>
       <div class="field">
@@ -18589,6 +18534,7 @@ function comboCampaignEnsureGoodsScope(draft = {}) {
     if (typeof row.supplierRatio === "undefined") row.supplierRatio = "";
     if (typeof row.purchaseRatio === "undefined") row.purchaseRatio = "";
     if (typeof row.storeRatio === "undefined") row.storeRatio = "";
+    if (typeof row.goodsQty === "undefined" || row.goodsQty === "") row.goodsQty = "1";
   });
   gs.categories.forEach((item, idx) => {
     if (!item || typeof item !== "object") gs.categories[idx] = {};
@@ -18632,10 +18578,14 @@ function comboCampaignEnsureGoodsScope(draft = {}) {
     if (typeof row.promoPrice === "undefined") row.promoPrice = "";
     if (typeof row.discountWay === "undefined" || row.discountWay === "") row.discountWay = "倍数";
     if (typeof row.cap === "undefined") row.cap = "";
+    if (typeof row.limitCycle === "undefined" || row.limitCycle === "") row.limitCycle = "每笔订单";
+    if (typeof row.limitScopeType === "undefined" || row.limitScopeType === "") row.limitScopeType = "商户";
+    if (typeof row.perPersonLimitQty === "undefined") row.perPersonLimitQty = "";
+    if (typeof row.perItemLimitQty === "undefined") row.perItemLimitQty = "";
   });
   if (!gs.comboSettings.length) {
     const uniqueCodes = Array.from(new Set(gs.goods.map((x) => comboCampaignGoodsCodeValue(x.comboCode, 1))));
-    if (uniqueCodes.length) gs.comboSettings = uniqueCodes.map((code) => ({ comboCode: code, promoPrice: "", discountWay: "倍数", cap: "" }));
+    if (uniqueCodes.length) gs.comboSettings = uniqueCodes.map((code) => ({ comboCode: code, promoPrice: "", discountWay: "倍数", cap: "", limitCycle: "每笔订单", limitScopeType: "商户", perPersonLimitQty: "", perItemLimitQty: "" }));
   }
   gs.burdenRule = gs.burdenRule || {};
   if (typeof gs.burdenRule.shareMode === "undefined" || gs.burdenRule.shareMode === "") gs.burdenRule.shareMode = "统一比例";
@@ -18646,7 +18596,8 @@ function comboCampaignEnsureGoodsScope(draft = {}) {
 }
 
 function comboCampaignGoodsCodeOptionsHtml(selected = "") {
-  const options = Array.from({ length: 10 }).map((_, idx) => comboCampaignGoodsCodeValue(idx + 1, idx + 1));
+  const codes = Array.isArray(AppState.data.gmComboCodes) ? AppState.data.gmComboCodes : [];
+  const options = codes.length ? codes : Array.from({ length: 10 }, (_, i) => String(i + 1).padStart(3, "0"));
   return options.map((code) => `<option value="${code}" ${String(selected) === code ? "selected" : ""}>${code}</option>`).join("");
 }
 
@@ -18719,7 +18670,6 @@ function comboCampaignBrandQueryMeta(goodsScope = {}, tab = "brands") {
 function comboCampaignGoodsToolbarHtml(goodsScope = {}, readonly = false) {
   return `
     <div class="combo-goods-toolbar">
-      <div class="combo-goods-toolbar__title">商品信息</div>
       <div class="combo-goods-toolbar__filters">
         <input class="input" ${readonly ? "disabled" : 'data-cw="goodsScope" data-field="keywordCode"'} value="${escapeHtml(String(goodsScope.keywordCode || ""))}" placeholder="商品编码" />
         <input class="input" ${readonly ? "disabled" : 'data-cw="goodsScope" data-field="keywordName"'} value="${escapeHtml(String(goodsScope.keywordName || ""))}" placeholder="商品名称" />
@@ -18796,7 +18746,6 @@ function comboCampaignBrandToolbarHtml(goodsScope = {}, readonly = false) {
   return `
     ${comboCampaignBrandTabbarHtml()}
     <div class="combo-goods-toolbar combo-goods-toolbar--category">
-      <div class="combo-goods-toolbar__title">商品信息</div>
       <div class="combo-goods-toolbar__filters">
         <input class="input" ${readonly ? "disabled" : 'data-cw="goodsScope" data-field="keyword"'} value="${escapeHtml(String(goodsScope.keyword || ""))}" placeholder="${escapeHtml(isGoodsTab ? "请输入商品编码、商品名称" : "请输入品牌编码、品牌名称")}" />
         ${readonly ? "" : `<button class="btn btn--primary combo-goods-toolbar__query" type="button" data-act="campKeywordQuery" data-cw="goodsScope" data-field="keyword">查询</button>`}
@@ -18815,7 +18764,9 @@ function comboCampaignBrandToolbarHtml(goodsScope = {}, readonly = false) {
 
 function comboCampaignGoodsInfoTableHtml(draft = {}, readonly = false) {
   const gs = comboCampaignEnsureGoodsScope(draft);
-  const showShareRatio = campaignIsComboPriceDraft(draft) && String(gs.supplySubsidyMethod || "") === "销售补差" && String(gs.discountShareMethod || "") === "固定比例";
+  const isComboPrice = campaignIsComboPriceDraft(draft);
+  const showGoodsQty = isComboPrice;
+  const showShareRatio = isComboPrice && String(gs.supplySubsidyMethod || "") === "销售补差" && String(gs.discountShareMethod || "") === "固定比例";
   const ui = AppState.ui.campaignWizard || {};
   const meta = comboCampaignGoodsQueryMeta(gs);
   const pickedSet = new Set((Array.isArray(ui.comboGoodsPicked) ? ui.comboGoodsPicked : []).map((x) => Number(x)).filter(Number.isFinite));
@@ -18839,6 +18790,9 @@ function comboCampaignGoodsInfoTableHtml(draft = {}, readonly = false) {
         <td>${readonly
           ? `<span class="combo-goods-cell-text">${escapeHtml(String(x.skuName || ""))}</span>`
           : `<input class="combo-goods-cell-input" data-cw="comboGoods" data-idx="${dataIdx}" data-field="skuName" value="${escapeHtml(String(x.skuName || ""))}" />`}</td>
+        ${showGoodsQty ? `<td>${readonly
+          ? `<span class="combo-goods-cell-text">${escapeHtml(String(x.goodsQty ?? ""))}</span>`
+          : `<input class="combo-goods-cell-input" data-cw="comboGoods" data-idx="${dataIdx}" data-field="goodsQty" type="number" min="0" step="1" value="${escapeHtml(String(x.goodsQty ?? ""))}" />`}</td>` : ""}
         <td>${readonly
           ? `<span class="combo-goods-cell-text">${escapeHtml(String(x.shortName || ""))}</span>`
           : `<input class="combo-goods-cell-input" data-cw="comboGoods" data-idx="${dataIdx}" data-field="shortName" value="${escapeHtml(String(x.shortName || ""))}" />`}</td>
@@ -18861,7 +18815,7 @@ function comboCampaignGoodsInfoTableHtml(draft = {}, readonly = false) {
       </tr>
     `;
   }).join("");
-  const totalCols = 11 + (showShareRatio ? 1 : 0) + (readonly ? 0 : 1);
+  const totalCols = 11 + (showGoodsQty ? 1 : 0) + (showShareRatio ? 1 : 0) + (readonly ? 0 : 1);
   const emptyRows = Array.from({ length: Math.max(0, 3 - visibleRows.length) }).map((_, idx) => `
     <tr>
       <td class="combo-goods-table__check"><input type="checkbox" disabled /></td>
@@ -18880,6 +18834,7 @@ function comboCampaignGoodsInfoTableHtml(draft = {}, readonly = false) {
             <th>商品编码</th>
             <th>商品条码</th>
             <th>商品名称</th>
+            ${showGoodsQty ? `<th>商品数量</th>` : ""}
             <th>商品简称</th>
             <th>商品规格</th>
             <th>单位</th>
@@ -19082,7 +19037,7 @@ function comboCampaignGoodsSettingTableHtml(draft = {}, readonly = false) {
   const gs = comboCampaignEnsureGoodsScope(draft);
   const ui = AppState.ui.campaignWizard || {};
   const rows = Array.isArray(gs.comboSettings) ? gs.comboSettings : [];
-  const showPickQty = String(gs.comboMode || "固定组合") === "任选组合";
+  const showPickQty = String(gs.comboMode || "固定组合") === "任选组合" && !campaignIsComboPriceDraft(draft);
   const pickedSet = new Set((Array.isArray(ui.comboGoodsRulePicked) ? ui.comboGoodsRulePicked : []).map((x) => Number(x)).filter(Number.isFinite));
   const visibleRows = rows.slice(0, 8);
   const allRows = rows.length ? rows : visibleRows;
@@ -19094,9 +19049,10 @@ function comboCampaignGoodsSettingTableHtml(draft = {}, readonly = false) {
   const scope = String(gs.comboScope || "单品");
   const showComboQty = !showPickQty && ["商品", "品类", "品牌"].includes(scope) && firstWay === "阶梯";
   const isFixedCategoryLadderScene = !showPickQty && scope === "品类" && firstWay === "阶梯";
-  const showCap = scope === "品类"
+  const isOnePriceOnly = String(draft.templateName || "").includes("一口价") && !String(draft.templateName || "").includes("组合价");
+  const showCap = isOnePriceOnly ? false : (scope === "品类"
     ? (!isAnyCategoryLadderScene && !isFixedCategoryLadderScene)
-    : (firstWay !== "阶梯");
+    : (firstWay !== "阶梯"));
   const allChecked = !readonly && visibleRows.length > 0 && visibleRows.every((_, idx) => pickedSet.has(idx));
   const rowHtml = visibleRows.map((x, idx) => {
     const cells = [];
@@ -19121,6 +19077,26 @@ function comboCampaignGoodsSettingTableHtml(draft = {}, readonly = false) {
     cells.push(`<td>${readonly
       ? `<span class="combo-goods-cell-text">${escapeHtml(String(x.discountWay || ""))}</span>`
       : `<select class="combo-goods-cell-select" data-cw="comboGoodsSettings" data-idx="${idx}" data-field="discountWay">${["倍数", "阶梯"].map((v) => `<option value="${v}" ${String(x.discountWay || "倍数") === v ? "selected" : ""}>${v}</option>`).join("")}</select>`}</td>`);
+    if (isOnePriceOnly) {
+      const userScopeAll = campaignScopeUserDisplayValue((draft.scope && draft.scope.userScope) || "全部") === "全部";
+      const limitVal = userScopeAll ? "每笔订单" : String(x.limitCycle || "每笔订单");
+      cells.push(`<td>${readonly
+        ? `<span class="combo-goods-cell-text">${escapeHtml(limitVal)}</span>`
+        : `<select class="combo-goods-cell-select" data-cw="comboGoodsSettings" data-idx="${idx}" data-field="limitCycle">${["每笔订单", "每日", "活动期间"].map((v) => {
+          const sel = limitVal === v;
+          const dis = userScopeAll && v !== "每笔订单";
+          return `<option value="${v}" ${sel ? "selected" : ""} ${dis ? "disabled" : ""}>${v}</option>`;
+        }).join("")}</select>`}</td>`);
+      cells.push(`<td>${readonly
+        ? `<span class="combo-goods-cell-text">${escapeHtml(String(x.limitScopeType || ""))}</span>`
+        : `<select class="combo-goods-cell-select" data-cw="comboGoodsSettings" data-idx="${idx}" data-field="limitScopeType">${["商户", "门店"].map((v) => `<option value="${v}" ${String(x.limitScopeType || "商户") === v ? "selected" : ""}>${v}</option>`).join("")}</select>`}</td>`);
+      cells.push(`<td>${readonly
+        ? `<span class="combo-goods-cell-text">${escapeHtml(String(x.perPersonLimitQty ?? ""))}</span>`
+        : `<input class="combo-goods-cell-input" data-cw="comboGoodsSettings" data-idx="${idx}" data-field="perPersonLimitQty" type="number" min="0" step="1" value="${escapeHtml(String(x.perPersonLimitQty ?? ""))}" />`}</td>`);
+      cells.push(`<td>${readonly
+        ? `<span class="combo-goods-cell-text">${escapeHtml(String(x.perItemLimitQty ?? ""))}</span>`
+        : `<input class="combo-goods-cell-input" data-cw="comboGoodsSettings" data-idx="${idx}" data-field="perItemLimitQty" type="number" min="0" step="1" value="${escapeHtml(String(x.perItemLimitQty ?? ""))}" />`}</td>`);
+    }
     if (showCap) {
       const isLadder = String(x.discountWay || "倍数") === "阶梯";
       cells.push(`<td>${readonly
@@ -19130,7 +19106,7 @@ function comboCampaignGoodsSettingTableHtml(draft = {}, readonly = false) {
     cells.push(`<td>${readonly ? "" : `<button class="btn btn--link btn--danger" type="button" data-act="campComboRuleDel" data-idx="${idx}">删除</button>`}</td>`);
     return `<tr>${cells.join("")}</tr>`;
   }).join("");
-  const emptyCols = 2 + 1 + (showPickQty ? 1 : 0) + (showComboQty ? 1 : 0) + 1 + 1 + (showCap ? 1 : 0) + 1;
+  const emptyCols = 2 + 1 + (showPickQty ? 1 : 0) + (showComboQty ? 1 : 0) + (isOnePriceOnly ? 4 : 0) + 1 + 1 + (showCap ? 1 : 0) + 1;
   const minRows = isAnyCategoryLadderScene ? 2 : 3;
   const emptyRows = Array.from({ length: Math.max(0, minRows - visibleRows.length) }).map((_, idx) => `
     <tr>
@@ -19154,6 +19130,7 @@ function comboCampaignGoodsSettingTableHtml(draft = {}, readonly = false) {
             ${showComboQty ? "<th>组合数量</th>" : ""}
             <th>促销价</th>
             <th>优惠方式</th>
+            ${isOnePriceOnly ? "<th>限购周期</th><th>限购范围</th><th>每人限购数量</th><th>商品限购数量</th>" : ""}
             ${showCap ? "<th>上限</th>" : ""}
             <th>操作</th>
           </tr>
@@ -19754,30 +19731,6 @@ function comboCampaignGoodsPanelHtml(draft = {}, readonly = false) {
     || (isBrandMode && activeBrandTab === "excludeGoods");
   return `
     <div class="combo-camp-panel combo-camp-goods-panel">
-      ${comboCampaignSectionHtml("条件范围", `
-        <div class="combo-goods-condition-row">
-          <div class="field">
-            <div class="field__label"><span class="req">*</span>商品范围</div>
-            <select class="select" disabled>
-              ${["单品", "品类", "品牌"].map((x) => `<option value="${x}" ${String(gs.comboScope || "单品") === x ? "selected" : ""}>${x}</option>`).join("")}
-            </select>
-          </div>
-          <div class="field">
-            <div class="field__label"><span class="req">*</span>优惠分摊方式</div>
-            <select class="select" ${readonly ? "disabled" : 'data-cw="goodsScope" data-field="discountShareMethod"'}>
-              ${(isComboPrice ? ["销售占比", "固定比例"] : ["销售占比", "按平均单价"]).map((x) => `<option value="${x}" ${String(gs.discountShareMethod || "销售占比") === x ? "selected" : ""}>${x}</option>`).join("")}
-            </select>
-          </div>
-          ${(isCategoryMode || isBrandMode) ? `
-          <div class="field">
-            <div class="field__label"><span class="req">*</span>特价商品是否参与</div>
-            <div class="checks">
-              <label class="radio"><input type="radio" name="comboSpecialGoodsJoin" ${readonly ? "disabled" : 'data-cw="goodsScope" data-field="specialGoodsJoin"'} value="是" ${String(gs.specialGoodsJoin || "否") === "是" ? "checked" : ""} />是</label>
-              <label class="radio"><input type="radio" name="comboSpecialGoodsJoin" ${readonly ? "disabled" : 'data-cw="goodsScope" data-field="specialGoodsJoin"'} value="否" ${String(gs.specialGoodsJoin || "否") === "否" ? "checked" : ""} />否</label>
-            </div>
-          </div>` : ""}
-        </div>
-      `)}
       ${comboCampaignSectionHtml("商品信息", `
         ${isBrandMode ? comboCampaignBrandToolbarHtml(gs, readonly) : (isCategoryMode ? comboCampaignCategoryToolbarHtml(gs, readonly) : comboCampaignGoodsToolbarHtml(gs, readonly))}
         ${readonly
@@ -19977,8 +19930,16 @@ function comboCampaignBasicPanelHtml({
     </div>
     <div class="combo-camp-form__row row--stretch">
       <div class="field">
-        <div class="field__label">${(!readonly && String(d.activityMode || "") === "区域") ? '<span class="req">*</span>' : ''}活动档期</div>
+        <div class="field__label">活动档期</div>
         ${readonly ? `<input class="input" value="${escapeHtml(scheduleValue || "")}" disabled />` : scheduleDisplay}
+      </div>
+      <div class="field">
+        <div class="field__label"><span class="req">*</span>优惠分摊方式</div>
+        ${readonly
+          ? `<input class="input" value="${escapeHtml(String((d.goodsScope && d.goodsScope.discountShareMethod) || "销售占比"))}" disabled />`
+          : `<select class="select" data-cw="goodsScope" data-field="discountShareMethod">
+              ${["销售占比", "按平均单价"].map((x) => `<option value="${x}" ${String((d.goodsScope && d.goodsScope.discountShareMethod) || "销售占比") === x ? "selected" : ""}>${x}</option>`).join("")}
+            </select>`}
       </div>
       <div class="field">
         <div class="field__label">模版名称</div>
@@ -20048,6 +20009,7 @@ function comboCampaignBasicPanelHtml({
             <div class="field__label">用户范围</div>
             <input class="input" value="${escapeHtml(userScopeDisplay)}" disabled />
           </div>
+          ${userScopeDisplay === "会员" ? `
           <div class="field">
             <div class="field__label">会员等级</div>
             <input class="input" value="${escapeHtml((d.scope.memberGrades && d.scope.memberGrades[0] && (d.scope.memberGrades[0].name || d.scope.memberGrades[0].code)) || "—")}" disabled />
@@ -20055,7 +20017,7 @@ function comboCampaignBasicPanelHtml({
           <div class="field">
             <div class="field__label">会员标签</div>
             <input class="input" value="${escapeHtml((d.scope.memberTags && d.scope.memberTags[0] && (d.scope.memberTags[0].name || d.scope.memberTags[0].code)) || "—")}" disabled />
-          </div>
+          </div>` : ""}
         </div>
       `
     : `
@@ -20072,6 +20034,7 @@ function comboCampaignBasicPanelHtml({
               ${["全部", "会员"].map((x) => `<option ${userScopeDisplay === x ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}
             </select>
           </div>
+          ${userScopeDisplay === "会员" ? `
           <div class="field">
             <div class="field__label">会员等级</div>
             <select class="select" data-cw="scope" data-field="memberGradeCode">
@@ -20085,10 +20048,11 @@ function comboCampaignBasicPanelHtml({
               <option value="">请选择</option>
               ${tagList.map((x) => `<option value="${escapeHtml(x.code)}" ${curTag === String(x.code) ? "selected" : ""}>${escapeHtml(`${x.code} ${x.name}`)}</option>`).join("")}
             </select>
-          </div>
+          </div>` : ""}
         </div>
       `;
 
+  const isComboOrOnePrice = campaignIsComboSpecialTemplate(null, d);
   const limitScopeHtml = campaignLimitSettingsHtml(d, readonly);
   const panelHtml = `
     <div class="combo-camp-panel">
@@ -20096,7 +20060,7 @@ function comboCampaignBasicPanelHtml({
       ${comboCampaignSectionHtml("活动周期", cycleHtml)}
       ${readonly ? comboCampaignSectionHtml("门店范围", storeScopeHtml) : ""}
       ${comboCampaignSectionHtml("活动范围", scopeHtml)}
-      ${comboCampaignSectionHtml("限量设置", limitScopeHtml)}
+      ${isComboOrOnePrice ? "" : comboCampaignSectionHtml("限量设置", limitScopeHtml)}
       ${footerHtml || ""}
     </div>
   `;
@@ -20443,7 +20407,7 @@ function renderCampaignWizardPage(mode) {
             </div>
             <div class="form__row row--stretch">
               <div class="field">
-                <div class="field__label">活动档期${String(d.activityMode || "") === "区域" ? '<span class="req">*</span>' : ''}</div>
+                <div class="field__label">活动档期</div>
                 <select class="select" data-cw="root" data-field="scheduleId">${actualOps}</select>
               </div>
               <div class="field">
@@ -20505,7 +20469,7 @@ function renderCampaignWizardPage(mode) {
                     </select>
                   </div>
                 </div>
-                <div class="form__row">
+                <div class="form__row" id="campMemberGradesBox">
                   <div class="field">
                     <div class="field__label">会员等级</div>
                     <select class="select" data-cw="scope" data-field="memberGradeCode">
@@ -20513,6 +20477,8 @@ function renderCampaignWizardPage(mode) {
                       ${gradeList.map((x) => `<option value="${escapeHtml(x.code)}" ${curGrade === String(x.code) ? "selected" : ""}>${escapeHtml(`${x.code} ${x.name}`)}</option>`).join("")}
                     </select>
                   </div>
+                </div>
+                <div class="form__row" id="campMemberTagsBox">
                   <div class="field">
                     <div class="field__label">会员标签</div>
                     <select class="select" data-cw="scope" data-field="memberTagCode">
@@ -20665,7 +20631,6 @@ function renderCampaignWizardPage(mode) {
       <div class="detail-tab-panel ${campMainTab === "goods" ? "is-active" : ""}" data-tab="goods">
         ${isComboSpecial && (comboCampaignGoodsIsFixedGoodsMode(d) || comboCampaignGoodsIsAnyGoodsMode(d) || comboCampaignGoodsIsFixedCategoryMode(d) || comboCampaignGoodsIsAnyCategoryMode(d) || comboCampaignGoodsIsFixedBrandMode(d) || comboCampaignGoodsIsAnyBrandMode(d)) ? `
           ${comboCampaignGoodsPanelHtml(d, false)}
-          ${campStepActionsHtml}
         ` : isGoodsDiscount ? `
           <div class="wizard-step" data-step="${goodsStepNo}">
             <div class="form">
@@ -21203,8 +21168,8 @@ function renderCampaignWizardPage(mode) {
         ${campStepActionsHtml}
       </div>
 
-      <div class="detail-tab-panel ${campMainTab === "burden" ? "is-active" : ""}" data-tab="burden">
-        ${isComboSpecial ? comboCampaignBurdenStepHtml(d) : (!tplSelected || isGoodsDiscount) ? campaignWizardBurdenFormHtml(d, { stepNo: burdenStepNo, hideSummary: isGoodsDiscount }) : campaignIsQtyVoucherGiftTemplate(tplSelected) ? `
+      ${!isComboSpecial ? `<div class="detail-tab-panel ${campMainTab === "burden" ? "is-active" : ""}" data-tab="burden">
+        ${(!tplSelected || isGoodsDiscount) ? campaignWizardBurdenFormHtml(d, { stepNo: burdenStepNo, hideSummary: isGoodsDiscount }) : campaignIsQtyVoucherGiftTemplate(tplSelected) ? `
           <div class="wizard-step" data-step="${burdenStepNo}">
             <div class="form">
               <div class="form__row">
@@ -21244,7 +21209,7 @@ function renderCampaignWizardPage(mode) {
           </div>
         ` : campaignWizardBurdenFormHtml(d, { stepNo: burdenStepNo, hideSummary: false })}
         ${campStepActionsHtml}
-      </div>
+      </div>` : ""}
     </div>
     </div>
   `;
@@ -23510,7 +23475,8 @@ function renderPricingPage() {
   const totalQty = cart.reduce((s, it) => s + (it.qty || 0), 0);
   const totalRows = cart.filter((it) => it.code).length;
   const totalDiscount = cart.reduce((s, it) => s + ((it.originalPrice || 0) - (it.promoPrice || 0)) * (it.qty || 0), 0);
-  const totalAmount = cart.reduce((s, it) => s + (it.amount || 0), 0);
+  const totalPayable = cart.reduce((s, it) => s + (it.originalPrice || 0) * (it.qty || 0), 0);
+  const totalActual = totalPayable - totalDiscount;
 
   /* ── table rows ── */
   const tableRows = cart.map((it, idx) => {
@@ -23573,8 +23539,11 @@ function renderPricingPage() {
           <div class="pricing-goods-bar__title">商品信息</div>
           <div class="pricing-goods-bar__stats">
             <span><span class="stat-label">数量：</span><span class="stat-value">${totalQty.toFixed(2)}</span></span>
-            <span><span class="stat-label">笔数：</span><span class="stat-value">${totalRows.toFixed(2)}</span></span>
+            <span><span class="stat-label">品种数：</span><span class="stat-value">${totalRows.toFixed(2)}</span></span>
             <span><span class="stat-label">优惠：</span><span class="stat-value">${totalDiscount.toFixed(2)}</span></span>
+            <span><span class="stat-label">应付金额：</span><span class="stat-value">${totalPayable.toFixed(2)}</span></span>
+            <span><span class="stat-label">优惠金额：</span><span class="stat-value">${totalDiscount.toFixed(2)}</span></span>
+            <span><span class="stat-label">实付金额：</span><span class="stat-value">${totalActual.toFixed(2)}</span></span>
           </div>
           <div class="pricing-goods-bar__actions">
             <button class="btn" type="button" data-act="pricingAddGoods">+商品</button>
@@ -23608,60 +23577,6 @@ function renderPricingPage() {
           </table>
         </div>
       </div>
-      <div class="pricing-right">
-        <div class="pricing-coupon-area">
-          <div class="tabbar tabbar--underline" id="pricingCouponTabs">
-            <button class="tabbtn ${String(st.couponTab) === "gift" ? "is-active" : ""}" type="button" data-act="pricingCouponTab" data-id="gift">可赠优惠券</button>
-            <button class="tabbtn ${String(st.couponTab) === "exchange" ? "is-active" : ""}" type="button" data-act="pricingCouponTab" data-id="exchange">可换购</button>
-          </div>
-          <div id="pricingCouponAvailable" style="display:none;">
-            <div class="pricing-coupon-list">
-              ${(AppState.data.pricingCoupons || []).map((cp) => {
-                const isSel = (st.selectedCoupons || []).includes(cp.id);
-                return `
-                  <div class="pricing-coupon-card ${isSel ? "is-selected" : ""}" data-act="pricingToggleCoupon" data-id="${escapeHtml(cp.id)}">
-                    <div class="pricing-coupon-card__left">
-                      <div class="pricing-coupon-card__value">${escapeHtml(cp.value)}</div>
-                      <div class="pricing-coupon-card__unit">${escapeHtml(cp.unit)}</div>
-                      <div class="pricing-coupon-card__type">${escapeHtml(cp.type)}</div>
-                    </div>
-                    <div class="pricing-coupon-card__right">
-                      <div class="pricing-coupon-card__title">${escapeHtml(cp.title)}</div>
-                      <div class="pricing-coupon-card__scope">使用范围：${escapeHtml(cp.scope)}</div>
-                      <div class="pricing-coupon-card__time">有效期：${escapeHtml(cp.validTime)}</div>
-                    </div>
-                  </div>
-                `;
-              }).join("")}
-            </div>
-          </div>
-          <div id="pricingCouponGift" style="${String(st.couponTab) === "gift" ? "" : "display:none;"}">
-            <div class="pricing-coupon-list" id="pricingGiftCouponList">
-              ${st.settled ? `
-                ${(AppState.data.pricingCoupons || []).slice(0, 2).map((cp) => {
-                  return `
-                    <div class="pricing-coupon-card">
-                      <div class="pricing-coupon-card__left">
-                        <div class="pricing-coupon-card__value">${escapeHtml(cp.value)}</div>
-                        <div class="pricing-coupon-card__unit">${escapeHtml(cp.unit)}</div>
-                        <div class="pricing-coupon-card__type">赠</div>
-                      </div>
-                      <div class="pricing-coupon-card__right">
-                        <div class="pricing-coupon-card__title">${escapeHtml(cp.title)}</div>
-                        <div class="pricing-coupon-card__scope">赠送范围：${escapeHtml(cp.scope)}</div>
-                        <div class="pricing-coupon-card__time">有效期：${escapeHtml(cp.validTime)}</div>
-                      </div>
-                    </div>
-                  `;
-                }).join("")}
-              ` : `<div class="empty" style="padding:20px;text-align:center;color:var(--muted);">点击"结算"后展示可赠优惠券</div>`}
-            </div>
-          </div>
-          <div id="pricingCouponExchange" style="${String(st.couponTab) === "exchange" ? "" : "display:none;"}">
-            ${pricingExchangeHtml(st)}
-          </div>
-        </div>
-      </div>
     </div>
 
     <!-- ── bottom action bar ── -->
@@ -23672,7 +23587,6 @@ function renderPricingPage() {
       </div>
       <button class="btn btn--primary" type="button" data-act="pricingQuery">查询</button>
       <button class="btn" type="button" data-act="pricingExportAnomaly">导出异常商品报表</button>
-      <button class="btn-settle" type="button" data-act="pricingSettle">结算 <span class="settle-amount">¥ ${st.settlementAmount.toFixed(2)}</span></button>
     </div>
   `;
 
@@ -24938,6 +24852,132 @@ function renderStoreMgmtPage(kind) {
     listTitle: cfg.listTitle,
     tableHtml: table(cfg.headers, rows || `<tr><td colspan="${cfg.headers.length}"><div class="empty">暂无数据</div></td></tr>`),
     footerHtml: footerbar(`共 ${list.length} 条`, "第 1 页")
+  });
+}
+
+function renderStoreGroupsPage() {
+  const list = AppState.data.gmStoreGroups || [];
+  const ui = AppState.ui.storeMgmt || {};
+  if (!ui.storeGroups) ui.storeGroups = { qCode: "", qName: "" };
+  const sg = ui.storeGroups;
+  const filtered = list.filter((x) => {
+    if (sg.qCode && !String(x.groupCode || "").includes(sg.qCode)) return false;
+    if (sg.qName && !String(x.groupName || "").includes(sg.qName)) return false;
+    return true;
+  });
+  const storeMap = {};
+  (AppState.data.gmStores || []).forEach((s) => { storeMap[s.storeCode] = s.storeName || s.storeCode; });
+  const headers = ["序号", "门店组编码", "门店组名称", "包含门店", "操作"];
+  const rowsHtml = filtered.map((x, idx) => `
+    <tr>
+      <td>${idx + 1}</td>
+      <td class="mono">${escapeHtml(x.groupCode || "")}</td>
+      <td>${escapeHtml(x.groupName || "")}</td>
+      <td>${escapeHtml((x.storeCodes || []).map((c) => storeMap[c] || c).join("、") || "—")}</td>
+      <td>
+        <button class="linkbtn" type="button" data-act="sgEdit" data-id="${escapeHtml(x.groupCode)}">编辑</button>
+        <button class="linkbtn" type="button" data-act="sgDelete" data-id="${escapeHtml(x.groupCode)}">删除</button>
+      </td>
+    </tr>
+  `).join("");
+  const filtersHtml = `
+    <div class="field">
+      <div class="field__label">门店组编码</div>
+      <input class="input" id="sgQCode" value="${escapeHtml(sg.qCode || "")}" placeholder="支持模糊查询" />
+    </div>
+    <div class="field">
+      <div class="field__label">门店组名称</div>
+      <input class="input" id="sgQName" value="${escapeHtml(sg.qName || "")}" placeholder="支持模糊查询" />
+    </div>
+  `;
+  return listPageLayout({
+    filtersHtml,
+    filterActionsHtml: `
+      <button class="btn btn--primary" type="button" data-act="sgQuery">查询</button>
+      <button class="btn" type="button" data-act="sgReset">重置</button>
+      <button class="btn btn--primary" type="button" data-act="sgNew">新增门店组</button>
+    `,
+    listTitle: "门店组信息列表",
+    tableHtml: table(headers, rowsHtml || `<tr><td colspan="${headers.length}"><div class="empty">暂无数据</div></td></tr>`),
+    footerHtml: footerbar(`共 ${filtered.length} 条`, "第 1 页")
+  });
+}
+
+function renderComboCodesPage() {
+  const list = AppState.data.gmComboCodes || [];
+  const headers = ["序号", "组合编码", "操作"];
+  const rowsHtml = list.map((code, idx) => `
+    <tr>
+      <td>${idx + 1}</td>
+      <td class="mono">${escapeHtml(String(code))}</td>
+      <td>
+        <button class="linkbtn" type="button" data-act="ccDelete" data-id="${escapeHtml(String(idx))}">删除</button>
+      </td>
+    </tr>
+  `).join("");
+  return listPageLayout({
+    filtersHtml: "",
+    filterActionsHtml: `
+      <button class="btn btn--primary" type="button" data-act="ccNew">新增组合编码</button>
+    `,
+    listTitle: "商品组合信息列表",
+    tableHtml: table(headers, rowsHtml || `<tr><td colspan="${headers.length}"><div class="empty">暂无数据</div></td></tr>`),
+    footerHtml: footerbar(`共 ${list.length} 条`, "第 1 页")
+  });
+}
+
+function openStoreGroupEditModal(groupCode) {
+  const list = AppState.data.gmStoreGroups || [];
+  const existing = groupCode ? list.find((x) => String(x.groupCode) === String(groupCode)) : null;
+  const isEdit = !!existing;
+  const curCodes = existing ? (existing.storeCodes || []) : [];
+  const allStores = AppState.data.gmStores || [];
+  const storeChecks = allStores.map((s) => `
+    <label class="check" style="display:block;margin:4px 0;">
+      <input type="checkbox" name="sgStorePick" value="${escapeHtml(s.storeCode)}" ${curCodes.includes(s.storeCode) ? "checked" : ""} />
+      ${escapeHtml(s.storeCode)} ${escapeHtml(s.storeName || "")}
+    </label>
+  `).join("");
+  openModal({
+    title: isEdit ? `编辑门店组（${escapeHtml(existing.groupCode)}）` : "新增门店组",
+    bodyHtml: `
+      <div class="form">
+        <div class="field">
+          <div class="field__label">门店组编码<span class="req">*</span></div>
+          <input class="input mono" id="sgEditCode" value="${escapeHtml(isEdit ? existing.groupCode : "")}" ${isEdit ? "disabled" : ""} placeholder="自动生成或手动输入" />
+        </div>
+        <div class="field">
+          <div class="field__label">门店组名称<span class="req">*</span></div>
+          <input class="input" id="sgEditName" value="${escapeHtml(isEdit ? existing.groupName : "")}" placeholder="请输入门店组名称" />
+        </div>
+        <div class="field">
+          <div class="field__label">选择门店</div>
+          <div style="max-height:200px;overflow-y:auto;border:1px solid #d1d5db;border-radius:4px;padding:8px;">
+            ${storeChecks || '<div class="hint">暂无可选门店</div>'}
+          </div>
+        </div>
+      </div>
+    `,
+    primaryText: "保存",
+    secondaryText: "取消",
+    onPrimary: () => {
+      const code = (document.getElementById("sgEditCode") || {}).value || "";
+      const name = (document.getElementById("sgEditName") || {}).value || "";
+      if (!code.trim()) return toast("请输入门店组编码");
+      if (!name.trim()) return toast("请输入门店组名称");
+      const picked = Array.from(document.querySelectorAll('input[name="sgStorePick"]:checked')).map((el) => el.value);
+      if (!picked.length) return toast("请至少选择一个门店");
+      if (isEdit) {
+        existing.groupName = name.trim();
+        existing.storeCodes = picked;
+      } else {
+        if (list.some((x) => String(x.groupCode) === String(code.trim()))) return toast("门店组编码已存在");
+        list.push({ groupCode: code.trim(), groupName: name.trim(), storeCodes: picked });
+      }
+      closeModal();
+      toast(isEdit ? "修改成功（原型演示）" : "新增成功（原型演示）");
+      render();
+    }
   });
 }
 
@@ -29349,6 +29389,8 @@ function render() {
   else if (r === "/sm-regions") html = renderStoreMgmtPage("regions");
   else if (r === "/sm-price-groups") html = renderStoreMgmtPage("priceGroups");
   else if (r === "/sm-stores") html = renderStoreMgmtPage("stores");
+  else if (r === "/sm-store-groups") html = renderStoreGroupsPage();
+  else if (r === "/sm-combo-codes") html = renderComboCodesPage();
   else if (r === "/sm-store-goods") html = renderSmStoreGoodsPage();
   else if (r === "/voucher-themes") html = renderVoucherThemesPage();
   else if (r === "/voucher-themes-create") html = renderVoucherThemeWizardPage("create");
@@ -30378,6 +30420,84 @@ function handleAction(r, act, btn) {
     }
     if (act === "smStoresExport") {
       toast("导出成功（原型演示）");
+      return;
+    }
+  }
+  if (r === "/sm-combo-codes") {
+    if (act === "ccNew") {
+      const code = prompt("请输入组合编码：");
+      if (!code || !String(code).trim()) return;
+      const list = AppState.data.gmComboCodes || (AppState.data.gmComboCodes = []);
+      if (list.includes(String(code).trim())) return toast("组合编码已存在");
+      list.push(String(code).trim());
+      toast("新增成功（原型演示）");
+      render();
+      return;
+    }
+    if (act === "ccDelete") {
+      const idx = Number(btn.getAttribute("data-id") || -1);
+      const list = AppState.data.gmComboCodes || [];
+      if (idx < 0 || idx >= list.length) return toast("未找到组合编码");
+      openModal({
+        title: "提示",
+        subtitle: `确认删除组合编码「${escapeHtml(String(list[idx]))}」？`,
+        className: "modal--confirm",
+        bodyHtml: '<div class="confirm-modal__body">删除后不可恢复，确认继续？</div>',
+        primaryText: "确定",
+        secondaryText: "取消",
+        onPrimary: () => {
+          list.splice(idx, 1);
+          closeModal();
+          toast("删除成功（原型演示）");
+          render();
+        }
+      });
+      return;
+    }
+  }
+  if (r === "/sm-store-groups") {
+    if (act === "sgQuery") {
+      const ui = AppState.ui.storeMgmt || {};
+      if (!ui.storeGroups) ui.storeGroups = { qCode: "", qName: "" };
+      ui.storeGroups.qCode = (document.getElementById("sgQCode") || {}).value || "";
+      ui.storeGroups.qName = (document.getElementById("sgQName") || {}).value || "";
+      render();
+      toast("查询完成（原型演示）");
+      return;
+    }
+    if (act === "sgReset") {
+      const ui = AppState.ui.storeMgmt || {};
+      ui.storeGroups = { qCode: "", qName: "" };
+      render();
+      return;
+    }
+    if (act === "sgNew") {
+      openStoreGroupEditModal("");
+      return;
+    }
+    if (act === "sgEdit") {
+      openStoreGroupEditModal(btn.getAttribute("data-id") || "");
+      return;
+    }
+    if (act === "sgDelete") {
+      const code = btn.getAttribute("data-id") || "";
+      const list = AppState.data.gmStoreGroups || [];
+      const idx = list.findIndex((x) => String(x.groupCode) === String(code));
+      if (idx < 0) return toast("未找到门店组");
+      openModal({
+        title: "提示",
+        subtitle: `确认删除门店组「${escapeHtml(list[idx].groupName)}」？`,
+        className: "modal--confirm",
+        bodyHtml: '<div class="confirm-modal__body">删除后不可恢复，确认继续？</div>',
+        primaryText: "确定",
+        secondaryText: "取消",
+        onPrimary: () => {
+          list.splice(idx, 1);
+          closeModal();
+          toast("删除成功（原型演示）");
+          render();
+        }
+      });
       return;
     }
   }
@@ -32871,7 +32991,7 @@ function handleAction(r, act, btn) {
     }
     if (act === "tpMoveUp" || act === "tpMoveDown") {
       if (String((AppState.ui.templatePriority && AppState.ui.templatePriority.qType) || "全部") === "全部") {
-        toast("选择具体模版类型后才允许设置优先级");
+        toast("选择具体促销类型后才允许设置优先级");
         return;
       }
       const id = btn.getAttribute("data-id") || "";
@@ -32911,7 +33031,7 @@ function handleAction(r, act, btn) {
       const type = document.getElementById("tpType") ? document.getElementById("tpType").value : "";
       const status = document.getElementById("tpStatus") ? document.getElementById("tpStatus").value : "启用";
       const remark = document.getElementById("tpRemark") ? document.getElementById("tpRemark").value.trim() : "";
-      if (!type) return toast("请选择模版类型");
+      if (!type) return toast("请选择促销类型");
       const list = AppState.data.templatePriorities || (AppState.data.templatePriorities = []);
       const now = nowIsoSeconds();
       if (isEdit) {
@@ -33644,9 +33764,8 @@ function handleAction(r, act, btn) {
       ui.qSubject = document.getElementById("ptoQSubject") ? document.getElementById("ptoQSubject").value.trim() : "";
       ui.qTerminateFrom = document.getElementById("ptoQTerminateFrom") ? document.getElementById("ptoQTerminateFrom").value.trim() : "";
       ui.qTerminateTo = ui.qTerminateTo || "";
-      ui.qQueryTimeType = document.getElementById("ptoQQueryTimeType") ? document.getElementById("ptoQQueryTimeType").value : "创建时间";
       ui.qQueryFrom = document.getElementById("ptoQQueryFrom") ? document.getElementById("ptoQQueryFrom").value.trim() : "";
-      ui.qQueryTo = document.getElementById("ptoQQueryTo") ? document.getElementById("ptoQQueryTo").value.trim() : "";
+      ui.qQueryTo = "";
       ui.qActivityStatus = document.getElementById("ptoQActivityStatus") ? document.getElementById("ptoQActivityStatus").value : "全部";
       ui.qAuditStatus = document.getElementById("ptoQAuditStatus") ? document.getElementById("ptoQAuditStatus").value : "待审核";
       ui.qOperator = document.getElementById("ptoQOperator") ? document.getElementById("ptoQOperator").value : "创建人";
@@ -33665,7 +33784,19 @@ function handleAction(r, act, btn) {
       location.hash = "#/promo-terminate-orders-create";
       return;
     }
+    if (act === "ptoImport") return toast("导入（原型演示）");
     if (act === "ptoVoidList") return toast("作废（原型演示）");
+    if (act === "ptoVoidRow") {
+      const id = btn.getAttribute("data-id") || "";
+      if (!id) return;
+      const list = promoTerminateOrderEnsureList();
+      const idx = list.findIndex((x) => String(x.id) === String(id));
+      if (idx < 0) return toast("未找到终止单");
+      list[idx].docStatus = "作废";
+      toast("已作废（原型演示）");
+      render();
+      return;
+    }
     if (act === "ptoEffectiveList") return toast("生效（原型演示）");
     if (act === "ptoView") {
       const id = btn.getAttribute("data-id") || "";
@@ -33774,6 +33905,9 @@ function handleAction(r, act, btn) {
     if (act === "ptoSelectStores") {
       const draft = promoTerminateOrderReadDraftFromDom();
       openCampaignStoreSelectModal({
+        showQuickPick: false,
+        hideImport: true,
+        showImmediate: true,
         onPicked: (sel) => {
           const exists = new Set((draft.storeRows || []).map((x) => String(x.storeCode || "")));
           sel.forEach((s) => {
@@ -33840,58 +33974,141 @@ function handleAction(r, act, btn) {
       return;
     }
     if (act === "ptoCatPick") {
-      const cats = (AppState.data.gmOnlineCategories || []).concat(AppState.data.gmOfflineCategories || []);
-      openCampSelectModal({
-        title: "选择品类",
-        items: cats,
-        columns: [
-          { key: "actNo", label: "活动编码" },
-          { key: "actName", label: "活动主题" },
-          { key: "templateType", label: "模版类型" },
-          { key: "actTime", label: "活动时间" },
-          { key: "status", label: "状态" },
-          { key: "catCode", label: "品类编码" },
-          { key: "catName", label: "品类名称" },
-          { key: "templateName", label: "模版名称" },
-          { key: "promoDiscount", label: "促销扣率" },
-          { key: "discount", label: "折扣" },
-          { key: "memberDiscount", label: "会员折扣" },
-          { key: "participatingStores", label: "参与门店" },
-          { key: "promoInfo", label: "促销信息" }
-        ],
-        searchKeys: ["catCode", "catName", "actNo", "actName"],
-        checkboxName: "ptoPickCat",
-        uniqueKey: "catCode",
-        onPicked: (sel) => {
-          const draft = promoTerminateOrderReadDraftFromDom();
-          draft.catRows = (sel || []).map((c) => ({
-            actNo: c.actNo || "",
-            actName: c.actName || "",
-            templateType: c.templateType || "",
-            actTime: c.actTime || "",
-            status: c.status || "",
-            catCode: c.catCode || "",
-            catName: c.catName || "",
-            templateName: c.templateName || "",
-            promoDiscount: c.promoDiscount || "",
-            discount: c.discount || "",
-            memberDiscount: c.memberDiscount || "",
-            participatingStores: c.participatingStores || "",
-            promoInfo: c.promoInfo || "",
-            orderLimit: "",
-            memberLimit: "",
-            participateCat: "",
-            stores: "",
-            actNo: "",
-            actName: "",
-            tplType: "",
-            actTime: "",
-            tplName: ""
-          }));
-          render();
-          toast(`已选择 ${sel ? sel.length : 0} 个品类（原型演示）`);
+      const categories = (AppState.data.gmOnlineCategories || []).concat(AppState.data.gmOfflineCategories || []);
+      const promoTypes = ["全部", "特价", "折扣", "满立减", "满赠/换购"];
+      const promoMethods = ["全部", "单品直降", "组合价", "一口价", "商品折扣", "满额减", "满额赠送"];
+      const columns = [
+        { key: "actNo", label: "活动编码" },
+        { key: "actName", label: "活动名称" },
+        { key: "templateType", label: "促销类型" },
+        { key: "actTime", label: "活动时间" },
+        { key: "templateName", label: "促销方式" },
+        { key: "catCode", label: "品类编码" },
+        { key: "catName", label: "品类名称" },
+        { key: "promoDiscount", label: "促销折扣" },
+        { key: "memberDiscount", label: "会员折扣" },
+        { key: "promoInfo", label: "促销信息" },
+        { key: "participatingStores", label: "参与门店" }
+      ];
+      const searchKeys = ["actNo", "actName", "templateType", "templateName", "catCode", "catName", "creator", "storeName"];
+      const renderPickList = () => {
+        const q = (document.getElementById("ptoCQ") || {}).value || "";
+        const kw = q.trim().toLowerCase();
+        const qActNo = ((document.getElementById("ptoCQActNo") || {}).value || "").trim().toLowerCase();
+        const qActName = ((document.getElementById("ptoCQActName") || {}).value || "").trim().toLowerCase();
+        const qPromoType = (document.getElementById("ptoCQPromoType") || {}).value || "全部";
+        const qPromoMethod = (document.getElementById("ptoCQPromoMethod") || {}).value || "全部";
+        const qCat = ((document.getElementById("ptoCQCat") || {}).value || "").trim().toLowerCase();
+        const qCreator = ((document.getElementById("ptoCQCreator") || {}).value || "").trim().toLowerCase();
+        const qStoreName = ((document.getElementById("ptoCQStoreName") || {}).value || "").trim().toLowerCase();
+        const qCreateFrom = (document.getElementById("ptoCQCreateFrom") || {}).value || "";
+        const qCreateTo = (document.getElementById("ptoCQCreateTo") || {}).value || "";
+        const qTimeFrom = (document.getElementById("ptoCQTimeFrom") || {}).value || "";
+        const qTimeTo = (document.getElementById("ptoCQTimeTo") || {}).value || "";
+        const filtered = categories.filter((c) => {
+          if (kw && !searchKeys.some((k) => String(c[k] || "").toLowerCase().includes(kw))) return false;
+          if (qActNo && !String(c.actNo || "").toLowerCase().includes(qActNo)) return false;
+          if (qActName && !String(c.actName || "").toLowerCase().includes(qActName)) return false;
+          if (qPromoType !== "全部" && String(c.templateType || "") !== qPromoType) return false;
+          if (qPromoMethod !== "全部" && String(c.templateName || "") !== qPromoMethod) return false;
+          if (qCat && !String(c.catCode || "").toLowerCase().includes(qCat) && !String(c.catName || "").toLowerCase().includes(qCat)) return false;
+          if (qCreator && !String(c.creator || "").toLowerCase().includes(qCreator)) return false;
+          if (qStoreName && !String(c.storeName || "").toLowerCase().includes(qStoreName)) return false;
+          if (qCreateFrom && String(c.createAt || "").slice(0, 10) < qCreateFrom) return false;
+          if (qCreateTo && String(c.createAt || "").slice(0, 10) > qCreateTo) return false;
+          if (qTimeFrom && String(c.actTime || "").slice(0, 10) < qTimeFrom) return false;
+          if (qTimeTo && String(c.actTime || "").slice(0, 10) > qTimeTo) return false;
+          return true;
+        });
+        const rows = filtered.map((c) => {
+          const cells = columns.map((col) => `<td class="mono">${escapeHtml(String(c[col.key] ?? ""))}</td>`).join("");
+          return `<tr><td><input type="checkbox" name="ptoPickCat" value="${escapeHtml(String(c.catCode))}" /></td>${cells}</tr>`;
+        }).join("");
+        const wrap = document.getElementById("ptoCatPickWrap");
+        if (wrap) {
+          wrap.innerHTML = table(["选择"].concat(columns.map((c) => c.label)), rows || `<tr><td colspan="${columns.length + 1}"><div class="empty">暂无匹配数据</div></td></tr>`);
         }
+      };
+      const filterHtml = `
+        <div class="form">
+          <div class="form__row">
+            <div class="field"><div class="field__label">活动编码</div><input class="input" id="ptoCQActNo" placeholder="文本框" /></div>
+            <div class="field"><div class="field__label">活动名称</div><input class="input" id="ptoCQActName" placeholder="文本框" /></div>
+            <div class="field"><div class="field__label">促销类型</div><select class="select" id="ptoCQPromoType">${promoTypes.map((x) => `<option>${x}</option>`).join("")}</select></div>
+            <div class="field"><div class="field__label">促销方式</div><select class="select" id="ptoCQPromoMethod">${promoMethods.map((x) => `<option>${x}</option>`).join("")}</select></div>
+          </div>
+          <div class="form__row">
+            <div class="field"><div class="field__label">品类</div><input class="input" id="ptoCQCat" placeholder="文本框" /></div>
+            <div class="field"><div class="field__label">创建人</div><input class="input" id="ptoCQCreator" placeholder="文本框" /></div>
+            <div class="field"><div class="field__label">门店名称</div><input class="input" id="ptoCQStoreName" placeholder="文本框" /></div>
+            <div class="field"><div class="field__label">创建时间</div><div style="display:flex;gap:4px;align-items:center;"><input class="input" style="flex:1;" id="ptoCQCreateFrom" type="date" /><span>-</span><input class="input" style="flex:1;" id="ptoCQCreateTo" type="date" /></div></div>
+          </div>
+          <div class="form__row">
+            <div class="field"><div class="field__label">活动时间</div><div style="display:flex;gap:4px;align-items:center;"><input class="input" style="flex:1;" id="ptoCQTimeFrom" type="date" /><span>-</span><input class="input" style="flex:1;" id="ptoCQTimeTo" type="date" /></div></div>
+            <div class="field"><div class="field__label">搜索</div><input class="input" id="ptoCQ" placeholder="输入关键词搜索" /></div>
+            <div class="pto-filterbar__actions" style="align-self:flex-end;">
+              <button class="btn btn--primary" type="button" id="ptoCQueryBtn">查询</button>
+              <button class="btn" type="button" id="ptoCResetBtn">重置</button>
+            </div>
+          </div>
+        </div>
+      `;
+      openModal({
+        title: "选择品类",
+        subtitle: "支持按活动编码、活动名称、促销类型、促销方式、品类、创建人、门店名称、创建时间、活动时间查询（原型演示）",
+        bodyHtml: filterHtml + '<div class="divider"></div><div id="ptoCatPickWrap"></div>',
+        primaryText: "确定选择",
+        secondaryText: "取消",
+        onPrimary: () => {
+          const sel = Array.from(document.querySelectorAll('input[name="ptoPickCat"]:checked')).map((el) => {
+            const catCode = el.value;
+            const c = categories.find((x) => String(x.catCode) === catCode) || {};
+            return {
+              actNo: c.actNo || "",
+              actName: c.actName || "",
+              templateType: c.templateType || "",
+              actTime: c.actTime || "",
+              catCode: c.catCode || "",
+              catName: c.catName || "",
+              templateName: c.templateName || "",
+              promoDiscount: c.promoDiscount || "",
+              memberDiscount: c.memberDiscount || "",
+              participatingStores: c.participatingStores || "",
+              promoInfo: c.promoInfo || "",
+              orderLimit: "",
+              memberLimit: "",
+              participateCat: "",
+              stores: "",
+              tplType: "",
+              tplName: ""
+            };
+          });
+          if (!sel.length) return toast("请至少选择一个品类");
+          const draft = promoTerminateOrderReadDraftFromDom();
+          draft.catRows = sel;
+          render();
+          toast(`已选择 ${sel.length} 个品类（原型演示）`);
+        },
+        size: "xxl",
+        className: "modal--goods-picker-wide"
       });
+      setTimeout(() => {
+        renderPickList();
+        const bindQuery = () => {
+          const qBtn = document.getElementById("ptoCQueryBtn");
+          const rBtn = document.getElementById("ptoCResetBtn");
+          if (qBtn) qBtn.addEventListener("click", renderPickList);
+          if (rBtn) rBtn.addEventListener("click", () => {
+            ["ptoCQActNo","ptoCQActName","ptoCQPromoType","ptoCQPromoMethod","ptoCQCat","ptoCQCreator","ptoCQStoreName","ptoCQCreateFrom","ptoCQCreateTo","ptoCQTimeFrom","ptoCQTimeTo","ptoCQ"].forEach((id) => {
+              const el = document.getElementById(id);
+              if (el) { if (el.tagName === "SELECT") el.value = "全部"; else el.value = ""; }
+            });
+            document.getElementById("ptoCQ") && (document.getElementById("ptoCQ").value = "");
+            renderPickList();
+          });
+        };
+        bindQuery();
+      }, 100);
       return;
     }
     if (act === "ptoCatRemove") {
@@ -33923,56 +34140,123 @@ function handleAction(r, act, btn) {
       return;
     }
     if (act === "ptoBrandPick") {
-      openCampSelectModal({
+      const brands = AppState.data.gmBrands || [];
+      const promoTypes = ["全部", "特价", "折扣", "满立减", "满赠/换购"];
+      const promoMethods = ["全部", "单品直降", "组合价", "一口价", "商品折扣", "满额减", "满额赠送"];
+      const columns = [
+        { key: "actNo", label: "活动编码" },
+        { key: "actName", label: "活动名称" },
+        { key: "templateType", label: "促销类型" },
+        { key: "actTime", label: "活动时间" },
+        { key: "templateName", label: "促销方式" },
+        { key: "brandCode", label: "品牌编码" },
+        { key: "brandName", label: "品牌名称" },
+        { key: "promoDiscount", label: "促销折扣" },
+        { key: "memberDiscount", label: "会员折扣" },
+        { key: "promoInfo", label: "促销信息" },
+        { key: "participatingStores", label: "参与门店" }
+      ];
+      const searchKeys = ["actNo","actName","templateType","templateName","brandCode","brandName","creator","storeName"];
+      const renderPickList = () => {
+        const qActNo = ((document.getElementById("ptoBQActNo") || {}).value || "").trim().toLowerCase();
+        const qActName = ((document.getElementById("ptoBQActName") || {}).value || "").trim().toLowerCase();
+        const qPromoType = (document.getElementById("ptoBQPromoType") || {}).value || "全部";
+        const qPromoMethod = (document.getElementById("ptoBQPromoMethod") || {}).value || "全部";
+        const qBrand = ((document.getElementById("ptoBQBrand") || {}).value || "").trim().toLowerCase();
+        const qCreator = ((document.getElementById("ptoBQCreator") || {}).value || "").trim().toLowerCase();
+        const qStoreName = ((document.getElementById("ptoBQStoreName") || {}).value || "").trim().toLowerCase();
+        const qTimeFrom = (document.getElementById("ptoBQTimeFrom") || {}).value || "";
+        const qTimeTo = (document.getElementById("ptoBQTimeTo") || {}).value || "";
+        const qCreateFrom = (document.getElementById("ptoBQCreateFrom") || {}).value || "";
+        const qCreateTo = (document.getElementById("ptoBQCreateTo") || {}).value || "";
+        const q = (document.getElementById("ptoBQ") || {}).value || "";
+        const kw = q.trim().toLowerCase();
+        const filtered = brands.filter((b) => {
+          if (kw && !searchKeys.some((k) => String(b[k]||"").toLowerCase().includes(kw))) return false;
+          if (qActNo && !String(b.actNo||"").toLowerCase().includes(qActNo)) return false;
+          if (qActName && !String(b.actName||"").toLowerCase().includes(qActName)) return false;
+          if (qPromoType!=="全部" && String(b.templateType||"")!==qPromoType) return false;
+          if (qPromoMethod!=="全部" && String(b.templateName||"")!==qPromoMethod) return false;
+          if (qBrand && !String(b.brandCode||"").toLowerCase().includes(qBrand) && !String(b.brandName||"").toLowerCase().includes(qBrand)) return false;
+          if (qCreator && !String(b.creator||"").toLowerCase().includes(qCreator)) return false;
+          if (qStoreName && !String(b.storeName||"").toLowerCase().includes(qStoreName)) return false;
+          if (qTimeFrom && String(b.actTime||"").slice(0,10)<qTimeFrom) return false;
+          if (qTimeTo && String(b.actTime||"").slice(0,10)>qTimeTo) return false;
+          if (qCreateFrom && String(b.createAt||"").slice(0,10)<qCreateFrom) return false;
+          if (qCreateTo && String(b.createAt||"").slice(0,10)>qCreateTo) return false;
+          return true;
+        });
+        const rows = filtered.map((b) => {
+          const cells = columns.map((col) => `<td class="mono">${escapeHtml(String(b[col.key]??""))}</td>`).join("");
+          return `<tr><td><input type="checkbox" name="ptoPickBrand" value="${escapeHtml(String(b.brandCode))}" /></td>${cells}</tr>`;
+        }).join("");
+        const wrap = document.getElementById("ptoBrandPickWrap");
+        if (wrap) wrap.innerHTML = table(["选择"].concat(columns.map((c)=>c.label)), rows || `<tr><td colspan="${columns.length+1}"><div class="empty">暂无匹配数据</div></td></tr>`);
+      };
+      const filterHtml = `
+        <div class="form">
+          <div class="form__row">
+            <div class="field"><div class="field__label">活动编码</div><input class="input" id="ptoBQActNo" placeholder="文本框" /></div>
+            <div class="field"><div class="field__label">活动名称</div><input class="input" id="ptoBQActName" placeholder="文本框" /></div>
+            <div class="field"><div class="field__label">促销类型</div><select class="select" id="ptoBQPromoType">${promoTypes.map((x)=>`<option>${x}</option>`).join("")}</select></div>
+            <div class="field"><div class="field__label">促销方式</div><select class="select" id="ptoBQPromoMethod">${promoMethods.map((x)=>`<option>${x}</option>`).join("")}</select></div>
+          </div>
+          <div class="form__row">
+            <div class="field"><div class="field__label">品牌</div><input class="input" id="ptoBQBrand" placeholder="文本框" /></div>
+            <div class="field"><div class="field__label">创建人</div><input class="input" id="ptoBQCreator" placeholder="文本框" /></div>
+            <div class="field"><div class="field__label">门店名称</div><input class="input" id="ptoBQStoreName" placeholder="文本框" /></div>
+            <div class="field"><div class="field__label">活动时间</div><div style="display:flex;gap:4px;align-items:center;"><input class="input" style="flex:1;" id="ptoBQTimeFrom" type="date" /><span>-</span><input class="input" style="flex:1;" id="ptoBQTimeTo" type="date" /></div></div>
+          </div>
+          <div class="form__row">
+            <div class="field"><div class="field__label">创建时间</div><div style="display:flex;gap:4px;align-items:center;"><input class="input" style="flex:1;" id="ptoBQCreateFrom" type="date" /><span>-</span><input class="input" style="flex:1;" id="ptoBQCreateTo" type="date" /></div></div>
+            <div class="field"><div class="field__label">搜索</div><input class="input" id="ptoBQ" placeholder="输入关键词搜索" /></div>
+            <div class="pto-filterbar__actions" style="align-self:flex-end;">
+              <button class="btn btn--primary" type="button" id="ptoBQueryBtn">查询</button>
+              <button class="btn" type="button" id="ptoBResetBtn">重置</button>
+            </div>
+          </div>
+        </div>
+      `;
+      openModal({
         title: "选择品牌",
-        items: AppState.data.gmBrands || [],
-        columns: [
-          { key: "actNo", label: "活动编码" },
-          { key: "actName", label: "活动主题" },
-          { key: "templateType", label: "模版类型" },
-          { key: "actTime", label: "活动时间" },
-          { key: "status", label: "状态" },
-          { key: "brandCode", label: "品牌编码" },
-          { key: "brandName", label: "品牌名称" },
-          { key: "templateName", label: "模版名称" },
-          { key: "promoDiscount", label: "促销扣率" },
-          { key: "discount", label: "折扣" },
-          { key: "memberDiscount", label: "会员折扣" },
-          { key: "participatingStores", label: "参与门店" },
-          { key: "promoInfo", label: "促销信息" }
-        ],
-        searchKeys: ["brandCode", "brandName", "actNo", "actName"],
-        checkboxName: "ptoPickBrand",
-        uniqueKey: "brandCode",
-        onPicked: (sel) => {
+        subtitle: "支持按活动编码、活动名称、促销类型、促销方式、品牌、创建人、门店名称、活动时间、创建时间查询（原型演示）",
+        bodyHtml: filterHtml + '<div class="divider"></div><div id="ptoBrandPickWrap"></div>',
+        primaryText: "确定选择",
+        secondaryText: "取消",
+        size: "xxl",
+        className: "modal--goods-picker-wide",
+        onPrimary: () => {
+          const sel = Array.from(document.querySelectorAll('input[name="ptoPickBrand"]:checked')).map((el) => {
+            const bc = el.value;
+            const b = brands.find((x) => String(x.brandCode)===bc) || {};
+            return {
+              actNo:b.actNo||"",actName:b.actName||"",templateType:b.templateType||"",actTime:b.actTime||"",
+              brandCode:b.brandCode||"",brandName:b.brandName||"",templateName:b.templateName||"",
+              promoDiscount:b.promoDiscount||"",memberDiscount:b.memberDiscount||"",
+              participatingStores:b.participatingStores||"",promoInfo:b.promoInfo||"",
+              orderLimit:"",memberLimit:"",stores:"",tplType:"",tplName:""
+            };
+          });
+          if (!sel.length) return toast("请至少选择一个品牌");
           const draft = promoTerminateOrderReadDraftFromDom();
-          draft.brandRows = (sel || []).map((b) => ({
-            actNo: b.actNo || "",
-            actName: b.actName || "",
-            templateType: b.templateType || "",
-            actTime: b.actTime || "",
-            status: b.status || "",
-            brandCode: b.brandCode || "",
-            brandName: b.brandName || "",
-            templateName: b.templateName || "",
-            promoDiscount: b.promoDiscount || "",
-            discount: b.discount || "",
-            memberDiscount: b.memberDiscount || "",
-            participatingStores: b.participatingStores || "",
-            promoInfo: b.promoInfo || "",
-            orderLimit: "",
-            memberLimit: "",
-            stores: "",
-            actNo: "",
-            actName: "",
-            tplType: "",
-            actTime: "",
-            tplName: ""
-          }));
+          draft.brandRows = sel;
           render();
-          toast(`已选择 ${sel ? sel.length : 0} 个品牌（原型演示）`);
+          toast(`已选择 ${sel.length} 个品牌（原型演示）`);
         }
       });
+      setTimeout(() => {
+        renderPickList();
+        const qBtn = document.getElementById("ptoBQueryBtn");
+        const rBtn = document.getElementById("ptoBResetBtn");
+        if (qBtn) qBtn.addEventListener("click", renderPickList);
+        if (rBtn) rBtn.addEventListener("click", () => {
+          ["ptoBQActNo","ptoBQActName","ptoBQPromoType","ptoBQPromoMethod","ptoBQBrand","ptoBQCreator","ptoBQStoreName","ptoBQTimeFrom","ptoBQTimeTo","ptoBQCreateFrom","ptoBQCreateTo","ptoBQ"].forEach((id) => {
+            const el = document.getElementById(id);
+            if (el) { if (el.tagName==="SELECT") el.value="全部"; else el.value=""; }
+          });
+          renderPickList();
+        });
+      }, 100);
       return;
     }
     if (act === "ptoBrandRemove") {
@@ -34132,6 +34416,35 @@ function handleAction(r, act, btn) {
     }
     if (act === "campPrint") {
       toast("已发送打印任务（原型演示）");
+      return;
+    }
+    if (act === "campBulkSubmit") {
+      const items = selectedItems();
+      if (!items.length) return toast("请先勾选活动");
+      const draftItems = items.filter((c) => c && c.status === "草稿");
+      if (!draftItems.length) return toast("所选活动中没有草稿状态的活动");
+      openModal({
+        title: "提示",
+        subtitle: `确认提交 ${draftItems.length} 个活动？提交后将进入审核流程。`,
+        className: "modal--confirm",
+        bodyHtml: '<div class="confirm-modal__body">提交后活动状态将变更为"审核中"，确认继续？</div>',
+        primaryText: "确定",
+        secondaryText: "取消",
+        onPrimary: () => {
+          closeModal();
+          const now = nowIsoSeconds();
+          draftItems.forEach((c) => {
+            c.status = "审核";
+            c.auditor = "leader - l...";
+            c.auditAt = now;
+            c.modifier = "manle - m...";
+            c.modifyAt = now;
+          });
+          AppState.ui.campaigns.selectedNos = [];
+          toast(`已提交 ${draftItems.length} 个活动（原型演示）`);
+          render();
+        }
+      });
       return;
     }
     if (act === "campBulkCopy") {
@@ -35176,7 +35489,8 @@ function handleAction(r, act, btn) {
                   unit: g.unit,
                   costPrice: g.originCost,
                   price: g.originPrice,
-                  deductRate: ""
+                  deductRate: "",
+                  goodsQty: "1"
                 });
               });
               campaignWizardRenderGoodsTable();
@@ -35282,7 +35596,8 @@ function handleAction(r, act, btn) {
               unit: g.unit,
               costPrice: g.originCost,
               price: g.originPrice,
-              deductRate: ""
+              deductRate: "",
+              goodsQty: "1"
             });
           });
           campaignWizardRenderGoodsTable();
@@ -36155,7 +36470,7 @@ function handleAction(r, act, btn) {
       const isComboStyled = campaignIsComboSpecialTemplate(tpl, d);
       if (isComboStyled && comboCampaignGoodsIsFixedGoodsMode(d)) {
         const gs = comboCampaignEnsureGoodsScope(d);
-        gs.goods.push({ comboCode: "001", skuCode: "", barcode: "", skuName: "", spec: "", unit: "", costPrice: "", price: "", deductRate: "" });
+        gs.goods.push({ comboCode: "001", skuCode: "", barcode: "", skuName: "", spec: "", unit: "", costPrice: "", price: "", deductRate: "", goodsQty: "1" });
         campaignWizardRenderGoodsTable();
         toast("已新增一行（原型演示）");
         return;
@@ -36295,7 +36610,7 @@ function handleAction(r, act, btn) {
       const d = AppState._tmpCampaign;
       if (!d) return;
       const gs = comboCampaignEnsureGoodsScope(d);
-      gs.goods.push({ comboCode: "001", skuCode: "", barcode: "", skuName: "", spec: "", unit: "", costPrice: "", price: "", deductRate: "" });
+      gs.goods.push({ comboCode: "001", skuCode: "", barcode: "", skuName: "", spec: "", unit: "", costPrice: "", price: "", deductRate: "", goodsQty: "1" });
       campaignWizardRenderGoodsTable();
       toast("已新增一行（原型演示）");
       return;
@@ -36531,7 +36846,7 @@ function handleAction(r, act, btn) {
       if (!d) return;
       const gs = comboCampaignEnsureGoodsScope(d);
       const defaultWay = gs.comboSettings.length ? String((gs.comboSettings[0] && gs.comboSettings[0].discountWay) || "倍数") : "倍数";
-      gs.comboSettings.push({ comboCode: comboCampaignGoodsCodeValue(gs.comboSettings.length + 1, gs.comboSettings.length + 1), pickQty: "", promoPrice: "", discountWay: defaultWay, cap: defaultWay === "阶梯" ? "" : "" });
+      gs.comboSettings.push({ comboCode: comboCampaignGoodsCodeValue(gs.comboSettings.length + 1, gs.comboSettings.length + 1), pickQty: "", promoPrice: "", discountWay: defaultWay, cap: defaultWay === "阶梯" ? "" : "", limitCycle: "每笔订单", limitScopeType: "商户", perPersonLimitQty: "", perItemLimitQty: "" });
       campaignWizardRenderGoodsTable();
       toast("已新增一行（原型演示）");
       return;
@@ -38986,7 +39301,7 @@ function openTemplatePriorityDetail(id) {
   if (!x) return toast("未找到模版优先级（原型演示）");
   openDrawer({
     title: x.templateName || "模版优先级详情",
-    subtitle: `规则编号：${x.id || "—"} · 模版类型：${x.templateType || "—"}`,
+    subtitle: `规则编号：${x.id || "—"} · 促销类型：${x.templateType || "—"}`,
     primaryText: "修改",
     secondaryText: "关闭",
     onPrimary: () => {
@@ -38997,7 +39312,7 @@ function openTemplatePriorityDetail(id) {
     bodyHtml: `
       ${detailSectionHtml("基本信息", kvHtml([
         ["规则编号", `<span class="mono">${escapeHtml(x.id || "—")}</span>`],
-        ["模版类型", escapeHtml(x.templateType || "—")],
+        ["促销类型", escapeHtml(x.templateType || "—")],
         ["模版编号", `<span class="mono">${escapeHtml(x.templateNo || "—")}</span>`],
         ["模版名称", escapeHtml(x.templateName || "—")],
         ["优先级", `<span class="mono">${escapeHtml(String(x.priority ?? "—"))}</span>`],
@@ -39009,7 +39324,7 @@ function openTemplatePriorityDetail(id) {
         ["说明", escapeHtml(x.remark || "—")]
       ]))}
       <div class="divider"></div>
-      ${detailSectionHtml("排序说明", `<div class="hint">同一模版类型下，系统按优先级升序排序；数值越小越优先。该页用于固化模板级执行顺序，便于后续活动与算法统一复用。</div>`)}
+      ${detailSectionHtml("排序说明", `<div class="hint">同一促销类型下，系统按优先级升序排序；数值越小越优先。该页用于固化模板级执行顺序，便于后续活动与算法统一复用。</div>`)}
     `
   });
 }

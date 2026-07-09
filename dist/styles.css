@@ -3168,6 +3168,7 @@ tbody tr:last-child td{border-bottom:none}
   overflow:hidden;
 }
 .modal.modal--xl{width:min(1040px, calc(100vw - 36px))}
+.modal.modal--xxl{width:min(1300px, calc(100vw - 36px))}
 .modal.modal--goods-picker-wide{width:min(1200px, calc(100vw - 36px))}
 .modal--goods-picker-wide .form__row{display:flex;gap:12px;align-items:flex-end;flex-wrap:nowrap}
 .modal--goods-picker-wide .form__row > .field{flex:1;min-width:0}
@@ -3472,7 +3473,7 @@ tbody tr:last-child td{border-bottom:none}
 /* ── pricing simulation page ── */
 .pricing-layout{
   display:grid;
-  grid-template-columns:1fr 340px;
+  grid-template-columns:1fr;
   gap:14px;
 }
 .pricing-left,.pricing-right{
@@ -4356,7 +4357,7 @@ tbody tr:last-child td{border-bottom:none}
 }
 .pto-filterbar__grid{
   display:grid;
-  grid-template-columns:repeat(5,minmax(0,1fr));
+  grid-template-columns:repeat(4,minmax(0,1fr));
   gap:16px 18px;
   align-items:end;
 }
