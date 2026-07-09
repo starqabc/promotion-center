@@ -10465,7 +10465,8 @@ function renderCampaignsListPage(presetPromoType = "", presetTemplateId = "") {
     "活动状态",
     "活动时间",
     "活动周期",
-    "模版ID",
+    "模版编码",
+    "模版名称",
     "审核状态",
     "创建人",
     "创建时间",
@@ -10514,6 +10515,7 @@ function renderCampaignsListPage(presetPromoType = "", presetTemplateId = "") {
           <td class="mono">${escapeHtml(campaignTimeText(c))}</td>
           <td>${escapeHtml(campaignCycleText(c))}</td>
           <td class="mono">${escapeHtml(c.templateNo || c.templateId || "—")}</td>
+          <td>${escapeHtml(c.templateName || "—")}</td>
           <td>${escapeHtml(auditStatus)}</td>
           <td>${escapeHtml(c.creator || "—")}</td>
           <td class="mono">${escapeHtml(c.createAt || "—")}</td>
@@ -10543,7 +10545,7 @@ function renderCampaignsListPage(presetPromoType = "", presetTemplateId = "") {
               <input class="input" id="campQName" value="${escapeHtml(ui.qName)}" placeholder="文本框" />
             </div>
             <div class="campaign-list-field">
-              <div class="campaign-list-field__label">模版ID</div>
+              <div class="campaign-list-field__label">模版编码</div>
               <input class="input" id="campQTplNo" value="${escapeHtml(ui.qTplNo)}" placeholder="文本框" />
             </div>
             <div class="campaign-list-field campaign-list-field--time">
@@ -18310,15 +18312,13 @@ function campaignWizardRenderQueryBar({ tabsHtml = "", inputHtml = "", actionsHt
 
 function campaignWizardMainTabsForTemplate(tplSelected, promoType = "") {
   const hasConditionTab = false;
-  const isComboSpecial = campaignIsComboSpecialTemplate(tplSelected);
-  const tabs = [
+  return [
     { k: "basic", t: "基础信息" },
     { k: "store", t: "门店范围" },
     ...(hasConditionTab ? [{ k: "condition", t: "条件范围" }] : []),
     { k: "goods", t: "商品范围" },
     { k: "burden", t: campaignIsVoucherGiftTemplate(tplSelected) ? "奖励券信息" : "承担规则" }
   ];
-  return isComboSpecial ? tabs.filter((t) => t.k !== "burden") : tabs;
 }
 
 function campaignWizardStepActionsHtml(currentTab, tabs, mode = "create") {
@@ -19917,7 +19917,7 @@ function comboCampaignBasicPanelHtml({
         ${readonly ? `<input class="input" value="${escapeHtml(scheduleValue || "")}" disabled />` : scheduleDisplay}
       </div>
       <div class="field">
-        <div class="field__label"><span class="req">*</span>优惠分摊方式</div>
+        <div class="field__label">优惠分摊方式</div>
         ${readonly
           ? `<input class="input" value="${escapeHtml(String((d.goodsScope && d.goodsScope.discountShareMethod) || "销售占比"))}" disabled />`
           : `<select class="select" data-cw="goodsScope" data-field="discountShareMethod">
@@ -21167,8 +21167,8 @@ function renderCampaignWizardPage(mode) {
         ${campStepActionsHtml}
       </div>
 
-      ${!isComboSpecial ? `<div class="detail-tab-panel ${campMainTab === "burden" ? "is-active" : ""}" data-tab="burden">
-        ${(!tplSelected || isGoodsDiscount) ? campaignWizardBurdenFormHtml(d, { stepNo: burdenStepNo, hideSummary: isGoodsDiscount }) : campaignIsQtyVoucherGiftTemplate(tplSelected) ? `
+      <div class="detail-tab-panel ${campMainTab === "burden" ? "is-active" : ""}" data-tab="burden">
+        ${isComboSpecial ? comboCampaignBurdenStepHtml(d) : (!tplSelected || isGoodsDiscount) ? campaignWizardBurdenFormHtml(d, { stepNo: burdenStepNo, hideSummary: isGoodsDiscount }) : campaignIsQtyVoucherGiftTemplate(tplSelected) ? `
           <div class="wizard-step" data-step="${burdenStepNo}">
             <div class="form">
               <div class="form__row">
@@ -21208,7 +21208,7 @@ function renderCampaignWizardPage(mode) {
           </div>
         ` : campaignWizardBurdenFormHtml(d, { stepNo: burdenStepNo, hideSummary: false })}
         ${campStepActionsHtml}
-      </div>` : ""}
+      </div>
     </div>
     </div>
   `;

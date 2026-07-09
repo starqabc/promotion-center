@@ -1389,6 +1389,11 @@ tbody tr:last-child td{border-bottom:none}
 .campaign-list-ops .linkbtn{
   font-size:12px;
 }
+.row-btn{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1px solid #d1d5db;border-radius:4px;background:#fff;color:#374151;font-size:14px;font-weight:700;line-height:1;cursor:pointer;padding:0;margin:1px;transition:all .15s;flex-shrink:0;}
+.row-btn:hover{border-color:#6366f1;color:#6366f1;background:#eef2ff;}
+.row-btn--add:hover{border-color:#10b981;color:#10b981;background:#ecfdf5;}
+.row-btn--del:hover{border-color:#ef4444;color:#ef4444;background:#fef2f2;}
+.cell-row-actions{white-space:nowrap;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:2px;}
 .campaign-list-more{
   position:relative;
   display:inline-block;

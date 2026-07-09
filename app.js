@@ -10471,7 +10471,8 @@ function renderCampaignsListPage(presetPromoType = "", presetTemplateId = "") {
     "活动状态",
     "活动时间",
     "活动周期",
-    "模版ID",
+    "模版编码",
+    "模版名称",
     "审核状态",
     "创建人",
     "创建时间",
@@ -10522,6 +10523,7 @@ function renderCampaignsListPage(presetPromoType = "", presetTemplateId = "") {
           <td class="mono">${escapeHtml(campaignTimeText(c))}</td>
           <td>${escapeHtml(campaignCycleText(c))}</td>
           <td class="mono">${escapeHtml(c.templateNo || c.templateId || "—")}</td>
+          <td>${escapeHtml(c.templateName || "—")}</td>
           <td>${escapeHtml(auditStatus)}</td>
           <td>${escapeHtml(c.creator || "—")}</td>
           <td class="mono">${escapeHtml(c.createAt || "—")}</td>
@@ -10551,7 +10553,7 @@ function renderCampaignsListPage(presetPromoType = "", presetTemplateId = "") {
               <input class="input" id="campQName" value="${escapeHtml(ui.qName)}" placeholder="文本框" />
             </div>
             <div class="campaign-list-field">
-              <div class="campaign-list-field__label">模版ID</div>
+              <div class="campaign-list-field__label">模版编码</div>
               <input class="input" id="campQTplNo" value="${escapeHtml(ui.qTplNo)}" placeholder="文本框" />
             </div>
             <div class="campaign-list-field campaign-list-field--time">
@@ -18308,15 +18310,13 @@ function campaignWizardRenderQueryBar({ tabsHtml = "", inputHtml = "", actionsHt
 
 function campaignWizardMainTabsForTemplate(tplSelected, promoType = "") {
   const hasConditionTab = false;
-  const isComboSpecial = campaignIsComboSpecialTemplate(tplSelected);
-  const tabs = [
+  return [
     { k: "basic", t: "基础信息" },
     { k: "store", t: "门店范围" },
     ...(hasConditionTab ? [{ k: "condition", t: "条件范围" }] : []),
     { k: "goods", t: "商品范围" },
     { k: "burden", t: campaignIsVoucherGiftTemplate(tplSelected) ? "奖励券信息" : "承担规则" }
   ];
-  return isComboSpecial ? tabs.filter((t) => t.k !== "burden") : tabs;
 }
 
 function campaignWizardStepActionsHtml(currentTab, tabs, mode = "create") {
@@ -18777,6 +18777,7 @@ function comboCampaignGoodsInfoTableHtml(draft = {}, readonly = false) {
     return `
       <tr>
         <td class="combo-goods-table__check"><input type="checkbox" data-cw="comboGoodsPick" data-idx="${dataIdx}" ${pickedSet.has(dataIdx) ? "checked" : ""} ${readonly ? "disabled" : ""} /></td>
+        <td style="white-space:nowrap;text-align:center;">${readonly ? "" : `<button class="row-btn row-btn--add" type="button" data-act="campComboGoodsAddAfter" data-idx="${dataIdx}">+</button><button class="row-btn row-btn--del" type="button" data-act="campComboGoodsDelRow" data-idx="${dataIdx}">−</button>`}</td>
         <td>${idx + 1}</td>
         <td>${readonly
           ? `<span class="combo-goods-cell-text mono">${escapeHtml(String(x.comboCode || ""))}</span>`
@@ -18815,12 +18816,13 @@ function comboCampaignGoodsInfoTableHtml(draft = {}, readonly = false) {
       </tr>
     `;
   }).join("");
-  const totalCols = 11 + (showGoodsQty ? 1 : 0) + (showShareRatio ? 1 : 0) + (readonly ? 0 : 1);
+  const totalCols = 12 + (showGoodsQty ? 1 : 0) + (showShareRatio ? 1 : 0) + (readonly ? 0 : 1);
   const emptyRows = Array.from({ length: Math.max(0, 3 - visibleRows.length) }).map((_, idx) => `
     <tr>
       <td class="combo-goods-table__check"><input type="checkbox" disabled /></td>
+      <td style="white-space:nowrap;text-align:center;">${readonly ? "" : `<button class="row-btn row-btn--add" type="button" data-act="campComboGoodsAddAfter" data-idx="${visibleRows.length + idx}">+</button>`}</td>
       <td>${visibleRows.length + idx + 1}</td>
-      ${Array.from({ length: totalCols - 2 }).map(() => "<td></td>").join("")}
+      ${Array.from({ length: totalCols - 3 }).map(() => "<td></td>").join("")}
     </tr>
   `).join("");
   return `
@@ -18829,6 +18831,7 @@ function comboCampaignGoodsInfoTableHtml(draft = {}, readonly = false) {
         <thead>
           <tr>
             <th class="combo-goods-table__check"><input type="checkbox" data-cw="comboGoodsPickAll" ${allChecked ? "checked" : ""} ${readonly ? "disabled" : ""} /></th>
+            <th style="width:50px;">+/-</th>
             <th>序号</th>
             <th>组合编码</th>
             <th>商品编码</th>
@@ -19057,6 +19060,7 @@ function comboCampaignGoodsSettingTableHtml(draft = {}, readonly = false) {
   const rowHtml = visibleRows.map((x, idx) => {
     const cells = [];
     cells.push(`<td class="combo-goods-table__check"><input type="checkbox" data-cw="comboGoodsRulePick" data-idx="${idx}" ${pickedSet.has(idx) ? "checked" : ""} ${readonly ? "disabled" : ""} /></td>`);
+    cells.push(`<td style="white-space:nowrap;text-align:center;">${readonly ? "" : `<button class="row-btn row-btn--add" type="button" data-act="campComboRuleAddAfter" data-idx="${idx}">+</button><button class="row-btn row-btn--del" type="button" data-act="campComboRuleDelRow" data-idx="${idx}">−</button>`}</td>`);
     cells.push(`<td>${idx + 1}</td>`);
     cells.push(`<td>${readonly
       ? `<span class="combo-goods-cell-text mono">${escapeHtml(String(x.comboCode || ""))}</span>`
@@ -19106,13 +19110,14 @@ function comboCampaignGoodsSettingTableHtml(draft = {}, readonly = false) {
     cells.push(`<td>${readonly ? "" : `<button class="btn btn--link btn--danger" type="button" data-act="campComboRuleDel" data-idx="${idx}">删除</button>`}</td>`);
     return `<tr>${cells.join("")}</tr>`;
   }).join("");
-  const emptyCols = 2 + 1 + (showPickQty ? 1 : 0) + (showComboQty ? 1 : 0) + (isOnePriceOnly ? 4 : 0) + 1 + 1 + (showCap ? 1 : 0) + 1;
+  const emptyCols = 3 + 1 + (showPickQty ? 1 : 0) + (showComboQty ? 1 : 0) + (isOnePriceOnly ? 4 : 0) + 1 + 1 + (showCap ? 1 : 0) + 1;
   const minRows = isAnyCategoryLadderScene ? 2 : 3;
   const emptyRows = Array.from({ length: Math.max(0, minRows - visibleRows.length) }).map((_, idx) => `
     <tr>
       <td class="combo-goods-table__check"><input type="checkbox" disabled /></td>
+      <td style="white-space:nowrap;text-align:center;">${readonly ? "" : `<button class="row-btn row-btn--add" type="button" data-act="campComboRuleAddAfter" data-idx="${visibleRows.length + idx}">+</button>`}</td>
       <td>${visibleRows.length + idx + 1}</td>
-      ${Array.from({ length: emptyCols - 2 }).map(() => "<td></td>").join("")}
+      ${Array.from({ length: emptyCols - 3 }).map(() => "<td></td>").join("")}
     </tr>
   `).join("");
   return `
@@ -19124,6 +19129,7 @@ function comboCampaignGoodsSettingTableHtml(draft = {}, readonly = false) {
         <thead>
           <tr>
             <th class="combo-goods-table__check"><input type="checkbox" data-cw="comboGoodsRulePickAll" ${allChecked ? "checked" : ""} ${readonly ? "disabled" : ""} /></th>
+            <th style="width:50px;">+/-</th>
             <th>序号</th>
             <th>组合编码</th>
             ${showPickQty ? "<th>任选X件</th>" : ""}
@@ -19139,7 +19145,6 @@ function comboCampaignGoodsSettingTableHtml(draft = {}, readonly = false) {
       </table>
     </div>
     ${comboCampaignStorePaginationHtml(rows.length)}
-    ${readonly ? "" : listAddRowHtml("campComboRuleAdd")}
   `;
 }
 
@@ -19737,7 +19742,7 @@ function comboCampaignGoodsPanelHtml(draft = {}, readonly = false) {
           ? (isBrandMode
             ? comboCampaignBrandInfoTableHtml(draft, true)
             : (isCategoryMode ? comboCampaignCategoryInfoTableHtml(draft, true) : comboCampaignGoodsInfoTableHtml(draft, true)))
-          : `<div id="campComboGoodsInfoTable"></div>${listAddRowHtml("campComboGoodsAdd")}`}
+          : `<div id="campComboGoodsInfoTable"></div>`}
       `)}
       ${hideConditionSetting ? "" : comboCampaignSectionHtml("条件设置", `
         ${readonly ? comboCampaignGoodsSettingTableHtml(draft, true) : `<div id="campComboGoodsSettingTable"></div>`}
@@ -19806,6 +19811,7 @@ function comboCampaignStorePanelHtml({ storeScope = {}, readonly = false, wizard
     return `
       <tr>
         <td class="combo-store-table__check"><input type="checkbox" data-cw="storePick" data-idx="${dataIdx}" ${pickedSet.has(dataIdx) ? "checked" : ""} ${readonly ? "disabled" : ""} /></td>
+        <td style="white-space:nowrap;text-align:center;">${readonly ? "" : `<button class="row-btn row-btn--add" type="button" data-act="campStoreAddAfter" data-idx="${dataIdx}">+</button><button class="row-btn row-btn--del" type="button" data-act="campStoreDelRow" data-idx="${dataIdx}">−</button>`}</td>
         <td>${idx + 1}</td>
         <td>${readonly
           ? `<span class="combo-store-cell-text mono">${escapeHtml(String(x.storeCode || ""))}</span>`
@@ -19828,6 +19834,7 @@ function comboCampaignStorePanelHtml({ storeScope = {}, readonly = false, wizard
   const emptyRows = Array.from({ length: Math.max(0, 8 - visibleRows.length) }).map((_, idx) => `
     <tr>
       <td class="combo-store-table__check"><input type="checkbox" disabled /></td>
+      <td style="white-space:nowrap;text-align:center;">${readonly ? "" : `<button class="row-btn row-btn--add" type="button" data-act="campStoreAddAfter" data-idx="${visibleRows.length + idx}">+</button>`}</td>
       <td>${visibleRows.length + idx + 1}</td>
       <td></td>
       <td></td>
@@ -19870,6 +19877,7 @@ function comboCampaignStorePanelHtml({ storeScope = {}, readonly = false, wizard
           <thead>
             <tr>
               <th class="combo-store-table__check"><input type="checkbox" data-cw="storePickAll" ${allChecked ? "checked" : ""} ${readonly ? "disabled" : ""} /></th>
+              <th style="width:50px;">+/-</th>
               <th>序号</th>
               <th>门店编码</th>
               <th>门店名称</th>
@@ -19882,7 +19890,6 @@ function comboCampaignStorePanelHtml({ storeScope = {}, readonly = false, wizard
         </table>
       </div>
       ${comboCampaignStorePaginationHtml(meta.rows.length)}
-      ${readonly ? "" : listAddRowHtml("campStoreAdd")}
     </div>
   `;
 }
@@ -19934,7 +19941,7 @@ function comboCampaignBasicPanelHtml({
         ${readonly ? `<input class="input" value="${escapeHtml(scheduleValue || "")}" disabled />` : scheduleDisplay}
       </div>
       <div class="field">
-        <div class="field__label"><span class="req">*</span>优惠分摊方式</div>
+        <div class="field__label">优惠分摊方式</div>
         ${readonly
           ? `<input class="input" value="${escapeHtml(String((d.goodsScope && d.goodsScope.discountShareMethod) || "销售占比"))}" disabled />`
           : `<select class="select" data-cw="goodsScope" data-field="discountShareMethod">
@@ -21168,8 +21175,8 @@ function renderCampaignWizardPage(mode) {
         ${campStepActionsHtml}
       </div>
 
-      ${!isComboSpecial ? `<div class="detail-tab-panel ${campMainTab === "burden" ? "is-active" : ""}" data-tab="burden">
-        ${(!tplSelected || isGoodsDiscount) ? campaignWizardBurdenFormHtml(d, { stepNo: burdenStepNo, hideSummary: isGoodsDiscount }) : campaignIsQtyVoucherGiftTemplate(tplSelected) ? `
+      <div class="detail-tab-panel ${campMainTab === "burden" ? "is-active" : ""}" data-tab="burden">
+        ${isComboSpecial ? comboCampaignBurdenStepHtml(d) : (!tplSelected || isGoodsDiscount) ? campaignWizardBurdenFormHtml(d, { stepNo: burdenStepNo, hideSummary: isGoodsDiscount }) : campaignIsQtyVoucherGiftTemplate(tplSelected) ? `
           <div class="wizard-step" data-step="${burdenStepNo}">
             <div class="form">
               <div class="form__row">
@@ -21209,7 +21216,7 @@ function renderCampaignWizardPage(mode) {
           </div>
         ` : campaignWizardBurdenFormHtml(d, { stepNo: burdenStepNo, hideSummary: false })}
         ${campStepActionsHtml}
-      </div>` : ""}
+      </div>
     </div>
     </div>
   `;
@@ -36606,13 +36613,24 @@ function handleAction(r, act, btn) {
       campaignVoucherGiftModalRender();
       return;
     }
-    if (act === "campComboGoodsAdd") {
+    if (act === "campComboGoodsAddAfter") {
       const d = AppState._tmpCampaign;
       if (!d) return;
       const gs = comboCampaignEnsureGoodsScope(d);
-      gs.goods.push({ comboCode: "001", skuCode: "", barcode: "", skuName: "", spec: "", unit: "", costPrice: "", price: "", deductRate: "", goodsQty: "1" });
+      const idx = Number(btn.getAttribute("data-idx") || -1);
+      const row = { comboCode: "001", skuCode: "", barcode: "", skuName: "", spec: "", unit: "", costPrice: "", price: "", deductRate: "", goodsQty: "1" };
+      if (idx >= 0 && idx < gs.goods.length) gs.goods.splice(idx + 1, 0, row);
+      else gs.goods.push(row);
       campaignWizardRenderGoodsTable();
-      toast("已新增一行（原型演示）");
+      return;
+    }
+    if (act === "campComboGoodsDelRow") {
+      const d = AppState._tmpCampaign;
+      if (!d) return;
+      const gs = comboCampaignEnsureGoodsScope(d);
+      const idx = Number(btn.getAttribute("data-idx") || -1);
+      if (idx >= 0 && idx < gs.goods.length) gs.goods.splice(idx, 1);
+      campaignWizardRenderGoodsTable();
       return;
     }
     if (act === "campComboGoodsRemove") {
@@ -36848,7 +36866,27 @@ function handleAction(r, act, btn) {
       const defaultWay = gs.comboSettings.length ? String((gs.comboSettings[0] && gs.comboSettings[0].discountWay) || "倍数") : "倍数";
       gs.comboSettings.push({ comboCode: comboCampaignGoodsCodeValue(gs.comboSettings.length + 1, gs.comboSettings.length + 1), pickQty: "", promoPrice: "", discountWay: defaultWay, cap: defaultWay === "阶梯" ? "" : "", limitCycle: "每笔订单", limitScopeType: "商户", perPersonLimitQty: "", perItemLimitQty: "" });
       campaignWizardRenderGoodsTable();
-      toast("已新增一行（原型演示）");
+      return;
+    }
+    if (act === "campComboRuleAddAfter") {
+      const d = AppState._tmpCampaign;
+      if (!d) return;
+      const gs = comboCampaignEnsureGoodsScope(d);
+      const idx = Number(btn.getAttribute("data-idx") || -1);
+      const defaultWay = gs.comboSettings.length ? String((gs.comboSettings[0] && gs.comboSettings[0].discountWay) || "倍数") : "倍数";
+      const row = { comboCode: comboCampaignGoodsCodeValue(gs.comboSettings.length + 1, gs.comboSettings.length + 1), pickQty: "", promoPrice: "", discountWay: defaultWay, cap: defaultWay === "阶梯" ? "" : "", limitCycle: "每笔订单", limitScopeType: "商户", perPersonLimitQty: "", perItemLimitQty: "" };
+      if (idx >= 0 && idx < gs.comboSettings.length) gs.comboSettings.splice(idx + 1, 0, row);
+      else gs.comboSettings.push(row);
+      campaignWizardRenderGoodsTable();
+      return;
+    }
+    if (act === "campComboRuleDelRow") {
+      const d = AppState._tmpCampaign;
+      if (!d) return;
+      const gs = comboCampaignEnsureGoodsScope(d);
+      const idx = Number(btn.getAttribute("data-idx") || -1);
+      if (idx >= 0 && idx < gs.comboSettings.length) gs.comboSettings.splice(idx, 1);
+      campaignWizardRenderGoodsTable();
       return;
     }
     if (act === "campComboRuleDel") {
@@ -38807,16 +38845,26 @@ function handleAction(r, act, btn) {
       });
       return;
     }
-    if (act === "campStoreAdd") {
+    if (act === "campStoreAddAfter") {
       const d = AppState._tmpCampaign;
       if (!d) return;
       d.storeScope = d.storeScope || {};
-      const type = d.storeScope.storeType || "门店";
-      if (type === "价格组") d.storeScope.priceGroups.push({ groupCode: "", groupName: "" });
-      else if (type === "区域") d.storeScope.regions.push({ regionCode: "", regionName: "" });
-      else d.storeScope.stores.push({ storeCode: "", storeName: "", region: "", priceGroup: "", format: "", remark: "" });
+      const idx = Number(btn.getAttribute("data-idx") || -1);
+      const arr = d.storeScope.stores || (d.storeScope.stores = []);
+      const row = { storeCode: "", storeName: "", region: "", priceGroup: "", format: "", remark: "" };
+      if (idx >= 0 && idx < arr.length) arr.splice(idx + 1, 0, row);
+      else arr.push(row);
       campaignWizardRenderStoreTables();
-      toast("已新增一行（原型演示）");
+      return;
+    }
+    if (act === "campStoreDelRow") {
+      const d = AppState._tmpCampaign;
+      if (!d) return;
+      d.storeScope = d.storeScope || {};
+      const arr = d.storeScope.stores || [];
+      const idx = Number(btn.getAttribute("data-idx") || -1);
+      if (idx >= 0 && idx < arr.length) arr.splice(idx, 1);
+      campaignWizardRenderStoreTables();
       return;
     }
     if (act === "campStoreQuery") {
