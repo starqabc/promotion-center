@@ -11140,7 +11140,7 @@ function renderPromoGoodsTerminatePage() {
 }
 
 function promoTerminateOrderWayOptions() {
-  return ["按商品", "按品类", "按品牌", "按单据", "按门店"];
+  return ["商品", "门店", "门店+商品", "单据"];
 }
 
 function promoTerminateOrderStoreOptions() {
@@ -11229,7 +11229,7 @@ function promoTerminateOrderCanCancelEffective(order) {
 
 function promoTerminateOrderDefaultDraft() {
   return {
-    terminateWay: "按商品",
+    terminateWay: "商品",
     effectiveMode: "即时生效",
     terminateSubject: "",
     terminateTime: "",
@@ -11581,7 +11581,7 @@ function promoTerminateOrderEnsureList() {
       {
         id: "PTO-20260509-0001",
         orderNo: "26050904000391",
-        terminateWay: "按单据",
+        terminateWay: "单据",
         terminateAt: "2026-07-09 18:03:11",
         docStatus: "已审核",
         effectiveStatus: "已生效",
@@ -11603,7 +11603,7 @@ function promoTerminateOrderEnsureList() {
       {
         id: "PTO-20251223-0002",
         orderNo: "25122304000320",
-        terminateWay: "按商品",
+        terminateWay: "商品",
         terminateAt: "2025-12-23 15:27:07",
         docStatus: "已审核",
         effectiveStatus: "已生效",
@@ -11693,15 +11693,19 @@ function promoTerminateOrderReadDraftFromDom() {
   draft.terminateSubject = getValue("ptoSubject").trim() || draft.terminateSubject || "";
   const way = getValue("ptoTerminateWay");
   if (way) {
-    const map = { "单据": "按单据", "商品": "按商品", "品类": "按品类", "品牌": "按品牌" };
-    draft.terminateWay = map[String(way)] || String(draft.terminateWay || "按单据");
+    draft.terminateWay = way;
   }
   draft.effectiveMode = getValue("ptoEffectiveMode") || draft.effectiveMode || "即时生效";
-  draft.storeScopeMode = getCheckedValue("ptoStoreScopeMode") || draft.storeScopeMode || "全部门店";
+  draft.storeScopeMode = draft.storeScopeMode || "全部门店";
   draft.terminateTime = draft.effectiveMode === "按终止时间生效"
     ? (getValue("ptoTerminateDate") || getValue("ptoTerminateTime") || draft.terminateTime || "")
     : "";
   draft.remark = (getValue("ptoRemark").trim() || getValue("ptoNote").trim()) || draft.remark || "";
+  draft.terminatePromoNo = getValue("ptoTerminatePromoNo").trim() || draft.terminatePromoNo || "";
+  draft.activitySubject = getValue("ptoActSubject").trim() || draft.activitySubject || "";
+  draft.promoMethod = getValue("ptoActPromoMethod").trim() || draft.promoMethod || "";
+  draft.activityTime = getValue("ptoActTime").trim() || draft.activityTime || "";
+  draft.participateScope = getValue("ptoActScope").trim() || draft.participateScope || "";
   draft.terminateStore = getValue("ptoTerminateStore") || draft.terminateStore || "";
   draft.terminateCategory = getValue("ptoTerminateCategory") || draft.terminateCategory || "";
   draft.terminateBrand = getValue("ptoTerminateBrand") || draft.terminateBrand || "";
@@ -12060,35 +12064,13 @@ function renderPromoTerminateOrderFormPage(mode, orderId) {
   const storeScopeMode = String(draft.storeScopeMode || "全部门店");
   const showTerminateTime = effectiveMode === "按终止时间生效";
   const baseExtra = [];
-  if (way !== "按单据") {
+  if (way !== "单据") {
     baseExtra.push(`
       <div class="field">
         <div class="field__label">终止门店</div>
         <select class="select" id="ptoTerminateStore" ${readonly ? "disabled" : ""}>
           <option value="">请选择</option>
           ${storeOptions.map((x) => `<option value="${escapeHtml(x)}" ${x === draft.terminateStore ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}
-        </select>
-      </div>
-    `);
-  }
-  if (way === "按品类") {
-    baseExtra.push(`
-      <div class="field">
-        <div class="field__label">终止品类</div>
-        <select class="select" id="ptoTerminateCategory" ${readonly ? "disabled" : ""}>
-          <option value="">请选择</option>
-          ${categoryOptions.map((x) => `<option value="${escapeHtml(x)}" ${x === draft.terminateCategory ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}
-        </select>
-      </div>
-    `);
-  }
-  if (way === "按品牌") {
-    baseExtra.push(`
-      <div class="field">
-        <div class="field__label">终止品牌</div>
-        <select class="select" id="ptoTerminateBrand" ${readonly ? "disabled" : ""}>
-          <option value="">请选择</option>
-          ${brandOptions.map((x) => `<option value="${escapeHtml(x)}" ${x === draft.terminateBrand ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}
         </select>
       </div>
     `);
@@ -12149,36 +12131,21 @@ function renderPromoTerminateOrderFormPage(mode, orderId) {
                 <div class="field__label">终止单编码</div>
                 <input class="input" value="" placeholder="自动产生" disabled />
               </div>
-              <div class="field pto-form-grid__span2">
+              <div class="field">
                 <div class="field__label"><span class="req">*</span>终止单主题</div>
                 <input class="input" id="ptoSubject" value="${escapeHtml(draft.terminateSubject || "")}" placeholder="文本框" />
               </div>
               <div class="field">
                 <div class="field__label"><span class="req">*</span>终止范围</div>
                 <select class="select" id="ptoTerminateWay">
-                  ${["单据", "商品", "品类", "品牌"].map((x) => {
-                    const map = { "单据": "按单据", "商品": "按商品", "品类": "按品类", "品牌": "按品牌" };
-                    const val = map[x];
-                    return `<option value="${escapeHtml(x)}" ${String(draft.terminateWay || "按单据") === String(val) ? "selected" : ""}>${escapeHtml(x)}</option>`;
-                  }).join("")}
+                  ${["商品", "门店", "门店+商品", "单据"].map((x) => `<option value="${escapeHtml(x)}" ${String(draft.terminateWay || "商品") === x ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}
                 </select>
               </div>
-              <div class="field pto-form-grid__span2">
-                <div class="field__label"><span class="req">*</span>生效方式</div>
+              <div class="field">
+                <div class="field__label"><span class="req">*</span>终止方式</div>
                 <select class="select" id="ptoEffectiveMode" data-act="ptoEffectiveModeChange">
                   ${["即时生效", "按终止时间生效"].map((x) => `<option value="${escapeHtml(x)}" ${effectiveMode === x ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}
                 </select>
-              </div>
-              <div class="field pto-form-grid__span2">
-                <div class="field__label"><span class="req">*</span>门店范围</div>
-                <div class="checks">
-                  ${["全部门店", "部分门店"].map((x) => `
-                    <label class="radio">
-                      <input type="radio" name="ptoStoreScopeMode" value="${escapeHtml(x)}" data-act="ptoStoreScopeModeChange" ${storeScopeMode === x ? "checked" : ""} />
-                      <span>${escapeHtml(x)}</span>
-                    </label>
-                  `).join("")}
-                </div>
               </div>
               ${showTerminateTime ? `
                 <div class="field">
@@ -12189,8 +12156,32 @@ function renderPromoTerminateOrderFormPage(mode, orderId) {
                   </div>
                 </div>
               ` : ""}
-              <div class="field pto-form-grid__span4">
-                <div class="field__label">终止单备注</div>
+              <div class="field">
+                <div class="field__label">终止促销单号</div>
+                <input class="input" id="ptoTerminatePromoNo" value="${escapeHtml(draft.terminatePromoNo || "")}" placeholder="请输入" />
+              </div>
+              <div class="field">
+                <div class="field__label">活动主题</div>
+                <input class="input" id="ptoActSubject" value="${escapeHtml(draft.activitySubject || "")}" disabled />
+              </div>
+              <div class="field">
+                <div class="field__label">促销类型</div>
+                <input class="input" id="ptoActPromoType" value="${escapeHtml(draft.promoType || "")}" disabled />
+              </div>
+              <div class="field">
+                <div class="field__label">促销方式</div>
+                <input class="input" id="ptoActPromoMethod" value="${escapeHtml(draft.promoMethod || "")}" disabled />
+              </div>
+              <div class="field">
+                <div class="field__label">活动时间</div>
+                <input class="input" id="ptoActTime" value="${escapeHtml(draft.activityTime || "")}" disabled />
+              </div>
+              <div class="field">
+                <div class="field__label">参与范围</div>
+                <input class="input" id="ptoActScope" value="${escapeHtml(draft.participateScope || "")}" disabled />
+              </div>
+              <div class="field">
+                <div class="field__label">备注</div>
                 <input class="input" id="ptoNote" value="${escapeHtml(draft.remark || "")}" />
               </div>
             </div>
@@ -12202,12 +12193,12 @@ function renderPromoTerminateOrderFormPage(mode, orderId) {
           <div class="pto-form-card">
             <div class="pto-form-tabsbar">
               <div class="pto-form-tabs">
-                ${(way === "按商品" || way === "商品") ? tabBtn("terminate", "终止商品") : (way === "按品类" || way === "品类") ? tabBtn("terminate", "终止品类") : (way === "按品牌" || way === "品牌") ? tabBtn("terminate", "终止品牌") : tabBtn("terminate", "终止单据")}
-                ${tabBtn("store", "门店范围")}
+                ${(way === "商品" || way === "门店+商品") ? tabBtn("terminate", "终止商品") : (way !== "门店") ? tabBtn("terminate", "终止单据") : ""}
+                ${(way === "门店" || way === "门店+商品") ? tabBtn("store", "门店范围") : ""}
               </div>
               <div class="pto-form-tabsbar__filters">
                 ${tab === "terminate" ? `
-                  ${(way === "按商品" || way === "商品")
+                  ${(way === "商品" || way === "门店+商品")
                     ? `<select class="select pto-form-filter__sel" id="ptoGoodsQCat">${["全部","日百","食品","饮料","纺织"].map(x=>`<option>${escapeHtml(x)}</option>`).join("")}</select>
                        <select class="select pto-form-filter__sel" id="ptoGoodsQTpl">${["全部","模板A","模板B","模板C"].map(x=>`<option>${escapeHtml(x)}</option>`).join("")}</select>
                        <input class="input pto-form-filter__input" id="ptoGoodsQGoods" placeholder="商品编码/条码/名称" />
@@ -12215,18 +12206,6 @@ function renderPromoTerminateOrderFormPage(mode, orderId) {
                        <button class="btn btn--primary" type="button" data-act="ptoGoodsPick">选商品</button>
                        <button class="btn" type="button" data-act="ptoGoodsRemove">移除商品</button>
                        <button class="btn" type="button" data-act="ptoGoodsAddRow">增加一行</button>`
-                    : (way === "按品类" || way === "品类")
-                      ? `<input class="input pto-form-filter__input" id="ptoCatQInput" placeholder="品类编码/名称" />
-                       <button class="btn btn--primary" type="button" data-act="ptoCatQuery">查询</button>
-                       <button class="btn btn--primary" type="button" data-act="ptoCatPick">选品类</button>
-                       <button class="btn" type="button" data-act="ptoCatRemove">移除品类</button>
-                       <button class="btn" type="button" data-act="ptoCatAddRow">增加一行</button>`
-                    : (way === "按品牌" || way === "品牌")
-                      ? `<input class="input pto-form-filter__input" id="ptoBrandQInput" placeholder="品牌编码/名称" />
-                       <button class="btn btn--primary" type="button" data-act="ptoBrandQuery">查询</button>
-                       <button class="btn btn--primary" type="button" data-act="ptoBrandPick">选品牌</button>
-                       <button class="btn" type="button" data-act="ptoBrandRemove">移除商品</button>
-                       <button class="btn" type="button" data-act="ptoBrandAddRow">增加一行</button>`
                     : `<button class="btn btn--primary" type="button" data-act="ptoSelectDocs">选择单据</button>
                        <button class="btn" type="button" data-act="ptoRangeReset">清空单据</button>`}
                 ` : `
@@ -12248,7 +12227,7 @@ function renderPromoTerminateOrderFormPage(mode, orderId) {
 
             <div class="pto-form-tablewrap">
               ${tab === "terminate"
-                ? (way === "按商品" || way === "商品"
+                ? (way === "商品" || way === "门店+商品"
                   ? (() => {
                       const goodsHeaders = ["序号", "活动编码", "活动名称", "促销类型", "活动时间", "促销方式", "商品编码", "商品条码", "商品名称", "规格", "单位", "售价", "促销价", "促销折扣", "会员促销价", "会员折扣", "促销信息", "参与门店"];
                       const goodsRowsHtml = (draft.goodsRows || []).map((x, idx) => `
@@ -12274,46 +12253,6 @@ function renderPromoTerminateOrderFormPage(mode, orderId) {
                         </tr>`).join("");
                       return table(goodsHeaders, goodsRowsHtml || `<tr><td colspan="${goodsHeaders.length}"><div class="empty">请点击"选商品"添加终止商品</div></td></tr>`);
                     })()
-                  : (way === "按品类" || way === "品类")
-                    ? (() => {
-                        const catHeaders = ["序号", "活动编码", "活动名称", "促销类型", "活动时间", "促销方式", "品类编码", "品类名称", "促销折扣", "会员折扣", "促销信息", "参与门店"];
-                        const catRowsHtml = (draft.catRows || []).map((x, idx) => `
-                          <tr>
-                            <td>${idx + 1}</td>
-                            <td class="mono">${escapeHtml(x.actNo || "—")}</td>
-                            <td>${escapeHtml(x.actName || "—")}</td>
-                            <td>${escapeHtml(x.templateType || "—")}</td>
-                            <td class="mono">${escapeHtml(x.actTime || "—")}</td>
-                            <td class="mono">${escapeHtml(x.templateName || "—")}</td>
-                            <td class="mono">${escapeHtml(x.catCode || "—")}</td>
-                            <td>${escapeHtml(x.catName || "—")}</td>
-                            <td class="mono">${escapeHtml(String(x.promoDiscount ?? "—"))}</td>
-                            <td class="mono">${escapeHtml(String(x.memberDiscount ?? "—"))}</td>
-                            <td>${escapeHtml(x.promoInfo || "—")}</td>
-                            <td>${escapeHtml(x.stores || "—")}</td>
-                          </tr>`).join("");
-                        return table(catHeaders, catRowsHtml || `<tr><td colspan="${catHeaders.length}"><div class="empty">请点击"选品类"添加终止品类</div></td></tr>`);
-                      })()
-                    : (way === "按品牌" || way === "品牌")
-                      ? (() => {
-                          const brandHeaders = ["序号", "活动编码", "活动名称", "促销类型", "活动时间", "促销方式", "品牌编码", "品牌名称", "促销折扣", "会员折扣", "促销信息", "参与门店"];
-                          const brandRowsHtml = (draft.brandRows || []).map((x, idx) => `
-                            <tr>
-                              <td>${idx + 1}</td>
-                              <td class="mono">${escapeHtml(x.actNo || "—")}</td>
-                              <td>${escapeHtml(x.actName || "—")}</td>
-                              <td>${escapeHtml(x.templateType || "—")}</td>
-                              <td class="mono">${escapeHtml(x.actTime || "—")}</td>
-                              <td class="mono">${escapeHtml(x.templateName || "—")}</td>
-                              <td class="mono">${escapeHtml(x.brandCode || "—")}</td>
-                              <td>${escapeHtml(x.brandName || "—")}</td>
-                              <td class="mono">${escapeHtml(String(x.promoDiscount ?? "—"))}</td>
-                              <td class="mono">${escapeHtml(String(x.memberDiscount ?? "—"))}</td>
-                              <td>${escapeHtml(x.promoInfo || "—")}</td>
-                              <td>${escapeHtml(x.stores || "—")}</td>
-                            </tr>`).join("");
-                          return table(brandHeaders, brandRowsHtml || `<tr><td colspan="${brandHeaders.length}"><div class="empty">请点击"选品牌"添加终止品牌</div></td></tr>`);
-                        })()
                     : table(docHeaders, docRows || `<tr><td colspan="${docHeaders.length}"><div class="empty">请点击"选择单据"添加活动单据</div></td></tr>`))
                 : table(storeHeaders, storeScopeMode === "全部门店"
                   ? `<tr><td colspan="${storeHeaders.length}"><div class="empty">当前选择全部门店，无需维护门店明细</div></td></tr>`
