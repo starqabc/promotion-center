@@ -10169,6 +10169,16 @@ function renderTemplateWizardPage(mode) {
               ${ruleSectionCombo}
             </div>
           `)}
+          ${section("费用承担", "", `
+            <div class="tpl-choice-grid tpl-choice-grid--2">
+              ${optionCard({
+                title: "承担规则",
+                desc: "启用后创建活动可设定费用分摊规则",
+                control: sw({ id: "twCostBearingRule", checked: true, on: "开启", off: "关闭" }),
+                id: "twCostBearingRuleRow"
+              })}
+            </div>
+          `)}
           <section class="tpl-form-section" id="tplPreviewSection" style="display:none;">
             <div class="tpl-form-section__hd">
               <div class="tpl-form-section__title">模板预览</div>
