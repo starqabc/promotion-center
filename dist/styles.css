@@ -1389,11 +1389,15 @@ tbody tr:last-child td{border-bottom:none}
 .campaign-list-ops .linkbtn{
   font-size:12px;
 }
-.row-btn{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1px solid #d1d5db;border-radius:4px;background:#fff;color:#374151;font-size:14px;font-weight:700;line-height:1;cursor:pointer;padding:0;margin:1px;transition:all .15s;flex-shrink:0;}
+.row-btn{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1px solid #d1d5db;border-radius:4px;background:#fff;color:#374151;font-size:14px;font-weight:700;line-height:1;cursor:pointer;padding:0;margin:1px;transition:all .15s;vertical-align:middle;flex-shrink:0;}
 .row-btn:hover{border-color:#6366f1;color:#6366f1;background:#eef2ff;}
 .row-btn--add:hover{border-color:#10b981;color:#10b981;background:#ecfdf5;}
 .row-btn--del:hover{border-color:#ef4444;color:#ef4444;background:#fef2f2;}
+.row-btn{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1px solid #d1d5db;border-radius:4px;background:#fff;color:#374151;font-size:14px;font-weight:700;line-height:1;cursor:pointer;padding:0;margin:1px;transition:all .15s;vertical-align:middle;flex-shrink:0;}
 .cell-row-actions{white-space:nowrap;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:2px;}
+.row-btn:hover{border-color:#6366f1;color:#6366f1;background:#eef2ff;}
+.row-btn--add:hover{border-color:#10b981;color:#10b981;background:#ecfdf5;}
+.row-btn--del:hover{border-color:#ef4444;color:#ef4444;background:#fef2f2;}
 .sg-tree-item:hover{background:#f8fafc;}
 .campaign-list-more{
   position:relative;
@@ -2750,6 +2754,13 @@ tbody tr:last-child td{border-bottom:none}
 .tpl-wizard .step.is-active .step__label{color:inherit;font-weight:500}
 .tpl-wizard .step__label{font-size:13px;color:var(--text);font-weight:500}
 
+/* 单页模式（无步骤导航） */
+.tpl-wizard-single{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+
 .camp-page{
   gap:0;
 }
@@ -3178,6 +3189,7 @@ tbody tr:last-child td{border-bottom:none}
 .modal.modal--goods-picker-wide{width:min(1200px, calc(100vw - 36px))}
 .modal--goods-picker-wide .form__row{display:flex;gap:12px;align-items:flex-end;flex-wrap:nowrap}
 .modal--goods-picker-wide .form__row > .field{flex:1;min-width:0}
+.modal--goods-picker-wide .toolbar__actions{flex-wrap:nowrap}
 .modal.modal--store-picker{
   width:min(1180px, calc(100vw - 24px));
   max-height:calc(100vh - 24px);
