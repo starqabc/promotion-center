@@ -9973,6 +9973,12 @@ function renderTemplateWizardPage(mode) {
   const objectSection = section("适用范围", "", `
     <div id="tplObjectSection" class="tpl-choice-grid tpl-choice-grid--2">
       ${optionCard({
+        title: "渠道范围",
+        desc: "创建活动时配置",
+        control: sw({ id: "twChannelScope", checked: true, disabled: true }),
+        id: "twChannelScopeRow"
+      })}
+      ${optionCard({
         title: "人群范围",
         desc: "创建活动时配置",
         control: sw({ id: "twCustomerScope", checked: true, disabled: true }),
