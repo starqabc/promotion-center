@@ -257,7 +257,7 @@ const AppState = {
     "/campaigns-edit": { title: "修改促销活动", sub: "草稿状态可修改；生效/作废不可修改" },
     "/promo-goods-terminate": { title: "生效促销列表", sub: "" },
     "/promo-terminate-orders": { title: "促销终止单", sub: "" },
-    "/promo-pending-goods": { title: "待生效促销队例", sub: "" },
+    "/promo-pending-goods": { title: "促销查询", sub: "" },
     "/promo-goods-profile": { title: "失效促销档案", sub: "" },
     "/promo-terminate-orders-create": { title: "促销终止单", sub: "创建终止单（原型演示）" },
     "/pricing": { title: "模拟算价", sub: "" },
@@ -4857,19 +4857,20 @@ function templateWizardRefreshVisibility() {
   const isComboPrice = promoType === "折扣" && (promoMethod === "组合价" || promoMethod === "一口价");
   setShow("tplRuleStandard", !isComboPrice);
   setShow("tplRuleCombo", isComboPrice);
+  setShow("tplComboTypeRow", isComboPrice && promoMethod === "组合价");
 
-  // 根据促销方式动态更新组合价方式区块文字：一口价→任选组合，其他→固定组合
+  // 组合价方式区块：标题统一"组合价方式"；开关/提示按 一口价→任意组合，组合价→固定组合
   const comboFixedOnEl = document.querySelector('#rwComboFixedRow .switch__text--on');
   if (comboFixedOnEl) {
-    comboFixedOnEl.textContent = promoMethod === "一口价" ? "任选组合" : "固定组合";
+    comboFixedOnEl.textContent = promoMethod === "一口价" ? "任意组合" : "固定组合";
   }
   const comboFixedDescEl = document.querySelector('#rwComboFixedRow .tpl-option-card__desc');
   if (comboFixedDescEl) {
-    comboFixedDescEl.textContent = promoMethod === "一口价" ? "任选组合方式" : "固定组合方式";
+    comboFixedDescEl.textContent = promoMethod === "一口价" ? "任意组合方式" : "固定组合方式";
   }
   const comboFixedTitleEl = document.querySelector('#rwComboFixedRow .tpl-option-card__title');
   if (comboFixedTitleEl) {
-    comboFixedTitleEl.textContent = promoMethod === "一口价" ? "任选组合方式" : "组合价方式";
+    comboFixedTitleEl.textContent = "组合方式";
   }
 
   const condTitleEl = document.querySelector("#tcSectionWrap .tpl-form-section__title");
@@ -6035,26 +6036,32 @@ function campaignWizardMaxStep() {
 
 function campaignNavTree() {
   return [
+    /* [隐藏-后续恢复] 特价促销
     {
       key: "special",
       label: "特价促销",
       items: ["商品直降", "N件特价"]
     },
+    */
     {
       key: "discount",
       label: "折扣促销",
-      items: ["商品折扣", "购满折扣", "时段折扣", "N件折扣", "组合特价", "组合价"]
+      items: [/* [隐藏-后续恢复] "商品折扣", "购满折扣", "时段折扣", "N件折扣", */ "组合特价", "组合价"]
     },
+    /* [隐藏-后续恢复] 满减满赠
     {
       key: "reduceGift",
       label: "满减满赠",
       items: ["满金额减", "满金额赠", "满金额换购", "最低免单"]
     },
+    */
+    /* [隐藏-后续恢复] 满赠券促销
     {
       key: "voucherGift",
       label: "满赠券促销",
       items: ["满金额赠券"]
     }
+    */
   ];
 }
 
@@ -6073,8 +6080,9 @@ function renderCampaignSubNav() {
   const ui = AppState.ui.nav || (AppState.ui.nav = { openSection: "campaign", openCampaigns: false, openCampaignsCat: "special", openTplPriority: false });
   const openKey = ui.openCampaignsCat || "special";
   const tree = campaignNavTree();
-  // 档期智能促销
-  const scheduleNav = `<a class="nav__item" href="#/template-priority-schedule-import" data-route="/template-priority-schedule-import">档期智能促销</a>`;
+  // [隐藏-后续恢复] 档期智能促销
+  // const scheduleNav = `<a class="nav__item" href="#/template-priority-schedule-import" data-route="/template-priority-schedule-import">档期智能促销</a>`;
+  const scheduleNav = "";
   box.innerHTML = scheduleNav + tree
     .map((g) => {
       const open = g.key === openKey;
@@ -8075,18 +8083,7 @@ function renderTemplatesPage() {
   }).join("");
 
   return `
-    <div class="tpl-list-layout">
-      <div class="tpl-type-shell ${sideCollapsed ? "is-collapsed" : ""}">
-        <button class="tpl-type-toggle" type="button" data-act="tplSideToggle" aria-label="${sideCollapsed ? "展开" : "收起"}" title="${sideCollapsed ? "展开" : "收起"}">
-          <span class="tpl-type-toggle__icon">${sideCollapsed ? "»" : "«"}</span>
-          ${sideCollapsed ? `<span class="tpl-type-toggle__vt">促销类型</span>` : ""}
-        </button>
-        ${!sideCollapsed ? `
-        <div class="tpl-type-group">
-          ${typeSideList.map((x) => `<button class="tpl-type-item ${String(ui.qType || "全部") === String(x) ? "is-active" : ""}" type="button" data-act="tplTypePick" data-type="${escapeHtml(String(x))}">${escapeHtml(displayTemplateType(String(x)))}</button>`).join("")}
-        </div>
-        ` : ""}
-      </div>
+    <div class="tpl-list-layout" style="display:block;">
       <div>
         <div class="campaign-list-page">
           <div class="campaign-list-shell">
@@ -9820,8 +9817,8 @@ function renderTemplateWizardPage(mode) {
   `;
 
   const typeOps = templateTypeOptions();
-  const existingType = existing ? normalizeTemplateType(existing.templateType || (existing.config && existing.config.basic ? existing.config.basic.type : "") || "") : "";
-  const existingMethod = existing ? String(existing.promoMethod || (existing.config && existing.config.basic ? existing.config.basic.promoMethod : "") || "") : "";
+  const existingType = existing ? normalizeTemplateType(existing.templateType || (existing.config && existing.config.basic ? existing.config.basic.type : "") || "") : "折扣";
+  const existingMethod = existing ? String(existing.promoMethod || (existing.config && existing.config.basic ? existing.config.basic.promoMethod : "") || "") : "一口价";
   const isComboPriceType = normalizeTemplateType(existingType) === "折扣" && (String(existingMethod) === "组合价" || String(existingMethod) === "一口价");
   const spec = templateTypeSpec(existingType);
   const templateNoText = editing ? (existing ? existing.templateNo || "—" : "—") : "保存时自动生成";
@@ -10083,14 +10080,13 @@ function renderTemplateWizardPage(mode) {
   `);
 
   // 组合价模式的促销规则区块
-  const ruleSectionCombo = section("促销规则", "", `
+  const ruleSectionCombo = section("", "", `
     <div class="tpl-choice-grid tpl-choice-grid--2">
       ${optionCard({ title: "限量设置", desc: "启用后活动侧可配置限量规则", control: sw({ id: "tcQtyLimit", on: "开启", off: "关闭" }), id: "tcQtyLimitRow" })}
-      ${optionCard({ title: "满金额", desc: "按商品金额设置门槛", control: sw({ id: "tcFullAmt", checked: true, disabled: true, on: "开启", off: "关闭" }), id: "tcFullAmtRow" })}
+      ${optionCard({ title: "满数量", desc: "按商品数量设置门槛", control: sw({ id: "tcFullAmt", checked: true, disabled: true, on: "开启", off: "关闭" }), id: "tcFullAmtRow" })}
       ${optionCard({ title: "优惠方式", desc: "", control: sw({ id: "rwBenefitMethod", on: "开启", off: "关闭" }), id: "rwBenefitMethodRow" })}
-      ${optionCard({ title: "折扣", desc: "组合价折扣配置", control: sw({ id: "rwDiscountEnable", checked: true, disabled: true, on: "组合优惠", off: "关闭" }), id: "rwDiscountRow" })}
-      ${optionCard({ title: "组合方式", desc: "组合价按价格方式", control: sw({ id: "rwComboPriceModePrice", checked: true, disabled: true, on: "价格", off: "关闭" }), id: "rwComboPriceRow" })}
-      ${optionCard({ title: "组合价方式", desc: "固定组合方式", control: sw({ id: "rwComboFixedGroup", checked: true, disabled: true, on: "固定组合", off: "关闭" }), id: "rwComboFixedRow" })}
+      ${optionCard({ title: "组合方式", desc: "固定组合方式", control: sw({ id: "rwComboFixedGroup", checked: true, disabled: true, on: "固定组合", off: "关闭" }), id: "rwComboFixedRow" })}
+      ${optionCard({ title: "组合类型", desc: "组合价商品组合类型", control: sw({ id: "tplComboType", checked: true, on: "开启", off: "关闭" }), id: "tplComboTypeRow" })}
     </div>
   `);
 
@@ -10110,7 +10106,7 @@ function renderTemplateWizardPage(mode) {
           ${section("基础设置", "", basicSection + timeSection)}
           ${objectSection}
           ${section("促销规则", "", `
-            <div id="tcSectionWrap">${conditionSection}</div>
+            ${showStandard ? `<div id="tcSectionWrap">${conditionSection}</div>` : ""}
             <div id="tplRuleStandard" style="display:${showStandard ? "" : "none"}">
               ${ruleSection}
               ${rewardSection}
@@ -10510,7 +10506,7 @@ function renderCampaignsListPage(presetPromoType = "", presetTemplateId = "") {
               <div class="campaign-list-field__label">活动状态</div>
               <select class="select" id="campQStatus">${statuses.map((x) => `<option ${x === ui.qStatus ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select>
             </div>
-            <div class="campaign-list-filters__actions">
+            <div class="campaign-list-filters__actions" style="grid-column:-2 / -1;justify-self:end;">
               <button class="btn btn--primary" type="button" data-act="campQuery">查询</button>
               <button class="btn" type="button" data-act="campReset">重置</button>
             </div>
@@ -10927,21 +10923,21 @@ function renderPromoGoodsQueuePage({ listTitle, statusText, excludeTerminatedGoo
           <div class="campaign-list-field__label">商品范围</div>
           <select class="select" id="pgtQGoodsScope"><option value="">全部</option>${["单品", "品类", "品牌"].map((x) => `<option ${ui.qGoodsScope === x ? "selected" : ""}>${x}</option>`).join("")}</select>
         </div>
-        <div class="field field--actions">
+        <div class="field field--actions" style="grid-column:-2 / -1;justify-self:end;">
           <button class="btn btn--primary" type="button" data-act="pgtQuery">查询</button>
           <button class="btn" type="button" data-act="pgtReset">重置</button>
         </div>
       `
       : dim === "品类"
         ? `<div class="campaign-list-field"><div class="campaign-list-field__label">品类</div><input class="input" id="pgtQCategory" value="${escapeHtml(ui.qCategory || "")}" placeholder="品类编码/名称" /></div>
-        <div class="field field--actions">
+        <div class="field field--actions" style="grid-column:-2 / -1;justify-self:end;">
           <button class="btn btn--primary" type="button" data-act="pgtQuery">查询</button>
           <button class="btn" type="button" data-act="pgtReset">重置</button>
         </div>`
         : dim === "品牌"
           ? `<div class="campaign-list-field"><div class="campaign-list-field__label">品牌</div><input class="input" id="pgtQBrand" value="${escapeHtml(ui.qBrand || "")}" placeholder="品牌编码/名称" /></div>
         <div class="campaign-list-field"><div class="campaign-list-field__label">促销类型</div><select class="select" id="pgtQTemplateType">${templateTypes.map((x) => `<option ${x === ui.qTemplateType ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select></div>
-        <div class="field field--actions">
+        <div class="field field--actions" style="grid-column:-2 / -1;justify-self:end;">
           <button class="btn btn--primary" type="button" data-act="pgtQuery">查询</button>
           <button class="btn" type="button" data-act="pgtReset">重置</button>
         </div>`
@@ -11052,13 +11048,7 @@ function renderPromoGoodsQueuePage({ listTitle, statusText, excludeTerminatedGoo
   })();
 
   return `
-    <div class="tpl-list-layout">
-      <div class="tpl-type-shell">
-        <div class="tpl-type-title">查看维度</div>
-        <div class="tpl-type-group">
-          ${dims.map((x) => `<button class="tpl-type-item ${x === dim ? "is-active" : ""}" type="button" data-act="pgtDimPick" data-dim="${escapeHtml(x)}">${escapeHtml(x)}</button>`).join("")}
-        </div>
-      </div>
+    <div class="tpl-list-layout" style="display:block;">
       <div>
         ${listPageLayout({
           filtersTitle: "",
@@ -11724,7 +11714,7 @@ function promoTerminateOrderBuildSavedRecord(draft) {
 
 function renderPromoPendingGoodsPage() {
   return renderPromoGoodsQueuePage({
-    listTitle: "待生效促销队例",
+    listTitle: "促销查询",
     statusText: "待生效",
     excludeTerminatedGoods: false,
     showGoodsDetail: true,
@@ -24181,10 +24171,17 @@ function renderGmGoodsPage() {
       <div class="field__label">状态</div>
       <select class="select" id="gmGoodsStatus">${statuses.map((x) => `<option ${x === ui.status ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select>
     </div>
-    <div class="field" style="display:flex;gap:8px;align-items:center">
+    <div class="field">
+      <div class="field__label">创建时间</div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input class="input" id="gmGoodsQCreateFrom" type="date" value="${escapeHtml(ui.qCreateFrom || "")}" placeholder="开始" />
+        <span>-</span>
+        <input class="input" id="gmGoodsQCreateTo" type="date" value="${escapeHtml(ui.qCreateTo || "")}" placeholder="结束" />
+      </div>
+    </div>
+    <div class="field" style="display:flex;gap:8px;align-items:center;grid-column:-2 / -1;justify-self:end;">
       <button class="btn btn--primary" type="button" data-act="gmGoodsQuery">查询</button>
       <button class="btn" type="button" data-act="gmGoodsReset">重置</button>
-      <button class="btn" type="button" data-act="gmGoodsExport">导出</button>
     </div>
   `;
   const actionsHtml = ``;
@@ -24195,7 +24192,7 @@ function renderGmGoodsPage() {
       const mnemonic = String(g.mnemonic || shortName || g.name || "").trim();
       const maxPackQty = g.maxPackQty ?? "—";
       const maxBoxQty = g.maxBoxQty ?? g.maxPackQty ?? "—";
-      const skuDisplay = "99012340000";
+      const skuDisplay = "99012340";
       const barcodeDisplay = "690123400001";
       const goodsCategory = g.goodsCategory ?? (g.goodsType === "生鲜" ? "01-一般物料" : "00-单一物料");
       const statusMap = { "20": "20定编", "40": "40预淘汰", "50": "50淘汰", "60": "60废码" };
@@ -24214,9 +24211,9 @@ function renderGmGoodsPage() {
           <td>${c(g.goodsUnit)}</td>
           <td>${c(maxPackQty)}</td>
           <td>${c(maxBoxQty)}</td>
-          <td class="mono">${c(g.lv3CatCode)}</td>
-          <td class="mono">${c(g.lv2CatCode)}</td>
-          <td class="mono">${c(g.lv1CatCode)}</td>
+          <td>${c((g.lv3CatCode || "") + (g.lv3CatName ? " " + g.lv3CatName : ""))}</td>
+          <td>${c((g.lv2CatCode || "") + (g.lv2CatName ? " " + g.lv2CatName : ""))}</td>
+          <td>${c((g.lv1CatCode || "") + (g.major ? " " + g.major : ""))}</td>
           <td>${c(g.counterCode || g.counterName || "—")}</td>
           <td class="mono">${c(g.brandCode)}</td>
           <td>${c(g.brandName)}</td>
@@ -24225,16 +24222,18 @@ function renderGmGoodsPage() {
           <td>${c(g.selfMade)}</td>
           <td>${c(g.goodsType)}</td>
           <td>${c(statusDisplay)}</td>
-          <td>${c(g.modifyAt || g.createdAt || "2026-07-22 12:00:00")}</td>
+          <td>${c(g.createdAt || "2026-07-01 10:00:00")}</td>
+          <td>${c(g.modifyAt || "2026-07-22 12:00:00")}</td>
         </tr>
       `;
     })
     .join("");
-  const headers = ["商品编码", "商品名称", "简称", "助记符", "品类", "商品规格", "计量", "商品条码", "单位", "最大不可拆箱包装数", "最大箱包数", "小类编码", "中类编码", "大类编码", "所属柜组", "品牌编码", "品牌名称", "商品品类", "年度", "自制商品", "商品类型", "商品状态", "最后更新时间"];
+  const headers = ["商品编码", "商品名称", "简称", "助记符", "品类", "商品规格", "计量", "商品条码", "单位", "最大不可拆箱包装数", "最大箱包数", "小类编码", "中类编码", "大类编码", "所属柜组", "品牌编码", "品牌名称", "商品品类", "年度", "自制商品", "商品类型", "商品状态", "创建时间", "最后更新时间"];
   return listPageLayout({
     filtersHtml,
     filterActionsHtml: actionsHtml,
     listTitle: "商品列表",
+    listActionsHtml: `<button class="btn" type="button" data-act="gmGoodsExport">导出</button>`,
     tableHtml: table(headers, rows || `<tr><td colspan="${headers.length}"><div class="empty">暂无数据</div></td></tr>`),
     footerHtml: footerbar(`共 ${list.length} 条`, "第 1 页")
   });
@@ -24253,12 +24252,10 @@ function renderSmStoreGoodsPage() {
     name: s.storeName || storeNames[s.storeCode] || "—",
     region: s.regionDesc || s.regionCode || ""
   }));
-  // filter stores by code or name
+  // filter stores by code or name (keyword matches code/name)
   const filteredStores = storeList.filter((s) => {
-    const codeQ = String(ui.storeCode || "").trim().toLowerCase();
-    const nameQ = String(ui.storeName || "").trim().toLowerCase();
-    if (codeQ && !String(s.code || "").toLowerCase().includes(codeQ)) return false;
-    if (nameQ && !String(s.name || "").toLowerCase().includes(nameQ)) return false;
+    const kw = String(ui.storeCode || "").trim().toLowerCase();
+    if (kw && !(String(s.code || "").toLowerCase().includes(kw) || String(s.name || "").toLowerCase().includes(kw))) return false;
     return true;
   });
   const selectedStore = ui.selectedStore || (filteredStores[0] ? filteredStores[0].code : "");
@@ -24300,7 +24297,11 @@ function renderSmStoreGoodsPage() {
 
   const filtersHtml = `
     <div class="field">
-      <div class="field__label">商品信息</div>
+      <div class="field__label">门店编码/名称</div>
+      <input class="input" id="smStoreGoodsQStoreCode" value="${escapeHtml(ui.storeCode)}" placeholder="请输入门店编码/名称查询" />
+    </div>
+    <div class="field">
+      <div class="field__label">商品</div>
       <input class="input" id="smStoreGoodsQGoods" value="${escapeHtml(ui.qGoods)}" placeholder="请输入商品编码/条码/名称查询" />
     </div>
     <div class="field">
@@ -24315,15 +24316,20 @@ function renderSmStoreGoodsPage() {
       <div class="field__label">小类</div>
       <select class="select" id="smStoreGoodsQMinor">${minorCategories.map((x) => `<option ${x === ui.qMinor ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select>
     </div>
-  `;
-  const actionsHtml = `
-    <div class="campaign-list-filters__actions">
-      <button class="btn btn--primary" type="button" data-act="smStoreGoodsQuery">查询</button>
-      <button class="btn" type="button" data-act="smStoreGoodsReset">重置</button>
-      <button class="btn" type="button" data-act="smStoreGoodsExport">导出</button>
+    <div class="field">
+      <div class="field__label">创建时间</div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input class="input" id="smStoreGoodsQCreateFrom" type="date" value="${escapeHtml(ui.qCreateFrom || "")}" placeholder="开始" />
+        <span>-</span>
+        <input class="input" id="smStoreGoodsQCreateTo" type="date" value="${escapeHtml(ui.qCreateTo || "")}" placeholder="结束" />
+      </div>
     </div>
   `;
-  const headers = ["序号", "门店编码", "门店名称", "商品编码", "商品名称", "单位", "计量", "商品条码", "大类", "中类", "小类", "规格", "商品类型", "经营方式", "门店商品状态", "商品售价", "商品最近一次进价", "最后更新时间"];
+  const actionsHtml = `
+    <button class="btn btn--primary" type="button" data-act="smStoreGoodsQuery">查询</button>
+    <button class="btn" type="button" data-act="smStoreGoodsReset">重置</button>
+  `;
+  const headers = ["序号", "门店编码", "门店名称", "商品编码", "商品名称", "单位", "计量", "商品条码", "大类", "中类", "小类", "规格", "商品类型", "经营方式", "门店商品状态", "门店售价", "参考进价", "最后更新时间"];
   const rows = list.map((x, idx) => `
     <tr>
       <td>${idx + 1}</td>
@@ -24334,9 +24340,9 @@ function renderSmStoreGoodsPage() {
       <td>${escapeHtml(x.unit)}</td>
       <td>${escapeHtml(x.measure)}</td>
       <td class="mono">${escapeHtml(x.barcode)}</td>
-      <td>${escapeHtml(x.major)}</td>
-      <td>${escapeHtml(x.middle)}</td>
-      <td>${escapeHtml(x.minor)}</td>
+      <td>${escapeHtml((x.lv1CatCode || "") + (x.major ? " " + x.major : ""))}</td>
+      <td>${escapeHtml((x.lv2CatCode || "") + (x.middle ? " " + x.middle : ""))}</td>
+      <td>${escapeHtml((x.lv3CatCode || "") + (x.minor ? " " + x.minor : ""))}</td>
       <td>${escapeHtml(x.spec)}</td>
       <td>${escapeHtml(x.goodsType)}</td>
       <td>${escapeHtml(x.businessMode)}</td>
@@ -24353,24 +24359,17 @@ function renderSmStoreGoodsPage() {
   `).join("");
 
   return `
-    <div class="tpl-list-layout sg-layout">
-      <div class="sg-store-panel">
-        <div class="sg-store-panel__title">门店列表</div>
-        <div class="sg-store-panel__search">
-          <input class="input" id="smStoreGoodsQStoreCode" value="${escapeHtml(ui.storeCode)}" placeholder="门店编码" />
-          <input class="input" id="smStoreGoodsQStoreName" value="${escapeHtml(ui.storeName)}" placeholder="门店名称" />
-        </div>
-        <div class="sg-store-panel__list">${storeTreeHtml}</div>
-      </div>
+    <div class="tpl-list-layout sg-layout" style="display:block;">
       <div class="campaign-list-page">
         <div class="campaign-list-shell">
           <div class="campaign-list-filters">
             <div class="campaign-list-filters__grid">
               ${filtersHtml}
-              <div class="campaign-list-filters__actions">${actionsHtml}</div>
+              <div class="campaign-list-filters__actions" style="grid-column:-2 / -1;justify-self:end;">${actionsHtml}</div>
             </div>
           </div>
           <div class="campaign-list-title"><span class="campaign-list-title__mark"></span>${escapeHtml(selStoreObj.name || "门店")}商品信息</div>
+          <div style="text-align:right;margin-bottom:8px;"><button class="btn" type="button" data-act="smStoreGoodsExport">导出</button></div>
           <div class="campaign-list-table">
             ${table(headers, rows + emptyRows)}
           </div>
@@ -24425,10 +24424,9 @@ function renderGmPayPage() {
       <div class="field__label">关键字</div>
       <input class="input" id="gmPayQ" value="${escapeHtml(ui.q)}" placeholder="支付编码/名称" />
     </div>
-    <div class="field" style="display:flex;gap:8px;align-items:center">
+    <div class="field" style="display:flex;gap:8px;align-items:center;grid-column:-2 / -1;justify-self:end;">
       <button class="btn btn--primary" type="button" data-act="gmPayQuery">查询</button>
       <button class="btn" type="button" data-act="gmPayReset">重置</button>
-      <button class="btn" type="button" data-act="gmPayExport">导出</button>
     </div>
   `;
   const actionsHtml = ``;
@@ -24467,6 +24465,7 @@ function renderGmPayPage() {
     filtersHtml,
     filterActionsHtml: actionsHtml,
     listTitle: "支付方式列表",
+    listActionsHtml: `<button class="btn" type="button" data-act="gmPayExport">导出</button>`,
     tableHtml: table(headers, rows + emptyRows),
     footerHtml: footerbar(`共 ${list.length} 条`, "第 1 页")
   });
@@ -24561,10 +24560,9 @@ function renderGmCategoryPage(kind) {
       <div class="field__label">关键字</div>
       <input class="input" id="${cfg.qId}" value="${escapeHtml(ui.q)}" placeholder="品类编码/名称" />
     </div>
-    <div class="field" style="display:flex;gap:8px;align-items:center">
+    <div class="field" style="display:flex;gap:8px;align-items:center;grid-column:-2 / -1;justify-self:end;">
       <button class="btn btn--primary" type="button" data-act="${cfg.queryAct}">查询</button>
       <button class="btn" type="button" data-act="${cfg.resetAct}">重置</button>
-      <button class="btn" type="button" data-act="${cfg.exportAct || cfg.queryAct.replace('Query', 'Export')}">导出</button>
     </div>
   `;
   const actionsHtml = ``;
@@ -24675,6 +24673,7 @@ function renderGmCategoryPage(kind) {
     filtersHtml,
     filterActionsHtml: actionsHtml,
     listTitle: cfg.listTitle,
+    listActionsHtml: `<button class="btn" type="button" data-act="${cfg.exportAct || cfg.queryAct.replace('Query', 'Export')}">导出</button>`,
     tableHtml: isHierarchyView
       ? table(treeTableHeaders, treeTableHtml || `<tr><td colspan="${treeTableHeaders.length}"><div class="empty">暂无数据</div></td></tr>`)
       : table(headers, rows || `<tr><td colspan="${headers.length}"><div class="empty">暂无数据</div></td></tr>`),
@@ -24718,10 +24717,9 @@ function renderGmBrandsPage() {
       <div class="field__label">关键字</div>
       <input class="input" id="gmBrandsQ" value="${escapeHtml(ui.q)}" placeholder="品牌编码/名称" />
     </div>
-    <div class="field" style="display:flex;gap:8px;align-items:center">
+    <div class="field" style="display:flex;gap:8px;align-items:center;grid-column:-2 / -1;justify-self:end;">
       <button class="btn btn--primary" type="button" data-act="gmBrandsQuery">查询</button>
       <button class="btn" type="button" data-act="gmBrandsReset">重置</button>
-      <button class="btn" type="button" data-act="gmBrandsExport">导出</button>
     </div>
   `;
   const actionsHtml = ``;
@@ -24745,6 +24743,7 @@ function renderGmBrandsPage() {
     filtersHtml,
     filterActionsHtml: actionsHtml,
     listTitle: "品牌列表",
+    listActionsHtml: `<button class="btn" type="button" data-act="gmBrandsExport">导出</button>`,
     tableHtml: table(headers, rows || `<tr><td colspan="${headers.length}"><div class="empty">暂无数据</div></td></tr>`),
     footerHtml: footerbar(`共 ${list.length} 条`, "第 1 页")
   });
@@ -24861,8 +24860,8 @@ function renderGmSuppliersPage() {
   });
   const filtersHtml = `
     <div class="field">
-      <div class="field__label">关键字</div>
-      <input class="input" id="gmSuppliersQ" value="${escapeHtml(ui.q)}" placeholder="供应商编码/名称/联系人" />
+      <div class="field__label">供货商</div>
+      <input class="input" id="gmSuppliersQ" value="${escapeHtml(ui.q)}" placeholder="供货商编码/名称/简称" />
     </div>
     <div class="field">
       <div class="field__label">状态</div>
@@ -24870,11 +24869,13 @@ function renderGmSuppliersPage() {
         ${["全部", "启用", "停用"].map((x) => `<option ${x === ui.status ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}
       </select>
     </div>
+    <div class="field" style="display:flex;gap:8px;align-items:center;grid-column:-2 / -1;justify-self:end;">
+      <button class="btn btn--primary" type="button" data-act="gmSuppliersQuery">查询</button>
+      <button class="btn" type="button" data-act="gmSuppliersReset">重置</button>
+    </div>
   `;
-  const actionsHtml = `
-    <button class="btn btn--primary" type="button" data-act="gmSuppliersQuery">查询</button>
-    <button class="btn" type="button" data-act="gmSuppliersReset">重置</button>
-  `;
+  const actionsHtml = "";
+
   const rows = list
     .map((x, idx) => {
       return `
@@ -24882,17 +24883,17 @@ function renderGmSuppliersPage() {
           <td>${idx + 1}</td>
           <td class="mono"><a class="link" href="javascript:void(0)">${escapeHtml(x.supplierCode)}</a></td>
           <td>${escapeHtml(x.supplierName)}</td>
+          <td>${escapeHtml(x.shortName || "—")}</td>
           <td>${escapeHtml(x.contact || "—")}</td>
           <td class="mono">${escapeHtml(x.phone || "—")}</td>
           <td>${escapeHtml(x.address || "—")}</td>
           <td class="mono">${escapeHtml(x.createdAt || "—")}</td>
-          <td>${badge(x.status || "—")}</td>
           <td>${escapeHtml(x.modifyAt || x.createdAt || "2026-07-22 12:00:00")}</td>
         </tr>
       `;
     })
     .join("");
-  const headers = ["序号", "供应商编码", "供应商名称", "联系人", "联系电话", "地址", "创建时间", "状态", "最后更新时间"];
+  const headers = ["序号", "供货编码", "供货商名称", "供货商简称", "联系人", "电话", "地址", "创建时间", "更新时间"];
   return listPageLayout({
     filtersHtml,
     filterActionsHtml: actionsHtml,
@@ -25049,18 +25050,18 @@ function renderStoreMgmtPage(kind) {
       queryAct: "smStoresQuery",
       resetAct: "smStoresReset",
       listTitle: "门店信息列表",
-      headers: ["序号", "门店编码", "门店名称", "门店类型", "大区", "价格组编码", "DM店群分组", "地址", "业态", "门店分组", "门店生命周期", "最后更新时间"],
+      headers: ["序号", "门店编码", "门店名称", "门店类型", "大区", "价格组", "DM店群分组", "地址", "业态", "门店分组", "门店生命周期", "最后更新时间"],
       rowHtml: (x, idx) => `<tr>
         <td>${idx + 1}</td>
         <td class="mono">${escapeHtml(x.storeCode || "")}</td>
         <td>${escapeHtml(x.storeName || "")}</td>
         <td>${escapeHtml(x.storeType || "—")}</td>
-        <td>${escapeHtml(x.regionDesc || "—")}</td>
-        <td class="mono">${escapeHtml(x.priceGroupCode || "—")}</td>
-        <td>${escapeHtml(x.dmGroup || "—")}</td>
+        <td>${escapeHtml(((x.regionCode || "") + (x.regionDesc ? " " + x.regionDesc : "")) || "—")}</td>
+        <td>${escapeHtml(((x.priceGroupCode || "") + (x.priceGroupName ? " " + x.priceGroupName : "")) || "—")}</td>
+        <td>${escapeHtml(((x.dmGroupCode || "") + (x.dmGroup ? " " + x.dmGroup : "")) || "—")}</td>
         <td>${escapeHtml(x.address || "—")}</td>
         <td>${escapeHtml(x.businessFormat || x.format || "—")}</td>
-        <td>${escapeHtml(x.storeGroup || "—")}</td>
+        <td>${escapeHtml(((x.storeGroupCode || "") + (x.storeGroup ? " " + x.storeGroup : "")) || "—")}</td>
         <td>${escapeHtml(x.storeLifeCycle || "—")}</td>
         <td>${escapeHtml(x.modifyAt || x.createdAt || "2026-07-22 12:00:00")}</td>
       </tr>`,
@@ -25078,13 +25079,12 @@ function renderStoreMgmtPage(kind) {
   const isStoresPage = kind === "stores";
   const filtersHtml = isStoresPage ? `
     <div class="field">
-      <div class="field__label">门店编码/名称</div>
-      <input class="input" id="${cfg.qCodeId}" value="${escapeHtml(ui.qCode || "")}" placeholder="门店编码/名称" />
+      <div class="field__label">门店名称</div>
+      <input class="input" id="${cfg.qCodeId}" value="${escapeHtml(ui.qCode || "")}" placeholder="门店名称" />
     </div>
-    <div class="field" style="display:flex;gap:8px;align-items:center">
+    <div class="field" style="display:flex;gap:8px;align-items:center;grid-column:-2 / -1;justify-self:end;">
       <button class="btn btn--primary" type="button" data-act="${cfg.queryAct}">查询</button>
       <button class="btn" type="button" data-act="${cfg.resetAct}">重置</button>
-      <button class="btn" type="button" data-act="smStoresExport">导出</button>
     </div>
   ` : `
     <div class="field">
@@ -25105,6 +25105,7 @@ function renderStoreMgmtPage(kind) {
     filtersHtml,
     filterActionsHtml: actionsHtml,
     listTitle: cfg.listTitle,
+    listActionsHtml: isStoresPage ? `<button class="btn" type="button" data-act="smStoresExport">导出</button>` : "",
     tableHtml: table(cfg.headers, rows || `<tr><td colspan="${cfg.headers.length}"><div class="empty">暂无数据</div></td></tr>`),
     footerHtml: footerbar(`共 ${list.length} 条`, "第 1 页")
   });
@@ -25264,7 +25265,7 @@ function renderChangelogPage() {
   if (!AppState.data.changelogs) {
     AppState.data.changelogs = [
       { version: "20260710v1.0.0", date: "2026-07-10", items: ["初始版本发布", "促销活动新增/编辑/审核/终止完整流程", "促销模版管理（创建/审核/优先级排序）", "门店范围选店/批量导入", "商品范围单品/品类/品牌选择", "组合价/一口价活动配置", "满减满赠活动配置", "模拟算价功能", "促销终止单流程", "促销活动列表（含批量操作）", "主档信息管理（门店/品类/品牌/供应商等）"] },
-      { version: "20260710v1.0.1", date: "2026-07-10", items: ["门店范围操作列添加+/-按钮", "商品范围去条件范围模块", "商家信息+/-行按钮", "待生效促销队列商品明细视图", "生效/失效列表同步更新", "门店组维护左右布局", "促销组合维护页面", "版本更新页面", "活动基础设置菜单", "导航菜单结构调整"] }
+      { version: "20260710v1.0.1", date: "2026-07-10", items: ["门店范围操作列添加+/-按钮", "商品范围去条件范围模块", "商家信息+/-行按钮", "促销查询商品明细视图", "生效/失效列表同步更新", "门店组维护左右布局", "促销组合维护页面", "版本更新页面", "活动基础设置菜单", "导航菜单结构调整"] }
     ];
   }
   const list = AppState.data.changelogs || [];
@@ -28798,7 +28799,7 @@ function renderRptUserOrdersPage() {
     <div class="field"><div class="field__label">创建人</div><input class="input" id="ruoQCreator" value="${escapeHtml(ui.qCreator)}" placeholder="请输入创建人" /></div>
     <div class="field"><div class="field__label">修改人</div><input class="input" id="ruoQModifier" value="${escapeHtml(ui.qModifier)}" placeholder="请输入修改人" /></div>
     <div class="field"><div class="field__label">模板名称</div><select class="select" id="ruoQTemplate">${templates.map((x) => `<option ${x === qTpl ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select></div>
-    <div class="field field--actions"><button class="btn btn--primary" type="button" data-act="ruoQuery">查询</button><button class="btn" type="button" data-act="ruoReset">重置</button></div>
+    <div class="field field--actions" style="grid-column:-2 / -1;justify-self:end;"><button class="btn btn--primary" type="button" data-act="ruoQuery">查询</button><button class="btn" type="button" data-act="ruoReset">重置</button></div>
   `;
   const rowsHtml = filtered.map((r) => `<tr><td style="font-weight:600">${escapeHtml(r.creator)}</td><td class="mono">${escapeHtml(r.time)}</td><td class="mono">${r.stores}</td><td>${escapeHtml(r.template)}</td><td class="mono">${r.orders}</td><td class="mono">${r.goods}</td></tr>`).join("");
   const hint = qTpl === "全部" ? `<div class="hint" style="margin-bottom:8px;">模板=全部：按模板名称平铺展示多条记录。</div>` : "";
