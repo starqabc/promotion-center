@@ -5098,6 +5098,7 @@ function templateWizardCollectPayload() {
   const type = document.getElementById("twType") ? normalizeTemplateType(document.getElementById("twType").value) : "";
   const promoMethod = document.getElementById("twPromoMethod") ? document.getElementById("twPromoMethod").value : "";
   const desc = document.getElementById("twDesc") ? document.getElementById("twDesc").value : "";
+  const menuSort = document.getElementById("twMenuSort") ? Number(document.getElementById("twMenuSort").value) || "" : "";
   const spec = templateTypeSpec(type);
   const time = {
     startEnabled: document.getElementById("twReqStartAt") ? document.getElementById("twReqStartAt").checked : true,
@@ -5136,7 +5137,7 @@ function templateWizardCollectPayload() {
     costShareTypes: []
   };
 
-  const basic = { templateNo: "", status: "", enableStatus, name, type, promoMethod, desc, time, object, other };
+  const basic = { templateNo: "", status: "", enableStatus, name, type, promoMethod, menuSort, desc, time, object, other };
   const fullQtyEnabled = document.getElementById("tcFullQty") ? document.getElementById("tcFullQty").checked : false;
   const fullAmtEnabled = document.getElementById("tcFullAmt") ? document.getElementById("tcFullAmt").checked : false;
   const hasThresholdCondition = fullQtyEnabled || fullAmtEnabled;
@@ -5193,7 +5194,7 @@ function templateWizardCollectPayload() {
   };
 
   const config = { basic, conditions: cond, rewards, display: {} };
-  return { editId, name, type, promoMethod, desc, config };
+  return { editId, name, type, promoMethod, menuSort, desc, config };
 }
 
 function templateWizardRenderPreview() {
@@ -5330,6 +5331,7 @@ function templateWizardSave(targetStatus) {
     t.name = p.name;
     t.templateType = p.type;
     t.promoMethod = p.promoMethod || "";
+    t.menuSort = p.menuSort;
     t.desc = p.desc || "";
     t.enableStatus = (p.config && p.config.basic && p.config.basic.enableStatus) ? p.config.basic.enableStatus : (t.enableStatus || "启用");
     t.status = targetStatus;
@@ -5347,6 +5349,7 @@ function templateWizardSave(targetStatus) {
       name: p.name,
       templateType: p.type,
       promoMethod: p.promoMethod || "",
+      menuSort: p.menuSort,
       desc: p.desc || "",
       enableStatus: (p.config && p.config.basic && p.config.basic.enableStatus) ? p.config.basic.enableStatus : "启用",
       status: targetStatus,
@@ -8050,14 +8053,11 @@ function renderTemplatesPage() {
   };
 
   const filtered = AppState.data.templates.filter((t) => {
-    const okNo = !ui.qNo || String(t.templateNo || "").includes(ui.qNo);
-    const okName = !ui.qName || String(t.name || "").includes(ui.qName);
+    const okNo = !ui.qNo || String(t.templateNo || "").includes(ui.qNo) || String(t.name || "").includes(ui.qNo);
     const tplType = normalizeTemplateType(t.templateType || (t.config && t.config.basic ? t.config.basic.type : "") || t.type || "");
     const okType = ui.qType === "全部" || tplType === normalizeTemplateType(ui.qType);
     const okStatus = ui.qStatus === "全部" || String(t.status || "") === ui.qStatus;
-    const as = auditStatusText(t);
-    const okAudit = (ui.qAuditStatus || "全部") === "全部" || as === String(ui.qAuditStatus || "");
-    return okNo && okName && okType && okStatus && okAudit && inTimeRange(t);
+    return okNo && okType && okStatus;
   });
 
   const maxRows = 6;
@@ -8072,6 +8072,7 @@ function renderTemplatesPage() {
     "模板名称",
     "模板类型",
     "模板状态",
+    "菜单排序",
     "活动引用数",
     "审核状态",
     "审核说明",
@@ -8108,6 +8109,7 @@ function renderTemplatesPage() {
         <td>${escapeHtml(t.name || "")}</td>
         <td>${escapeHtml(typeText)}</td>
         <td>${escapeHtml(String(t.status || "—"))}</td>
+        <td>${escapeHtml(String(t.menuSort ?? "—"))}</td>
         <td>${usedCount}</td>
         <td>${escapeHtml(auditStatusText(t))}</td>
         <td>${escapeHtml(t.auditRemark || "—")}</td>
@@ -8134,12 +8136,8 @@ function renderTemplatesPage() {
             <div class="campaign-list-filters tpl-list-filters">
               <div class="campaign-list-filters__grid">
                 <div class="campaign-list-field">
-                  <div class="campaign-list-field__label">模板编号</div>
-                  <input class="input" id="tplQNo" value="${escapeHtml(ui.qNo)}" placeholder="请输入模板编号查询" />
-                </div>
-                <div class="campaign-list-field">
-                  <div class="campaign-list-field__label">模板名称</div>
-                  <input class="input" id="tplQName" value="${escapeHtml(ui.qName)}" placeholder="请输入模板名称查询" />
+                  <div class="campaign-list-field__label">模版编码/名称</div>
+                  <input class="input" id="tplQNo" value="${escapeHtml(ui.qNo)}" placeholder="请输入模版编码/名称查询" />
                 </div>
                 <div class="campaign-list-field">
                   <div class="campaign-list-field__label">模板类型</div>
@@ -8148,20 +8146,6 @@ function renderTemplatesPage() {
                 <div class="campaign-list-field">
                   <div class="campaign-list-field__label">模板状态</div>
                   <select class="select" id="tplQStatus">${statusOps.map((x) => `<option value="${escapeHtml(x.v)}" ${String(x.v) === String(ui.qStatus || "全部") ? "selected" : ""}>${escapeHtml(x.t)}</option>`).join("")}</select>
-                </div>
-                <div class="campaign-list-field">
-                  <div class="campaign-list-field__label">审核状态</div>
-                  <select class="select" id="tplQAuditStatus">${auditOps.map((x) => `<option ${String(x) === String(ui.qAuditStatus || "全部") ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}</select>
-                </div>
-                <div class="campaign-list-field tpl-list-field--time">
-                  <div class="campaign-list-field__label">查询时间</div>
-                  <div class="campaign-list-time">
-                    <select class="select campaign-list-time__type" id="tplQTimeType">
-                      ${timeTypes.map((x) => `<option ${x === (ui.qTimeType || "创建时间") ? "selected" : ""}>${escapeHtml(x)}</option>`).join("")}
-                    </select>
-                    <input class="input campaign-list-time__input" id="tplQStartFrom" type="datetime-local" value="${escapeHtml(toDatetimeLocalValue(ui.qStartFrom))}" placeholder="请选择开始时间" />
-                    <input class="input campaign-list-time__input" id="tplQEndTo" type="datetime-local" value="${escapeHtml(toDatetimeLocalValue(ui.qEndTo))}" placeholder="请选择结束时间" />
-                  </div>
                 </div>
                 <div class="campaign-list-filters__actions">
                   <button class="btn btn--primary" type="button" data-act="tplQuery">查询</button>
@@ -9902,6 +9886,10 @@ function renderTemplateWizardPage(mode) {
           <option value="">请选择</option>
           ${templatePromoMethodOptions(existingType).map((m) => `<option value="${escapeHtml(m)}" ${String(existingMethod) === String(m) ? "selected" : ""}>${escapeHtml(m)}</option>`).join("")}
         </select>
+      </div>
+      <div class="field">
+        <div class="field__label">菜单排序</div>
+        <input class="input" id="twMenuSort" type="number" min="0" step="1" value="${escapeHtml(existing ? String(existing.menuSort ?? "") : "")}" placeholder="请输入数值" />
       </div>
       <div class="field tpl-form-span-full">
         <div class="field__label">模板说明</div>
@@ -19066,6 +19054,7 @@ function comboCampaignGoodsSettingTableHtml(draft = {}, readonly = false) {
   const ui = AppState.ui.campaignWizard || {};
   const rows = Array.isArray(gs.comboSettings) ? gs.comboSettings : [];
   const showPickQty = String(gs.comboMode || "固定组合") === "任选组合" && !campaignIsComboPriceDraft(draft);
+  const showLimitFields = String(gs.comboMode || "固定组合") !== "任选组合";
   const pickedSet = new Set((Array.isArray(ui.comboGoodsRulePicked) ? ui.comboGoodsRulePicked : []).map((x) => Number(x)).filter(Number.isFinite));
   const visibleRows = rows.slice(0, 8);
   const allRows = rows.length ? rows : visibleRows;
@@ -19105,6 +19094,7 @@ function comboCampaignGoodsSettingTableHtml(draft = {}, readonly = false) {
     cells.push(`<td>${readonly
       ? `<span class="combo-goods-cell-text">${escapeHtml(String(x.promoPrice ?? ""))}</span>`
       : `<input class="combo-goods-cell-input" data-cw="comboGoodsSettings" data-idx="${idx}" data-field="promoPrice" type="number" min="0" step="0.01" value="${escapeHtml(String(x.promoPrice ?? ""))}" />`}</td>`);
+    if (showLimitFields) {
     cells.push(`<td>${readonly
       ? `<span class="combo-goods-cell-text">${escapeHtml(String(x.limitCycle || "每笔订单"))}</span>`
       : `<select class="combo-goods-cell-select" data-cw="comboGoodsSettings" data-idx="${idx}" data-field="limitCycle">${["每笔订单", "每日", "活动期间"].map((v) => `<option value="${v}" ${String(x.limitCycle || "每笔订单") === v ? "selected" : ""}>${v}</option>`).join("")}</select>`}</td>`);
@@ -19117,6 +19107,7 @@ function comboCampaignGoodsSettingTableHtml(draft = {}, readonly = false) {
     cells.push(`<td>${readonly
       ? `<span class="combo-goods-cell-text">${escapeHtml(String(x.dmLimitQty ?? ""))}</span>`
       : `<input class="combo-goods-cell-input" data-cw="comboGoodsSettings" data-idx="${idx}" data-field="dmLimitQty" type="number" min="0" step="1" value="${escapeHtml(String(x.dmLimitQty ?? ""))}" />`}</td>`);
+    }
     if (showCap) {
       const isLadder = String(x.discountWay || "倍数") === "阶梯";
       cells.push(`<td>${readonly
@@ -19125,7 +19116,7 @@ function comboCampaignGoodsSettingTableHtml(draft = {}, readonly = false) {
     }
     return `<tr>${cells.join("")}</tr>`;
   }).join("");
-  const emptyCols = 3 + 1 + (showPickQty ? 1 : 0) + (showComboQty ? 1 : 0) + 4 + 1 + (showCap ? 1 : 0);
+  const emptyCols = 3 + 1 + (showPickQty ? 1 : 0) + (showComboQty ? 1 : 0) + (showLimitFields ? 4 : 0) + 1 + (showCap ? 1 : 0);
   const minRows = isAnyCategoryLadderScene ? 2 : 3;
   const emptyRows = Array.from({ length: Math.max(0, minRows - visibleRows.length) }).map((_, idx) => `
     <tr>
@@ -19150,7 +19141,7 @@ function comboCampaignGoodsSettingTableHtml(draft = {}, readonly = false) {
             ${showPickQty ? "<th>任选X件</th>" : ""}
             ${showComboQty ? "<th>组合数量</th>" : ""}
             <th>促销价</th>
-            <th>限购周期</th><th>限购数量</th><th>门店限购数量</th><th>DM限购数量</th>
+            ${showLimitFields ? "<th>限购周期</th><th>限购数量</th><th>门店限购数量</th><th>DM限购数量</th>" : ""}
             ${showCap ? "<th>上限</th>" : ""}
             <th>操作</th>
           </tr>
@@ -19650,6 +19641,8 @@ function comboCampaignBurdenRuleHtml(gs = {}, readonly = false) {
   const rule = gs.burdenRule || {};
   const shareMode = "统一比例";
   const isCustom = false;
+  const comboMode = String(gs.comboMode || "固定组合");
+  const isAnyCombo = comboMode === "任选组合";
   const methodSel = `<div class="combo-burden-row" style="margin-bottom:12px;">
       <div class="combo-burden-col">
         <div class="field__label"><span class="req">*</span>承担方式</div>
@@ -19826,6 +19819,7 @@ function comboCampaignAnyGoodsPanelHtml(draft = {}, readonly = false) {
   if (!Array.isArray(gs.goods)) gs.goods = [];
   if (!Array.isArray(gs.comboSettings)) gs.comboSettings = [];
   const comboMode = String(gs.comboMode || "任选组合");
+  const isAnyCombo = comboMode === "任选组合";
   const val = (field) => String(gs[field] ?? "");
   const num = (label, field) => `<div class="field">
       <div class="field__label">${label}</div>
@@ -19887,9 +19881,12 @@ function comboCampaignAnyGoodsPanelHtml(draft = {}, readonly = false) {
       ? `<td>${escapeHtml(String(x.dmLimitQty ?? ""))}</td>`
       : `<td><input class="input" style="width:100%" data-cw="comboGoodsSettings" data-idx="${di}" data-field="dmLimitQty" type="number" min="0" value="${escapeHtml(String(x.dmLimitQty ?? ""))}" /></td>`;
     const opCell = readonly ? "<td></td>" : `<td style="white-space:nowrap;text-align:center;"><button class="row-btn row-btn--add" type="button" data-act="campComboRuleAddAfter" data-idx="${di}">+</button><button class="row-btn row-btn--del" type="button" data-act="campComboRuleDelRow" data-idx="${di}">−</button></td>`;
-    return `<tr><td>${idx + 1}</td>${opCell}${codeCell}${qtyCell}${limitCycleCell}${perPersonCell}${perItemCell}${dmCell}</tr>`;
+    const limitCells = isAnyCombo ? "" : `${limitCycleCell}${perPersonCell}${perItemCell}${dmCell}`;
+    return `<tr><td>${idx + 1}</td>${opCell}${codeCell}${qtyCell}${limitCells}</tr>`;
   }).join("");
-  const ruleHeaders = ["序号", "+/-", "组合编码", "任选X件", "限购周期", "限购数量", "门店限购数量", "DM限购数量"];
+  const ruleHeaders = isAnyCombo
+    ? ["序号", "+/-", "组合编码", "任选X件"]
+    : ["序号", "+/-", "组合编码", "任选X件", "限购周期", "限购数量", "门店限购数量", "DM限购数量"];
 
   return `
     <div class="combo-camp-panel combo-camp-goods-panel">
@@ -39951,6 +39948,7 @@ function openTemplateDetail(id) {
                   ["模板名称", escapeHtml(t.name || "—")],
                   ["促销类型", escapeHtml(basic.type || "—")],
                   ["促销方式", escapeHtml(basic.promoMethod || t.promoMethod || "—")],
+                  ["菜单排序", escapeHtml(String(t.menuSort ?? "—"))],
                   ["模板说明", escapeHtml(basic.desc || "—")]
                 ]))}
                 <div class="divider"></div>
