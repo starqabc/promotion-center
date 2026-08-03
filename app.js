@@ -6119,26 +6119,32 @@ function campaignWizardMaxStep() {
 
 function campaignNavTree() {
   return [
+    /* [隐藏-后续恢复] 特价促销
     {
       key: "special",
       label: "特价促销",
       items: ["商品直降", "N件特价"]
     },
+    */
     {
       key: "discount",
       label: "折扣促销",
-      items: ["商品折扣", "购满折扣", "时段折扣", "N件折扣", "组合特价", "组合价"]
+      items: [/* [隐藏-后续恢复] "商品折扣", "购满折扣", "时段折扣", "N件折扣", */ "组合特价", "组合价"]
     },
+    /* [隐藏-后续恢复] 满减满赠
     {
       key: "reduceGift",
       label: "满减满赠",
       items: ["满金额减", "满金额赠", "满金额换购", "最低免单"]
     },
+    */
+    /* [隐藏-后续恢复] 满赠券促销
     {
       key: "voucherGift",
       label: "满赠券促销",
       items: ["满金额赠券"]
     }
+    */
   ];
 }
 
@@ -6157,7 +6163,9 @@ function renderCampaignSubNav() {
   const ui = AppState.ui.nav || (AppState.ui.nav = { openSection: "campaign", openCampaigns: false, openCampaignsCat: "special", openTplPriority: false });
   const openKey = ui.openCampaignsCat || "special";
   const tree = campaignNavTree();
-  const scheduleNav = `<a class="nav__item" href="#/template-priority-schedule-import" data-route="/template-priority-schedule-import">档期智能促销</a>`;
+  // [隐藏-后续恢复] 档期智能促销
+  // const scheduleNav = `<a class="nav__item" href="#/template-priority-schedule-import" data-route="/template-priority-schedule-import">档期智能促销</a>`;
+  const scheduleNav = "";
   box.innerHTML = scheduleNav + tree
     .map((g) => {
       const open = g.key === openKey;
@@ -23589,7 +23597,7 @@ function renderPromoValidationPage() {
     return true;
   });
   const errorReasonOptions = ["", "档期不存在", "促销价低于正常价一半", "商品+2100门店不存在", "商品不存在", "门店2100不存在", "商品+10价格组不存在"];
-  const headers = ["序号", "档期编码", "档期名称", "活动时间", "促销方式", "组合类型", "分摊方式", "优惠方式", "组合编码", "商品编码", "固定/任意组合数量", "组合价", "阶梯数量", "阶梯价", "价格组", "参与门店", "活动编码", "活动名称", "效验结果"];
+  const headers = ["序号", "档期编码", "档期名称", "活动时间", "促销方式", "组合类型", "分摊方式", "优惠方式", "组合编码", "商品编码", "固定/任意组合数量", "组合价", "阶梯数量", "阶梯价", "价格组", "参与门店", "活动编码", "活动名称", "校验结果"];
   const rowsHtml = filtered.length ? filtered.map((r, i) => `
     <tr>
       <td>${i + 1}</td>
@@ -23631,38 +23639,17 @@ function renderPromoValidationPage() {
   `;
 
   return `
-    <div class="crumbs"><span class="crumbs__muted">促销中心</span> / <span>促销活动校验</span></div>
     ${layoutCard(`
       <div class="pv-page">
-        <div style="font-size:18px;font-weight:700;margin-bottom:16px;">效验数据</div>
         <div style="display:flex;gap:10px;margin-bottom:12px;">
-          <button class="btn ${activeTab === 'all' ? 'btn--primary' : ''}" type="button" data-act="pvTab" data-id="all" style="${activeTab === 'all' ? 'background:#1890ff;color:#fff;border-color:#1890ff;' : 'background:#f5f5f5;color:#666;border:1px solid #d9d9d9;'}">全部效验数据</button>
-          <button class="btn ${activeTab === 'diff' ? 'btn--primary' : ''}" type="button" data-act="pvTab" data-id="diff" style="${activeTab === 'diff' ? 'background:#1890ff;color:#fff;border-color:#1890ff;' : 'background:#f5f5f5;color:#666;border:1px solid #d9d9d9;'}">效验差异数据</button>
+          <button class="btn ${activeTab === 'all' ? 'btn--primary' : ''}" type="button" data-act="pvTab" data-id="all" style="${activeTab === 'all' ? 'background:#1890ff;color:#fff;border-color:#1890ff;' : 'background:#f5f5f5;color:#666;border:1px solid #d9d9d9;'}">全部校验数据</button>
+          <button class="btn ${activeTab === 'diff' ? 'btn--primary' : ''}" type="button" data-act="pvTab" data-id="diff" style="${activeTab === 'diff' ? 'background:#1890ff;color:#fff;border-color:#1890ff;' : 'background:#f5f5f5;color:#666;border:1px solid #d9d9d9;'}">校验差异数据</button>
         </div>
         <div style="display:flex;gap:10px;margin-bottom:12px;">
           <button class="btn btn--primary" type="button" data-act="pvImport" style="background:#1890ff;color:#fff;">导入</button>
           <button class="btn" type="button" data-act="pvExportAll" style="background:#fff;color:#666;border:1px solid #d9d9d9;">导出全部</button>
           <button class="btn" type="button" data-act="pvExportError" style="background:#fff;color:#666;border:1px solid #d9d9d9;">导出差异</button>
           <button class="btn" type="button" data-act="importExportRecord" style="border:1px solid #d1d5db;margin-left:auto;">导入导出记录</button>
-        </div>
-        <div style="display:flex;gap:12px;margin-bottom:12px;flex-wrap:wrap;align-items:flex-end;">
-          <div class="field" style="flex:0 0 160px;">
-            <div class="field__label">表名</div>
-            <input class="input" id="pvQTableName" value="${escapeHtml(ui.qTableName)}" placeholder="请输入表名" />
-          </div>
-          <div class="field" style="flex:0 0 160px;">
-            <div class="field__label">商品编码</div>
-            <input class="input" id="pvQGoodsCode" value="${escapeHtml(ui.qGoodsCode)}" placeholder="请输入商品编码" />
-          </div>
-          <div class="field" style="flex:0 0 180px;">
-            <div class="field__label">效验结果</div>
-            <select class="select" id="pvQErrorReason">
-              ${errorReasonOptions.map((x) => `<option value="${escapeHtml(x)}" ${ui.qErrorReason === x ? "selected" : ""}>${escapeHtml(x || "全部")}</option>`).join("")}
-            </select>
-          </div>
-          <div class="field" style="flex:0 0 auto;">
-            <button class="btn btn--primary" type="button" data-act="pvQuery">查询</button>
-          </div>
         </div>
         <div style="overflow-x:auto;">
           ${table(headers, rowsHtml)}
