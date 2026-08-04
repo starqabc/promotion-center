@@ -5315,12 +5315,13 @@ tbody tr:last-child td{border-bottom:none}
   min-width:2200px;
 }
 .assortment-goods-table thead th{
-  white-space:normal;
+  white-space:nowrap;
   line-height:1.35;
   text-align:center;
   padding:10px 6px;
 }
 .assortment-goods-table tbody td{
+  white-space:nowrap;
   text-align:center;
   padding:12px 6px;
   font-size:12px;

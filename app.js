@@ -5578,6 +5578,143 @@ function closeModal() {
   els.modalPrimary.onclick = null;
 }
 
+function campaignCheckGoodsConflict(draft) {
+  const d = draft || {};
+  const startA = String(d.startAt || "").slice(0, 10);
+  const endA = String(d.endAt || "").slice(0, 10);
+  if (!startA || !endA) return [];
+  const gs = d.goodsScope || {};
+  const curGoods = Array.isArray(gs.goods) ? gs.goods : [];
+  const curIsAll = String(gs.isAll || "否") === "是";
+  if (!curIsAll && !curGoods.length) return [];
+  const curStoreCodes = ((d.storeScope && d.storeScope.stores) || []).map((s) => String(s.storeCode || ""));
+  const curStoreAll = !curStoreCodes.length;
+  const statuses = ["待审核", "已审核", "待生效", "生效中", "草稿", "审核"];
+  const conflicts = [];
+  (AppState.data.campaigns || []).forEach((c) => {
+    if (String(c.activityNo || c.id || "") === String(d.activityNo || d.id || "")) return;
+    const status = String(c.status || "");
+    if (!statuses.includes(status)) return;
+    const startB = String(c.startAt || "").slice(0, 10);
+    const endB = String(c.endAt || "").slice(0, 10);
+    if (!startB || !endB) return;
+    if (startA > endB || endA < startB) return;
+    const eGs = c.goodsScope || {};
+    const eIsAll = String(eGs.isAll || "否") === "是";
+    const eGoods = Array.isArray(eGs.goods) ? eGs.goods : [];
+    const eStoreCodes = ((c.storeScope && c.storeScope.stores) || []).map((s) => String(s.storeCode || ""));
+    const eStoreAll = !eStoreCodes.length;
+    const storeOverlap = curStoreAll || eStoreAll || curStoreCodes.some((sc) => eStoreCodes.includes(sc));
+    if (!storeOverlap) return;
+    let overlapped = [];
+    if (curIsAll || eIsAll) {
+      overlapped = curIsAll ? eGoods : curGoods;
+    } else {
+      overlapped = curGoods.filter((g) => eGoods.some((eg) => String(g.skuCode || "") === String(eg.skuCode || "") || String(g.barcode || "") === String(eg.barcode || "")));
+    }
+    if (overlapped.length) {
+      conflicts.push({ campaign: c, overlappedGoods: overlapped });
+    }
+  });
+  return conflicts;
+}
+
+function openGoodsConflictModal(draft, conflicts, onProceed) {
+  const d = draft || {};
+  const allOverlapped = [];
+  const conflictRows = conflicts.map((cf, ci) => {
+    return cf.overlappedGoods.map((g) => {
+      allOverlapped.push({ skuCode: g.skuCode || "", skuName: g.skuName || "", conflictNo: cf.campaign.activityNo || cf.campaign.id || "", conflictName: cf.campaign.activitySubject || "", conflictMethod: cf.campaign.promoMethod || "", conflictStatus: cf.campaign.status || "" });
+      return `<tr>
+        <td>${allOverlapped.length}</td>
+        <td class="mono">${escapeHtml(g.skuCode || "")}</td>
+        <td>${escapeHtml(g.skuName || "")}</td>
+        <td class="mono">${escapeHtml(cf.campaign.activityNo || cf.campaign.id || "")}</td>
+        <td>${escapeHtml(cf.campaign.activitySubject || "")}</td>
+        <td>${escapeHtml(cf.campaign.promoMethod || "")}</td>
+        <td>${escapeHtml(cf.campaign.status || "")}</td>
+        <td>${escapeHtml(String(cf.campaign.startAt || "") + " ~ " + String(cf.campaign.endAt || ""))}</td>
+      </tr>`;
+    }).join("");
+  }).join("");
+  const headers = ["序号", "商品编码", "商品名称", "冲突活动编码", "冲突活动名称", "促销方式", "单据状态", "活动时间"];
+  openModal({
+    title: "商品冲突提醒",
+    subtitle: `检测到 ${conflicts.length} 个单据存在商品交叉冲突`,
+    size: "xl",
+    bodyHtml: `
+      <div class="hint" style="color:#ef4444;font-weight:700;margin-bottom:12px;">以下商品与其他促销活动存在时间、门店、商品三维交叉冲突，请选择处理方式后继续：</div>
+      ${table(headers, conflictRows || `<tr><td colspan="${headers.length}"><div class="empty">暂无冲突</div></td></tr>`)}
+      <div class="divider"></div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <div style="flex:1;min-width:280px;border:1px solid #e5e7eb;border-radius:8px;padding:16px;">
+          <div style="font-weight:700;margin-bottom:8px;">选项一：删除本单重复商品</div>
+          <div style="font-size:13px;color:#6b7280;margin-bottom:12px;">从当前单据商品范围中移除全部交叉商品，移除后可继续下一步。支持导出被移除的商品明细。</div>
+          <button class="btn btn--primary" type="button" data-act="campConflictRemoveGoods">删除本单重复商品</button>
+          <button class="btn" type="button" data-act="campConflictExport" style="margin-left:8px;">导出错误数据</button>
+        </div>
+        <div style="flex:1;min-width:280px;border:1px solid #e5e7eb;border-radius:8px;padding:16px;">
+          <div style="font-weight:700;margin-bottom:8px;">选项二：终止前单交叉商品</div>
+          <div style="font-size:13px;color:#6b7280;margin-bottom:12px;">自动创建促销终止单，终止已有单据中与当前单据交叉的商品。终止单生效后可继续。</div>
+          <button class="btn" type="button" data-act="campConflictTerminate" style="background:#ef4444;color:#fff;">终止前单交叉商品</button>
+        </div>
+      </div>
+    `,
+    primaryText: "取消",
+    onPrimary: closeModal
+  });
+  setTimeout(() => {
+    const removeBtn = document.querySelector('[data-act="campConflictRemoveGoods"]');
+    if (removeBtn) removeBtn.onclick = () => {
+      const gs = d.goodsScope || {};
+      const overlapSet = new Set(allOverlapped.map((x) => String(x.skuCode)));
+      gs.goods = (gs.goods || []).filter((g) => !overlapSet.has(String(g.skuCode || "")));
+      toast(`已移除 ${allOverlapped.length} 个交叉商品`);
+      closeModal();
+      render();
+    };
+    const exportBtn = document.querySelector('[data-act="campConflictExport"]');
+    if (exportBtn) exportBtn.onclick = () => {
+      const csv = "序号,当前单据编号,冲突商品编码,冲突商品名称,冲突单据编号,前单状态\n" + allOverlapped.map((x, i) => `${i + 1},${escapeHtml(d.activityNo || "")},${escapeHtml(x.skuCode)},${escapeHtml(x.skuName)},${escapeHtml(x.conflictNo)},${escapeHtml(x.conflictStatus)}`).join("\n");
+      downloadTextFile("冲突商品明细_" + new Date().toISOString().slice(0, 10) + ".csv", csv);
+      toast("已导出冲突商品明细");
+    };
+    const termBtn = document.querySelector('[data-act="campConflictTerminate"]');
+    if (termBtn) termBtn.onclick = () => {
+      closeModal();
+      const firstConflict = conflicts[0];
+      const c = firstConflict.campaign;
+      const overlapSkus = allOverlapped.map((x) => x.skuCode).filter(Boolean);
+      AppState.ui.promoTerminateOrderForm = {
+        terminateSubject: `终止-${c.activitySubject || ""}交叉商品`,
+        participateScope: "商品",
+        terminateWay: "商品",
+        effectiveMode: "按终止时间生效",
+        terminateTime: "",
+        terminatePromoNo: c.activityNo || c.id || "",
+        activitySubject: c.activitySubject || "",
+        promoType: c.promoType || "",
+        promoMethod: c.promoMethod || "",
+        activityTime: (c.startAt || "") + " ~ " + (c.endAt || ""),
+        remark: "系统自动创建-商品交叉冲突终止",
+        promoQueried: true,
+        promoResultNos: [c.activityNo || c.id || ""],
+        goodsRows: firstConflict.overlappedGoods.map((g) => ({
+          skuCode: g.skuCode || "", barcode: g.barcode || "", goodsName: g.skuName || "",
+          actNo: c.activityNo || c.id || "", actName: c.activitySubject || ""
+        })),
+        storeRows: ((c.storeScope && c.storeScope.stores) || []).map((s) => ({
+          storeCode: s.storeCode || "", storeName: s.storeName || "", region: s.region || "", priceGroup: s.priceGroup || ""
+        })),
+        storeScopeMode: "全部门店",
+        catRows: [], brandRows: []
+      };
+      location.hash = "#/promo-terminate-orders-create";
+      toast("已创建终止单草稿，请确认后提交");
+    };
+  }, 50);
+}
+
 function openImportExportRecordModal() {
   const now = new Date();
   const ts = (offset) => {
@@ -5585,16 +5722,16 @@ function openImportExportRecordModal() {
     return d.toISOString().slice(0, 16).replace("T", " ");
   };
   const records = [
-    { file: "促销活动导入模版_20260729.xlsx", type: "导入", status: "成功", progress: "100%", time: ts(30) },
-    { file: "促销活动列表_20260729.csv", type: "导出", status: "成功", progress: "100%", time: ts(120) },
-    { file: "门店范围导入_20260728.xlsx", type: "导入", status: "成功", progress: "100%", time: ts(360) },
-    { file: "商品折扣活动_20260728.csv", type: "导出", status: "成功", progress: "100%", time: ts(480) },
-    { file: "促销终止单_20260727.xlsx", type: "导出", status: "成功", progress: "100%", time: ts(1440) },
-    { file: "主档商品导入_20260727.xlsx", type: "导入", status: "部分成功", progress: "85%", time: ts(1500) },
-    { file: "促销模版导出_20260726.csv", type: "导出", status: "成功", progress: "100%", time: ts(2880) },
-    { file: "品类品牌批量导入_20260725.xlsx", type: "导入", status: "失败", progress: "0%", time: ts(4320) },
+    { file: "促销活动导入模版_20260729.xlsx", type: "导入", status: "成功", progress: "100%", time: ts(30), creator: "张制单", ip: "192.168.1.101" },
+    { file: "促销活动列表_20260729.csv", type: "导出", status: "成功", progress: "100%", time: ts(120), creator: "李管理", ip: "192.168.1.102" },
+    { file: "门店范围导入_20260728.xlsx", type: "导入", status: "成功", progress: "100%", time: ts(360), creator: "张制单", ip: "192.168.1.101" },
+    { file: "商品折扣活动_20260728.csv", type: "导出", status: "成功", progress: "100%", time: ts(480), creator: "王制单", ip: "192.168.1.103" },
+    { file: "促销终止单_20260727.xlsx", type: "导出", status: "成功", progress: "100%", time: ts(1440), creator: "李管理", ip: "192.168.1.102" },
+    { file: "主档商品导入_20260727.xlsx", type: "导入", status: "部分成功", progress: "85%", time: ts(1500), creator: "张制单", ip: "192.168.1.101" },
+    { file: "促销模版导出_20260726.csv", type: "导出", status: "成功", progress: "100%", time: ts(2880), creator: "王制单", ip: "192.168.1.103" },
+    { file: "品类品牌批量导入_20260725.xlsx", type: "导入", status: "失败", progress: "0%", time: ts(4320), creator: "张制单", ip: "192.168.1.101" },
   ];
-  const headers = ["序号", "文件名称", "操作类型", "状态", "进度", "创建时间", "操作"];
+  const headers = ["序号", "文件名称", "操作类型", "状态", "进度", "创建人", "IP地址", "创建时间", "操作"];
   const rowsHtml = records.map((r, idx) => `
     <tr>
       <td>${idx + 1}</td>
@@ -5602,8 +5739,10 @@ function openImportExportRecordModal() {
       <td>${escapeHtml(r.type)}</td>
       <td>${r.status === "成功" ? `<span style="color:#16a34a;">${escapeHtml(r.status)}</span>` : r.status === "失败" ? `<span style="color:#ef4444;">${escapeHtml(r.status)}</span>` : `<span style="color:#f59e0b;">${escapeHtml(r.status)}</span>`}</td>
       <td>${escapeHtml(r.progress)}</td>
+      <td>${escapeHtml(r.creator)}</td>
+      <td class="mono">${escapeHtml(r.ip)}</td>
       <td class="mono">${escapeHtml(r.time)}</td>
-      <td><a class="link" href="javascript:;" onclick="toast('下载文件（原型演示）')">下载</a></td>
+      <td><a class="link" href="javascript:;" onclick="toast('下载文件（原型演示）')">下载</a>${r.type === "导入" && r.status === "失败" ? ` <a class="link" href="javascript:;" onclick="toast('下载失败数据（原型演示）')" style="color:#ef4444;">下载失败数据</a>` : ""}</td>
     </tr>
   `).join("");
   openModal({
@@ -17303,7 +17442,7 @@ function campaignWizardUpdateDraftFromEvent(e) {
     if (field === "purchaseType") {
       d.goodsScope[field] = campaignReducePurchaseTypeNorm(t.value);
     }
-    if (field === "comboMode" || field === "comboScope" || field === "scopeMode" || field === "supplySubsidyMethod" || field === "discountShareMethod") {
+    if (field === "comboMode" || field === "comboScope" || field === "scopeMode" || field === "supplySubsidyMethod" || field === "discountShareMethod" || field === "shareMethod") {
       render();
       return;
     }
@@ -18699,7 +18838,7 @@ function comboCampaignGoodsInfoTableHtml(draft = {}, readonly = false) {
   const gs = comboCampaignEnsureGoodsScope(draft);
   const isComboPrice = campaignIsComboPriceDraft(draft);
   const showGoodsQty = isComboPrice;
-  const showShareRatio = isComboPrice;
+  const showShareRatio = isComboPrice || ["指定比例", "销售占比"].includes(String(gs.shareMethod || ""));
   const ui = AppState.ui.campaignWizard || {};
   const meta = comboCampaignGoodsQueryMeta(gs);
   const pickedSet = new Set((Array.isArray(ui.comboGoodsPicked) ? ui.comboGoodsPicked : []).map((x) => Number(x)).filter(Number.isFinite));
@@ -18974,7 +19113,7 @@ function comboCampaignGoodsSettingTableHtml(draft = {}, readonly = false) {
   const ui = AppState.ui.campaignWizard || {};
   const rows = Array.isArray(gs.comboSettings) ? gs.comboSettings : [];
   const showPickQty = String(gs.comboMode || "固定组合") === "任选组合" && !campaignIsComboPriceDraft(draft);
-  const showLimitFields = String(gs.comboMode || "固定组合") !== "任选组合";
+  const showLimitFields = !(campaignIsComboPriceDraft(draft) && String(gs.comboMode || "固定组合") === "任选组合");
   const pickedSet = new Set((Array.isArray(ui.comboGoodsRulePicked) ? ui.comboGoodsRulePicked : []).map((x) => Number(x)).filter(Number.isFinite));
   const visibleRows = rows.slice(0, 8);
   const allRows = rows.length ? rows : visibleRows;
@@ -18992,11 +19131,19 @@ function comboCampaignGoodsSettingTableHtml(draft = {}, readonly = false) {
   const showCap = isOnePriceOnly ? false : (scope === "品类"
     ? (!isAnyCategoryLadderScene && !isFixedCategoryLadderScene)
     : (firstWay !== "阶梯"));
+  const isFixedCombo = String(gs.comboMode || "固定组合") === "固定组合";
+  const isComboPriceFixed = campaignIsComboPriceDraft(draft) && isFixedCombo;
+  const isOnePriceFixed = isOnePriceOnly && isFixedCombo;
+  const showDmLimitQty = showLimitFields && !(isComboPriceFixed || isOnePriceFixed);
+  const showCapForCombo = showCap && !isComboPriceFixed;
+  const showOpCol = !(isComboPriceFixed || isOnePriceFixed);
   const allChecked = !readonly && visibleRows.length > 0 && visibleRows.every((_, idx) => pickedSet.has(idx));
   const rowHtml = visibleRows.map((x, idx) => {
     const cells = [];
     cells.push(`<td class="combo-goods-table__check"><input type="checkbox" data-cw="comboGoodsRulePick" data-idx="${idx}" ${pickedSet.has(idx) ? "checked" : ""} ${readonly ? "disabled" : ""} /></td>`);
+    if (showOpCol) {
     cells.push(`<td style="white-space:nowrap;text-align:center;">${readonly ? "" : `<button class="row-btn row-btn--add" type="button" data-act="campComboRuleAddAfter" data-idx="${idx}">+</button><button class="row-btn row-btn--del" type="button" data-act="campComboRuleDelRow" data-idx="${idx}">−</button>`}</td>`);
+    }
     cells.push(`<td>${idx + 1}</td>`);
     cells.push(`<td>${readonly
       ? `<span class="combo-goods-cell-text mono">${escapeHtml(String(x.comboCode || ""))}</span>`
@@ -19024,11 +19171,13 @@ function comboCampaignGoodsSettingTableHtml(draft = {}, readonly = false) {
     cells.push(`<td>${readonly
       ? `<span class="combo-goods-cell-text">${escapeHtml(String(x.perItemLimitQty ?? ""))}</span>`
       : `<input class="combo-goods-cell-input" data-cw="comboGoodsSettings" data-idx="${idx}" data-field="perItemLimitQty" type="number" min="0" step="1" value="${escapeHtml(String(x.perItemLimitQty ?? ""))}" />`}</td>`);
+    if (showDmLimitQty) {
     cells.push(`<td>${readonly
       ? `<span class="combo-goods-cell-text">${escapeHtml(String(x.dmLimitQty ?? ""))}</span>`
       : `<input class="combo-goods-cell-input" data-cw="comboGoodsSettings" data-idx="${idx}" data-field="dmLimitQty" type="number" min="0" step="1" value="${escapeHtml(String(x.dmLimitQty ?? ""))}" />`}</td>`);
     }
-    if (showCap) {
+    }
+    if (showCapForCombo) {
       const isLadder = String(x.discountWay || "倍数") === "阶梯";
       cells.push(`<td>${readonly
         ? `<span class="combo-goods-cell-text">${escapeHtml(isLadder ? "" : String(x.cap ?? ""))}</span>`
@@ -19036,14 +19185,14 @@ function comboCampaignGoodsSettingTableHtml(draft = {}, readonly = false) {
     }
     return `<tr>${cells.join("")}</tr>`;
   }).join("");
-  const emptyCols = 3 + 1 + (showPickQty ? 1 : 0) + (showComboQty ? 1 : 0) + (showLimitFields ? 4 : 0) + 1 + (showCap ? 1 : 0);
+  const emptyCols = 2 + (showOpCol ? 1 : 0) + 1 + (showPickQty ? 1 : 0) + (showComboQty ? 1 : 0) + 1 + (showLimitFields ? (3 + (showDmLimitQty ? 1 : 0)) : 0) + (showCapForCombo ? 1 : 0);
   const minRows = isAnyCategoryLadderScene ? 2 : 3;
   const emptyRows = Array.from({ length: Math.max(0, minRows - visibleRows.length) }).map((_, idx) => `
     <tr>
       <td class="combo-goods-table__check"><input type="checkbox" disabled /></td>
-      <td style="white-space:nowrap;text-align:center;">${readonly ? "" : `<button class="row-btn row-btn--add" type="button" data-act="campComboRuleAddAfter" data-idx="${visibleRows.length + idx}">+</button>`}</td>
+      ${showOpCol ? `<td style="white-space:nowrap;text-align:center;">${readonly ? "" : `<button class="row-btn row-btn--add" type="button" data-act="campComboRuleAddAfter" data-idx="${visibleRows.length + idx}">+</button>`}</td>` : ""}
       <td>${visibleRows.length + idx + 1}</td>
-      ${Array.from({ length: emptyCols - 3 }).map(() => "<td></td>").join("")}
+      ${Array.from({ length: emptyCols - 2 - (showOpCol ? 1 : 0) }).map(() => "<td></td>").join("")}
     </tr>
   `).join("");
   return `
@@ -19061,9 +19210,9 @@ function comboCampaignGoodsSettingTableHtml(draft = {}, readonly = false) {
             ${showPickQty ? "<th>任选X件</th>" : ""}
             ${showComboQty ? "<th>组合数量</th>" : ""}
             <th>促销价</th>
-            ${showLimitFields ? "<th>限购周期</th><th>限购数量</th><th>门店限购数量</th><th>DM限购数量</th>" : ""}
-            ${showCap ? "<th>上限</th>" : ""}
-            <th>操作</th>
+            ${showLimitFields ? `<th>限购周期</th><th>限购数量</th><th>门店限购数量</th>${showDmLimitQty ? "<th>DM限购数量</th>" : ""}` : ""}
+            ${showCapForCombo ? "<th>上限</th>" : ""}
+            ${showOpCol ? "<th>操作</th>" : ""}
           </tr>
         </thead>
         <tbody>${rowHtml}${emptyRows}</tbody>
@@ -19712,9 +19861,11 @@ function comboCampaignGoodsPanelHtml(draft = {}, readonly = false) {
           <div class="field">
             <div class="field__label">分摊方式</div>
             ${readonly
-              ? `<input class="input" value="按平均价" disabled />`
+              ? `<input class="input" value="${escapeHtml(String(gs.shareMethod || "按平均单价"))}" disabled />`
               : `<select class="select" data-cw="goodsScope" data-field="shareMethod">
-                  <option value="按平均价" selected>按平均价</option>
+                  <option value="按平均单价" ${String(gs.shareMethod || "按平均单价") === "按平均单价" ? "selected" : ""}>按平均单价</option>
+                  <option value="指定比例" ${String(gs.shareMethod) === "指定比例" ? "selected" : ""}>指定比例</option>
+                  <option value="销售占比" ${String(gs.shareMethod) === "销售占比" ? "selected" : ""}>销售占比</option>
                 </select>`}
           </div>
         </div>
@@ -35624,6 +35775,14 @@ function handleAction(r, act, btn) {
       if (idx < 0 || idx >= tabs.length - 1) return toast("已到最后一步，可保存或提交审核");
       const msg = campaignWizardValidateStep(idx + 1);
       if (msg) return toast(msg);
+      if (cur === "goods") {
+        openGoodsConflictModal(d, [], () => {
+          AppState.ui.campaignWizard.campWizTab = tabs[idx + 1].k;
+          AppState.ui.campaignWizard.wizardStep = idx + 2;
+          render();
+        });
+        return;
+      }
       AppState.ui.campaignWizard.campWizTab = tabs[idx + 1].k;
       AppState.ui.campaignWizard.wizardStep = idx + 2;
       render();
