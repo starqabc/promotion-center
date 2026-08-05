@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>商品促销平台原型</title>
-    <link rel="stylesheet" href="./styles.css?v=200039" />
+    <link rel="stylesheet" href="./styles.css?v=200244" />
   </head>
   <body>
     <div id="app" class="app-shell">
@@ -55,7 +55,7 @@
           </div>
 
           <div class="nav__section" data-section="dispatch">
-            <button class="nav__labelbtn" type="button" data-act="navSection" data-section="dispatch" aria-expanded="false">促销活动队列</button>
+            <button class="nav__labelbtn" type="button" data-act="navSection" data-section="dispatch" aria-expanded="false">促销执行</button>
             <div class="nav__panel" data-section-panel="dispatch">
               <a class="nav__item" href="#/promo-pending-goods" data-route="/promo-pending-goods">
                 <span class="nav__text">促销查询</span>
@@ -66,6 +66,7 @@
             </div>
           </div>
 
+          <!-- [隐藏-后续恢复] 促销试算
           <div class="nav__section" data-section="calc">
             <button class="nav__labelbtn" type="button" data-act="navSection" data-section="calc" aria-expanded="false">促销试算</button>
             <div class="nav__panel" data-section-panel="calc">
@@ -74,13 +75,14 @@
               </a>
             </div>
           </div>
+          -->
 
           <div class="nav__section" data-section="validate">
             <a class="nav__labelbtn" href="#/promo-validation" data-route="/promo-validation" data-act="navSection" data-section="validate" style="text-decoration:none;display:flex;align-items:center;padding:8px 16px;font-size:14px;color:#374151;cursor:pointer;">促销活动校验</a>
           </div>
 
           <div class="nav__section" data-section="rpt">
-            <button class="nav__labelbtn" type="button" data-act="navSection" data-section="rpt" aria-expanded="false">促销监控</button>
+            <button class="nav__labelbtn" type="button" data-act="navSection" data-section="rpt" aria-expanded="false">促销数据报表</button>
             <div class="nav__panel" data-section-panel="rpt">
               <!-- [隐藏-后续恢复] 促销分析/达成/预警/销售明细/库存明细/商品排行/门店促销品异常
               <a class="nav__item" href="#/rpt-analysis" data-route="/rpt-analysis"><span class="nav__text">促销分析</span></a>
@@ -246,30 +248,10 @@
 
     <script>
       window.onerror = function(msg, url, line, col, err) {
-        try {
-          const payload = JSON.stringify({
-            sessionId: "gift-button-click",
-            runId: "pre-fix",
-            hypothesisId: "B",
-            location: "index.html:window.onerror",
-            msg: "[DEBUG] window.onerror captured",
-            data: {
-              message: String(msg || ""),
-              url: String(url || ""),
-              line: Number(line || 0),
-              col: Number(col || 0),
-              stack: err && err.stack ? String(err.stack) : ""
-            },
-            ts: Date.now()
-          });
-          if (navigator.sendBeacon) navigator.sendBeacon("http://127.0.0.1:7777/event", payload);
-          else fetch("http://127.0.0.1:7777/event", { method: "POST", headers: { "Content-Type": "application/json" }, body: payload }).catch(() => {});
-        } catch (_) {}
         document.body.innerHTML = '<pre style="color:red;padding:20px;">JS Error: ' + msg + '\\nLine: ' + line + ', Col: ' + col + '\\n' + (err && err.stack ? err.stack : '') + '</pre>';
         return true;
       };
     </script>
-    <script src="./app.js?v=214243"></script>
+    <script src="./app.js?v=002138"></script>
   </body>
 </html>
-

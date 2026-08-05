@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      {
+        "command": "feishu",
+        "reason": "飞书CLI工具，用于操作飞书文档和消息"
+      }
+    ]
+  },
+  "mcpServers": {
+    "lark": {
+      "command": "npx",
+      "args": ["@larksuiteoapi/lark-mcp", "mcp"]
+    }
+  }
+}
